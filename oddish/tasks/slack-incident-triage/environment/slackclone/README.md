@@ -61,11 +61,9 @@ committed into a task.
 ## Use in a Harbor/Oddish task
 
 Drop in the [`slack` service](harbor/slack-service/) (serves the API, seeds from a mounted
-`/data/slack`) and give your client container `slack-cli` + `SLACK_API_URL`. A self-contained,
-**Oddish-runnable** task suite lives in [oddish/](oddish/) — see
-[oddish/tasks/slack-incident-triage/](oddish/tasks/slack-incident-triage/) (incident triage with a
-split-harness verifier; `nop` → reward 0, `oracle` → reward 1). Run with
-`oddish run oddish/tasks -a gemini-cli -m google/gemini-3.1-flash-preview --n-trials 1`.
+`/data/slack`) and give your client container `slack-cli` + `SLACK_API_URL`. A runnable demo —
+incident triage, with a split-harness verifier — is in
+[harbor/example-task/](harbor/example-task/) (`nop` → reward 0, `oracle` → reward 1).
 
 ## Develop / test
 

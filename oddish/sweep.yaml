@@ -1,0 +1,12 @@
+# Oddish CLI sweep config:  oddish run <oddish/tasks> -c oddish/sweep.yaml
+task_names:
+  - slack-incident-triage
+
+agents:
+  - name: gemini-cli
+    model_name: google/gemini-3.1-flash-preview
+    n_trials: 1
+  - name: oracle
+    n_trials: 1
+  - name: nop
+    n_trials: 1
