@@ -1,0 +1,36 @@
+# Demo multi-service task: a seeded Slack workspace + an agent client with slack-cli.
+# Build contexts point at the repo root so the slackclone package is available.
+services:
+  slack:
+    build:
+      context: ../../..
+      dockerfile: docker/Dockerfile
+    image: abundant-slack-clone:local
+    container_name: slack
+    volumes:
+      - ./data/slack:/data/slack:ro
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:3000/health')\" || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 15s
+    networks: [sim]
+
+  client:
+    build:
+      context: ../../..
+      dockerfile: harbor/example-task/environment/client/Dockerfile
+    image: slack-demo-client:local
+    container_name: client
+    environment:
+      - SLACK_API_URL=http://slack:3000
+    command: ["sleep", "infinity"]
+    depends_on:
+      slack:
+        condition: service_healthy
+    networks: [sim]
+
+networks:
+  sim:
+    driver: bridge

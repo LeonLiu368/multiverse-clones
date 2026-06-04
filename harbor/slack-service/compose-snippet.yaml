@@ -1,0 +1,31 @@
+# Drop this `slack` service into a task's docker-compose.yaml, and give your client
+# container `slack-cli` + SLACK_API_URL=http://slack:3000.
+services:
+  slack:
+    build:
+      context: /path/to/abundant-slack-clone        # repo root
+      dockerfile: docker/Dockerfile
+    image: abundant-slack-clone:local
+    container_name: slack
+    volumes:
+      - ./data/slack:/data/slack:ro                  # slack.db | workspace.json | export/
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:3000/health')\" || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 15s
+    networks: [sim]
+
+  client:
+    # ... your agent image ...
+    environment:
+      - SLACK_API_URL=http://slack:3000
+    depends_on:
+      slack:
+        condition: service_healthy
+    networks: [sim]
+
+networks:
+  sim:
+    driver: bridge

@@ -1,0 +1,8 @@
+[
+  {"id": "U1", "name": "alice", "real_name": "Alice Ng", "tz": "America/Los_Angeles",
+   "profile": {"email": "alice@example.com", "title": "SRE", "display_name": "alice"}},
+  {"id": "U2", "name": "bob", "real_name": "Bob Kim",
+   "profile": {"email": "bob@example.com", "title": "Engineer"}},
+  {"id": "UBOT", "name": "incidentbot", "real_name": "Incident Bot", "is_bot": true,
+   "profile": {"email": "bot@example.com"}}
+]

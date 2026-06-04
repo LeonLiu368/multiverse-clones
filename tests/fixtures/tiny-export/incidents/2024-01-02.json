@@ -1,0 +1,6 @@
+[
+  {"type": "message", "user": "UBOT", "text": "PagerDuty: API latency p99 > 3s",
+   "ts": "1704153600.000100"},
+  {"type": "message", "user": "U1", "text": "ack, investigating", "ts": "1704153660.000200",
+   "reactions": [{"name": "eyes", "users": ["U2"], "count": 1}]}
+]

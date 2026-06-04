@@ -1,0 +1,10 @@
+[
+  {"id": "C1", "name": "general", "created": 1704067000, "creator": "U1",
+   "is_archived": false, "members": ["U1", "U2", "UBOT"],
+   "topic": {"value": "Company-wide announcements"},
+   "purpose": {"value": "All-hands chatter"}},
+  {"id": "C2", "name": "incidents", "created": 1704067000, "creator": "U1",
+   "is_archived": false, "members": ["U1", "U2", "UBOT"],
+   "topic": {"value": "Active incidents"},
+   "purpose": {"value": "On-call coordination"}}
+]
