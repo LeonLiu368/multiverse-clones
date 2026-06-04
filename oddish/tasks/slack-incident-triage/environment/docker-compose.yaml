@@ -1,6 +1,11 @@
 # Multi-service Oddish task: a seeded Slack workspace (`slack`) + the agent (`client`)
 # with slack-cli. Both build from this environment/ dir (context: .) which vendors the
 # slackclone package, so the task is self-contained for `oddish run` upload.
+#
+# NOTE: no `networks:` here. The Harbor/Oddish runtime injects `network_mode` onto the
+# `client` service (which is mutually exclusive with an explicit `networks:` key), and it
+# wires inter-service networking itself — services still resolve each other by name
+# (client -> http://slack:3000). This mirrors the canonical APEX shared compose.
 services:
   client:
     build:
@@ -14,7 +19,6 @@ services:
     depends_on:
       slack:
         condition: service_healthy
-    networks: [sim]
 
   slack:
     build:
@@ -30,8 +34,3 @@ services:
       timeout: 5s
       retries: 20
       start_period: 15s
-    networks: [sim]
-
-networks:
-  sim:
-    driver: bridge
