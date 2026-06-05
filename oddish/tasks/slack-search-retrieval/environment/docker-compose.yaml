@@ -1,7 +1,7 @@
 # Data-free multi-service Oddish task: a shared slack-clone service (`slack`) seeded
 # by NAME from its baked-in workspace catalog, plus the agent (`client`) with slack-cli
 # + the slack-mcp MCP server. NO seed data lives in this task directory — the workspace
-# 'acme-incident' comes from the image's catalog (repo-level workspaces/acme-incident.json).
+# 'globex-staging' comes from the image's catalog (repo-level workspaces/globex-staging.json).
 #
 # NOTE: no `networks:` here. The Harbor/Oddish runtime injects `network_mode` on the
 # `client` service (mutually exclusive with an explicit `networks:` key) and wires
@@ -32,7 +32,7 @@ services:
       dockerfile: docker/Dockerfile
     container_name: slack
     environment:
-      - SLACK_WORKSPACE=acme-incident
+      - SLACK_WORKSPACE=globex-staging
     healthcheck:
       test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:3000/health')\" || exit 1"]
       interval: 5s

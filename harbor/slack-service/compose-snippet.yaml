@@ -1,31 +1,33 @@
 # Drop this `slack` service into a task's docker-compose.yaml, and give your client
-# container `slack-cli` + SLACK_API_URL=http://slack:3000.
+# container `slack-cli` (+ optional `slack-mcp`) and SLACK_API_URL=http://slack:3000.
+#
+# No `networks:` block: the Harbor/Oddish runtime injects `network_mode` on the client
+# (mutually exclusive with an explicit `networks:` key). Services resolve each other by
+# name on the default compose network (client -> http://slack:3000).
 services:
   slack:
     build:
       context: /path/to/abundant-slack-clone        # repo root
       dockerfile: docker/Dockerfile
-    image: abundant-slack-clone:local
+    image: abundant-slack-clone:latest
     container_name: slack
-    volumes:
-      - ./data/slack:/data/slack:ro                  # slack.db | workspace.json | export/
+    environment:
+      - SLACK_WORKSPACE=acme-incident                # pick a baked-in workspace by name
+      # - SLACK_CONTROL_TOKEN=...                     # ONLY if you want live /_control/* reseed
+    # Legacy escape hatch instead of the catalog:
+    # volumes:
+    #   - ./data/slack:/data/slack:ro                # slack.db | workspace.json | export/
     healthcheck:
       test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:3000/health')\" || exit 1"]
       interval: 5s
       timeout: 5s
       retries: 20
       start_period: 15s
-    networks: [sim]
 
   client:
-    # ... your agent image ...
+    # ... your agent image (must have slack-cli; SLACK_CONTROL_TOKEN deliberately absent) ...
     environment:
       - SLACK_API_URL=http://slack:3000
     depends_on:
       slack:
         condition: service_healthy
-    networks: [sim]
-
-networks:
-  sim:
-    driver: bridge

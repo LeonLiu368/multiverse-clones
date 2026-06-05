@@ -1,0 +1,31 @@
+{
+  "workspace": {"id": "T0GLOBEX", "name": "Globex", "domain": "globex"},
+  "users": [
+    {"id": "UDEV", "name": "devon", "real_name": "Devon Park", "profile": {"email": "devon@globex.test", "title": "Backend Engineer"}},
+    {"id": "UPLAT", "name": "priya", "real_name": "Priya Rao", "profile": {"email": "priya@globex.test", "title": "Platform Engineer"}},
+    {"id": "UMGR", "name": "morgan", "real_name": "Morgan Lee", "profile": {"email": "morgan@globex.test", "title": "EM"}},
+    {"id": "UBOT", "name": "globexbot", "real_name": "Globex Bot", "is_bot": true, "profile": {"email": "bot@globex.test"}}
+  ],
+  "channels": [
+    {"id": "CGEN", "name": "general", "type": "public_channel", "created": 1699990000, "creator": "UMGR",
+     "topic": "Company-wide chatter", "purpose": "All-hands", "members": ["UDEV", "UPLAT", "UMGR", "UBOT"]},
+    {"id": "CINFRA", "name": "infra", "type": "public_channel", "created": 1699990000, "creator": "UPLAT",
+     "topic": "Platform & infrastructure", "purpose": "Infra ops and hostnames", "members": ["UDEV", "UPLAT", "UMGR", "UBOT"]},
+    {"id": "CASK", "name": "ask-platform", "type": "public_channel", "created": 1699990000, "creator": "UMGR",
+     "topic": "Ask the platform team", "purpose": "Support questions for platform", "members": ["UDEV", "UPLAT", "UMGR", "UBOT"]}
+  ],
+  "messages": [
+    {"channel": "CGEN", "ts": "1700000000.000001", "user": "UMGR",
+     "text": "reminder: please run schema migrations against staging before opening a PR, never against prod"},
+    {"channel": "CGEN", "ts": "1700000050.000002", "user": "UDEV",
+     "text": "the demo box is at demo-db.globex.internal:5432 if anyone needs to poke at sample data"},
+    {"channel": "CINFRA", "ts": "1700000100.000003", "user": "UPLAT",
+     "text": "FYI everyone: staging Postgres is reachable at pg-staging.globex.internal:6432 (that's the pgbouncer port). Prod is locked down — open a ticket if you think you need it."},
+    {"channel": "CINFRA", "ts": "1700000160.000004", "user": "UPLAT",
+     "text": "the old staging host pg-staging-legacy.globex.internal:5432 was decommissioned last month, don't use it"},
+    {"channel": "CINFRA", "ts": "1700000220.000005", "user": "UDEV",
+     "text": "thanks priya, updating my notes", "thread_ts": "1700000100.000003"},
+    {"channel": "CASK", "ts": "1700000300.000006", "user": "UDEV",
+     "text": "I need to run a migration test against staging Postgres but I can't find the connection details — what's the current hostname and port?"}
+  ]
+}

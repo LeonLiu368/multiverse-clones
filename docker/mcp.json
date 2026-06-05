@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "slack": {
+      "command": "slack-mcp",
+      "args": [],
+      "env": {
+        "SLACK_API_URL": "http://slack:3000"
+      }
+    }
+  }
+}

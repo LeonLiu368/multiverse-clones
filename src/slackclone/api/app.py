@@ -42,6 +42,15 @@ def create_app(db_path: str | None = None) -> FastAPI:
     Session = session_factory(engine)
     app = FastAPI(title="abundant-slack-clone", version="0.1.0")
 
+    # Operator/harness-only control plane (seed/reset). Token-gated; the routes
+    # return 404 unless SLACK_CONTROL_TOKEN is set AND the X-Control-Token header
+    # matches. The agent's client container is never given the token.
+    from .control import make_control_router
+
+    app.include_router(
+        make_control_router(engine, boot_workspace=lambda: os.environ.get("SLACK_WORKSPACE") or None)
+    )
+
     def ok(**kw: Any) -> dict:
         return {"ok": True, **kw}
 

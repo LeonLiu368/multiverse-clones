@@ -1,0 +1,29 @@
+{
+  "workspace": {"id": "T0HOOLI", "name": "Hooli", "domain": "hooli"},
+  "users": [
+    {"id": "UDANA", "name": "dana", "real_name": "Dana Cruz", "profile": {"email": "dana@hooli.test", "title": "Product Designer"}},
+    {"id": "UERIN", "name": "erin", "real_name": "Erin Walsh", "profile": {"email": "erin@hooli.test", "title": "Frontend Engineer"}},
+    {"id": "UFRANK", "name": "frank", "real_name": "Frank Obi", "profile": {"email": "frank@hooli.test", "title": "Eng Lead"}},
+    {"id": "UBOT", "name": "hoolibot", "real_name": "Hooli Bot", "is_bot": true, "profile": {"email": "bot@hooli.test"}}
+  ],
+  "channels": [
+    {"id": "CGEN", "name": "general", "type": "public_channel", "created": 1699990000, "creator": "UFRANK",
+     "topic": "Company-wide chatter", "purpose": "All-hands", "members": ["UDANA", "UERIN", "UFRANK", "UBOT"]},
+    {"id": "CDEC", "name": "design-decisions", "type": "public_channel", "created": 1699990000, "creator": "UFRANK",
+     "topic": "Where we record product/eng decisions", "purpose": "Decision log", "members": ["UDANA", "UERIN", "UFRANK", "UBOT"]}
+  ],
+  "messages": [
+    {"channel": "CDEC", "ts": "1700000000.000001", "user": "UERIN",
+     "text": "We need to pick a date-picker library for the new booking flow. Options on the table: react-aria, react-datepicker, and rolling our own."},
+    {"channel": "CDEC", "ts": "1700000060.000002", "user": "UDANA",
+     "text": "react-datepicker is the most popular but its keyboard accessibility is weak and it drags in moment.js", "thread_ts": "1700000000.000001"},
+    {"channel": "CDEC", "ts": "1700000120.000003", "user": "UFRANK",
+     "text": "rolling our own is too much maintenance burden for the team right now", "thread_ts": "1700000000.000001"},
+    {"channel": "CDEC", "ts": "1700000180.000004", "user": "UERIN",
+     "text": "react-aria (from Adobe) gives us accessible, unstyled primitives — WCAG behavior out of the box and no heavy dependencies. I think that's the move.", "thread_ts": "1700000000.000001"},
+    {"channel": "CDEC", "ts": "1700000240.000005", "user": "UFRANK",
+     "text": "agreed, react-aria it is. can someone write up a short summary and pin it so newcomers can find what we landed on?", "thread_ts": "1700000000.000001"},
+    {"channel": "CGEN", "ts": "1700000300.000006", "user": "UDANA",
+     "text": "the booking flow redesign is moving along, picking the component libs this week"}
+  ]
+}

@@ -1,0 +1,24 @@
+schema_version = "1.2"
+name = "abundant-slack-clone/slack-thread-summary-pin"
+description = "Multi-service Slack-clone task: the agent reads a decision thread in a seeded Slack workspace, posts a concise DECISION summary, and pins it. Verified deterministically via the Slack API (nop=0, oracle=1)."
+
+[metadata]
+category = "knowledge-work"
+service = "slack"
+tools = ["slack-cli"]
+tags = ["slack-clone", "multi-service", "cli", "summarize", "threads", "pins"]
+
+[agent]
+timeout_sec = 1800
+
+[verifier]
+timeout_sec = 600
+
+[environment]
+cpus = 2
+memory_mb = 4096
+storage_mb = 10240
+gpus = 0
+allow_internet = true
+workdir = "/app"
+build_timeout_sec = 1200

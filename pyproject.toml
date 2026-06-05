@@ -14,12 +14,19 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+# MCP server is opt-in so the slack-service image stays lean; only the client
+# image installs `.[mcp]`.
+mcp = [
+    "mcp>=1.0",
+]
 dev = [
     "pytest>=8.0",
+    "mcp>=1.0",
 ]
 
 [project.scripts]
 slack-cli = "slackclone.cli.main:app"
+slack-mcp = "slackclone.mcp.server:main"
 
 [build-system]
 requires = ["hatchling"]

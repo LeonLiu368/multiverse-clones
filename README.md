@@ -13,14 +13,20 @@ Slack-faithful and richer (threads, reactions, users, pins, edits, writes). See
 ## Architecture
 
 ```
-producer ─▶ canonical seed ─▶ SQLite (slack.db) ─▶ FastAPI Slack API ◀─ slack-cli / SDKs / (future) MCP
+producer ─▶ canonical seed ─▶ SQLite (slack.db) ─▶ FastAPI Slack API ◀─ slack-cli / slack-mcp / SDKs
   ├─ real:      Slack export importer
   ├─ synthetic: deterministic generator
   └─ authored:  hand-written workspace.json
 ```
 
-The HTTP **Slack API** is the realism core; `slack-cli` (and a future MCP server) are thin clients
-of it, so they stay in parity automatically. No auth in v1 (open API on the internal network).
+The HTTP **Slack API** is the realism core; `slack-cli` and the `slack-mcp` MCP server are thin
+clients of it, so they stay in parity automatically. No auth in v1 (open API on the internal
+network); the only privileged surface is a token-gated `/_control/*` plane for operator reseeding.
+
+The slack-clone runs as **its own container with its own baked-in workspace data**; tasks pick a
+workspace by name (`SLACK_WORKSPACE`) and carry **no seed data themselves**. See
+[docs/architecture.md](docs/architecture.md) for the full design, and
+[docs/cli-and-db-commands.md](docs/cli-and-db-commands.md) for a command cheat-sheet.
 
 ## Quickstart
 
@@ -55,25 +61,28 @@ it:
 | Real Slack export | `slack-cli seed import-export ./export[.zip] --out slack.db [--emit workspace.json]` |
 | Hand-authored | edit `workspace.json` → `slack-cli seed load workspace.json --out slack.db` |
 
-`--emit` writes the portable canonical seed JSON so a workspace can be inspected, diffed, and
-committed into a task.
+`--emit` writes the portable canonical seed JSON. Commit canonical workspaces into the repo-level
+[`workspaces/`](workspaces/) directory (NOT into a task) — they're baked into the slack image as a
+named catalog and selected per task with `SLACK_WORKSPACE`.
 
 ## Use in a Harbor/Oddish task
 
-Drop in the [`slack` service](harbor/slack-service/) (serves the API, seeds from a mounted
-`/data/slack`) and give your client container `slack-cli` + `SLACK_API_URL`. A self-contained,
-**Oddish-runnable** task suite lives in [oddish/](oddish/) — see
+Drop in the [`slack` service](harbor/slack-service/) (serves the API, seeds a baked-in workspace by
+name via `SLACK_WORKSPACE`) and give your client container `slack-cli` (+ `slack-mcp`) and
+`SLACK_API_URL`. Tasks carry **no seed data** — see [docs/architecture.md](docs/architecture.md).
+An **Oddish-runnable** task suite lives in [oddish/](oddish/) — see
 [oddish/tasks/slack-incident-triage/](oddish/tasks/slack-incident-triage/) (incident triage with a
 split-harness verifier; `nop` → reward 0, `oracle` → reward 1). Run with
-`oddish run oddish/tasks -a gemini-cli -m google/gemini-3.1-flash-preview --n-trials 1`.
+`oddish run oddish/tasks -a gemini-cli -m google/gemini-3.1-pro-preview --n-trials 1`.
 
 ## Develop / test
 
 ```bash
-.venv/bin/python -m pytest -q          # importer, generator determinism, API, CLI
-docker build -f docker/Dockerfile -t abundant-slack-clone .
+.venv/bin/python -m pytest -q                              # importer, generator, API, CLI, catalog, control, MCP
+docker build -f docker/Dockerfile        -t abundant-slack-clone:latest .   # service image
+docker build -f docker/client.Dockerfile -t abundant-slack-client:latest .  # agent image (slack-cli + slack-mcp)
 ```
 
 ## Roadmap
-MCP server (wraps the same HTTP API → CLI/MCP parity); DMs/private write paths; reactions.remove /
+DMs/private write paths; reactions.remove /
 pins.remove; a minimal web UI for human/VLM inspection.

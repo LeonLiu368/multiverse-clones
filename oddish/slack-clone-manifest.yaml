@@ -2,20 +2,23 @@ metadata:
   name: slack-clone-tasks
   description: |
     Oddish-runnable multi-service Slack-clone tasks. Each drops the agent into a seeded
-    Slack workspace served by the slack-clone (a Slack-faithful HTTP API) and gives it
-    `slack-cli` to investigate and act. The verifier reads workspace state back via the
-    API, so it is deterministic (nop=0, oracle=1). Tasks are self-contained: the
-    slackclone package is vendored into each task's environment so `oddish run` uploads
-    and builds them with no external references.
+    Slack workspace served by the shared slack-clone image (a Slack-faithful HTTP API) and
+    gives it `slack-cli` plus the `slack-mcp` MCP server to investigate and act. The verifier
+    reads workspace state back via the API, so it is deterministic (nop=0, oracle=1).
+    Tasks carry NO seed data: canonical workspaces live in the repo-level workspaces/ folder,
+    are baked into the slack image, and a task selects one by name via SLACK_WORKSPACE — so the
+    answer key never sits in the task directory. The agent reaches data only through the tools.
   task_path: oddish/tasks
   n_trials: 1
   skip_trajectory_analysis: false
 
 tasks:
   - slack-incident-triage
+  - slack-search-retrieval
+  - slack-thread-summary-pin
 
 agents:
   - name: gemini-cli
-    model_name: google/gemini-3.1-flash-preview
+    model_name: google/gemini-3.1-pro-preview
   - name: oracle
   - name: nop
