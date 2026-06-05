@@ -1,12 +1,12 @@
 schema_version = "1.2"
 name = "abundant-slack-clone/slack-incident-triage"
-description = "Multi-service Slack-clone task: the agent triages an incident thread in a seeded Slack workspace using slack-cli and posts the root cause. Verified deterministically via the Slack API (nop=0, oracle=1)."
+description = "Multi-service Slack-clone task: the agent gets a vague 'something's wrong in prod' nudge and must investigate the workspace with its Slack tools to find the underlying cause, then post a writeup. Verified deterministically via the Slack API (nop=0, oracle=1)."
 
 [metadata]
 category = "knowledge-work"
 service = "slack"
-tools = ["slack-cli"]
-tags = ["slack-clone", "multi-service", "cli", "incident-triage"]
+tools = ["slack-cli", "slack-mcp"]
+tags = ["slack-clone", "multi-service", "open-ended", "incident-triage"]
 
 [agent]
 timeout_sec = 1800

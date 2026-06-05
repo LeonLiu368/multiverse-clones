@@ -1,12 +1,12 @@
 schema_version = "1.2"
 name = "abundant-slack-clone/slack-thread-summary-pin"
-description = "Multi-service Slack-clone task: the agent reads a decision thread in a seeded Slack workspace, posts a concise DECISION summary, and pins it. Verified deterministically via the Slack API (nop=0, oracle=1)."
+description = "Multi-service Slack-clone task: the agent is told a past decision was never written down and people keep re-asking, and must find the thread, determine the outcome, write it up, and pin it so it's findable. Verified deterministically via the Slack API (nop=0, oracle=1)."
 
 [metadata]
 category = "knowledge-work"
 service = "slack"
-tools = ["slack-cli"]
-tags = ["slack-clone", "multi-service", "cli", "summarize", "threads", "pins"]
+tools = ["slack-cli", "slack-mcp"]
+tags = ["slack-clone", "multi-service", "open-ended", "summarize", "threads", "pins"]
 
 [agent]
 timeout_sec = 1800

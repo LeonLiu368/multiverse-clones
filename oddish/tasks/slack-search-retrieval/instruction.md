@@ -1,26 +1,5 @@
-# Answer a platform question in the Globex Slack workspace
+# Someone at Globex is blocked
 
-A teammate has asked a question in the **Globex** Slack workspace and is waiting for an
-answer. You have `slack-cli` configured (it talks to the workspace at `$SLACK_API_URL`).
+You're on the platform team at **Globex**. Somewhere in Slack, a colleague has asked a question and is stuck waiting on an answer to get their work done — but you weren't told what they asked or where.
 
-A developer posted this in **#ask-platform**:
-
-> "I need to run a migration test against staging Postgres but I can't find the
-> connection details — what's the current hostname and port?"
-
-The answer is documented somewhere in the workspace history. Search for it, for example:
-
-```bash
-slack-cli channels list
-slack-cli channels history ask-platform --format markdown
-slack-cli search "staging postgres" --format markdown
-slack-cli search "postgres in:#infra" --format markdown
-```
-
-Be careful: there are stale/decoy hosts in the history (a decommissioned legacy host and an
-unrelated demo box). Find the **current** staging Postgres hostname **and** port, then post a
-single answer to **#ask-platform** that includes it verbatim:
-
-```bash
-slack-cli post ask-platform "<the current staging Postgres host:port and any caveat>"
-```
+You have Slack tools available (the `slack-cli` command and the `slack-mcp` MCP server, pointed at this workspace). Use them to find the question, then dig up the **correct** answer. Be careful: people have left outdated and unrelated information lying around the workspace, so don't trust the first thing you find — confirm it's current. Once you're sure, reply to the person where they asked, with the answer they need.

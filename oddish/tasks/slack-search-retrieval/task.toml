@@ -1,12 +1,12 @@
 schema_version = "1.2"
 name = "abundant-slack-clone/slack-search-retrieval"
-description = "Multi-service Slack-clone task: the agent searches a seeded Slack workspace (with decoy/stale facts) to retrieve the current staging Postgres host:port and answers in #ask-platform. Verified deterministically via the Slack API (nop=0, oracle=1)."
+description = "Multi-service Slack-clone task: the agent is told only that a colleague is blocked waiting on an answer, and must find the question, retrieve the correct (non-stale) fact from the workspace, and reply. Verified deterministically via the Slack API (nop=0, oracle=1)."
 
 [metadata]
 category = "knowledge-work"
 service = "slack"
-tools = ["slack-cli"]
-tags = ["slack-clone", "multi-service", "cli", "search", "retrieval", "qa"]
+tools = ["slack-cli", "slack-mcp"]
+tags = ["slack-clone", "multi-service", "open-ended", "search", "retrieval", "qa"]
 
 [agent]
 timeout_sec = 1800

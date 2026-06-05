@@ -14,11 +14,16 @@ the verifier reads state back via the Slack API, so scoring is deterministic (`n
 
 ## Tasks
 
-| Task | Workspace | Surfaces flexed | Goal → verified by |
+Instructions are deliberately **open-ended** — the agent gets a vague "something's wrong"
+nudge and must discover the channel, the facts, and the fix using its Slack tools, with no
+spelled-out commands. The "verifier checks" column below is what success looks like to the
+grader, **not** what the agent is told.
+
+| Task | Workspace | Surfaces flexed | Verifier checks (not shown to agent) |
 |---|---|---|---|
-| [`slack-incident-triage`](tasks/slack-incident-triage/) | `acme-incident` | history, threads, search, **post** | Read the #incidents thread, post a `ROOT CAUSE:` summary naming the connection-pool cause. |
-| [`slack-search-retrieval`](tasks/slack-search-retrieval/) | `globex-staging` | **search/retrieval** across channels w/ decoys, post | Find the *current* staging Postgres `host:port` (ignoring stale/decoy hosts) and answer in #ask-platform. |
-| [`slack-thread-summary-pin`](tasks/slack-thread-summary-pin/) | `hooli-decisions` | threads (replies), post, **pins** | Read the decision thread, post a `DECISION:` summary and **pin** it in #design-decisions. |
+| [`slack-incident-triage`](tasks/slack-incident-triage/) | `acme-incident` | history, threads, search, **post** | A new message in #incidents naming the connection-pool cause (phrasing-independent). |
+| [`slack-search-retrieval`](tasks/slack-search-retrieval/) | `globex-staging` | **search/retrieval** across channels w/ decoys, post | A reply in #ask-platform with the *current* staging Postgres `host:port` (not the stale/decoy hosts). |
+| [`slack-thread-summary-pin`](tasks/slack-thread-summary-pin/) | `hooli-decisions` | threads (replies), post, **pins** | A new **pinned** message in #design-decisions naming the chosen library (react-aria). |
 
 `nop`→reward 0, `oracle`→reward 1, verified by reading workspace state back through the Slack API.
 
