@@ -1,79 +1,140 @@
-# abundant-slack-clone
+# Mattermost observability tasks (for Harbor / Oddish)
 
-A **Slack-faithful service clone** for Harbor/Oddish simulation environments. An agent "drops in"
-to a multi-service task and operates a realistic Slack workspace over a **CLI** (`slack-cli`) — the
-service mirrors a subset of the real **Slack Web API**, is **filled with real or synthetic data**,
-and is **verifiable** from tasks.
+> **Branch:** `mattermost-focused-implementation`. This branch builds agent-evaluation tasks
+> on top of the **real Mattermost product** instead of a from-scratch chat clone. (The
+> from-scratch Slack clone lives on the `slack-focused-implementation` branch / `main`.)
 
-Built with **Python + FastAPI + SQLite**. Inspired by APEX-SWE's Mattermost integration but
-Slack-faithful and richer (threads, reactions, users, pins, edits, writes). See
-[docs/apex-mattermost-analysis.md](docs/apex-mattermost-analysis.md) and
-[docs/slack-api-coverage.md](docs/slack-api-coverage.md).
+This repo holds a small suite of **"there's an issue, go fix it"** tasks that run an AI agent
+against a real, seeded **Mattermost** team-chat server. The agent is told *only the symptom*
+and *which tools it has* — it has to explore, diagnose the root cause, and fix it. A verifier
+then checks the result automatically.
 
-## Architecture
+Everything runs as a **multi-container Harbor task** and is **Oddish-runnable** out of the box.
+
+---
+
+## What this is, in one picture
 
 ```
-producer ─▶ canonical seed ─▶ SQLite (slack.db) ─▶ FastAPI Slack API ◀─ slack-cli / SDKs / (future) MCP
-  ├─ real:      Slack export importer
-  ├─ synthetic: deterministic generator
-  └─ authored:  hand-written workspace.json
+   ┌────────────────────────── one Harbor task ──────────────────────────┐
+   │                                                                       │
+   │   ┌──────────────────┐         HTTP (REST)        ┌────────────────┐  │
+   │   │  client          │  ───────────────────────►  │  mattermost    │  │
+   │   │  (the agent)     │     http://mattermost:8065 │  real product  │  │
+   │   │                  │  ◄───────────────────────  │  + Postgres    │  │
+   │   │  tools:          │                            │                │  │
+   │   │   • mmctl (CLI)  │                            │  seeded with a │  │
+   │   │   • mmctl-mcp    │                            │  workspace +   │  │
+   │   │     (65 MCP      │                            │  an injected   │  │
+   │   │      tools)      │                            │  "fault"       │  │
+   │   └────────┬─────────┘                            └────────────────┘  │
+   │            │ after the agent acts, the verifier (in the client)        │
+   │            ▼ reads workspace state back over REST and scores 0 or 1     │
+   │     /logs/verifier/reward.txt                                          │
+   └───────────────────────────────────────────────────────────────────────┘
 ```
 
-The HTTP **Slack API** is the realism core; `slack-cli` (and a future MCP server) are thin clients
-of it, so they stay in parity automatically. No auth in v1 (open API on the internal network).
+Two containers per task:
+- **`mattermost`** — the real Mattermost server (team edition 8.1.1) with embedded Postgres,
+  seeded at startup with a believable workspace, then a small **fault** is injected (the
+  "issue" the agent must fix).
+- **`client`** — where the agent lives. It gets two interchangeable tool surfaces pointed at
+  the server: the **`mmctl`** CLI and the **`mmctl-mcp`** MCP server.
 
-## Quickstart
+The agent never sees the seed data on disk — it can only reach the workspace through its
+tools, exactly like a real admin. That's what makes scoring trustworthy.
+
+---
+
+## The tasks
+
+Each task gives the agent a vague symptom and minimal hand-holding. The agent must figure out
+which tool/flag surfaces the problem, then remediate it.
+
+| Task | Symptom the agent is told | Root cause (hidden) | Fix |
+|---|---|---|---|
+| **responder-lockout** | "`carol` suddenly can't access the workspace." | her account was deactivated | reactivate her |
+| **archived-channel** | "The `#deploys` channel vanished." | it was archived | unarchive it |
+| **file-sharing-broken** | "Nobody can upload/share files anywhere." | file attachments disabled server-wide | re-enable the setting |
+
+All three are validated to score **0 for a no-op agent** and **1 for the reference solution**.
+
+→ Details on writing your own: **[docs/CREATING-TASKS.md](docs/CREATING-TASKS.md)**
+
+---
+
+## What we took from Mattermost (and why)
+
+The whole point of this branch is **reuse**: instead of building a chat backend, a CLI, and an
+MCP server, we take them straight from the Mattermost ecosystem.
+
+| Taken | Used as | What it saved us |
+|---|---|---|
+| `mattermost/mattermost-team-edition:8.1.1` Docker image | the chat **service** | a full product: channels, threads, reactions, DMs, users, roles, config, REST API |
+| **`mmctl`** (copied from the image, exact version) | the agent's **CLI** | a real admin CLI — no hand-written tool |
+| **`mmctl-mcp`** (built from pinned source, 1-line patch) | the agent's **MCP** server (~65 tools) | a real MCP surface — no hand-written MCP server |
+| **REST API v4** | the **verifier's** read-back channel | deterministic scoring with no custom query layer |
+| Embedded-Postgres boot pattern (from APEX-SWE) | the service **entrypoint** | a working single-container DB+server |
+
+→ Full reuse inventory + tradeoffs: **[docs/WHAT-WE-TOOK-FROM-MATTERMOST.md](docs/WHAT-WE-TOOK-FROM-MATTERMOST.md)**
+→ The complete tool surface (all 65 MCP tools + mmctl): **[docs/TOOLS.md](docs/TOOLS.md)**
+
+**The one tradeoff worth knowing up front:** Mattermost is *not* Slack-API-compatible, and the
+product image is amd64-only (we pin `platform: linux/amd64`; Modal runs amd64 natively). In
+exchange we get a real, full-featured chat server and real agent tooling for almost no code.
+
+---
+
+## How the environment works (short version)
+
+1. **Build & upload.** Oddish uploads only the task folder; everything needed to build both
+   images lives inside `environment/`. The `mmctl-mcp` server is compiled from a pinned commit
+   during the build.
+2. **Seed.** The `mattermost` container boots Postgres + the server, then a Python seeder
+   creates a workspace (admin, team, channels, users, message history).
+3. **Inject the fault.** A per-task `fault.sh` then breaks one thing over the REST API (e.g.
+   deactivates a user). This is the "issue."
+4. **Wire the client.** Once the server is healthy, the `client` container logs `mmctl` in and
+   waits until the workspace is ready, so the agent's tools work the moment it arrives.
+5. **Agent acts.** The agent reads `instruction.md`, explores with `mmctl`/MCP, and fixes the
+   issue.
+6. **Verify.** A verifier in the client reads the workspace back over REST and writes `0` or
+   `1` to `/logs/verifier/reward.txt`. `nop` (do nothing) → 0; `oracle` (reference fix) → 1.
+
+→ Full lifecycle, container comms, seeding, and fault injection: **[docs/ENVIRONMENT.md](docs/ENVIRONMENT.md)**
+
+---
+
+## Run it
 
 ```bash
-uv venv && uv pip install -e ".[dev]"
+# With Oddish (uses the sweep config)
+cd /path/to/oddish/oddish
+uv run oddish run /path/to/this-repo/oddish/tasks -c /path/to/this-repo/oddish/sweep.yaml
 
-# 1) seed a workspace (pick one)
-slack-cli seed generate --seed 42 --out slack.db                 # synthetic, deterministic
-slack-cli seed import-export ./my-slack-export --out slack.db    # a real Slack export (dir or .zip)
-slack-cli seed load workspace.json --out slack.db                # hand-authored canonical seed
-
-# 2) serve it
-SLACK_DB=slack.db uvicorn slackclone.api.app:app --port 3000
-
-# 3) use it (another shell)
-export SLACK_API_URL=http://localhost:3000
-slack-cli channels list --format markdown
-slack-cli channels history incidents --format markdown
-slack-cli thread incidents <ts> --format markdown
-slack-cli post incidents "ROOT CAUSE: connection pool exhaustion"
-slack-cli search "latency" --format markdown
+# Locally, to validate one task end-to-end (first build pulls the Mattermost image; ~5-8 min)
+cd oddish/tasks/responder-lockout/environment
+docker compose up -d --build            # mattermost goes healthy; fault is injected
+docker cp ../tests client:/tests && docker cp ../solution client:/solution
+docker compose exec -T client bash /tests/run_verifier.sh    # nop    -> reward 0
+docker compose exec -T client bash /solution/solve.sh
+docker compose exec -T client bash /tests/run_verifier.sh    # oracle -> reward 1
+docker compose down -v
 ```
 
-## Seeding (do it yourself — real & synthetic)
+## Repo layout
 
-One **canonical seed** (`src/slackclone/seed/schema.py`) is the single seam; three producers target
-it:
-
-| Source | Command |
-|---|---|
-| Synthetic (deterministic) | `slack-cli seed generate --users 25 --channels 8 --days 30 --seed 42 --out slack.db [--emit workspace.json]` |
-| Real Slack export | `slack-cli seed import-export ./export[.zip] --out slack.db [--emit workspace.json]` |
-| Hand-authored | edit `workspace.json` → `slack-cli seed load workspace.json --out slack.db` |
-
-`--emit` writes the portable canonical seed JSON so a workspace can be inspected, diffed, and
-committed into a task.
-
-## Use in a Harbor/Oddish task
-
-Drop in the [`slack` service](harbor/slack-service/) (serves the API, seeds from a mounted
-`/data/slack`) and give your client container `slack-cli` + `SLACK_API_URL`. A self-contained,
-**Oddish-runnable** task suite lives in [oddish/](oddish/) — see
-[oddish/tasks/slack-incident-triage/](oddish/tasks/slack-incident-triage/) (incident triage with a
-split-harness verifier; `nop` → reward 0, `oracle` → reward 1). Run with
-`oddish run oddish/tasks -a gemini-cli -m google/gemini-3.1-flash-preview --n-trials 1`.
-
-## Develop / test
-
-```bash
-.venv/bin/python -m pytest -q          # importer, generator determinism, API, CLI
-docker build -f docker/Dockerfile -t abundant-slack-clone .
 ```
-
-## Roadmap
-MCP server (wraps the same HTTP API → CLI/MCP parity); DMs/private write paths; reactions.remove /
-pins.remove; a minimal web UI for human/VLM inspection.
+oddish/
+  manifest.yaml          # task list + agents (create-oddish-task format)
+  sweep.yaml             # oddish CLI sweep config
+  tasks/
+    responder-lockout/   ┐
+    archived-channel/    ├─ one self-contained Harbor task each (see docs/CREATING-TASKS.md)
+    file-sharing-broken/ ┘
+docs/
+  ENVIRONMENT.md                    # how the setup works, start to end
+  WHAT-WE-TOOK-FROM-MATTERMOST.md   # reuse inventory + tradeoffs
+  TOOLS.md                          # the full agent tool surface
+  CREATING-TASKS.md                 # how to author a new task
+```

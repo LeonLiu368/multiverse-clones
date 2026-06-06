@@ -1,0 +1,23 @@
+metadata:
+  name: mattermost-observability-tasks
+  description: |
+    Agent-eval tasks on a REAL Mattermost workspace (team edition 8.1.1 + embedded
+    Postgres). Each task is a "there's an issue, go fix it" observability/remediation
+    scenario: the agent is told only the symptom and which tools it has, and must explore
+    to diagnose and fix. Tools are `mmctl` (the official CLI) and `mmctl-mcp` (~65 MCP
+    tools). The verifier reads workspace state back via the Mattermost REST API, so scoring
+    is deterministic (nop=0, oracle=1). Tasks are self-contained for `oddish run`.
+  task_path: oddish/tasks
+  n_trials: 1
+  skip_trajectory_analysis: false
+
+tasks:
+  - responder-lockout
+  - archived-channel
+  - file-sharing-broken
+
+agents:
+  - name: gemini-cli
+    model_name: google/gemini-3.1-pro-preview
+  - name: oracle
+  - name: nop
