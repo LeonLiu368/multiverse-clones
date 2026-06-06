@@ -1,0 +1,3400 @@
+{
+ "messages": [
+  {
+   "channel": "design",
+   "author": "carol",
+   "content": "can eng confirm the spacing on the modal?",
+   "timestamp": "2024-09-02T09:02:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "frank",
+   "content": "new icon set in Figma",
+   "timestamp": "2024-09-02T09:15:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "judy",
+   "content": "the empty-state illustration is ready",
+   "timestamp": "2024-09-02T09:18:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "pagerduty",
+   "content": "[resolved] email provider degraded earlier",
+   "timestamp": "2024-09-02T09:25:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "judy",
+   "content": "db failover completed, monitoring",
+   "timestamp": "2024-09-02T09:25:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "mallory",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-09-02T09:30:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "olivia",
+   "content": "anyone watch the game last night?",
+   "timestamp": "2024-09-02T09:38:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "heidi",
+   "content": "bumped the postgres driver to 2.9",
+   "timestamp": "2024-09-02T09:43:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "deploybot",
+   "content": "rolling back the last deploy to be safe",
+   "timestamp": "2024-09-02T09:44:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "heidi",
+   "content": "welcome to the new folks joining this week \ud83d\udc4b",
+   "timestamp": "2024-09-02T09:53:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "peggy",
+   "content": "is prod slow for anyone else right now?",
+   "timestamp": "2024-09-02T09:55:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "carol",
+   "content": "reminder: invoice run is the 1st of the month",
+   "timestamp": "2024-09-02T10:00:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "peggy",
+   "content": "PSA: please update your 1Password before Friday",
+   "timestamp": "2024-09-02T10:06:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "grace",
+   "content": "user testing notes from yesterday",
+   "timestamp": "2024-09-02T10:08:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "peggy",
+   "content": "db failover completed, monitoring",
+   "timestamp": "2024-09-02T10:44:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "niaj",
+   "content": "user testing notes from yesterday",
+   "timestamp": "2024-09-02T11:01:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "olivia",
+   "content": "what's our SLA on support tickets these days?",
+   "timestamp": "2024-09-02T11:27:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "alice",
+   "content": "reminder: invoice run is the 1st of the month",
+   "timestamp": "2024-09-02T11:31:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "ivan",
+   "content": "draft PRD for Q4 is in the drive",
+   "timestamp": "2024-09-02T11:33:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "grace",
+   "content": "user testing notes from yesterday",
+   "timestamp": "2024-09-02T12:05:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "mallory",
+   "content": "rebased the feature branch, CI is green",
+   "timestamp": "2024-09-02T12:16:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "ivan",
+   "content": "do refunds count against MRR? asking for the deck",
+   "timestamp": "2024-09-02T12:16:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "alice",
+   "content": "checkout latency back to normal",
+   "timestamp": "2024-09-02T12:17:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "mallory",
+   "content": "[resolved] email provider degraded earlier",
+   "timestamp": "2024-09-02T12:19:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "alice",
+   "content": "oncall handoff: nothing active",
+   "timestamp": "2024-09-02T12:21:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "dave",
+   "content": "anyone know why the staging deploy is stuck?",
+   "timestamp": "2024-09-02T12:21:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "olivia",
+   "content": "Stripe webhook retries are noisy, fyi",
+   "timestamp": "2024-09-02T12:33:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "ivan",
+   "content": "anyone watch the game last night?",
+   "timestamp": "2024-09-02T12:46:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "ci-bot",
+   "content": "rolling back the last deploy to be safe",
+   "timestamp": "2024-09-02T13:23:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "trent",
+   "content": "rolling back the last deploy to be safe",
+   "timestamp": "2024-09-02T13:31:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "niaj",
+   "content": "accessibility audit results are in",
+   "timestamp": "2024-09-02T14:12:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "heidi",
+   "content": "draft PRD for Q4 is in the drive",
+   "timestamp": "2024-09-02T14:14:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "grace",
+   "content": "\ud83c\udf89 it's someone's work anniversary",
+   "timestamp": "2024-09-02T14:14:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "heidi",
+   "content": "can we get analytics on trial conversion?",
+   "timestamp": "2024-09-02T14:21:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "grace",
+   "content": "roadmap review pushed to next week",
+   "timestamp": "2024-09-02T14:36:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "niaj",
+   "content": "anyone watch the game last night?",
+   "timestamp": "2024-09-02T14:40:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "mallory",
+   "content": "draft PRD for Q4 is in the drive",
+   "timestamp": "2024-09-02T14:41:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "victor",
+   "content": "user testing notes from yesterday",
+   "timestamp": "2024-09-02T15:01:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "grace",
+   "content": "oncall handoff: nothing active",
+   "timestamp": "2024-09-02T15:13:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "ivan",
+   "content": "free snacks in the kitchen",
+   "timestamp": "2024-09-02T15:34:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "niaj",
+   "content": "competitor shipped a similar feature, fyi",
+   "timestamp": "2024-09-02T15:40:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "mallory",
+   "content": "dark mode tokens need another pass",
+   "timestamp": "2024-09-02T15:52:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "niaj",
+   "content": "\ud83c\udf89 it's someone's work anniversary",
+   "timestamp": "2024-09-02T15:53:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "trent",
+   "content": "[resolved] email provider degraded earlier",
+   "timestamp": "2024-09-02T15:55:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "victor",
+   "content": "we should add a linter rule for that",
+   "timestamp": "2024-09-02T16:19:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "niaj",
+   "content": "draft PRD for Q4 is in the drive",
+   "timestamp": "2024-09-02T16:20:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "olivia",
+   "content": "accessibility audit results are in",
+   "timestamp": "2024-09-02T16:34:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "carol",
+   "content": "we need a decision on the dunning emails",
+   "timestamp": "2024-09-02T16:48:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "erin",
+   "content": "can we get the dunning email copy finalized this week?",
+   "timestamp": "2024-09-02T16:52:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "peggy",
+   "content": "accessibility audit results are in",
+   "timestamp": "2024-09-02T17:00:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "carol",
+   "content": "the tax rounding ticket is still open",
+   "timestamp": "2024-09-02T17:23:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "frank",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-09-02T17:26:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "bob",
+   "content": "the empty-state illustration is ready",
+   "timestamp": "2024-09-02T17:28:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "dave",
+   "content": "reminder: invoice run is the 1st of the month",
+   "timestamp": "2024-09-02T17:37:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "olivia",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-09-03T09:00:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "judy",
+   "content": "anyone watch the game last night?",
+   "timestamp": "2024-09-03T09:07:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "bob",
+   "content": "who owns the chargeback flow now?",
+   "timestamp": "2024-09-03T09:13:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "niaj",
+   "content": "roadmap review pushed to next week",
+   "timestamp": "2024-09-03T09:33:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "deploybot",
+   "content": "[resolved] email provider degraded earlier",
+   "timestamp": "2024-09-03T09:39:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "olivia",
+   "content": "new icon set in Figma",
+   "timestamp": "2024-09-03T09:41:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "frank",
+   "content": "checkout latency back to normal",
+   "timestamp": "2024-09-03T09:44:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "bob",
+   "content": "new icon set in Figma",
+   "timestamp": "2024-09-03T09:54:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "grace",
+   "content": "customer asked about bulk export again",
+   "timestamp": "2024-09-03T10:15:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "victor",
+   "content": "anyone know why the staging deploy is stuck?",
+   "timestamp": "2024-09-03T10:27:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "trent",
+   "content": "free snacks in the kitchen",
+   "timestamp": "2024-09-03T10:31:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "olivia",
+   "content": "what's our SLA on support tickets these days?",
+   "timestamp": "2024-09-03T10:32:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "mallory",
+   "content": "free snacks in the kitchen",
+   "timestamp": "2024-09-03T10:45:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "heidi",
+   "content": "new icon set in Figma",
+   "timestamp": "2024-09-03T10:57:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "olivia",
+   "content": "btw what's our late fee these days? i told a customer it's about 2% of balance, hope that's still right",
+   "timestamp": "2024-09-03T11:00:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "peggy",
+   "content": "accessibility audit results are in",
+   "timestamp": "2024-09-03T11:19:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "dave",
+   "content": "bumped the postgres driver to 2.9",
+   "timestamp": "2024-09-03T11:28:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "frank",
+   "content": "old invoices code had a hardcoded 2% late fee and no cap, we ripped it out months ago",
+   "timestamp": "2024-09-03T11:33:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "alice",
+   "content": "the cache layer needs a TTL, opening a ticket",
+   "timestamp": "2024-09-03T12:08:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "carol",
+   "content": "we should add a linter rule for that",
+   "timestamp": "2024-09-03T12:13:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "grace",
+   "content": "checkout latency back to normal",
+   "timestamp": "2024-09-03T12:21:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "carol",
+   "content": "who owns the chargeback flow now?",
+   "timestamp": "2024-09-03T12:41:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "frank",
+   "content": "PSA: please update your 1Password before Friday",
+   "timestamp": "2024-09-03T12:47:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "erin",
+   "content": "rebased the feature branch, CI is green",
+   "timestamp": "2024-09-03T12:53:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "alice",
+   "content": "[resolved] elevated 5xx on the api gateway 14:02-14:18",
+   "timestamp": "2024-09-03T13:02:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "ivan",
+   "content": "[resolved] email provider degraded earlier",
+   "timestamp": "2024-09-03T13:22:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "erin",
+   "content": "office wifi is flaky again, IT is on it",
+   "timestamp": "2024-09-03T13:39:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "niaj",
+   "content": "new icon set in Figma",
+   "timestamp": "2024-09-03T14:17:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "judy",
+   "content": "coffee machine is broken again",
+   "timestamp": "2024-09-03T14:29:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "mallory",
+   "content": "new icon set in Figma",
+   "timestamp": "2024-09-03T15:09:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "frank",
+   "content": "the nightly batch ran 40min, investigating",
+   "timestamp": "2024-09-03T15:09:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "bob",
+   "content": "proration logic needs docs",
+   "timestamp": "2024-09-03T15:15:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "alice",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-09-03T15:51:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "carol",
+   "content": "who has the Figma link for the new onboarding?",
+   "timestamp": "2024-09-03T15:54:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "peggy",
+   "content": "PR #482 up for review when someone has a sec",
+   "timestamp": "2024-09-03T16:15:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "heidi",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-09-03T16:20:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "niaj",
+   "content": "dark mode tokens need another pass",
+   "timestamp": "2024-09-03T16:26:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "peggy",
+   "content": "oncall handoff: nothing active",
+   "timestamp": "2024-09-03T16:47:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "peggy",
+   "content": "merged #491, deploying to staging",
+   "timestamp": "2024-09-03T16:52:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "peggy",
+   "content": "\ud83c\udf89 it's someone's work anniversary",
+   "timestamp": "2024-09-03T17:04:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "ivan",
+   "content": "we should add a linter rule for that",
+   "timestamp": "2024-09-03T17:15:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "peggy",
+   "content": "updated the color tokens",
+   "timestamp": "2024-09-03T17:17:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "carol",
+   "content": "free snacks in the kitchen",
+   "timestamp": "2024-09-03T17:33:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "carol",
+   "content": "the nightly batch ran 40min, investigating",
+   "timestamp": "2024-09-03T17:47:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "olivia",
+   "content": "updated the color tokens",
+   "timestamp": "2024-09-03T17:54:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "mallory",
+   "content": "is prod slow for anyone else right now?",
+   "timestamp": "2024-09-03T17:56:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "olivia",
+   "content": "we need a decision on the dunning emails",
+   "timestamp": "2024-09-04T09:31:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "alice",
+   "content": "oncall handoff: nothing active",
+   "timestamp": "2024-09-04T09:56:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "deploybot",
+   "content": "oncall handoff: nothing active",
+   "timestamp": "2024-09-04T09:58:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "erin",
+   "content": "accessibility audit results are in",
+   "timestamp": "2024-09-04T10:09:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "trent",
+   "content": "reminder: invoice run is the 1st of the month",
+   "timestamp": "2024-09-04T10:11:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "trent",
+   "content": "added type hints to the invoices module",
+   "timestamp": "2024-09-04T10:13:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "alice",
+   "content": "the grace period for the office plants is clearly zero, RIP",
+   "timestamp": "2024-09-04T10:35:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "ivan",
+   "content": "the tax rounding ticket is still open",
+   "timestamp": "2024-09-04T10:48:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "victor",
+   "content": "\ud83c\udf89 it's someone's work anniversary",
+   "timestamp": "2024-09-04T10:53:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "peggy",
+   "content": "we need a decision on the dunning emails",
+   "timestamp": "2024-09-04T11:10:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "trent",
+   "content": "someone asked support what the overdue grace period is \u2014 i said 7 days from memory, can someone confirm?",
+   "timestamp": "2024-09-04T11:11:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "ivan",
+   "content": "office wifi is flaky again, IT is on it",
+   "timestamp": "2024-09-04T11:12:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "victor",
+   "content": "roadmap review pushed to next week",
+   "timestamp": "2024-09-04T11:53:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "olivia",
+   "content": "what's our SLA on support tickets these days?",
+   "timestamp": "2024-09-04T12:02:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "judy",
+   "content": "is prod slow for anyone else right now?",
+   "timestamp": "2024-09-04T12:47:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "bob",
+   "content": "can we get the dunning email copy finalized this week?",
+   "timestamp": "2024-09-04T12:57:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "bob",
+   "content": "is prod slow for anyone else right now?",
+   "timestamp": "2024-09-04T13:00:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "mallory",
+   "content": "Stripe webhook retries are noisy, fyi",
+   "timestamp": "2024-09-04T13:35:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "ivan",
+   "content": "who keeps stealing my mug",
+   "timestamp": "2024-09-04T13:49:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "heidi",
+   "content": "[resolved] elevated 5xx on the api gateway 14:02-14:18",
+   "timestamp": "2024-09-04T14:03:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "judy",
+   "content": "heads up: migrating the jobs queue Tuesday",
+   "timestamp": "2024-09-04T14:10:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "alice",
+   "content": "oncall handoff: nothing active",
+   "timestamp": "2024-09-04T14:21:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "bob",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-09-04T14:25:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "ivan",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-09-04T14:30:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "mallory",
+   "content": "the grace period for the office plants is clearly zero, RIP",
+   "timestamp": "2024-09-04T14:31:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "judy",
+   "content": "finance close is Friday, please tag any billing PRs",
+   "timestamp": "2024-09-04T14:46:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "olivia",
+   "content": "anyone know why the staging deploy is stuck?",
+   "timestamp": "2024-09-04T14:48:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "erin",
+   "content": "user testing notes from yesterday",
+   "timestamp": "2024-09-04T14:51:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "frank",
+   "content": "who has the Figma link for the new onboarding?",
+   "timestamp": "2024-09-04T14:56:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "grace",
+   "content": "kudos to the support team for clearing the backlog \ud83d\ude4c",
+   "timestamp": "2024-09-04T15:32:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "erin",
+   "content": "kudos to the support team for clearing the backlog \ud83d\ude4c",
+   "timestamp": "2024-09-04T15:36:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "frank",
+   "content": "[resolved] elevated 5xx on the api gateway 14:02-14:18",
+   "timestamp": "2024-09-04T15:45:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "peggy",
+   "content": "PSA: please update your 1Password before Friday",
+   "timestamp": "2024-09-04T15:48:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "bob",
+   "content": "the tax rounding ticket is still open",
+   "timestamp": "2024-09-04T16:10:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "bob",
+   "content": "accessibility audit results are in",
+   "timestamp": "2024-09-04T16:18:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "niaj",
+   "content": "oncall handoff: nothing active",
+   "timestamp": "2024-09-04T16:24:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "ivan",
+   "content": "office wifi is flaky again, IT is on it",
+   "timestamp": "2024-09-04T16:28:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "olivia",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-09-04T16:30:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "peggy",
+   "content": "checkout latency back to normal",
+   "timestamp": "2024-09-04T17:43:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "alice",
+   "content": "the nightly batch ran 40min, investigating",
+   "timestamp": "2024-09-04T17:50:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "trent",
+   "content": "accessibility audit results are in",
+   "timestamp": "2024-09-04T17:53:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "judy",
+   "content": "checkout latency back to normal",
+   "timestamp": "2024-09-04T17:57:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "heidi",
+   "content": "heads up: migrating the jobs queue Tuesday",
+   "timestamp": "2024-09-05T09:11:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "dave",
+   "content": "[resolved] elevated 5xx on the api gateway 14:02-14:18",
+   "timestamp": "2024-09-05T09:17:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "peggy",
+   "content": "\ud83c\udf89 it's someone's work anniversary",
+   "timestamp": "2024-09-05T09:32:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "olivia",
+   "content": "TIL you can pin messages here",
+   "timestamp": "2024-09-05T10:48:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "mallory",
+   "content": "added type hints to the invoices module",
+   "timestamp": "2024-09-05T10:51:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "carol",
+   "content": "can we get the dunning email copy finalized this week?",
+   "timestamp": "2024-09-05T10:54:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "ivan",
+   "content": "finance close is Friday, please tag any billing PRs",
+   "timestamp": "2024-09-05T11:00:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "peggy",
+   "content": "free snacks in the kitchen",
+   "timestamp": "2024-09-05T11:10:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "mallory",
+   "content": "kudos to the support team for clearing the backlog \ud83d\ude4c",
+   "timestamp": "2024-09-05T11:15:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "victor",
+   "content": "the late fee on my gym membership is like $10 flat, wild",
+   "timestamp": "2024-09-05T11:22:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "frank",
+   "content": "[resolved] elevated 5xx on the api gateway 14:02-14:18",
+   "timestamp": "2024-09-05T11:23:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "carol",
+   "content": "competitor shipped a similar feature, fyi",
+   "timestamp": "2024-09-05T11:25:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "erin",
+   "content": "lunch order going out, reply by noon",
+   "timestamp": "2024-09-05T11:32:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "bob",
+   "content": "oncall handoff: nothing active",
+   "timestamp": "2024-09-05T11:34:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "ivan",
+   "content": "updated the color tokens",
+   "timestamp": "2024-09-05T11:47:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "ivan",
+   "content": "Stripe webhook retries are noisy, fyi",
+   "timestamp": "2024-09-05T11:51:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "mallory",
+   "content": "[resolved] elevated 5xx on the api gateway 14:02-14:18",
+   "timestamp": "2024-09-05T11:55:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "grace",
+   "content": "anyone going to the meetup tonight?",
+   "timestamp": "2024-09-05T12:14:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "victor",
+   "content": "can we get the dunning email copy finalized this week?",
+   "timestamp": "2024-09-05T12:24:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "bob",
+   "content": "morning all \u2615",
+   "timestamp": "2024-09-05T12:27:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "frank",
+   "content": "proration logic needs docs",
+   "timestamp": "2024-09-05T12:44:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "frank",
+   "content": "roadmap review pushed to next week",
+   "timestamp": "2024-09-05T13:07:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "heidi",
+   "content": "db failover completed, monitoring",
+   "timestamp": "2024-09-05T13:23:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "alice",
+   "content": "Kicking off the overdue-fee policy thread. Right now billing.fees.overdue_fee does nothing. Strawman v0: flat 2% of balance after a 7-day grace period.",
+   "timestamp": "2024-09-05T13:24:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "frank",
+   "content": "dark mode tokens need another pass",
+   "timestamp": "2024-09-05T13:35:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "ivan",
+   "content": "the empty-state illustration is ready",
+   "timestamp": "2024-09-05T13:43:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "peggy",
+   "content": "the nightly batch ran 40min, investigating",
+   "timestamp": "2024-09-05T13:47:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "dave",
+   "content": "proration logic needs docs",
+   "timestamp": "2024-09-05T13:52:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "bob",
+   "content": "db failover completed, monitoring",
+   "timestamp": "2024-09-05T14:02:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "judy",
+   "content": "dark mode tokens need another pass",
+   "timestamp": "2024-09-05T14:04:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "erin",
+   "content": "added type hints to the invoices module",
+   "timestamp": "2024-09-05T14:06:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "bob",
+   "content": "the empty-state illustration is ready",
+   "timestamp": "2024-09-05T14:21:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "ivan",
+   "content": "anyone watch the game last night?",
+   "timestamp": "2024-09-05T14:23:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "mallory",
+   "content": "coffee machine is broken again",
+   "timestamp": "2024-09-05T14:35:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "erin",
+   "content": "competitor shipped a similar feature, fyi",
+   "timestamp": "2024-09-05T15:16:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "heidi",
+   "content": "accessibility audit results are in",
+   "timestamp": "2024-09-05T15:17:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "mallory",
+   "content": "can we get the dunning email copy finalized this week?",
+   "timestamp": "2024-09-05T15:20:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "ci-bot",
+   "content": "[resolved] email provider degraded earlier",
+   "timestamp": "2024-09-05T15:54:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "ivan",
+   "content": "rolling back the last deploy to be safe",
+   "timestamp": "2024-09-05T15:58:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "ci-bot",
+   "content": "db failover completed, monitoring",
+   "timestamp": "2024-09-05T16:00:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "peggy",
+   "content": "user testing notes from yesterday",
+   "timestamp": "2024-09-05T16:01:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "peggy",
+   "content": "can we get the dunning email copy finalized this week?",
+   "timestamp": "2024-09-05T16:20:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "mallory",
+   "content": "who keeps stealing my mug",
+   "timestamp": "2024-09-05T16:48:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "ivan",
+   "content": "who owns the chargeback flow now?",
+   "timestamp": "2024-09-05T16:49:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "judy",
+   "content": "what's our SLA on support tickets these days?",
+   "timestamp": "2024-09-05T16:56:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "ci-bot",
+   "content": "checkout latency back to normal",
+   "timestamp": "2024-09-05T17:10:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "heidi",
+   "content": "roadmap review pushed to next week",
+   "timestamp": "2024-09-05T17:11:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "bob",
+   "content": "the pricing page copy needs a refresh",
+   "timestamp": "2024-09-05T17:14:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "mallory",
+   "content": "new icon set in Figma",
+   "timestamp": "2024-09-05T17:28:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "grace",
+   "content": "db failover completed, monitoring",
+   "timestamp": "2024-09-05T17:30:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "heidi",
+   "content": "bumped the postgres driver to 2.9",
+   "timestamp": "2024-09-05T17:37:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "bob",
+   "content": "2% flat undercharges the really old stuff. What about tiers by days overdue \u2014 say 2% (0-30), 4% (30-60), 6% (60+)?",
+   "timestamp": "2024-09-05T17:43:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "carol",
+   "content": "Tiers are fine but legal flagged 4/6% as too high (usury). Finance is comfortable with 1.5% / 3% / 5%.",
+   "timestamp": "2024-09-05T22:22:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "alice",
+   "content": "OK so tiered 1.5 / 3 / 5. Keeping the 7-day grace?",
+   "timestamp": "2024-09-06T03:43:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "ivan",
+   "content": "draft PRD for Q4 is in the drive",
+   "timestamp": "2024-09-06T09:02:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "dave",
+   "content": "7 days is generous and doesn't match our dunning emails (those fire at day 5). Support wants grace = 5 days.",
+   "timestamp": "2024-09-06T09:19:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "grace",
+   "content": "bumped the postgres driver to 2.9",
+   "timestamp": "2024-09-06T09:21:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "trent",
+   "content": "customer asked about bulk export again",
+   "timestamp": "2024-09-06T09:26:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "victor",
+   "content": "do refunds count against MRR? asking for the deck",
+   "timestamp": "2024-09-06T09:31:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "bob",
+   "content": "dark mode tokens need another pass",
+   "timestamp": "2024-09-06T10:07:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "mallory",
+   "content": "free snacks in the kitchen",
+   "timestamp": "2024-09-06T10:16:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "dave",
+   "content": "customer asked about bulk export again",
+   "timestamp": "2024-09-06T10:27:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "mallory",
+   "content": "anyone know why the staging deploy is stuck?",
+   "timestamp": "2024-09-06T10:28:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "judy",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-09-06T10:28:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "victor",
+   "content": "updated the color tokens",
+   "timestamp": "2024-09-06T10:28:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "grace",
+   "content": "what's our SLA on support tickets these days?",
+   "timestamp": "2024-09-06T10:55:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "mallory",
+   "content": "dark mode tokens need another pass",
+   "timestamp": "2024-09-06T10:59:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "heidi",
+   "content": "oncall handoff: nothing active",
+   "timestamp": "2024-09-06T11:10:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "carol",
+   "content": "checkout latency back to normal",
+   "timestamp": "2024-09-06T11:41:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "dave",
+   "content": "TIL you can pin messages here",
+   "timestamp": "2024-09-06T11:49:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "erin",
+   "content": "user testing notes from yesterday",
+   "timestamp": "2024-09-06T12:00:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "peggy",
+   "content": "TIL you can pin messages here",
+   "timestamp": "2024-09-06T12:58:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "niaj",
+   "content": "db failover completed, monitoring",
+   "timestamp": "2024-09-06T13:03:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "bob",
+   "content": "do refunds count against MRR? asking for the deck",
+   "timestamp": "2024-09-06T13:10:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "carol",
+   "content": "[resolved] email provider degraded earlier",
+   "timestamp": "2024-09-06T13:31:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "bob",
+   "content": "we need a decision on the dunning emails",
+   "timestamp": "2024-09-06T13:41:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "judy",
+   "content": "[resolved] elevated 5xx on the api gateway 14:02-14:18",
+   "timestamp": "2024-09-06T13:55:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "carol",
+   "content": "Good point \u2014 let's make grace 5 days to line up with dunning. So no fee through day 5.",
+   "timestamp": "2024-09-06T14:00:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "peggy",
+   "content": "roadmap review pushed to next week",
+   "timestamp": "2024-09-06T14:09:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "heidi",
+   "content": "bumped the postgres driver to 2.9",
+   "timestamp": "2024-09-06T14:22:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "frank",
+   "content": "checkout latency back to normal",
+   "timestamp": "2024-09-06T14:30:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "trent",
+   "content": "dark mode tokens need another pass",
+   "timestamp": "2024-09-06T14:32:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "peggy",
+   "content": "the pricing page copy needs a refresh",
+   "timestamp": "2024-09-06T14:59:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "ivan",
+   "content": "can someone approve the infra terraform change?",
+   "timestamp": "2024-09-06T15:00:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "erin",
+   "content": "reminder: all-hands moved to Thursday 10am",
+   "timestamp": "2024-09-06T15:03:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "grace",
+   "content": "anyone going to the meetup tonight?",
+   "timestamp": "2024-09-06T15:47:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "ivan",
+   "content": "rolling back the last deploy to be safe",
+   "timestamp": "2024-09-06T15:54:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "trent",
+   "content": "office wifi is flaky again, IT is on it",
+   "timestamp": "2024-09-06T15:57:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "dave",
+   "content": "coffee machine is broken again",
+   "timestamp": "2024-09-06T16:00:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "alice",
+   "content": "do refunds count against MRR? asking for the deck",
+   "timestamp": "2024-09-06T16:16:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "bob",
+   "content": "do refunds count against MRR? asking for the deck",
+   "timestamp": "2024-09-06T16:43:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "trent",
+   "content": "rolling back the last deploy to be safe",
+   "timestamp": "2024-09-06T16:46:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "olivia",
+   "content": "updated the color tokens",
+   "timestamp": "2024-09-06T17:01:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "erin",
+   "content": "Should there be a minimum fee? At 1.5% a tiny balance generates like $0.20, not worth the ledger entry.",
+   "timestamp": "2024-09-06T17:21:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "niaj",
+   "content": "anyone watch the game last night?",
+   "timestamp": "2024-09-06T17:22:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "victor",
+   "content": "office wifi is flaky again, IT is on it",
+   "timestamp": "2024-09-06T17:41:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "judy",
+   "content": "what's our SLA on support tickets these days?",
+   "timestamp": "2024-09-06T17:51:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "bob",
+   "content": "+1 minimum fee. $10?",
+   "timestamp": "2024-09-06T21:30:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "carol",
+   "content": "$10 min is harsh on small balances and support will get complaints. Let's do a $5.00 minimum once any fee applies.",
+   "timestamp": "2024-09-07T05:09:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "niaj",
+   "content": "user testing notes from yesterday",
+   "timestamp": "2024-09-07T09:05:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "victor",
+   "content": "roadmap review pushed to next week",
+   "timestamp": "2024-09-07T09:29:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "ivan",
+   "content": "the empty-state illustration is ready",
+   "timestamp": "2024-09-07T09:40:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "grace",
+   "content": "proration logic needs docs",
+   "timestamp": "2024-09-07T09:40:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "bob",
+   "content": "what's our SLA on support tickets these days?",
+   "timestamp": "2024-09-07T09:57:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "dave",
+   "content": "We also need a ceiling so a huge account doesn't get a five-figure fee \u2014 legal asked for a hard cap. $250?",
+   "timestamp": "2024-09-07T10:12:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "bob",
+   "content": "what's our SLA on support tickets these days?",
+   "timestamp": "2024-09-07T10:13:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "heidi",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-09-07T10:15:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "judy",
+   "content": "the empty-state illustration is ready",
+   "timestamp": "2024-09-07T10:17:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "victor",
+   "content": "anyone watch the game last night?",
+   "timestamp": "2024-09-07T10:22:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "bob",
+   "content": "oncall handoff: nothing active",
+   "timestamp": "2024-09-07T10:59:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "carol",
+   "content": "dark mode tokens need another pass",
+   "timestamp": "2024-09-07T11:15:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "alice",
+   "content": "can eng confirm the spacing on the modal?",
+   "timestamp": "2024-09-07T11:20:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "mallory",
+   "content": "heads up: migrating the jobs queue Tuesday",
+   "timestamp": "2024-09-07T11:26:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "ivan",
+   "content": "rebased the feature branch, CI is green",
+   "timestamp": "2024-09-07T11:31:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "bob",
+   "content": "the pricing page copy needs a refresh",
+   "timestamp": "2024-09-07T11:46:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "ivan",
+   "content": "rolling back the last deploy to be safe",
+   "timestamp": "2024-09-07T11:54:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "dave",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-09-07T11:56:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "judy",
+   "content": "[resolved] email provider degraded earlier",
+   "timestamp": "2024-09-07T12:07:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "grace",
+   "content": "the pricing page copy needs a refresh",
+   "timestamp": "2024-09-07T12:26:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "niaj",
+   "content": "coffee machine is broken again",
+   "timestamp": "2024-09-07T12:53:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "carol",
+   "content": "user testing notes from yesterday",
+   "timestamp": "2024-09-07T13:03:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "heidi",
+   "content": "new icon set in Figma",
+   "timestamp": "2024-09-07T13:14:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "deploybot",
+   "content": "db failover completed, monitoring",
+   "timestamp": "2024-09-07T13:21:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "ivan",
+   "content": "anyone know why the staging deploy is stuck?",
+   "timestamp": "2024-09-07T13:23:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "mallory",
+   "content": "customer asked about bulk export again",
+   "timestamp": "2024-09-07T13:24:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "erin",
+   "content": "finance close is Friday, please tag any billing PRs",
+   "timestamp": "2024-09-07T13:28:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "judy",
+   "content": "anyone going to the meetup tonight?",
+   "timestamp": "2024-09-07T13:38:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "ivan",
+   "content": "do refunds count against MRR? asking for the deck",
+   "timestamp": "2024-09-07T14:07:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "bob",
+   "content": "anyone know why the staging deploy is stuck?",
+   "timestamp": "2024-09-07T14:20:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "mallory",
+   "content": "flaky test in test_scheduler again, retrying",
+   "timestamp": "2024-09-07T14:23:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "heidi",
+   "content": "what's our SLA on support tickets these days?",
+   "timestamp": "2024-09-07T14:30:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "mallory",
+   "content": "accessibility audit results are in",
+   "timestamp": "2024-09-07T14:50:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "erin",
+   "content": "[resolved] email provider degraded earlier",
+   "timestamp": "2024-09-07T14:50:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "carol",
+   "content": "Yes, hard cap of $250.00. And round to the nearest cent, half up. Zero/negative balance or non-positive days = no fee, obviously.",
+   "timestamp": "2024-09-07T14:54:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "victor",
+   "content": "draft PRD for Q4 is in the drive",
+   "timestamp": "2024-09-07T15:50:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "ivan",
+   "content": "flaky test in test_scheduler again, retrying",
+   "timestamp": "2024-09-07T15:53:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "trent",
+   "content": "[resolved] email provider degraded earlier",
+   "timestamp": "2024-09-07T16:16:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "ci-bot",
+   "content": "[resolved] email provider degraded earlier",
+   "timestamp": "2024-09-07T16:20:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "dave",
+   "content": "rebased the feature branch, CI is green",
+   "timestamp": "2024-09-07T16:24:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "frank",
+   "content": "do refunds count against MRR? asking for the deck",
+   "timestamp": "2024-09-07T16:33:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "erin",
+   "content": "merged #491, deploying to staging",
+   "timestamp": "2024-09-07T16:35:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "heidi",
+   "content": "db failover completed, monitoring",
+   "timestamp": "2024-09-07T17:24:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "alice",
+   "content": "Locking this in so eng can implement (tracking as BILL-412). overdue_fee = nothing through day 5; then 1.5% of balance for days 6-30, 3% for 31-60, 5% for 61+; floor the fee at $5.00 once it applies; ceiling $250.00; round half-up to the cent; balance <= 0 or days <= 0 returns $0. Closing the thread, thanks all.",
+   "timestamp": "2024-09-07T18:43:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "bob",
+   "content": "\ud83c\udf89 thanks, picking up BILL-412 now.",
+   "timestamp": "2024-09-07T23:34:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "bob",
+   "content": "draft PRD for Q4 is in the drive",
+   "timestamp": "2024-09-08T09:23:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "frank",
+   "content": "do refunds count against MRR? asking for the deck",
+   "timestamp": "2024-09-08T09:28:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "heidi",
+   "content": "customer asked about bulk export again",
+   "timestamp": "2024-09-08T09:42:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "grace",
+   "content": "what's our SLA on support tickets these days?",
+   "timestamp": "2024-09-08T10:08:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "niaj",
+   "content": "lunch order going out, reply by noon",
+   "timestamp": "2024-09-08T10:08:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "grace",
+   "content": "Stripe webhook retries are noisy, fyi",
+   "timestamp": "2024-09-08T10:20:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "judy",
+   "content": "PSA: please update your 1Password before Friday",
+   "timestamp": "2024-09-08T10:29:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "grace",
+   "content": "[resolved] email provider degraded earlier",
+   "timestamp": "2024-09-08T10:46:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "niaj",
+   "content": "bumped the postgres driver to 2.9",
+   "timestamp": "2024-09-08T11:08:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "trent",
+   "content": "db failover completed, monitoring",
+   "timestamp": "2024-09-08T11:14:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "victor",
+   "content": "user testing notes from yesterday",
+   "timestamp": "2024-09-08T11:20:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "grace",
+   "content": "\ud83c\udf89 it's someone's work anniversary",
+   "timestamp": "2024-09-08T11:28:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "grace",
+   "content": "we need a decision on the dunning emails",
+   "timestamp": "2024-09-08T11:46:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "victor",
+   "content": "new icon set in Figma",
+   "timestamp": "2024-09-08T11:56:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "olivia",
+   "content": "roadmap review pushed to next week",
+   "timestamp": "2024-09-08T11:59:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "victor",
+   "content": "can someone approve the infra terraform change?",
+   "timestamp": "2024-09-08T12:02:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "ivan",
+   "content": "bumped the postgres driver to 2.9",
+   "timestamp": "2024-09-08T12:06:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "ivan",
+   "content": "who has the Figma link for the new onboarding?",
+   "timestamp": "2024-09-08T12:15:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "judy",
+   "content": "TIL you can pin messages here",
+   "timestamp": "2024-09-08T12:19:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "niaj",
+   "content": "can we get analytics on trial conversion?",
+   "timestamp": "2024-09-08T12:31:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "frank",
+   "content": "morning all \u2615",
+   "timestamp": "2024-09-08T13:02:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "carol",
+   "content": "added type hints to the invoices module",
+   "timestamp": "2024-09-08T13:05:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "heidi",
+   "content": "added type hints to the invoices module",
+   "timestamp": "2024-09-08T13:23:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "frank",
+   "content": "\ud83c\udf89 it's someone's work anniversary",
+   "timestamp": "2024-09-08T13:33:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "ivan",
+   "content": "can we get the dunning email copy finalized this week?",
+   "timestamp": "2024-09-08T13:35:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "niaj",
+   "content": "can we get the dunning email copy finalized this week?",
+   "timestamp": "2024-09-08T13:41:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "niaj",
+   "content": "rolling back the last deploy to be safe",
+   "timestamp": "2024-09-08T13:47:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "frank",
+   "content": "the grace period for the office plants is clearly zero, RIP",
+   "timestamp": "2024-09-08T13:53:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "pagerduty",
+   "content": "db failover completed, monitoring",
+   "timestamp": "2024-09-08T14:02:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "judy",
+   "content": "new icon set in Figma",
+   "timestamp": "2024-09-08T14:07:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "heidi",
+   "content": "office wifi is flaky again, IT is on it",
+   "timestamp": "2024-09-08T14:37:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "erin",
+   "content": "user testing notes from yesterday",
+   "timestamp": "2024-09-08T14:54:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "judy",
+   "content": "[resolved] email provider degraded earlier",
+   "timestamp": "2024-09-08T15:23:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "dave",
+   "content": "the empty-state illustration is ready",
+   "timestamp": "2024-09-08T15:43:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "grace",
+   "content": "reminder: all-hands moved to Thursday 10am",
+   "timestamp": "2024-09-08T16:17:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "bob",
+   "content": "do refunds count against MRR? asking for the deck",
+   "timestamp": "2024-09-08T16:26:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "trent",
+   "content": "the grace period for the office plants is clearly zero, RIP",
+   "timestamp": "2024-09-08T16:27:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "olivia",
+   "content": "who has the Figma link for the new onboarding?",
+   "timestamp": "2024-09-08T16:46:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "niaj",
+   "content": "db failover completed, monitoring",
+   "timestamp": "2024-09-08T17:00:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "mallory",
+   "content": "coffee machine is broken again",
+   "timestamp": "2024-09-08T17:08:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "bob",
+   "content": "new icon set in Figma",
+   "timestamp": "2024-09-08T17:28:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "carol",
+   "content": "who owns the chargeback flow now?",
+   "timestamp": "2024-09-08T17:34:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "mallory",
+   "content": "accessibility audit results are in",
+   "timestamp": "2024-09-08T17:52:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "erin",
+   "content": "merged #491, deploying to staging",
+   "timestamp": "2024-09-09T09:06:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "victor",
+   "content": "proration logic needs docs",
+   "timestamp": "2024-09-09T09:13:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "alice",
+   "content": "dark mode tokens need another pass",
+   "timestamp": "2024-09-09T09:17:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "olivia",
+   "content": "new icon set in Figma",
+   "timestamp": "2024-09-09T09:27:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "grace",
+   "content": "Stripe webhook retries are noisy, fyi",
+   "timestamp": "2024-09-09T09:27:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "ivan",
+   "content": "free snacks in the kitchen",
+   "timestamp": "2024-09-09T09:49:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "frank",
+   "content": "we should add a linter rule for that",
+   "timestamp": "2024-09-09T10:04:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "erin",
+   "content": "merged #491, deploying to staging",
+   "timestamp": "2024-09-09T10:06:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "dave",
+   "content": "new icon set in Figma",
+   "timestamp": "2024-09-09T10:15:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "heidi",
+   "content": "anyone watch the game last night?",
+   "timestamp": "2024-09-09T10:18:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "grace",
+   "content": "customer asked about bulk export again",
+   "timestamp": "2024-09-09T10:28:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "judy",
+   "content": "kudos to the support team for clearing the backlog \ud83d\ude4c",
+   "timestamp": "2024-09-09T10:31:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "heidi",
+   "content": "accessibility audit results are in",
+   "timestamp": "2024-09-09T10:46:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "erin",
+   "content": "PR #482 up for review when someone has a sec",
+   "timestamp": "2024-09-09T10:51:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "judy",
+   "content": "db failover completed, monitoring",
+   "timestamp": "2024-09-09T11:09:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "judy",
+   "content": "Stripe webhook retries are noisy, fyi",
+   "timestamp": "2024-09-09T11:10:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "ivan",
+   "content": "db failover completed, monitoring",
+   "timestamp": "2024-09-09T11:35:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "carol",
+   "content": "anyone going to the meetup tonight?",
+   "timestamp": "2024-09-09T11:40:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "judy",
+   "content": "reminder: invoice run is the 1st of the month",
+   "timestamp": "2024-09-09T12:10:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "frank",
+   "content": "TIL you can pin messages here",
+   "timestamp": "2024-09-09T12:19:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "olivia",
+   "content": "can eng confirm the spacing on the modal?",
+   "timestamp": "2024-09-09T12:22:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "heidi",
+   "content": "db failover completed, monitoring",
+   "timestamp": "2024-09-09T12:36:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "frank",
+   "content": "the tax rounding ticket is still open",
+   "timestamp": "2024-09-09T12:45:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "victor",
+   "content": "coffee machine is broken again",
+   "timestamp": "2024-09-09T12:54:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "mallory",
+   "content": "oncall handoff: nothing active",
+   "timestamp": "2024-09-09T13:24:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "alice",
+   "content": "updated the color tokens",
+   "timestamp": "2024-09-09T13:27:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "dave",
+   "content": "office wifi is flaky again, IT is on it",
+   "timestamp": "2024-09-09T13:48:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "dave",
+   "content": "the tax rounding ticket is still open",
+   "timestamp": "2024-09-09T14:34:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "trent",
+   "content": "proration logic needs docs",
+   "timestamp": "2024-09-09T14:40:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "ci-bot",
+   "content": "rolling back the last deploy to be safe",
+   "timestamp": "2024-09-09T15:02:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "dave",
+   "content": "new icon set in Figma",
+   "timestamp": "2024-09-09T15:06:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "erin",
+   "content": "anyone watch the game last night?",
+   "timestamp": "2024-09-09T15:25:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "ivan",
+   "content": "user testing notes from yesterday",
+   "timestamp": "2024-09-09T15:36:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "peggy",
+   "content": "can someone approve the infra terraform change?",
+   "timestamp": "2024-09-09T16:09:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "victor",
+   "content": "oncall handoff: nothing active",
+   "timestamp": "2024-09-09T16:11:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "niaj",
+   "content": "rolling back the last deploy to be safe",
+   "timestamp": "2024-09-09T16:55:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "alice",
+   "content": "TIL you can pin messages here",
+   "timestamp": "2024-09-09T17:19:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "trent",
+   "content": "morning all \u2615",
+   "timestamp": "2024-09-09T17:29:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "judy",
+   "content": "lunch order going out, reply by noon",
+   "timestamp": "2024-09-09T17:31:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "heidi",
+   "content": "roadmap review pushed to next week",
+   "timestamp": "2024-09-10T09:03:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "alice",
+   "content": "reminder: invoice run is the 1st of the month",
+   "timestamp": "2024-09-10T09:13:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "victor",
+   "content": "we need a decision on the dunning emails",
+   "timestamp": "2024-09-10T09:20:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "niaj",
+   "content": "updated the color tokens",
+   "timestamp": "2024-09-10T09:43:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "carol",
+   "content": "proration logic needs docs",
+   "timestamp": "2024-09-10T09:47:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "olivia",
+   "content": "db failover completed, monitoring",
+   "timestamp": "2024-09-10T09:51:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "erin",
+   "content": "db failover completed, monitoring",
+   "timestamp": "2024-09-10T10:18:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "peggy",
+   "content": "the cache layer needs a TTL, opening a ticket",
+   "timestamp": "2024-09-10T10:22:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "peggy",
+   "content": "dark mode tokens need another pass",
+   "timestamp": "2024-09-10T10:31:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "dave",
+   "content": "oncall handoff: nothing active",
+   "timestamp": "2024-09-10T10:47:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "dave",
+   "content": "rolling back the last deploy to be safe",
+   "timestamp": "2024-09-10T10:49:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "judy",
+   "content": "can we get the dunning email copy finalized this week?",
+   "timestamp": "2024-09-10T11:01:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "carol",
+   "content": "TIL you can pin messages here",
+   "timestamp": "2024-09-10T11:03:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "niaj",
+   "content": "reminder: invoice run is the 1st of the month",
+   "timestamp": "2024-09-10T11:38:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "victor",
+   "content": "[resolved] email provider degraded earlier",
+   "timestamp": "2024-09-10T12:04:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "victor",
+   "content": "kudos to the support team for clearing the backlog \ud83d\ude4c",
+   "timestamp": "2024-09-10T12:05:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "carol",
+   "content": "accessibility audit results are in",
+   "timestamp": "2024-09-10T12:15:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "dave",
+   "content": "rebased the feature branch, CI is green",
+   "timestamp": "2024-09-10T12:18:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "olivia",
+   "content": "kudos to the support team for clearing the backlog \ud83d\ude4c",
+   "timestamp": "2024-09-10T12:25:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "heidi",
+   "content": "[resolved] email provider degraded earlier",
+   "timestamp": "2024-09-10T12:36:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "olivia",
+   "content": "PSA: please update your 1Password before Friday",
+   "timestamp": "2024-09-10T12:42:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "olivia",
+   "content": "finance close is Friday, please tag any billing PRs",
+   "timestamp": "2024-09-10T12:49:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "grace",
+   "content": "free snacks in the kitchen",
+   "timestamp": "2024-09-10T12:58:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "dave",
+   "content": "coffee machine is broken again",
+   "timestamp": "2024-09-10T13:04:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "trent",
+   "content": "draft PRD for Q4 is in the drive",
+   "timestamp": "2024-09-10T13:06:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "ivan",
+   "content": "oncall handoff: nothing active",
+   "timestamp": "2024-09-10T13:21:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "grace",
+   "content": "rolling back the last deploy to be safe",
+   "timestamp": "2024-09-10T13:21:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "erin",
+   "content": "Stripe webhook retries are noisy, fyi",
+   "timestamp": "2024-09-10T13:33:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "dave",
+   "content": "reminder: all-hands moved to Thursday 10am",
+   "timestamp": "2024-09-10T13:37:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "niaj",
+   "content": "kudos to the support team for clearing the backlog \ud83d\ude4c",
+   "timestamp": "2024-09-10T13:53:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "peggy",
+   "content": "db failover completed, monitoring",
+   "timestamp": "2024-09-10T13:53:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "victor",
+   "content": "dark mode tokens need another pass",
+   "timestamp": "2024-09-10T14:08:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "peggy",
+   "content": "flaky test in test_scheduler again, retrying",
+   "timestamp": "2024-09-10T14:08:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "alice",
+   "content": "who has the Figma link for the new onboarding?",
+   "timestamp": "2024-09-10T14:11:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "olivia",
+   "content": "[resolved] email provider degraded earlier",
+   "timestamp": "2024-09-10T14:20:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "grace",
+   "content": "anyone going to the meetup tonight?",
+   "timestamp": "2024-09-10T14:32:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "trent",
+   "content": "we should add a linter rule for that",
+   "timestamp": "2024-09-10T14:45:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "victor",
+   "content": "flaky test in test_scheduler again, retrying",
+   "timestamp": "2024-09-10T14:46:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "trent",
+   "content": "finance close is Friday, please tag any billing PRs",
+   "timestamp": "2024-09-10T14:51:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "bob",
+   "content": "the tax rounding ticket is still open",
+   "timestamp": "2024-09-10T15:14:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "dave",
+   "content": "office wifi is flaky again, IT is on it",
+   "timestamp": "2024-09-10T15:26:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "dave",
+   "content": "reminder: invoice run is the 1st of the month",
+   "timestamp": "2024-09-10T15:36:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "erin",
+   "content": "lunch order going out, reply by noon",
+   "timestamp": "2024-09-10T15:45:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "ci-bot",
+   "content": "oncall handoff: nothing active",
+   "timestamp": "2024-09-10T16:21:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "alice",
+   "content": "[resolved] email provider degraded earlier",
+   "timestamp": "2024-09-10T16:23:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "bob",
+   "content": "we should add a linter rule for that",
+   "timestamp": "2024-09-10T16:25:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "dave",
+   "content": "who has the Figma link for the new onboarding?",
+   "timestamp": "2024-09-10T16:38:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "frank",
+   "content": "reminder: all-hands moved to Thursday 10am",
+   "timestamp": "2024-09-10T16:46:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "niaj",
+   "content": "oncall handoff: nothing active",
+   "timestamp": "2024-09-10T17:03:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "ivan",
+   "content": "office wifi is flaky again, IT is on it",
+   "timestamp": "2024-09-10T17:15:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "frank",
+   "content": "new icon set in Figma",
+   "timestamp": "2024-09-10T17:16:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "niaj",
+   "content": "can we get analytics on trial conversion?",
+   "timestamp": "2024-09-10T17:18:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "carol",
+   "content": "the grace period for the office plants is clearly zero, RIP",
+   "timestamp": "2024-09-10T17:20:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "erin",
+   "content": "competitor shipped a similar feature, fyi",
+   "timestamp": "2024-09-10T17:36:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "dave",
+   "content": "competitor shipped a similar feature, fyi",
+   "timestamp": "2024-09-11T09:03:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "peggy",
+   "content": "added type hints to the invoices module",
+   "timestamp": "2024-09-11T09:03:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "grace",
+   "content": "checkout latency back to normal",
+   "timestamp": "2024-09-11T09:10:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "alice",
+   "content": "anyone going to the meetup tonight?",
+   "timestamp": "2024-09-11T09:10:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "olivia",
+   "content": "rolling back the last deploy to be safe",
+   "timestamp": "2024-09-11T09:14:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "ivan",
+   "content": "who owns the chargeback flow now?",
+   "timestamp": "2024-09-11T09:33:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "mallory",
+   "content": "anyone going to the meetup tonight?",
+   "timestamp": "2024-09-11T09:59:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "frank",
+   "content": "reminder: invoice run is the 1st of the month",
+   "timestamp": "2024-09-11T10:06:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "grace",
+   "content": "flaky test in test_scheduler again, retrying",
+   "timestamp": "2024-09-11T10:06:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "alice",
+   "content": "finance close is Friday, please tag any billing PRs",
+   "timestamp": "2024-09-11T10:12:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "dave",
+   "content": "the grace period for the office plants is clearly zero, RIP",
+   "timestamp": "2024-09-11T10:41:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "mallory",
+   "content": "flaky test in test_scheduler again, retrying",
+   "timestamp": "2024-09-11T10:46:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "carol",
+   "content": "[resolved] email provider degraded earlier",
+   "timestamp": "2024-09-11T11:00:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "ivan",
+   "content": "we need a decision on the dunning emails",
+   "timestamp": "2024-09-11T11:04:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "alice",
+   "content": "the empty-state illustration is ready",
+   "timestamp": "2024-09-11T11:15:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "dave",
+   "content": "PSA: please update your 1Password before Friday",
+   "timestamp": "2024-09-11T11:17:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "trent",
+   "content": "the tax rounding ticket is still open",
+   "timestamp": "2024-09-11T11:22:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "erin",
+   "content": "do refunds count against MRR? asking for the deck",
+   "timestamp": "2024-09-11T11:41:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "dave",
+   "content": "oncall handoff: nothing active",
+   "timestamp": "2024-09-11T11:47:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "heidi",
+   "content": "merged #491, deploying to staging",
+   "timestamp": "2024-09-11T11:51:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "heidi",
+   "content": "coffee machine is broken again",
+   "timestamp": "2024-09-11T12:11:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "alice",
+   "content": "[resolved] email provider degraded earlier",
+   "timestamp": "2024-09-11T12:26:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "bob",
+   "content": "checkout latency back to normal",
+   "timestamp": "2024-09-11T12:58:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "olivia",
+   "content": "coffee machine is broken again",
+   "timestamp": "2024-09-11T12:59:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "bob",
+   "content": "lunch order going out, reply by noon",
+   "timestamp": "2024-09-11T13:16:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "erin",
+   "content": "who owns the chargeback flow now?",
+   "timestamp": "2024-09-11T13:23:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "mallory",
+   "content": "the empty-state illustration is ready",
+   "timestamp": "2024-09-11T13:55:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "ci-bot",
+   "content": "rolling back the last deploy to be safe",
+   "timestamp": "2024-09-11T13:56:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "alice",
+   "content": "who has the Figma link for the new onboarding?",
+   "timestamp": "2024-09-11T13:58:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "ivan",
+   "content": "who has the Figma link for the new onboarding?",
+   "timestamp": "2024-09-11T14:19:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "bob",
+   "content": "[resolved] email provider degraded earlier",
+   "timestamp": "2024-09-11T14:28:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "niaj",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-09-11T14:34:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "olivia",
+   "content": "who has the Figma link for the new onboarding?",
+   "timestamp": "2024-09-11T14:41:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "bob",
+   "content": "reminder: all-hands moved to Thursday 10am",
+   "timestamp": "2024-09-11T15:01:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "peggy",
+   "content": "proration logic needs docs",
+   "timestamp": "2024-09-11T15:30:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "mallory",
+   "content": "db failover completed, monitoring",
+   "timestamp": "2024-09-11T15:35:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "dave",
+   "content": "PSA: please update your 1Password before Friday",
+   "timestamp": "2024-09-11T15:36:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "olivia",
+   "content": "who keeps stealing my mug",
+   "timestamp": "2024-09-11T16:01:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "heidi",
+   "content": "new icon set in Figma",
+   "timestamp": "2024-09-11T16:17:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "victor",
+   "content": "rolling back the last deploy to be safe",
+   "timestamp": "2024-09-11T16:20:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "niaj",
+   "content": "draft PRD for Q4 is in the drive",
+   "timestamp": "2024-09-11T16:26:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "mallory",
+   "content": "TIL you can pin messages here",
+   "timestamp": "2024-09-11T16:26:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "victor",
+   "content": "user testing notes from yesterday",
+   "timestamp": "2024-09-11T16:33:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "peggy",
+   "content": "roadmap review pushed to next week",
+   "timestamp": "2024-09-11T16:41:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "mallory",
+   "content": "competitor shipped a similar feature, fyi",
+   "timestamp": "2024-09-11T16:41:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "heidi",
+   "content": "reminder: all-hands moved to Thursday 10am",
+   "timestamp": "2024-09-11T16:57:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "trent",
+   "content": "reminder: all-hands moved to Thursday 10am",
+   "timestamp": "2024-09-11T17:06:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "bob",
+   "content": "anyone going to the meetup tonight?",
+   "timestamp": "2024-09-11T17:36:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "trent",
+   "content": "can we get analytics on trial conversion?",
+   "timestamp": "2024-09-11T17:37:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "peggy",
+   "content": "[resolved] email provider degraded earlier",
+   "timestamp": "2024-09-11T17:48:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "heidi",
+   "content": "new icon set in Figma",
+   "timestamp": "2024-09-12T09:05:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "mallory",
+   "content": "anyone going to the meetup tonight?",
+   "timestamp": "2024-09-12T09:20:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "niaj",
+   "content": "PR #482 up for review when someone has a sec",
+   "timestamp": "2024-09-12T09:22:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "victor",
+   "content": "anyone going to the meetup tonight?",
+   "timestamp": "2024-09-12T09:30:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "grace",
+   "content": "reminder: invoice run is the 1st of the month",
+   "timestamp": "2024-09-12T09:58:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "trent",
+   "content": "the grace period for the office plants is clearly zero, RIP",
+   "timestamp": "2024-09-12T10:07:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "erin",
+   "content": "draft PRD for Q4 is in the drive",
+   "timestamp": "2024-09-12T10:09:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "frank",
+   "content": "free snacks in the kitchen",
+   "timestamp": "2024-09-12T10:12:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "peggy",
+   "content": "heads up: migrating the jobs queue Tuesday",
+   "timestamp": "2024-09-12T10:25:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "victor",
+   "content": "who has the Figma link for the new onboarding?",
+   "timestamp": "2024-09-12T10:49:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "mallory",
+   "content": "updated the color tokens",
+   "timestamp": "2024-09-12T10:55:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "alice",
+   "content": "new icon set in Figma",
+   "timestamp": "2024-09-12T10:59:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "alice",
+   "content": "can we get analytics on trial conversion?",
+   "timestamp": "2024-09-12T11:00:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "carol",
+   "content": "anyone going to the meetup tonight?",
+   "timestamp": "2024-09-12T11:01:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "mallory",
+   "content": "db failover completed, monitoring",
+   "timestamp": "2024-09-12T11:10:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "peggy",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-09-12T11:36:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "olivia",
+   "content": "\ud83c\udf89 it's someone's work anniversary",
+   "timestamp": "2024-09-12T12:01:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "grace",
+   "content": "the cache layer needs a TTL, opening a ticket",
+   "timestamp": "2024-09-12T12:05:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "mallory",
+   "content": "Stripe webhook retries are noisy, fyi",
+   "timestamp": "2024-09-12T12:09:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "erin",
+   "content": "rebased the feature branch, CI is green",
+   "timestamp": "2024-09-12T12:17:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "peggy",
+   "content": "who owns the chargeback flow now?",
+   "timestamp": "2024-09-12T12:33:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "judy",
+   "content": "who has the Figma link for the new onboarding?",
+   "timestamp": "2024-09-12T12:35:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "grace",
+   "content": "office wifi is flaky again, IT is on it",
+   "timestamp": "2024-09-12T12:42:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "judy",
+   "content": "kudos to the support team for clearing the backlog \ud83d\ude4c",
+   "timestamp": "2024-09-12T12:44:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "victor",
+   "content": "free snacks in the kitchen",
+   "timestamp": "2024-09-12T13:05:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "niaj",
+   "content": "flaky test in test_scheduler again, retrying",
+   "timestamp": "2024-09-12T13:17:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "judy",
+   "content": "\ud83c\udf89 it's someone's work anniversary",
+   "timestamp": "2024-09-12T13:23:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "carol",
+   "content": "user testing notes from yesterday",
+   "timestamp": "2024-09-12T13:31:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "carol",
+   "content": "the empty-state illustration is ready",
+   "timestamp": "2024-09-12T13:44:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "ivan",
+   "content": "morning all \u2615",
+   "timestamp": "2024-09-12T14:00:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "erin",
+   "content": "user testing notes from yesterday",
+   "timestamp": "2024-09-12T14:02:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "victor",
+   "content": "accessibility audit results are in",
+   "timestamp": "2024-09-12T14:04:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "carol",
+   "content": "who has the Figma link for the new onboarding?",
+   "timestamp": "2024-09-12T14:14:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "carol",
+   "content": "coffee machine is broken again",
+   "timestamp": "2024-09-12T14:18:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "alice",
+   "content": "can we get analytics on trial conversion?",
+   "timestamp": "2024-09-12T14:23:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "grace",
+   "content": "we should add a linter rule for that",
+   "timestamp": "2024-09-12T14:26:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "peggy",
+   "content": "kudos to the support team for clearing the backlog \ud83d\ude4c",
+   "timestamp": "2024-09-12T14:30:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "carol",
+   "content": "can we get the dunning email copy finalized this week?",
+   "timestamp": "2024-09-12T14:31:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "heidi",
+   "content": "Stripe webhook retries are noisy, fyi",
+   "timestamp": "2024-09-12T14:36:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "trent",
+   "content": "reminder: all-hands moved to Thursday 10am",
+   "timestamp": "2024-09-12T14:47:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "dave",
+   "content": "who has the Figma link for the new onboarding?",
+   "timestamp": "2024-09-12T15:13:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "olivia",
+   "content": "db failover completed, monitoring",
+   "timestamp": "2024-09-12T15:22:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "bob",
+   "content": "morning all \u2615",
+   "timestamp": "2024-09-12T15:25:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "erin",
+   "content": "is prod slow for anyone else right now?",
+   "timestamp": "2024-09-12T15:25:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "grace",
+   "content": "[resolved] elevated 5xx on the api gateway 14:02-14:18",
+   "timestamp": "2024-09-12T15:29:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "erin",
+   "content": "who has the Figma link for the new onboarding?",
+   "timestamp": "2024-09-12T15:48:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "bob",
+   "content": "rebased the feature branch, CI is green",
+   "timestamp": "2024-09-12T16:08:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "trent",
+   "content": "welcome to the new folks joining this week \ud83d\udc4b",
+   "timestamp": "2024-09-12T16:08:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "trent",
+   "content": "free snacks in the kitchen",
+   "timestamp": "2024-09-12T16:27:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "judy",
+   "content": "customer asked about bulk export again",
+   "timestamp": "2024-09-12T16:42:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "dave",
+   "content": "new icon set in Figma",
+   "timestamp": "2024-09-12T16:46:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "judy",
+   "content": "new icon set in Figma",
+   "timestamp": "2024-09-12T17:08:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "bob",
+   "content": "roadmap review pushed to next week",
+   "timestamp": "2024-09-12T17:41:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "peggy",
+   "content": "we need a decision on the dunning emails",
+   "timestamp": "2024-09-12T17:45:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "ivan",
+   "content": "checkout latency back to normal",
+   "timestamp": "2024-09-12T18:00:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "niaj",
+   "content": "updated the color tokens",
+   "timestamp": "2024-09-13T09:00:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "erin",
+   "content": "updated the color tokens",
+   "timestamp": "2024-09-13T09:32:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "victor",
+   "content": "\ud83c\udf89 it's someone's work anniversary",
+   "timestamp": "2024-09-13T09:43:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "ci-bot",
+   "content": "[resolved] elevated 5xx on the api gateway 14:02-14:18",
+   "timestamp": "2024-09-13T09:51:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "erin",
+   "content": "anyone going to the meetup tonight?",
+   "timestamp": "2024-09-13T10:07:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "erin",
+   "content": "we need a decision on the dunning emails",
+   "timestamp": "2024-09-13T10:12:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "deploybot",
+   "content": "checkout latency back to normal",
+   "timestamp": "2024-09-13T10:14:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "judy",
+   "content": "free snacks in the kitchen",
+   "timestamp": "2024-09-13T10:15:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "heidi",
+   "content": "office wifi is flaky again, IT is on it",
+   "timestamp": "2024-09-13T10:24:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "bob",
+   "content": "roadmap review pushed to next week",
+   "timestamp": "2024-09-13T10:26:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "trent",
+   "content": "updated the color tokens",
+   "timestamp": "2024-09-13T10:41:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "olivia",
+   "content": "do refunds count against MRR? asking for the deck",
+   "timestamp": "2024-09-13T10:54:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "grace",
+   "content": "added type hints to the invoices module",
+   "timestamp": "2024-09-13T10:55:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "frank",
+   "content": "the empty-state illustration is ready",
+   "timestamp": "2024-09-13T11:03:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "heidi",
+   "content": "anyone watch the game last night?",
+   "timestamp": "2024-09-13T12:22:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "victor",
+   "content": "finance close is Friday, please tag any billing PRs",
+   "timestamp": "2024-09-13T12:58:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "judy",
+   "content": "competitor shipped a similar feature, fyi",
+   "timestamp": "2024-09-13T13:10:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "trent",
+   "content": "Stripe webhook retries are noisy, fyi",
+   "timestamp": "2024-09-13T13:41:00+00:00"
+  },
+  {
+   "channel": "design",
+   "author": "victor",
+   "content": "accessibility audit results are in",
+   "timestamp": "2024-09-13T13:44:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "niaj",
+   "content": "the grace period for the office plants is clearly zero, RIP",
+   "timestamp": "2024-09-13T13:57:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "niaj",
+   "content": "reminder: all-hands moved to Thursday 10am",
+   "timestamp": "2024-09-13T14:01:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "dave",
+   "content": "office wifi is flaky again, IT is on it",
+   "timestamp": "2024-09-13T14:26:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "erin",
+   "content": "Stripe webhook retries are noisy, fyi",
+   "timestamp": "2024-09-13T14:36:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "frank",
+   "content": "finance close is Friday, please tag any billing PRs",
+   "timestamp": "2024-09-13T14:36:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "bob",
+   "content": "oncall handoff: nothing active",
+   "timestamp": "2024-09-13T15:09:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "alice",
+   "content": "coffee machine is broken again",
+   "timestamp": "2024-09-13T15:35:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "frank",
+   "content": "can we get the dunning email copy finalized this week?",
+   "timestamp": "2024-09-13T15:53:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "carol",
+   "content": "proration logic needs docs",
+   "timestamp": "2024-09-13T16:10:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "mallory",
+   "content": "TIL you can pin messages here",
+   "timestamp": "2024-09-13T16:18:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "grace",
+   "content": "rolling back the last deploy to be safe",
+   "timestamp": "2024-09-13T16:21:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "trent",
+   "content": "reminder: invoice run is the 1st of the month",
+   "timestamp": "2024-09-13T16:23:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "ivan",
+   "content": "free snacks in the kitchen",
+   "timestamp": "2024-09-13T16:24:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "bob",
+   "content": "lunch order going out, reply by noon",
+   "timestamp": "2024-09-13T16:24:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "heidi",
+   "content": "[resolved] email provider degraded earlier",
+   "timestamp": "2024-09-13T16:24:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "bob",
+   "content": "checkout latency back to normal",
+   "timestamp": "2024-09-13T16:29:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "dave",
+   "content": "competitor shipped a similar feature, fyi",
+   "timestamp": "2024-09-13T16:56:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "alice",
+   "content": "what's our SLA on support tickets these days?",
+   "timestamp": "2024-09-13T17:08:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "victor",
+   "content": "roadmap review pushed to next week",
+   "timestamp": "2024-09-13T17:17:00+00:00"
+  },
+  {
+   "channel": "billing-policy",
+   "author": "peggy",
+   "content": "can we get the dunning email copy finalized this week?",
+   "timestamp": "2024-09-13T17:39:00+00:00"
+  }
+ ]
+}

@@ -1,129 +1,103 @@
-# Mattermost observability tasks (for Harbor / Oddish)
+# Slack-observability + codebase tasks (for Harbor / Oddish)
 
-> **Branch:** `mattermost-focused-implementation`. This branch builds agent-evaluation tasks
-> on top of the **real Mattermost product** instead of a from-scratch chat clone. (The
-> from-scratch Slack clone lives on the `slack-focused-implementation` branch / `main`.)
+> **Branch:** `mattermost-focused-implementation`. The agent operates a real (seeded) Slack
+> workspace through a **`slack`** tool (CLI + MCP) that is a thin facade over a real Mattermost
+> backend. (The from-scratch Slack clone lives on the `slack-focused-implementation` branch.)
 
-This repo holds a small suite of **"there's an issue, go fix it"** tasks that run an AI agent
-against a real, seeded **Mattermost** team-chat server. The agent is told *only the symptom*
-and *which tools it has* — it has to explore, diagnose the root cause, and fix it. A verifier
-then checks the result automatically.
+This repo holds **APEX-SWE-style observability tasks**: the agent is dropped into a workspace
+with **heavy, noisy Slack history** *and* a **codebase whose tests are failing**, and must use
+its tools to recover information that is **only** available in the chat — then fix the code so
+the suite passes. One task also requires **posting a postmortem back to Slack**.
 
-Everything runs as a **multi-container Harbor task** and is **Oddish-runnable** out of the box.
+It directly measures the benchmark's core question:
+
+> *Does the model effectively and creatively discover and use the tools at its disposal
+> (MCP / CLI / API / codebase / local env) to gather information and complete difficult tasks,
+> including action beyond coding (verification, deployment, communication)?*
+
+Every task is built so that **(a) the chat tool is critical** — the fix is impossible without
+it — and **(b) using it is non-trivial** — the needed fact is buried among distractors and
+superseded values, so a naive keyword search returns the *wrong* answers.
 
 ---
 
-## What this is, in one picture
+## In one picture
 
 ```
-   ┌────────────────────────── one Harbor task ──────────────────────────┐
-   │                                                                       │
-   │   ┌──────────────────┐         HTTP (REST)        ┌────────────────┐  │
-   │   │  client          │  ───────────────────────►  │  mattermost    │  │
-   │   │  (the agent)     │     http://mattermost:8065 │  real product  │  │
-   │   │                  │  ◄───────────────────────  │  + Postgres    │  │
-   │   │  tool: `slack`   │                            │                │  │
-   │   │   • slack CLI    │                            │  seeded with a │  │
-   │   │   • slack MCP    │                            │  workspace +   │  │
-   │   │  (thin facade    │                            │  an injected   │  │
-   │   │   over mmctl)    │                            │  "fault"       │  │
-   │   └────────┬─────────┘                            └────────────────┘  │
-   │            │ after the agent acts, the verifier (in the client)        │
-   │            ▼ reads workspace state back over REST and scores 0 or 1     │
-   │     /logs/verifier/reward.txt                                          │
-   └───────────────────────────────────────────────────────────────────────┘
+   ┌────────────────────────────── one Harbor task ──────────────────────────────┐
+   │   ┌────────────────────┐        HTTP (REST)        ┌────────────────────┐     │
+   │   │  client (agent)    │ ───────────────────────►  │  mattermost        │     │
+   │   │                    │   http://mattermost:8065  │  (real product)    │     │
+   │   │  tool: `slack`     │ ◄───────────────────────  │  seeded with ~500  │     │
+   │   │   • slack CLI      │                           │  noisy messages;   │     │
+   │   │   • slack MCP      │                           │  the key fact is   │     │
+   │   │                    │                           │  buried in there   │     │
+   │   │  /workspace = a    │                           └────────────────────┘     │
+   │   │  codebase whose    │   the fix info is NOT in the repo — only in chat      │
+   │   │  pytest suite      │                                                       │
+   │   │  is FAILING        │   verifier: restore trusted tests + a HIDDEN grader,  │
+   │   └─────────┬──────────┘   run pytest in an isolated dir, score 0/1            │
+   │             ▼  /logs/verifier/reward.txt        (incident task also checks a   │
+   │                                                  postmortem was posted to Slack)│
+   └───────────────────────────────────────────────────────────────────────────────┘
 ```
 
-Two containers per task:
-- **`mattermost`** — the real Mattermost server (team edition 8.1.1) with embedded Postgres,
-  seeded at startup with a believable workspace, then a small **fault** is injected (the
-  "issue" the agent must fix).
-- **`client`** — where the agent lives. It gets a single, **Slack-branded** tool called
-  **`slack`**, in two interchangeable forms: a `slack` **CLI** (Slack Web API-style methods like
-  `conversations.list`, `chat.postMessage`, `users.info`) and a `slack` **MCP** server. Both are
-  a thin facade over the real Mattermost tooling (`mmctl` / `mmctl-mcp`) underneath — so to the
-  agent the environment looks like Slack, while the backend is real Mattermost.
-
-The agent never sees the seed data on disk — it can only reach the workspace through the `slack`
-tool, exactly like a real admin. That's what makes scoring trustworthy.
+Two containers: **`mattermost`** (the chat backend, seeded with heavy synthetic history) and
+**`client`** (where the agent runs — it has the `slack` tool, python+pytest, and the codebase at
+`/workspace`). The agent can only reach the chat through `slack`, and the fix-critical fact is
+never on disk — so the verifier's result genuinely reflects whether the agent used its tools.
 
 ---
 
 ## The tasks
 
-Each task gives the agent a vague symptom and minimal hand-holding. The agent must figure out
-which tool/flag surfaces the problem, then remediate it.
-
-| Task | Symptom the agent is told | Root cause (hidden) | Fix |
+| Task | The codebase problem | What's buried in Slack (critical + non-trivial) | Beyond coding |
 |---|---|---|---|
-| **responder-lockout** | "`carol` suddenly can't access the workspace." | her account was deactivated | reactivate her |
-| **archived-channel** | "The `#deploys` channel vanished." | it was archived | unarchive it |
-| **file-sharing-broken** | "Nobody can upload/share files anywhere." | file attachments disabled server-wide | re-enable the setting |
+| **buried-spec** | `billing/fees.py::overdue_fee` unimplemented; suite fails | the *agreed* fee policy (grace, tiers, min, cap, rounding) — with **superseded** proposals (grace 7→5, 2/4/6→1.5/3/5, $10→$5) and off-channel traps | — |
+| **contract-drift** | `payments/charge.py` targets a deprecated API contract | the **v2 contract** (field names, integer cents, version, required `idempotency_key`) — incl. a mid-thread **`customer_id`→`customer` correction** and v1 traps | — |
+| **incident-fix-report** | `monitoring/alerts.py::should_page` unimplemented after a pager-fatigue incident | the agreed **paging policy** (≥3 consecutive breaches at ≥5%, fast-path ≥25%) — with a **red-herring** DB hypothesis and the old thresholds as traps | **post a root-cause postmortem to #postmortems** |
 
-All three are validated to score **0 for a no-op agent** and **1 for the reference solution**.
+All three are validated `nop=0 / oracle=1`. Each is also checked so a **wrong-but-plausible** fix
+(one that satisfies the visible invariant tests, or uses a *superseded* value) still scores **0**,
+and `incident-fix-report` scores 0 if the code is fixed but the postmortem isn't posted.
 
-→ Details on writing your own: **[docs/CREATING-TASKS.md](docs/CREATING-TASKS.md)**
+→ How to author another one: **[docs/CREATING-TASKS.md](docs/CREATING-TASKS.md)** (and the
+`slack-observability-task-builder` skill).
 
 ---
 
-## What we took from Mattermost (and why)
+## Why the tool use is genuinely required (anti-shortcut design)
 
-The whole point of this branch is **reuse**: instead of building a chat backend, a CLI, and an
-MCP server, we take them straight from the Mattermost ecosystem.
-
-| Taken | Used as | What it saved us |
-|---|---|---|
-| `mattermost/mattermost-team-edition:8.1.1` Docker image | the chat **service** | a full product: channels, threads, reactions, DMs, users, roles, config, REST API |
-| **`mmctl`** (copied from the image, exact version) | the engine behind the `slack` **CLI** | a real admin CLI — no hand-written tool |
-| **`mmctl-mcp`** (built from pinned source, 1-line patch) | the engine behind the `slack` **MCP** server | a real MCP surface — no hand-written MCP server |
-| **REST API v4** | the **verifier's** read-back channel (and the `slack` CLI's diagnostic reads) | deterministic scoring with no custom query layer |
-| Embedded-Postgres boot pattern (from APEX-SWE) | the service **entrypoint** | a working single-container DB+server |
-
-The agent doesn't see any of these names — they sit behind the **`slack`** facade (see below).
+- **The fix-critical fact is only in Slack** — never in the repo, README, or visible tests.
+- **Visible tests are invariant-only** (non-negativity, monotonicity, shape) — they do *not*
+  encode the policy/contract, so the agent can't read the answer from them.
+- **A hidden grading test pins the exact answer.** It lives in `tests/trusted/` and is staged by
+  the verifier **only at grade time** (named `test_grade_*.py` so pytest actually collects it).
+- **The verifier grades in an isolated, verifier-owned dir** — it copies the candidate's package
+  + the trusted tests into `/tmp` and runs there, so editing/deleting `/workspace/tests` can't
+  game it (verified by a tamper test).
+- **Search is noisy on purpose.** `slack search.messages "overdue fee"` returns the superseded
+  *and* the agreed values; the agent has to read and disambiguate, not grep one magic word.
 
 → Full reuse inventory + tradeoffs: **[docs/WHAT-WE-TOOK-FROM-MATTERMOST.md](docs/WHAT-WE-TOOK-FROM-MATTERMOST.md)**
-→ The `slack` tool surface (CLI methods + MCP), and how it maps down: **[docs/TOOLS.md](docs/TOOLS.md)**
-
-**The one tradeoff worth knowing up front:** the Slack surface is a *lightweight facade* — Slack
-method names and Slack-shaped JSON over a Mattermost backend, not a byte-for-byte Slack API. The
-product image is also amd64-only (we pin `platform: linux/amd64`; Modal runs amd64 natively). In
-exchange we get a real, full-featured chat server and real tooling for almost no code.
-
----
-
-## How the environment works (short version)
-
-1. **Build & upload.** Oddish uploads only the task folder; everything needed to build both
-   images lives inside `environment/`. The `mmctl-mcp` server is compiled from a pinned commit
-   during the build.
-2. **Seed.** The `mattermost` container boots Postgres + the server, then a Python seeder
-   creates a workspace (admin, team, channels, users, message history).
-3. **Inject the fault.** A per-task `fault.sh` then breaks one thing over the REST API (e.g.
-   deactivates a user). This is the "issue."
-4. **Wire the client.** Once the server is healthy, the `client` container authenticates the
-   workspace connection and waits until it's ready, so the `slack` CLI and `slack` MCP server
-   work the moment the agent arrives.
-5. **Agent acts.** The agent reads `instruction.md`, explores with the `slack` tool (CLI or MCP),
-   and fixes the issue.
-6. **Verify.** A verifier in the client reads the workspace back over REST and writes `0` or
-   `1` to `/logs/verifier/reward.txt`. `nop` (do nothing) → 0; `oracle` (reference fix) → 1.
-
-→ Full lifecycle, container comms, seeding, and fault injection: **[docs/ENVIRONMENT.md](docs/ENVIRONMENT.md)**
+→ The `slack` tool surface (CLI methods + MCP): **[docs/TOOLS.md](docs/TOOLS.md)**
+→ Lifecycle / containers / seeding / verifiers: **[docs/ENVIRONMENT.md](docs/ENVIRONMENT.md)**
+→ Example QA report: **[docs/audits/buried-spec-audit.md](docs/audits/buried-spec-audit.md)**
 
 ---
 
 ## Run it
 
 ```bash
-# With Oddish (uses the sweep config)
+# With Oddish
 cd /path/to/oddish/oddish
 uv run oddish run /path/to/this-repo/oddish/tasks -c /path/to/this-repo/oddish/sweep.yaml
 
-# Locally, to validate one task end-to-end (first build pulls the Mattermost image; ~5-8 min)
-cd oddish/tasks/responder-lockout/environment
-docker compose up -d --build            # mattermost goes healthy; fault is injected
+# Locally, validate one task end-to-end (first build pulls Mattermost; ~5-8 min)
+cd oddish/tasks/buried-spec/environment
+docker compose up -d --build            # mattermost healthy + ~500-msg seed; codebase at /workspace
 docker cp ../tests client:/tests && docker cp ../solution client:/solution
-docker compose exec -T client bash /tests/run_verifier.sh    # nop    -> reward 0
+docker compose exec -T client bash /tests/run_verifier.sh    # nop    -> reward 0 (suite failing)
 docker compose exec -T client bash /solution/solve.sh
 docker compose exec -T client bash /tests/run_verifier.sh    # oracle -> reward 1
 docker compose down -v
@@ -133,15 +107,12 @@ docker compose down -v
 
 ```
 oddish/
-  manifest.yaml          # task list + agents (create-oddish-task format)
-  sweep.yaml             # oddish CLI sweep config
+  manifest.yaml / sweep.yaml      # the 3 tasks + agents
   tasks/
-    responder-lockout/   ┐
-    archived-channel/    ├─ one self-contained Harbor task each (see docs/CREATING-TASKS.md)
-    file-sharing-broken/ ┘
-docs/
-  ENVIRONMENT.md                    # how the setup works, start to end
-  WHAT-WE-TOOK-FROM-MATTERMOST.md   # reuse inventory + tradeoffs
-  TOOLS.md                          # the full agent tool surface
-  CREATING-TASKS.md                 # how to author a new task
+    buried-spec/         ┐  each a self-contained Harbor task:
+    contract-drift/      ├   environment/ (mattermost service + `slack` facade + codebase/ +
+    incident-fix-report/ ┘   heavy data/) · instruction.md · solution/solve.sh ·
+                             tests/{test.sh,run_verifier.sh,trusted/}  (trusted/ holds the
+                             canonical tests + the HIDDEN test_grade_*.py)
+docs/  ENVIRONMENT.md · WHAT-WE-TOOK-FROM-MATTERMOST.md · TOOLS.md · CREATING-TASKS.md · audits/
 ```

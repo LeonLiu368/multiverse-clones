@@ -1,8 +1,8 @@
 # Oddish CLI sweep config:  oddish run oddish/tasks -c oddish/sweep.yaml
 task_names:
-  - responder-lockout
-  - archived-channel
-  - file-sharing-broken
+  - buried-spec
+  - contract-drift
+  - incident-fix-report
 
 agents:
   - name: gemini-cli

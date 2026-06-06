@@ -12,8 +12,9 @@ Every task is a `docker compose` project with two services:
   with an **embedded Postgres** inside the same container. This is the "world" the agent
   operates on.
 - **`client`** — a small Debian image where the **agent** runs. It carries the agent's
-  Slack-branded tool — the `slack` CLI and `slack` MCP server (thin wrappers over `mmctl` /
-  `mmctl-mcp`) — plus the verifier scripts.
+  Slack-branded tool (the `slack` CLI and `slack` MCP server, thin wrappers over `mmctl` /
+  `mmctl-mcp`), **python + pytest**, and the **codebase at `/workspace`** whose test suite is
+  failing — plus the verifier scripts.
 
 They share one Docker network and find each other **by service name**: the client (via the
 `slack` facade) talks to the server at `http://mattermost:8065`. We deliberately declare **no `networks:`** block in the
@@ -49,7 +50,10 @@ hand-authored file describing the workspace as a flat list of messages:
 
 From that it creates: an **admin** (`admin@demo.local` / `AdminUser123!`), a **team**
 (`test-demo`), the **channels** named in the file, the **users** named as authors, and the
-**message history**.
+**message history**. The seed is **heavy and noisy on purpose** (~500 messages across ~7
+channels, generated deterministically by `environment/data/mattermost/generate.py`): the one
+fact the agent needs is buried among distractors and **superseded** values, so finding it is
+real, non-trivial tool use rather than a keyword lookup.
 
 Two important implementation choices (learned the hard way):
 - **Channels and users are created over the REST API, not raw SQL.** Raw-SQL rows exist in the
@@ -59,33 +63,41 @@ Two important implementation choices (learned the hard way):
 - **Posts are inserted via SQL**, purely so we can preserve the original historical timestamps
   (the REST "create post" endpoint always stamps "now").
 
-### 3. The fault is injected (the "issue")
-After a healthy workspace exists, the entrypoint runs the task's
-`environment/data/mattermost/fault.sh` **if present**. The fault script logs in as admin and
-breaks exactly one thing over the REST API — deactivate a user, archive a channel, flip a
-config flag. This keeps the service image **identical across all tasks**; only the mounted
-`data/` (the seed + the fault) differs. That's the whole trick that lets one service power many
-different "issue, go fix it" scenarios.
+### 3. The "issue" = a failing codebase + a buried fact
+There is **no fault script**. The broken state is baked into the **codebase** copied to
+`/workspace`: a target function is unimplemented (or targets an outdated contract) so its tests
+fail, while a sibling working module's tests pass. The information needed to fix it — the agreed
+policy, the new contract, the incident root cause — is **not in the repo**; it lives only in the
+seeded Slack history (step 2). A breadcrumb in the code (a docstring / README / `NotImplementedError`
+message) points the agent at the workspace. Only the codebase + data differ per task; the
+service/client images are identical.
 
 ### 4. The client wires up the agent's tools
 The `client` container only starts once the server's healthcheck passes (`depends_on:
-service_healthy`). Its entrypoint then authenticates the workspace connection with the admin
-credentials and waits until the workspace is actually seeded, so by the time the agent arrives,
-both the `slack` CLI and the `slack` MCP server "just work" with no setup.
+service_healthy`). Its entrypoint authenticates the workspace connection with the admin
+credentials and waits until the workspace is seeded, so by the time the agent arrives the
+`slack` CLI and `slack` MCP server "just work". The codebase is already at `/workspace` and
+`python`/`pytest` are installed.
 
 ### 5. The agent acts
-The agent reads `instruction.md` (which states only the symptom and that it has the `slack`
-tool), then explores and remediates using the `slack` CLI and/or the `slack` MCP tools. See
-[TOOLS.md](TOOLS.md) for the surface.
+The agent reads `instruction.md` (the symptom + "you have the `slack` tool"), explores the heavy
+chat with `slack` to recover the buried fact, edits the code at `/workspace`, and — for the
+incident task — posts a postmortem back to Slack. See [TOOLS.md](TOOLS.md) for the surface.
 
 ### 6. The verifier scores
-Harbor runs `tests/test.sh` (a thin wrapper) → `tests/run_verifier.sh` **inside the client
-container**. The verifier does **not** trust logs or the agent's narration — it logs in as
-admin and **queries the live REST API** for the resulting state, then writes `0` or `1` to
-`/logs/verifier/reward.txt`. Examples:
-- responder-lockout → `GET /users/username/carol` and check `delete_at == 0` (active),
-- archived-channel → look up `#deploys` and check it resolves with `delete_at == 0`,
-- file-sharing-broken → `GET /config` and check `FileSettings.EnableFileAttachments == true`.
+Harbor runs `tests/test.sh` → `tests/run_verifier.sh` **inside the client container**. It does
+not trust the visible `/workspace/tests`: it copies the candidate's package **plus the trusted
+tests** (the canonical invariant tests *and* a HIDDEN `test_grade_*.py` that pins the exact
+answer) into a fresh **verifier-owned** dir (`/tmp/grade.$$`) and runs `pytest` there, scoring
+`1` iff everything passes. Because the hidden grader's parameters appear only in Slack and the
+grader is absent during the agent's run, the answer can't be read from the repo/visible tests,
+and editing `/workspace/tests` can't game it. The `incident-fix-report` verifier additionally
+checks (over REST) that a postmortem with the root cause was **posted to `#postmortems`** —
+**both** the code fix and the communication are required. The result is written to
+`/logs/verifier/reward.txt`.
+
+> **pytest gotcha:** the hidden grader must be named `test_grade_*.py` — pytest only auto-collects
+> `test_*.py`, so a `grade_*.py` silently won't run and grading would degrade to the invariants.
 
 ### 7. The reward is bracketed
 Every task ships a reference `solution/solve.sh` (the **oracle**). Harbor runs each task with
@@ -94,11 +106,16 @@ two reference agents: **`nop`** (does nothing) must score **0**, and **`oracle`*
 tasks here pass that bracket.
 
 ## Why these choices make it a good benchmark
-- **Data lives in the server, never on the agent's disk** → the agent must use the tools, and
-  the verifier's read-back genuinely reflects what the agent did.
-- **Deterministic seed + a single injected fault** → identical starting state every run.
-- **The reward is keyed on the fixed state**, and the broken state is set at seed time, so a
-  no-op can never accidentally pass.
-- **API read-back, not log-scraping** → clean, reproducible 0/1.
-- **`nop`=0 / `oracle`=1 bracket on every task** → catches a broken task immediately.
+- **The fix-critical fact lives only in Slack, never on disk** → the agent *must* use the tool;
+  the verifier's result genuinely reflects whether it did.
+- **Heavy, noisy, deterministic seed** → identical starting state every run, and finding the
+  fact is non-trivial (superseded values + distractors + a red herring; search is noisy).
+- **Hidden grader pins the exact answer; visible tests are invariant-only** → the answer can't be
+  read from the repo or visible tests; a wrong-but-plausible fix still scores 0.
+- **Grading runs trusted tests in a verifier-owned dir** → editing/deleting `/workspace/tests`
+  can't game it.
+- **`nop`=0 / `oracle`=1 bracket on every task** (plus a wrong-impl=0 check) → catches a broken
+  or gameable task immediately.
+- **Action beyond coding** (incident task requires posting a postmortem) → measures tool use that
+  isn't just editing files.
 - **Self-contained, no explicit networks, amd64 pinned** → runs the same locally and on Modal.

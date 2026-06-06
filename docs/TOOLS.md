@@ -20,6 +20,9 @@ Conversations (channels):
   slack conversations.unarchive  <channel>
 Chat:
   slack chat.postMessage         <channel> <text...>
+Search:
+  slack search.messages          <query terms>   # matches across all channels (noisy — returns
+                                                  # superseded/old hits too; read to disambiguate)
 Users (members):
   slack users.list                           # [{id, name, deleted}]
   slack users.info               <user>      # {id, name, real_name, email, deleted}

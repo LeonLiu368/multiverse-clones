@@ -1,107 +1,70 @@
 # Creating a new task
 
-Every task here follows the same shape: a realistic seeded workspace, a single **injected
-fault**, a **vague instruction**, a reference **oracle** fix, and a **verifier** that reads the
-result back over REST. Because the service image is identical across tasks, authoring a new one
-means changing only a few small files.
+These are **observability + codebase** tasks: a failing test suite at `/workspace` whose fix
+depends on a fact that lives **only** in heavy, noisy Slack history. The full authoring
+checklist (with the anti-reward-hacking rules and the pytest-collection gotcha) is encoded in
+the **`slack-observability-task-builder`** skill — invoke it when building one. This page is the
+quick version.
 
 ## What types of tasks fit
+Anything where the *fix-critical* information can be buried in chat and is hard to recover, e.g.:
+- **buried-spec** — implement a function whose policy was agreed in chat (superseded proposals).
+- **contract-drift** — update client code to an API change announced in chat (mid-thread correction).
+- **incident-fix-report** — diagnose a bug from an incident thread, fix it, **and** post a
+  postmortem (action beyond coding).
+Other ideas: a magic constant/threshold decided in chat; a config value; a data-format detail in
+pasted logs; "who owns X / what was decided" that gates the change.
 
-Anything an admin can break and fix in a Mattermost workspace, where the fixed state is checkable
-over the REST API. Some ideas, by tool group:
+## The two bars (non-negotiable)
+1. **Tool use is CRITICAL** — the fact is only in chat; a hidden grader (parameters only in chat)
+   makes the answer unobtainable from the repo or visible tests.
+2. **Tool use is NON-TRIVIAL** — superseded/contradictory values, a decision spread across a
+   thread, off-channel traps, a red herring. `search.messages` should surface the *wrong* hits
+   too, so the agent must read and disambiguate.
 
-- **Users** — deactivated user, user removed from a team/channel, wrong email/username.
-- **Channels** — archived channel, channel that should be public but is private, missing channel.
-- **Roles/permissions** — a user who should be admin isn't; a role missing a permission.
-- **Config** — a server setting flipped the wrong way (file uploads, sign-up, message retention…).
-- **Bots / webhooks** — a disabled integration bot, a missing/incorrect webhook.
-- **Posts / channels content** — required message missing, something needs to be posted/pinned.
-
-The "observability" flavor comes from giving the agent only the **symptom** and making the broken
-state **hidden from the default view**, so it has to explore the right tool/flag to find it.
-
-## Anatomy of a task
-
+## Anatomy (copy an existing task — e.g. `buried-spec`)
 ```
 tasks/<name>/
-  task.toml            # Harbor task config (incl. the MCP server registration)
-  instruction.md       # the symptom only — minimal hand-holding
+  task.toml            # service="slack", tools=["slack"], workdir="/workspace", mcp_servers=[slack]
+  instruction.md       # the symptom + "use the slack tool"; NEVER the buried fact
   environment/
-    Dockerfile                 # client image (slack facade over mmctl/mmctl-mcp) — copy as-is
-    client-entrypoint.sh       # authenticates the connection, waits for seed     — copy as-is
-    slack                      # the `slack` CLI (Slack Web API style)            — copy as-is
-    slack-mcp.sh               # the `slack` MCP launcher                         — copy as-is
-    docker-compose.yaml        # client + mattermost                              — copy as-is
-    mattermost/
-      Dockerfile               # service image                    — copy as-is
-      entrypoint.sh            # boot + seed + run fault.sh        — copy as-is
-      seed.py                  # workspace seeder                  — copy as-is
-    data/mattermost/
-      scraped.json             # the seed workspace (can be shared across tasks)
-      fault.sh   ← YOU WRITE   # injects the "issue" over REST at seed time
-  solution/solve.sh   ← YOU WRITE   # the oracle fix (uses the `slack` tool)
+    Dockerfile, slack, slack-mcp.sh, client-entrypoint.sh    # the client + slack facade (copy)
+    mattermost/{Dockerfile,entrypoint.sh,seed.py}            # chat backend + seeder (copy)
+    data/mattermost/{generate.py, scraped.json}  ← YOU WRITE generate.py, commit scraped.json
+    codebase/          ← YOU WRITE: working module(s) [tests pass] + a stub/buggy target [fails],
+                         with a breadcrumb (docstring/README/error) pointing to chat
+  solution/solve.sh    ← YOU WRITE: oracle (edits only /workspace; for incident-style, also posts)
   tests/
-    test.sh                    # orchestrator                     — copy as-is
-    run_verifier.sh ← YOU WRITE  # reads state back over REST, writes reward
+    test.sh                                  # orchestration (copy)
+    run_verifier.sh    ← YOU WRITE/ADAPT: grade in /tmp; reward by pytest exit (+ any comms check)
+    trusted/           ← YOU WRITE: canonical visible tests + the HIDDEN test_grade_*.py
 ```
+To create one, copy `buried-spec`, then swap: `codebase/`, `data/mattermost/generate.py` (+regen
+`scraped.json`), `tests/trusted/*`, `solution/solve.sh`, `instruction.md`, `task.toml`, and the
+`package`/`grade` names in `run_verifier.sh`. Give the client image a unique default tag in
+`docker-compose.yaml` (e.g. `${...:-<name>-client:local}`) to avoid local cross-task collisions.
 
-To create a task, **copy an existing one** (e.g. `responder-lockout`) and edit four files:
-`instruction.md`, `data/mattermost/fault.sh`, `solution/solve.sh`, `tests/run_verifier.sh`
-(plus the `name`/`description` in `task.toml`). Everything else is identical boilerplate.
+## Rules that keep it reliable (from hard-won experience)
+- **Visible tests are invariant-only** — never encode the buried parameters.
+- **Hidden grader MUST be named `test_grade_*.py`** — pytest only auto-collects `test_*.py`; a
+  `grade_*.py` silently won't run and grading degrades to the invariants (a false-pass hole).
+- **Grade in a fresh verifier-owned dir** (`/tmp/grade.$$`): copy the candidate package + trusted
+  tests there and run pytest there — never run `/workspace/tests`. Defeats test tampering.
+- **Seed via REST, mutate via REST** (the shared `seed.py` creates users/channels via REST,
+  posts via SQL for timestamps). Raw-SQL entities don't behave under app ops.
+- **Key reward on the fixed state.** Confirm a *deliberately wrong* impl that satisfies the
+  invariants still scores 0 (proves the grader runs and bites).
 
-## The four files you write
-
-**1. `data/mattermost/fault.sh`** — runs *inside the mattermost container* at seed time (server
-on `localhost:8065`). Log in as admin, then break one thing over REST:
-
+## Validate before shipping (always)
 ```bash
-TOK="$(curl -s -i -X POST http://localhost:8065/api/v4/users/login -H 'Content-Type: application/json' \
-  -d '{"login_id":"admin@demo.local","password":"AdminUser123!"}' | tr -d '\r' | awk 'tolower($1)=="token:"{print $2}')"
-# ... use $TOK to deactivate a user / archive a channel / flip a config flag ...
-```
-
-**2. `instruction.md`** — state only the **symptom** and that the agent has the `slack` tool
-(CLI + MCP). Do not reveal the root cause or the method to run.
-
-**3. `solution/solve.sh`** — the oracle, runs *in the client* with the `slack` tool ready:
-
-```bash
-slack admin.users.setActive carol true   # whatever single `slack` method fixes the fault
-```
-
-If your fix needs a `slack` method that doesn't exist yet, add it to the `environment/slack`
-wrapper (map it to the right `mmctl`/REST call) and keep the agent-facing name Slack-flavored.
-
-**4. `tests/run_verifier.sh`** — runs *in the client*, logs in as admin, reads the fixed state
-over REST, and writes `0`/`1` to `/logs/verifier/reward.txt`. Keep the check **outcome-based**
-(does the end state match?) so any valid fix the agent finds passes.
-
-## Two rules that keep it reliable
-
-- **Seed entities via REST, mutate via REST.** If your fault or fix touches users/channels/roles,
-  make sure those entities were created through the API (the shared `seed.py` already does this).
-  Raw-SQL entities don't respond correctly to app-level operations — see
-  [ENVIRONMENT.md](ENVIRONMENT.md).
-- **Key the reward on the *fixed* state, set the *broken* state at seed time.** That guarantees a
-  no-op agent scores 0 and the oracle scores 1.
-
-## Validate before shipping
-
-```bash
-cd tasks/<name>/environment
-docker compose up -d --build
+cd tasks/<name>/environment && docker compose up -d --build
 docker cp ../tests client:/tests && docker cp ../solution client:/solution
-docker compose exec -T client bash /tests/run_verifier.sh    # expect reward=0 (fault present)
+docker compose exec -T client bash /tests/run_verifier.sh                      # nop -> 0
+# wrong-but-invariant impl -> must still be 0  (write it, re-run)
 docker compose exec -T client bash /solution/solve.sh
-docker compose exec -T client bash /tests/run_verifier.sh    # expect reward=1 (fixed)
+docker compose exec -T client bash /tests/run_verifier.sh                      # oracle -> 1
 docker compose down -v
 ```
-
-Then add the task name to `oddish/manifest.yaml` and `oddish/sweep.yaml`.
-
-## Harbor compatibility checklist
-- `task.toml` validates against Harbor's model (the `mcp_servers` entry uses `name` / `transport
-  = "stdio"` / `command` / `args`).
-- The build context is self-contained (no references outside the task dir).
-- The compose file has **no explicit `networks:`** and pins `platform: linux/amd64`.
-- `nop` → 0 and `oracle` → 1 both verified locally.
+Also: `task.toml` validates against Harbor's `TaskConfig`/`MCPServerConfig`; compose has no
+explicit `networks:`; both services pin `platform: linux/amd64`. For deeper QA run the
+`skillz:harbor-task-audit` and `verifier-attack-lab` skills.
