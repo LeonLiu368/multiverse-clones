@@ -1,0 +1,31 @@
+schema_version = "1.2"
+name = "abundant-slack-clone/mattermost-incident-response"
+description = "Multi-service Mattermost task: the agent drops into a real (seeded) Mattermost workspace and runs a multi-step incident response with mmctl — investigate #incidents, post the root cause, open a dedicated incident channel, and post a status summary. Verified deterministically via the Mattermost REST API (nop=0, oracle=1)."
+
+[metadata]
+category = "knowledge-work"
+service = "mattermost"
+tools = ["mmctl", "mmctl-mcp"]
+tags = ["mattermost", "multi-service", "cli", "mcp", "incident-response", "operate-in-chat"]
+
+[agent]
+timeout_sec = 1800
+
+[verifier]
+timeout_sec = 600
+
+[environment]
+cpus = 2
+memory_mb = 4096
+storage_mb = 12288
+gpus = 0
+allow_internet = true
+workdir = "/app"
+build_timeout_sec = 1800
+
+# MCP server made available to the agent (Harbor MCPServerConfig schema). The agent runtime
+# launches this stdio server and auto-discovers its ~60 mmctl-backed tools. The wrapper
+# authenticates mmctl over the remote (TCP) context before handing off stdio.
+mcp_servers = [
+  { name = "mattermost", transport = "stdio", command = "/usr/local/bin/mcp-mmctl", args = [] },
+]
