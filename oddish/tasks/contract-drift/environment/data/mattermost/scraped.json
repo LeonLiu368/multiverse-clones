@@ -1,0 +1,3250 @@
+{
+ "messages": [
+  {
+   "channel": "general",
+   "author": "peggy",
+   "content": "morning all \u2615",
+   "timestamp": "2024-10-07T09:24:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "erin",
+   "content": "morning all \u2615",
+   "timestamp": "2024-10-07T09:26:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "victor",
+   "content": "rebased, CI green",
+   "timestamp": "2024-10-07T09:27:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "erin",
+   "content": "coffee machine broken again",
+   "timestamp": "2024-10-07T10:13:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "carol",
+   "content": "merged #780",
+   "timestamp": "2024-10-07T10:43:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "victor",
+   "content": "bumped the http client to 1.4",
+   "timestamp": "2024-10-07T10:47:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "victor",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-10-07T10:53:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "trent",
+   "content": "added retries to the webhook worker",
+   "timestamp": "2024-10-07T11:18:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "alice",
+   "content": "OpenAPI spec is regenerated nightly now",
+   "timestamp": "2024-10-07T11:41:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "victor",
+   "content": "lunch order by noon",
+   "timestamp": "2024-10-07T11:51:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "grace",
+   "content": "please version new endpoints from day one",
+   "timestamp": "2024-10-07T11:54:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "niaj",
+   "content": "rebased, CI green",
+   "timestamp": "2024-10-07T12:10:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "peggy",
+   "content": "TIL you can pin messages",
+   "timestamp": "2024-10-07T12:29:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "heidi",
+   "content": "merged #780",
+   "timestamp": "2024-10-07T12:41:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "bob",
+   "content": "oncall handoff: nothing active",
+   "timestamp": "2024-10-07T12:41:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "heidi",
+   "content": "please version new endpoints from day one",
+   "timestamp": "2024-10-07T12:46:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "dave",
+   "content": "OpenAPI spec is regenerated nightly now",
+   "timestamp": "2024-10-07T12:47:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "erin",
+   "content": "reminder: read the API style guide",
+   "timestamp": "2024-10-07T12:48:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "frank",
+   "content": "wifi flaky again, IT on it",
+   "timestamp": "2024-10-07T12:59:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "peggy",
+   "content": "merged #780",
+   "timestamp": "2024-10-07T13:10:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "peggy",
+   "content": "customer asked about bulk export again",
+   "timestamp": "2024-10-07T13:18:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "alice",
+   "content": "trial conversion analytics please",
+   "timestamp": "2024-10-07T13:39:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "trent",
+   "content": "welcome to the new folks \ud83d\udc4b",
+   "timestamp": "2024-10-07T13:39:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "victor",
+   "content": "added an index on orders(created_at)",
+   "timestamp": "2024-10-07T13:55:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "niaj",
+   "content": "please version new endpoints from day one",
+   "timestamp": "2024-10-07T14:03:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "olivia",
+   "content": "draft PRD for Q4 in the drive",
+   "timestamp": "2024-10-07T14:16:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "niaj",
+   "content": "the rate limiter needs tuning",
+   "timestamp": "2024-10-07T14:22:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "erin",
+   "content": "flaky test in test_scheduler again",
+   "timestamp": "2024-10-07T14:31:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "erin",
+   "content": "flaky test in test_scheduler again",
+   "timestamp": "2024-10-07T14:44:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "bob",
+   "content": "the webhooks signing secret rotates next week",
+   "timestamp": "2024-10-07T14:44:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "judy",
+   "content": "the rate limiter needs tuning",
+   "timestamp": "2024-10-07T14:52:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "carol",
+   "content": "added an index on orders(created_at)",
+   "timestamp": "2024-10-07T15:26:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "alice",
+   "content": "added retries to the webhook worker",
+   "timestamp": "2024-10-07T15:28:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "bob",
+   "content": "the webhooks signing secret rotates next week",
+   "timestamp": "2024-10-07T15:38:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "mallory",
+   "content": "kudos to support for clearing the backlog \ud83d\ude4c",
+   "timestamp": "2024-10-07T15:50:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "niaj",
+   "content": "deprecating the old /v1 endpoints soon",
+   "timestamp": "2024-10-07T15:53:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "trent",
+   "content": "pricing page copy refresh",
+   "timestamp": "2024-10-07T16:11:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "victor",
+   "content": "trial conversion analytics please",
+   "timestamp": "2024-10-07T16:31:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "grace",
+   "content": "kudos to support for clearing the backlog \ud83d\ude4c",
+   "timestamp": "2024-10-07T16:48:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "peggy",
+   "content": "[resolved] email provider degraded",
+   "timestamp": "2024-10-07T17:03:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "frank",
+   "content": "trial conversion analytics please",
+   "timestamp": "2024-10-07T17:12:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "ivan",
+   "content": "[resolved] email provider degraded",
+   "timestamp": "2024-10-07T17:18:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "erin",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-10-07T17:29:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "heidi",
+   "content": "db failover done",
+   "timestamp": "2024-10-07T17:32:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "peggy",
+   "content": "PR #771 up for review",
+   "timestamp": "2024-10-07T17:37:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "ivan",
+   "content": "the rate limiter needs tuning",
+   "timestamp": "2024-10-07T17:47:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "frank",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-10-07T17:47:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "mallory",
+   "content": "welcome to the new folks \ud83d\udc4b",
+   "timestamp": "2024-10-07T17:49:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "heidi",
+   "content": "flaky test in test_scheduler again",
+   "timestamp": "2024-10-08T09:05:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "trent",
+   "content": "all-hands moved to Thursday",
+   "timestamp": "2024-10-08T09:10:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "trent",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-10-08T09:41:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "trent",
+   "content": "added tracing to the gateway",
+   "timestamp": "2024-10-08T09:54:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "ivan",
+   "content": "oncall handoff: nothing active",
+   "timestamp": "2024-10-08T10:00:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "judy",
+   "content": "draft PRD for Q4 in the drive",
+   "timestamp": "2024-10-08T10:24:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "erin",
+   "content": "the rate limiter needs tuning",
+   "timestamp": "2024-10-08T10:31:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "victor",
+   "content": "pricing page copy refresh",
+   "timestamp": "2024-10-08T10:46:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "carol",
+   "content": "welcome to the new folks \ud83d\udc4b",
+   "timestamp": "2024-10-08T10:50:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "heidi",
+   "content": "[resolved] email provider degraded",
+   "timestamp": "2024-10-08T10:54:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "peggy",
+   "content": "added tracing to the gateway",
+   "timestamp": "2024-10-08T11:00:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "trent",
+   "content": "the charge body is just {amount, account} right? that's what the old client sends",
+   "timestamp": "2024-10-08T11:00:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "carol",
+   "content": "pricing page copy refresh",
+   "timestamp": "2024-10-08T11:01:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "mallory",
+   "content": "i told a customer charges are in dollars \u2014 is that still true?",
+   "timestamp": "2024-10-08T11:33:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "ivan",
+   "content": "flaky test in test_scheduler again",
+   "timestamp": "2024-10-08T11:44:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "carol",
+   "content": "\ud83c\udf89 work anniversary",
+   "timestamp": "2024-10-08T11:51:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "judy",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-10-08T12:01:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "carol",
+   "content": "TIL you can pin messages",
+   "timestamp": "2024-10-08T12:23:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "erin",
+   "content": "[resolved] email provider degraded",
+   "timestamp": "2024-10-08T12:25:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "ivan",
+   "content": "psql connection pool maxed during the spike",
+   "timestamp": "2024-10-08T12:29:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "erin",
+   "content": "merged #780",
+   "timestamp": "2024-10-08T12:40:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "alice",
+   "content": "pricing page copy refresh",
+   "timestamp": "2024-10-08T12:45:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "ci-bot",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-10-08T13:01:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "ivan",
+   "content": "lunch order by noon",
+   "timestamp": "2024-10-08T13:03:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "mallory",
+   "content": "migrating the jobs queue Tuesday",
+   "timestamp": "2024-10-08T13:27:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "erin",
+   "content": "please version new endpoints from day one",
+   "timestamp": "2024-10-08T13:29:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "dave",
+   "content": "welcome to the new folks \ud83d\udc4b",
+   "timestamp": "2024-10-08T13:38:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "alice",
+   "content": "customer asked about bulk export again",
+   "timestamp": "2024-10-08T13:39:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "heidi",
+   "content": "coffee machine broken again",
+   "timestamp": "2024-10-08T13:42:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "alice",
+   "content": "changelog: bumped the search API page size cap to 200",
+   "timestamp": "2024-10-08T13:45:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "carol",
+   "content": "please version new endpoints from day one",
+   "timestamp": "2024-10-08T13:52:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "ivan",
+   "content": "[resolved] email provider degraded",
+   "timestamp": "2024-10-08T14:08:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "ivan",
+   "content": "TIL you can pin messages",
+   "timestamp": "2024-10-08T14:09:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "peggy",
+   "content": "free snacks in the kitchen",
+   "timestamp": "2024-10-08T14:17:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "frank",
+   "content": "who took my mug",
+   "timestamp": "2024-10-08T14:21:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "erin",
+   "content": "\ud83c\udf89 work anniversary",
+   "timestamp": "2024-10-08T14:26:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "trent",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-10-08T14:47:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "niaj",
+   "content": "pricing page copy refresh",
+   "timestamp": "2024-10-08T14:58:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "dave",
+   "content": "the rate limiter needs tuning",
+   "timestamp": "2024-10-08T15:15:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "victor",
+   "content": "migrating the jobs queue Tuesday",
+   "timestamp": "2024-10-08T15:58:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "niaj",
+   "content": "psql connection pool maxed during the spike",
+   "timestamp": "2024-10-08T16:14:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "carol",
+   "content": "OpenAPI spec is regenerated nightly now",
+   "timestamp": "2024-10-08T16:17:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "victor",
+   "content": "the webhooks signing secret rotates next week",
+   "timestamp": "2024-10-08T16:25:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "victor",
+   "content": "checkout latency normal",
+   "timestamp": "2024-10-08T16:30:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "bob",
+   "content": "roadmap review next week",
+   "timestamp": "2024-10-08T16:34:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "heidi",
+   "content": "morning all \u2615",
+   "timestamp": "2024-10-08T16:39:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "trent",
+   "content": "bumped the http client to 1.4",
+   "timestamp": "2024-10-08T16:47:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "dave",
+   "content": "customer asked about bulk export again",
+   "timestamp": "2024-10-08T16:49:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "erin",
+   "content": "trial conversion analytics please",
+   "timestamp": "2024-10-08T16:57:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "dave",
+   "content": "deprecation calendar is in the wiki",
+   "timestamp": "2024-10-08T17:01:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "frank",
+   "content": "the nightly batch ran long, looking",
+   "timestamp": "2024-10-08T17:12:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "victor",
+   "content": "moving secrets to vault this sprint",
+   "timestamp": "2024-10-08T17:29:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "victor",
+   "content": "free snacks in the kitchen",
+   "timestamp": "2024-10-08T17:39:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "dave",
+   "content": "added an index on orders(created_at)",
+   "timestamp": "2024-10-09T09:16:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "olivia",
+   "content": "all-hands moved to Thursday",
+   "timestamp": "2024-10-09T09:17:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "victor",
+   "content": "deprecating the old /v1 endpoints soon",
+   "timestamp": "2024-10-09T09:34:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "alice",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-10-09T09:39:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "heidi",
+   "content": "the rate limiter needs tuning",
+   "timestamp": "2024-10-09T09:43:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "alice",
+   "content": "morning all \u2615",
+   "timestamp": "2024-10-09T09:46:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "alice",
+   "content": "oncall handoff: nothing active",
+   "timestamp": "2024-10-09T10:40:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "ivan",
+   "content": "psql connection pool maxed during the spike",
+   "timestamp": "2024-10-09T11:00:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "mallory",
+   "content": "the webhooks signing secret rotates next week",
+   "timestamp": "2024-10-09T11:05:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "olivia",
+   "content": "does the payments API take dollars or cents? i can never remember",
+   "timestamp": "2024-10-09T11:11:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "victor",
+   "content": "morning all \u2615",
+   "timestamp": "2024-10-09T11:38:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "ivan",
+   "content": "staging deploy stuck again?",
+   "timestamp": "2024-10-09T11:54:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "carol",
+   "content": "[resolved] email provider degraded",
+   "timestamp": "2024-10-09T11:56:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "peggy",
+   "content": "kudos to support for clearing the backlog \ud83d\ude4c",
+   "timestamp": "2024-10-09T11:56:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "peggy",
+   "content": "migrating the jobs queue Tuesday",
+   "timestamp": "2024-10-09T12:15:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "dave",
+   "content": "psql connection pool maxed during the spike",
+   "timestamp": "2024-10-09T12:44:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "alice",
+   "content": "psql connection pool maxed during the spike",
+   "timestamp": "2024-10-09T12:49:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "grace",
+   "content": "the webhooks signing secret rotates next week",
+   "timestamp": "2024-10-09T12:53:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "peggy",
+   "content": "rebased, CI green",
+   "timestamp": "2024-10-09T13:14:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "grace",
+   "content": "the nightly batch ran long, looking",
+   "timestamp": "2024-10-09T13:21:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "olivia",
+   "content": "pricing page copy refresh",
+   "timestamp": "2024-10-09T13:38:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "mallory",
+   "content": "added an index on orders(created_at)",
+   "timestamp": "2024-10-09T13:46:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "trent",
+   "content": "please version new endpoints from day one",
+   "timestamp": "2024-10-09T13:58:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "ivan",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-10-09T14:19:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "peggy",
+   "content": "the rate limiter needs tuning",
+   "timestamp": "2024-10-09T14:44:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "dave",
+   "content": "welcome to the new folks \ud83d\udc4b",
+   "timestamp": "2024-10-09T14:52:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "dave",
+   "content": "the nightly batch ran long, looking",
+   "timestamp": "2024-10-09T15:35:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "dave",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-10-09T15:45:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "frank",
+   "content": "anyone at the meetup tonight?",
+   "timestamp": "2024-10-09T16:00:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "frank",
+   "content": "psql connection pool maxed during the spike",
+   "timestamp": "2024-10-09T16:00:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "bob",
+   "content": "TIL you can pin messages",
+   "timestamp": "2024-10-09T16:01:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "alice",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-10-09T16:02:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "heidi",
+   "content": "deprecation calendar is in the wiki",
+   "timestamp": "2024-10-09T16:06:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "grace",
+   "content": "please version new endpoints from day one",
+   "timestamp": "2024-10-09T16:33:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "bob",
+   "content": "coffee machine broken again",
+   "timestamp": "2024-10-09T17:24:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "trent",
+   "content": "who took my mug",
+   "timestamp": "2024-10-09T17:35:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "judy",
+   "content": "who took my mug",
+   "timestamp": "2024-10-09T17:50:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "niaj",
+   "content": "welcome to the new folks \ud83d\udc4b",
+   "timestamp": "2024-10-09T17:53:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "mallory",
+   "content": "the nightly batch ran long, looking",
+   "timestamp": "2024-10-09T17:53:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "alice",
+   "content": "free snacks in the kitchen",
+   "timestamp": "2024-10-10T09:01:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "heidi",
+   "content": "anyone at the meetup tonight?",
+   "timestamp": "2024-10-10T09:42:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "heidi",
+   "content": "roadmap review next week",
+   "timestamp": "2024-10-10T10:02:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "trent",
+   "content": "roadmap review next week",
+   "timestamp": "2024-10-10T10:09:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "heidi",
+   "content": "roadmap review next week",
+   "timestamp": "2024-10-10T10:11:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "mallory",
+   "content": "draft PRD for Q4 in the drive",
+   "timestamp": "2024-10-10T10:51:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "trent",
+   "content": "please version new endpoints from day one",
+   "timestamp": "2024-10-10T10:51:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "victor",
+   "content": "morning all \u2615",
+   "timestamp": "2024-10-10T10:54:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "carol",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-10-10T11:07:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "frank",
+   "content": "Heads up: the charges API v1 is being deprecated. v2 is live on the gateway \u2014 please migrate clients this sprint. The v1 endpoint returns 410 after the 15th.",
+   "timestamp": "2024-10-10T11:08:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "victor",
+   "content": "old payments code posts {\"amount\": 12.5, \"account\": \"cus_x\"} to /v1/charges, fyi",
+   "timestamp": "2024-10-10T11:22:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "trent",
+   "content": "reminder: read the API style guide",
+   "timestamp": "2024-10-10T11:26:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "erin",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-10-10T11:31:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "frank",
+   "content": "all-hands moved to Thursday",
+   "timestamp": "2024-10-10T12:06:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "dave",
+   "content": "moving secrets to vault this sprint",
+   "timestamp": "2024-10-10T12:07:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "erin",
+   "content": "merged #780",
+   "timestamp": "2024-10-10T12:32:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "mallory",
+   "content": "changelog: bumped the search API page size cap to 200",
+   "timestamp": "2024-10-10T12:44:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "mallory",
+   "content": "\ud83c\udf89 work anniversary",
+   "timestamp": "2024-10-10T12:51:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "mallory",
+   "content": "added tracing to the gateway",
+   "timestamp": "2024-10-10T13:11:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "peggy",
+   "content": "[resolved] email provider degraded",
+   "timestamp": "2024-10-10T13:22:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "trent",
+   "content": "migrating the jobs queue Tuesday",
+   "timestamp": "2024-10-10T13:37:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "niaj",
+   "content": "\ud83c\udf89 work anniversary",
+   "timestamp": "2024-10-10T13:39:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "grace",
+   "content": "who took my mug",
+   "timestamp": "2024-10-10T13:52:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "alice",
+   "content": "customer asked about bulk export again",
+   "timestamp": "2024-10-10T14:12:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "frank",
+   "content": "psql connection pool maxed during the spike",
+   "timestamp": "2024-10-10T14:14:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "alice",
+   "content": "added retries to the webhook worker",
+   "timestamp": "2024-10-10T14:14:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "bob",
+   "content": "migrating the jobs queue Tuesday",
+   "timestamp": "2024-10-10T14:20:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "grace",
+   "content": "moving secrets to vault this sprint",
+   "timestamp": "2024-10-10T15:02:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "frank",
+   "content": "all-hands moved to Thursday",
+   "timestamp": "2024-10-10T15:03:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "victor",
+   "content": "changelog: bumped the search API page size cap to 200",
+   "timestamp": "2024-10-10T15:17:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "victor",
+   "content": "migrating the jobs queue Tuesday",
+   "timestamp": "2024-10-10T15:31:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "pagerduty",
+   "content": "[resolved] email provider degraded",
+   "timestamp": "2024-10-10T15:40:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "niaj",
+   "content": "added tracing to the gateway",
+   "timestamp": "2024-10-10T15:47:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "bob",
+   "content": "free snacks in the kitchen",
+   "timestamp": "2024-10-10T15:50:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "erin",
+   "content": "db failover done",
+   "timestamp": "2024-10-10T17:02:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "bob",
+   "content": "please version new endpoints from day one",
+   "timestamp": "2024-10-10T17:08:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "dave",
+   "content": "changelog: bumped the search API page size cap to 200",
+   "timestamp": "2024-10-10T17:44:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "judy",
+   "content": "please version new endpoints from day one",
+   "timestamp": "2024-10-10T17:48:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "frank",
+   "content": "v2 body: POST /v2/charges with a top-level api_version: 2, and fields amount_cents (integer MINOR units \u2014 cents, not dollars), customer_id, currency. idempotency_key is now required on every charge.",
+   "timestamp": "2024-10-10T18:58:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "grace",
+   "content": "quick q \u2014 is the field customer_id or customer? the regenerated OpenAPI spec shows `customer`.",
+   "timestamp": "2024-10-10T20:49:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "frank",
+   "content": "Good catch \u2014 we renamed it to `customer` right before GA, the first message above is stale. So the v2 body is: {api_version: 2, amount_cents, customer, currency, idempotency_key}.",
+   "timestamp": "2024-10-11T01:54:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "heidi",
+   "content": "and currency \u2014 required or optional?",
+   "timestamp": "2024-10-11T08:04:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "heidi",
+   "content": "who owns the refunds worker now?",
+   "timestamp": "2024-10-11T09:07:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "erin",
+   "content": "PR #771 up for review",
+   "timestamp": "2024-10-11T09:14:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "dave",
+   "content": "deprecation calendar is in the wiki",
+   "timestamp": "2024-10-11T09:21:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "mallory",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-10-11T09:33:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "grace",
+   "content": "\ud83c\udf89 work anniversary",
+   "timestamp": "2024-10-11T09:59:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "grace",
+   "content": "welcome to the new folks \ud83d\udc4b",
+   "timestamp": "2024-10-11T10:11:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "mallory",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-10-11T10:18:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "grace",
+   "content": "roadmap review next week",
+   "timestamp": "2024-10-11T10:31:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "olivia",
+   "content": "pricing page copy refresh",
+   "timestamp": "2024-10-11T10:39:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "judy",
+   "content": "the webhooks signing secret rotates next week",
+   "timestamp": "2024-10-11T11:12:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "victor",
+   "content": "free snacks in the kitchen",
+   "timestamp": "2024-10-11T11:15:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "heidi",
+   "content": "changelog: bumped the search API page size cap to 200",
+   "timestamp": "2024-10-11T11:33:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "mallory",
+   "content": "who took my mug",
+   "timestamp": "2024-10-11T11:36:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "judy",
+   "content": "anyone at the meetup tonight?",
+   "timestamp": "2024-10-11T11:40:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "heidi",
+   "content": "draft PRD for Q4 in the drive",
+   "timestamp": "2024-10-11T12:31:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "trent",
+   "content": "psql connection pool maxed during the spike",
+   "timestamp": "2024-10-11T12:38:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "mallory",
+   "content": "moving secrets to vault this sprint",
+   "timestamp": "2024-10-11T12:39:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "alice",
+   "content": "draft PRD for Q4 in the drive",
+   "timestamp": "2024-10-11T12:51:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "bob",
+   "content": "roadmap review next week",
+   "timestamp": "2024-10-11T13:14:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "niaj",
+   "content": "the nightly batch ran long, looking",
+   "timestamp": "2024-10-11T13:19:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "mallory",
+   "content": "oncall handoff: nothing active",
+   "timestamp": "2024-10-11T13:53:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "frank",
+   "content": "Send `currency` explicitly. It defaults to \"usd\" server-side, but clients should always include it. Recap of the agreed v2 charge body: api_version 2; amount_cents (int cents); customer; currency (\"usd\" unless otherwise); idempotency_key (required). v1's `amount` (dollars) and `account` are both gone.",
+   "timestamp": "2024-10-11T13:56:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "ivan",
+   "content": "the rate limiter needs tuning",
+   "timestamp": "2024-10-11T13:57:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "bob",
+   "content": "TIL you can pin messages",
+   "timestamp": "2024-10-11T14:19:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "mallory",
+   "content": "flaky test in test_scheduler again",
+   "timestamp": "2024-10-11T14:24:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "carol",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-10-11T14:42:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "heidi",
+   "content": "please version new endpoints from day one",
+   "timestamp": "2024-10-11T14:52:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "victor",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-10-11T15:14:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "ci-bot",
+   "content": "oncall handoff: nothing active",
+   "timestamp": "2024-10-11T15:33:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "heidi",
+   "content": "moving secrets to vault this sprint",
+   "timestamp": "2024-10-11T15:39:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "heidi",
+   "content": "flaky test in test_scheduler again",
+   "timestamp": "2024-10-11T15:43:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "frank",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-10-11T15:44:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "bob",
+   "content": "welcome to the new folks \ud83d\udc4b",
+   "timestamp": "2024-10-11T15:57:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "trent",
+   "content": "draft PRD for Q4 in the drive",
+   "timestamp": "2024-10-11T16:51:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "carol",
+   "content": "pricing page copy refresh",
+   "timestamp": "2024-10-11T17:00:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "judy",
+   "content": "psql connection pool maxed during the spike",
+   "timestamp": "2024-10-11T17:02:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "ivan",
+   "content": "\ud83d\udc4d updating payments.charge.build_charge_request now.",
+   "timestamp": "2024-10-11T17:21:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "frank",
+   "content": "roadmap review next week",
+   "timestamp": "2024-10-11T17:37:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "peggy",
+   "content": "customer asked about bulk export again",
+   "timestamp": "2024-10-11T17:41:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "victor",
+   "content": "TIL you can pin messages",
+   "timestamp": "2024-10-12T09:09:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "olivia",
+   "content": "lunch order by noon",
+   "timestamp": "2024-10-12T09:43:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "heidi",
+   "content": "added retries to the webhook worker",
+   "timestamp": "2024-10-12T09:57:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "peggy",
+   "content": "customer asked about bulk export again",
+   "timestamp": "2024-10-12T10:06:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "niaj",
+   "content": "changelog: bumped the search API page size cap to 200",
+   "timestamp": "2024-10-12T10:28:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "trent",
+   "content": "\ud83c\udf89 work anniversary",
+   "timestamp": "2024-10-12T10:33:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "heidi",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-10-12T10:39:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "victor",
+   "content": "coffee machine broken again",
+   "timestamp": "2024-10-12T10:42:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "frank",
+   "content": "PR #771 up for review",
+   "timestamp": "2024-10-12T10:54:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "deploybot",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-10-12T11:03:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "mallory",
+   "content": "the rate limiter needs tuning",
+   "timestamp": "2024-10-12T11:32:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "trent",
+   "content": "welcome to the new folks \ud83d\udc4b",
+   "timestamp": "2024-10-12T11:39:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "mallory",
+   "content": "draft PRD for Q4 in the drive",
+   "timestamp": "2024-10-12T11:46:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "carol",
+   "content": "PSA: rotate your tokens this week",
+   "timestamp": "2024-10-12T11:47:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "niaj",
+   "content": "the webhooks signing secret rotates next week",
+   "timestamp": "2024-10-12T12:06:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "peggy",
+   "content": "PSA: rotate your tokens this week",
+   "timestamp": "2024-10-12T13:00:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "peggy",
+   "content": "migrating the jobs queue Tuesday",
+   "timestamp": "2024-10-12T13:18:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "erin",
+   "content": "reminder: read the API style guide",
+   "timestamp": "2024-10-12T14:03:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "ivan",
+   "content": "lunch order by noon",
+   "timestamp": "2024-10-12T14:32:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "grace",
+   "content": "lunch order by noon",
+   "timestamp": "2024-10-12T14:39:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "heidi",
+   "content": "[resolved] email provider degraded",
+   "timestamp": "2024-10-12T14:43:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "bob",
+   "content": "all-hands moved to Thursday",
+   "timestamp": "2024-10-12T14:53:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "dave",
+   "content": "anyone at the meetup tonight?",
+   "timestamp": "2024-10-12T15:08:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "olivia",
+   "content": "TIL you can pin messages",
+   "timestamp": "2024-10-12T15:16:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "olivia",
+   "content": "draft PRD for Q4 in the drive",
+   "timestamp": "2024-10-12T15:32:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "olivia",
+   "content": "added retries to the webhook worker",
+   "timestamp": "2024-10-12T15:52:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "peggy",
+   "content": "roadmap review next week",
+   "timestamp": "2024-10-12T16:17:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "erin",
+   "content": "welcome to the new folks \ud83d\udc4b",
+   "timestamp": "2024-10-12T16:21:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "erin",
+   "content": "trial conversion analytics please",
+   "timestamp": "2024-10-12T16:29:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "mallory",
+   "content": "staging deploy stuck again?",
+   "timestamp": "2024-10-12T16:36:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "carol",
+   "content": "pricing page copy refresh",
+   "timestamp": "2024-10-12T16:48:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "dave",
+   "content": "TIL you can pin messages",
+   "timestamp": "2024-10-12T17:09:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "frank",
+   "content": "the webhooks signing secret rotates next week",
+   "timestamp": "2024-10-12T17:13:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "victor",
+   "content": "added tracing to the gateway",
+   "timestamp": "2024-10-12T17:20:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "heidi",
+   "content": "added an index on orders(created_at)",
+   "timestamp": "2024-10-12T17:49:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "ivan",
+   "content": "who took my mug",
+   "timestamp": "2024-10-12T17:54:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "bob",
+   "content": "pricing page copy refresh",
+   "timestamp": "2024-10-12T17:57:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "victor",
+   "content": "customer asked about bulk export again",
+   "timestamp": "2024-10-13T09:08:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "mallory",
+   "content": "changelog: bumped the search API page size cap to 200",
+   "timestamp": "2024-10-13T09:36:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "erin",
+   "content": "the webhooks signing secret rotates next week",
+   "timestamp": "2024-10-13T09:36:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "erin",
+   "content": "rebased, CI green",
+   "timestamp": "2024-10-13T09:43:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "erin",
+   "content": "roadmap review next week",
+   "timestamp": "2024-10-13T09:57:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "mallory",
+   "content": "welcome to the new folks \ud83d\udc4b",
+   "timestamp": "2024-10-13T10:30:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "grace",
+   "content": "psql connection pool maxed during the spike",
+   "timestamp": "2024-10-13T10:32:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "victor",
+   "content": "rebased, CI green",
+   "timestamp": "2024-10-13T10:46:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "peggy",
+   "content": "OpenAPI spec is regenerated nightly now",
+   "timestamp": "2024-10-13T10:51:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "mallory",
+   "content": "added retries to the webhook worker",
+   "timestamp": "2024-10-13T10:55:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "trent",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-10-13T11:30:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "carol",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-10-13T11:38:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "trent",
+   "content": "bumped the http client to 1.4",
+   "timestamp": "2024-10-13T11:38:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "frank",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-10-13T11:43:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "peggy",
+   "content": "merged #780",
+   "timestamp": "2024-10-13T11:58:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "heidi",
+   "content": "pricing page copy refresh",
+   "timestamp": "2024-10-13T12:06:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "bob",
+   "content": "merged #780",
+   "timestamp": "2024-10-13T12:06:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "judy",
+   "content": "oncall handoff: nothing active",
+   "timestamp": "2024-10-13T12:18:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "trent",
+   "content": "draft PRD for Q4 in the drive",
+   "timestamp": "2024-10-13T12:30:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "victor",
+   "content": "changelog: bumped the search API page size cap to 200",
+   "timestamp": "2024-10-13T12:32:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "frank",
+   "content": "wifi flaky again, IT on it",
+   "timestamp": "2024-10-13T12:50:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "judy",
+   "content": "the nightly batch ran long, looking",
+   "timestamp": "2024-10-13T12:51:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "judy",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-10-13T12:55:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "alice",
+   "content": "wifi flaky again, IT on it",
+   "timestamp": "2024-10-13T13:00:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "erin",
+   "content": "customer asked about bulk export again",
+   "timestamp": "2024-10-13T13:21:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "judy",
+   "content": "changelog: bumped the search API page size cap to 200",
+   "timestamp": "2024-10-13T13:27:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "dave",
+   "content": "TIL you can pin messages",
+   "timestamp": "2024-10-13T14:00:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "dave",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-10-13T14:18:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "ivan",
+   "content": "kudos to support for clearing the backlog \ud83d\ude4c",
+   "timestamp": "2024-10-13T14:20:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "niaj",
+   "content": "the rate limiter needs tuning",
+   "timestamp": "2024-10-13T15:25:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "olivia",
+   "content": "coffee machine broken again",
+   "timestamp": "2024-10-13T15:28:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "olivia",
+   "content": "reminder: read the API style guide",
+   "timestamp": "2024-10-13T15:32:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "peggy",
+   "content": "draft PRD for Q4 in the drive",
+   "timestamp": "2024-10-13T15:47:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "peggy",
+   "content": "coffee machine broken again",
+   "timestamp": "2024-10-13T16:03:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "grace",
+   "content": "draft PRD for Q4 in the drive",
+   "timestamp": "2024-10-13T16:20:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "olivia",
+   "content": "deprecation calendar is in the wiki",
+   "timestamp": "2024-10-13T16:30:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "ci-bot",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-10-13T16:37:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "grace",
+   "content": "[resolved] email provider degraded",
+   "timestamp": "2024-10-13T16:42:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "grace",
+   "content": "the webhooks signing secret rotates next week",
+   "timestamp": "2024-10-13T16:43:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "victor",
+   "content": "lunch order by noon",
+   "timestamp": "2024-10-13T17:01:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "grace",
+   "content": "please version new endpoints from day one",
+   "timestamp": "2024-10-13T17:06:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "deploybot",
+   "content": "db failover done",
+   "timestamp": "2024-10-13T17:09:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "victor",
+   "content": "customer asked about bulk export again",
+   "timestamp": "2024-10-13T17:21:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "judy",
+   "content": "merged #780",
+   "timestamp": "2024-10-14T09:18:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "alice",
+   "content": "please version new endpoints from day one",
+   "timestamp": "2024-10-14T09:19:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "peggy",
+   "content": "OpenAPI spec is regenerated nightly now",
+   "timestamp": "2024-10-14T09:21:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "judy",
+   "content": "changelog: bumped the search API page size cap to 200",
+   "timestamp": "2024-10-14T09:54:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "mallory",
+   "content": "anyone at the meetup tonight?",
+   "timestamp": "2024-10-14T09:58:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "dave",
+   "content": "added tracing to the gateway",
+   "timestamp": "2024-10-14T09:58:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "frank",
+   "content": "OpenAPI spec is regenerated nightly now",
+   "timestamp": "2024-10-14T10:02:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "alice",
+   "content": "moving secrets to vault this sprint",
+   "timestamp": "2024-10-14T10:21:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "victor",
+   "content": "trial conversion analytics please",
+   "timestamp": "2024-10-14T10:28:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "trent",
+   "content": "changelog: bumped the search API page size cap to 200",
+   "timestamp": "2024-10-14T10:31:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "olivia",
+   "content": "staging deploy stuck again?",
+   "timestamp": "2024-10-14T10:32:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "niaj",
+   "content": "who took my mug",
+   "timestamp": "2024-10-14T10:47:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "grace",
+   "content": "deprecating the old /v1 endpoints soon",
+   "timestamp": "2024-10-14T10:55:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "mallory",
+   "content": "flaky test in test_scheduler again",
+   "timestamp": "2024-10-14T10:57:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "erin",
+   "content": "wifi flaky again, IT on it",
+   "timestamp": "2024-10-14T11:07:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "niaj",
+   "content": "PR #771 up for review",
+   "timestamp": "2024-10-14T11:22:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "erin",
+   "content": "the nightly batch ran long, looking",
+   "timestamp": "2024-10-14T11:22:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "frank",
+   "content": "free snacks in the kitchen",
+   "timestamp": "2024-10-14T11:36:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "heidi",
+   "content": "added tracing to the gateway",
+   "timestamp": "2024-10-14T11:46:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "carol",
+   "content": "deprecating the old /v1 endpoints soon",
+   "timestamp": "2024-10-14T12:04:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "erin",
+   "content": "pricing page copy refresh",
+   "timestamp": "2024-10-14T12:11:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "alice",
+   "content": "deprecation calendar is in the wiki",
+   "timestamp": "2024-10-14T12:20:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "frank",
+   "content": "checkout latency normal",
+   "timestamp": "2024-10-14T12:37:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "alice",
+   "content": "migrating the jobs queue Tuesday",
+   "timestamp": "2024-10-14T12:46:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "victor",
+   "content": "pricing page copy refresh",
+   "timestamp": "2024-10-14T13:06:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "judy",
+   "content": "coffee machine broken again",
+   "timestamp": "2024-10-14T13:15:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "frank",
+   "content": "trial conversion analytics please",
+   "timestamp": "2024-10-14T13:26:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "olivia",
+   "content": "migrating the jobs queue Tuesday",
+   "timestamp": "2024-10-14T14:15:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "olivia",
+   "content": "reminder: read the API style guide",
+   "timestamp": "2024-10-14T14:29:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "alice",
+   "content": "changelog: bumped the search API page size cap to 200",
+   "timestamp": "2024-10-14T14:37:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "niaj",
+   "content": "reminder: read the API style guide",
+   "timestamp": "2024-10-14T15:09:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "mallory",
+   "content": "[resolved] email provider degraded",
+   "timestamp": "2024-10-14T15:11:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "alice",
+   "content": "pricing page copy refresh",
+   "timestamp": "2024-10-14T15:33:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "niaj",
+   "content": "the nightly batch ran long, looking",
+   "timestamp": "2024-10-14T15:35:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "niaj",
+   "content": "deprecation calendar is in the wiki",
+   "timestamp": "2024-10-14T15:44:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "niaj",
+   "content": "psql connection pool maxed during the spike",
+   "timestamp": "2024-10-14T15:57:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "pagerduty",
+   "content": "oncall handoff: nothing active",
+   "timestamp": "2024-10-14T15:58:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "judy",
+   "content": "psql connection pool maxed during the spike",
+   "timestamp": "2024-10-14T15:59:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "niaj",
+   "content": "changelog: bumped the search API page size cap to 200",
+   "timestamp": "2024-10-14T16:00:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "niaj",
+   "content": "psql connection pool maxed during the spike",
+   "timestamp": "2024-10-14T16:14:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "erin",
+   "content": "customer asked about bulk export again",
+   "timestamp": "2024-10-14T16:27:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "niaj",
+   "content": "lunch order by noon",
+   "timestamp": "2024-10-14T16:33:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "peggy",
+   "content": "psql connection pool maxed during the spike",
+   "timestamp": "2024-10-14T16:39:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "frank",
+   "content": "[resolved] email provider degraded",
+   "timestamp": "2024-10-14T16:50:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "victor",
+   "content": "merged #780",
+   "timestamp": "2024-10-14T16:51:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "grace",
+   "content": "migrating the jobs queue Tuesday",
+   "timestamp": "2024-10-14T17:02:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "alice",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-10-14T17:44:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "judy",
+   "content": "customer asked about bulk export again",
+   "timestamp": "2024-10-14T17:51:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "mallory",
+   "content": "checkout latency normal",
+   "timestamp": "2024-10-14T17:51:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "dave",
+   "content": "\ud83c\udf89 work anniversary",
+   "timestamp": "2024-10-15T09:02:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "judy",
+   "content": "draft PRD for Q4 in the drive",
+   "timestamp": "2024-10-15T09:12:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "erin",
+   "content": "merged #780",
+   "timestamp": "2024-10-15T09:39:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "trent",
+   "content": "checkout latency normal",
+   "timestamp": "2024-10-15T09:45:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "mallory",
+   "content": "who took my mug",
+   "timestamp": "2024-10-15T09:51:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "judy",
+   "content": "psql connection pool maxed during the spike",
+   "timestamp": "2024-10-15T10:07:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "bob",
+   "content": "free snacks in the kitchen",
+   "timestamp": "2024-10-15T10:46:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "ivan",
+   "content": "customer asked about bulk export again",
+   "timestamp": "2024-10-15T10:47:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "trent",
+   "content": "added tracing to the gateway",
+   "timestamp": "2024-10-15T10:56:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "niaj",
+   "content": "db failover done",
+   "timestamp": "2024-10-15T11:09:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "judy",
+   "content": "pricing page copy refresh",
+   "timestamp": "2024-10-15T11:19:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "frank",
+   "content": "bumped the http client to 1.4",
+   "timestamp": "2024-10-15T11:21:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "victor",
+   "content": "migrating the jobs queue Tuesday",
+   "timestamp": "2024-10-15T11:44:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "ivan",
+   "content": "[resolved] email provider degraded",
+   "timestamp": "2024-10-15T11:48:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "olivia",
+   "content": "coffee machine broken again",
+   "timestamp": "2024-10-15T11:50:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "olivia",
+   "content": "changelog: bumped the search API page size cap to 200",
+   "timestamp": "2024-10-15T11:52:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "erin",
+   "content": "coffee machine broken again",
+   "timestamp": "2024-10-15T12:12:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "mallory",
+   "content": "free snacks in the kitchen",
+   "timestamp": "2024-10-15T12:16:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "mallory",
+   "content": "checkout latency normal",
+   "timestamp": "2024-10-15T12:19:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "grace",
+   "content": "pricing page copy refresh",
+   "timestamp": "2024-10-15T12:22:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "erin",
+   "content": "pricing page copy refresh",
+   "timestamp": "2024-10-15T12:38:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "niaj",
+   "content": "customer asked about bulk export again",
+   "timestamp": "2024-10-15T12:51:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "frank",
+   "content": "lunch order by noon",
+   "timestamp": "2024-10-15T12:59:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "frank",
+   "content": "trial conversion analytics please",
+   "timestamp": "2024-10-15T13:12:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "ci-bot",
+   "content": "oncall handoff: nothing active",
+   "timestamp": "2024-10-15T13:18:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "frank",
+   "content": "changelog: bumped the search API page size cap to 200",
+   "timestamp": "2024-10-15T13:20:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "olivia",
+   "content": "anyone at the meetup tonight?",
+   "timestamp": "2024-10-15T13:22:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "bob",
+   "content": "welcome to the new folks \ud83d\udc4b",
+   "timestamp": "2024-10-15T13:23:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "grace",
+   "content": "coffee machine broken again",
+   "timestamp": "2024-10-15T13:35:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "judy",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-10-15T13:37:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "mallory",
+   "content": "morning all \u2615",
+   "timestamp": "2024-10-15T13:51:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "frank",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-10-15T14:22:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "ivan",
+   "content": "[resolved] email provider degraded",
+   "timestamp": "2024-10-15T14:28:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "olivia",
+   "content": "the nightly batch ran long, looking",
+   "timestamp": "2024-10-15T14:31:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "victor",
+   "content": "added an index on orders(created_at)",
+   "timestamp": "2024-10-15T14:48:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "heidi",
+   "content": "reminder: read the API style guide",
+   "timestamp": "2024-10-15T15:04:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "heidi",
+   "content": "pricing page copy refresh",
+   "timestamp": "2024-10-15T15:11:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "ivan",
+   "content": "please version new endpoints from day one",
+   "timestamp": "2024-10-15T15:28:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "heidi",
+   "content": "kudos to support for clearing the backlog \ud83d\ude4c",
+   "timestamp": "2024-10-15T15:43:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "carol",
+   "content": "welcome to the new folks \ud83d\udc4b",
+   "timestamp": "2024-10-15T15:44:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "carol",
+   "content": "oncall handoff: nothing active",
+   "timestamp": "2024-10-15T15:57:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "ivan",
+   "content": "moving secrets to vault this sprint",
+   "timestamp": "2024-10-15T15:59:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "bob",
+   "content": "flaky test in test_scheduler again",
+   "timestamp": "2024-10-15T16:08:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "alice",
+   "content": "moving secrets to vault this sprint",
+   "timestamp": "2024-10-15T16:34:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "mallory",
+   "content": "who owns the refunds worker now?",
+   "timestamp": "2024-10-15T16:37:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "niaj",
+   "content": "checkout latency normal",
+   "timestamp": "2024-10-15T16:45:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "dave",
+   "content": "migrating the jobs queue Tuesday",
+   "timestamp": "2024-10-15T16:46:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "erin",
+   "content": "migrating the jobs queue Tuesday",
+   "timestamp": "2024-10-15T17:06:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "trent",
+   "content": "[resolved] email provider degraded",
+   "timestamp": "2024-10-15T17:14:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "heidi",
+   "content": "draft PRD for Q4 in the drive",
+   "timestamp": "2024-10-15T17:29:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "peggy",
+   "content": "checkout latency normal",
+   "timestamp": "2024-10-15T17:35:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "erin",
+   "content": "db failover done",
+   "timestamp": "2024-10-15T17:37:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "trent",
+   "content": "lunch order by noon",
+   "timestamp": "2024-10-16T09:05:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "dave",
+   "content": "OpenAPI spec is regenerated nightly now",
+   "timestamp": "2024-10-16T09:18:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "heidi",
+   "content": "who took my mug",
+   "timestamp": "2024-10-16T09:47:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "niaj",
+   "content": "the nightly batch ran long, looking",
+   "timestamp": "2024-10-16T09:48:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "peggy",
+   "content": "free snacks in the kitchen",
+   "timestamp": "2024-10-16T09:49:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "trent",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-10-16T09:54:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "judy",
+   "content": "rebased, CI green",
+   "timestamp": "2024-10-16T09:57:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "bob",
+   "content": "the nightly batch ran long, looking",
+   "timestamp": "2024-10-16T10:01:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "alice",
+   "content": "checkout latency normal",
+   "timestamp": "2024-10-16T10:02:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "bob",
+   "content": "PR #771 up for review",
+   "timestamp": "2024-10-16T10:11:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "heidi",
+   "content": "customer asked about bulk export again",
+   "timestamp": "2024-10-16T10:36:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "frank",
+   "content": "PR #771 up for review",
+   "timestamp": "2024-10-16T10:45:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "trent",
+   "content": "added an index on orders(created_at)",
+   "timestamp": "2024-10-16T10:45:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "grace",
+   "content": "deprecation calendar is in the wiki",
+   "timestamp": "2024-10-16T10:50:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "grace",
+   "content": "trial conversion analytics please",
+   "timestamp": "2024-10-16T10:52:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "alice",
+   "content": "who owns the refunds worker now?",
+   "timestamp": "2024-10-16T11:14:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "peggy",
+   "content": "all-hands moved to Thursday",
+   "timestamp": "2024-10-16T11:28:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "mallory",
+   "content": "migrating the jobs queue Tuesday",
+   "timestamp": "2024-10-16T11:42:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "judy",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-10-16T11:47:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "judy",
+   "content": "reminder: read the API style guide",
+   "timestamp": "2024-10-16T12:09:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "victor",
+   "content": "added tracing to the gateway",
+   "timestamp": "2024-10-16T12:12:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "victor",
+   "content": "reminder: read the API style guide",
+   "timestamp": "2024-10-16T12:16:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "carol",
+   "content": "deprecation calendar is in the wiki",
+   "timestamp": "2024-10-16T12:29:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "erin",
+   "content": "draft PRD for Q4 in the drive",
+   "timestamp": "2024-10-16T12:47:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "trent",
+   "content": "trial conversion analytics please",
+   "timestamp": "2024-10-16T12:59:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "alice",
+   "content": "checkout latency normal",
+   "timestamp": "2024-10-16T13:02:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "carol",
+   "content": "changelog: bumped the search API page size cap to 200",
+   "timestamp": "2024-10-16T13:08:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "niaj",
+   "content": "trial conversion analytics please",
+   "timestamp": "2024-10-16T13:14:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "erin",
+   "content": "draft PRD for Q4 in the drive",
+   "timestamp": "2024-10-16T13:45:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "heidi",
+   "content": "migrating the jobs queue Tuesday",
+   "timestamp": "2024-10-16T13:50:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "olivia",
+   "content": "staging deploy stuck again?",
+   "timestamp": "2024-10-16T14:01:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "heidi",
+   "content": "draft PRD for Q4 in the drive",
+   "timestamp": "2024-10-16T14:07:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "ivan",
+   "content": "the webhooks signing secret rotates next week",
+   "timestamp": "2024-10-16T14:19:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "peggy",
+   "content": "migrating the jobs queue Tuesday",
+   "timestamp": "2024-10-16T14:42:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "heidi",
+   "content": "the rate limiter needs tuning",
+   "timestamp": "2024-10-16T14:49:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "judy",
+   "content": "please version new endpoints from day one",
+   "timestamp": "2024-10-16T14:57:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "victor",
+   "content": "morning all \u2615",
+   "timestamp": "2024-10-16T15:10:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "trent",
+   "content": "the webhooks signing secret rotates next week",
+   "timestamp": "2024-10-16T15:41:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "mallory",
+   "content": "PSA: rotate your tokens this week",
+   "timestamp": "2024-10-16T15:52:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "peggy",
+   "content": "draft PRD for Q4 in the drive",
+   "timestamp": "2024-10-16T16:00:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "ivan",
+   "content": "OpenAPI spec is regenerated nightly now",
+   "timestamp": "2024-10-16T16:32:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "trent",
+   "content": "pricing page copy refresh",
+   "timestamp": "2024-10-16T16:33:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "erin",
+   "content": "the nightly batch ran long, looking",
+   "timestamp": "2024-10-16T16:37:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "carol",
+   "content": "added tracing to the gateway",
+   "timestamp": "2024-10-16T16:44:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "heidi",
+   "content": "flaky test in test_scheduler again",
+   "timestamp": "2024-10-16T16:44:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "mallory",
+   "content": "added tracing to the gateway",
+   "timestamp": "2024-10-16T17:16:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "dave",
+   "content": "lunch order by noon",
+   "timestamp": "2024-10-16T17:23:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "frank",
+   "content": "deprecating the old /v1 endpoints soon",
+   "timestamp": "2024-10-16T17:32:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "olivia",
+   "content": "PSA: rotate your tokens this week",
+   "timestamp": "2024-10-16T17:35:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "ci-bot",
+   "content": "db failover done",
+   "timestamp": "2024-10-16T17:46:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "mallory",
+   "content": "merged #780",
+   "timestamp": "2024-10-16T17:56:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "alice",
+   "content": "db failover done",
+   "timestamp": "2024-10-17T09:19:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "mallory",
+   "content": "checkout latency normal",
+   "timestamp": "2024-10-17T09:25:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "frank",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-10-17T09:52:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "alice",
+   "content": "checkout latency normal",
+   "timestamp": "2024-10-17T10:02:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "dave",
+   "content": "flaky test in test_scheduler again",
+   "timestamp": "2024-10-17T10:06:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "dave",
+   "content": "deprecation calendar is in the wiki",
+   "timestamp": "2024-10-17T10:13:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "peggy",
+   "content": "welcome to the new folks \ud83d\udc4b",
+   "timestamp": "2024-10-17T10:21:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "niaj",
+   "content": "please version new endpoints from day one",
+   "timestamp": "2024-10-17T11:14:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "mallory",
+   "content": "added an index on orders(created_at)",
+   "timestamp": "2024-10-17T11:18:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "mallory",
+   "content": "changelog: bumped the search API page size cap to 200",
+   "timestamp": "2024-10-17T11:33:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "carol",
+   "content": "the rate limiter needs tuning",
+   "timestamp": "2024-10-17T11:41:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "trent",
+   "content": "psql connection pool maxed during the spike",
+   "timestamp": "2024-10-17T11:47:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "olivia",
+   "content": "reminder: read the API style guide",
+   "timestamp": "2024-10-17T11:52:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "pagerduty",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-10-17T12:10:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "ivan",
+   "content": "all-hands moved to Thursday",
+   "timestamp": "2024-10-17T12:18:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "peggy",
+   "content": "db failover done",
+   "timestamp": "2024-10-17T12:20:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "heidi",
+   "content": "morning all \u2615",
+   "timestamp": "2024-10-17T12:23:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "frank",
+   "content": "please version new endpoints from day one",
+   "timestamp": "2024-10-17T12:56:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "ivan",
+   "content": "customer asked about bulk export again",
+   "timestamp": "2024-10-17T13:11:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "victor",
+   "content": "who owns the refunds worker now?",
+   "timestamp": "2024-10-17T13:19:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "alice",
+   "content": "changelog: bumped the search API page size cap to 200",
+   "timestamp": "2024-10-17T13:19:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "dave",
+   "content": "please version new endpoints from day one",
+   "timestamp": "2024-10-17T13:31:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "bob",
+   "content": "morning all \u2615",
+   "timestamp": "2024-10-17T13:35:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "ivan",
+   "content": "moving secrets to vault this sprint",
+   "timestamp": "2024-10-17T13:35:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "erin",
+   "content": "who owns the refunds worker now?",
+   "timestamp": "2024-10-17T14:04:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "erin",
+   "content": "reminder: read the API style guide",
+   "timestamp": "2024-10-17T14:16:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "alice",
+   "content": "coffee machine broken again",
+   "timestamp": "2024-10-17T14:23:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "victor",
+   "content": "TIL you can pin messages",
+   "timestamp": "2024-10-17T14:38:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "carol",
+   "content": "pricing page copy refresh",
+   "timestamp": "2024-10-17T15:03:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "niaj",
+   "content": "changelog: bumped the search API page size cap to 200",
+   "timestamp": "2024-10-17T15:07:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "grace",
+   "content": "checkout latency normal",
+   "timestamp": "2024-10-17T15:36:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "bob",
+   "content": "added tracing to the gateway",
+   "timestamp": "2024-10-17T15:36:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "frank",
+   "content": "db failover done",
+   "timestamp": "2024-10-17T15:42:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "carol",
+   "content": "changelog: bumped the search API page size cap to 200",
+   "timestamp": "2024-10-17T15:43:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "grace",
+   "content": "changelog: bumped the search API page size cap to 200",
+   "timestamp": "2024-10-17T15:58:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "judy",
+   "content": "pricing page copy refresh",
+   "timestamp": "2024-10-17T16:27:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "ivan",
+   "content": "deprecating the old /v1 endpoints soon",
+   "timestamp": "2024-10-17T16:35:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "peggy",
+   "content": "OpenAPI spec is regenerated nightly now",
+   "timestamp": "2024-10-17T16:43:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "peggy",
+   "content": "roadmap review next week",
+   "timestamp": "2024-10-17T17:03:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "olivia",
+   "content": "deprecation calendar is in the wiki",
+   "timestamp": "2024-10-17T17:12:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "bob",
+   "content": "who owns the refunds worker now?",
+   "timestamp": "2024-10-17T17:13:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "frank",
+   "content": "rebased, CI green",
+   "timestamp": "2024-10-17T17:19:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "grace",
+   "content": "trial conversion analytics please",
+   "timestamp": "2024-10-17T17:20:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "ci-bot",
+   "content": "checkout latency normal",
+   "timestamp": "2024-10-17T17:50:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "heidi",
+   "content": "pricing page copy refresh",
+   "timestamp": "2024-10-18T09:15:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "trent",
+   "content": "draft PRD for Q4 in the drive",
+   "timestamp": "2024-10-18T09:23:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "erin",
+   "content": "flaky test in test_scheduler again",
+   "timestamp": "2024-10-18T09:29:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "alice",
+   "content": "merged #780",
+   "timestamp": "2024-10-18T10:21:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "olivia",
+   "content": "kudos to support for clearing the backlog \ud83d\ude4c",
+   "timestamp": "2024-10-18T10:22:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "peggy",
+   "content": "customer asked about bulk export again",
+   "timestamp": "2024-10-18T10:27:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "bob",
+   "content": "changelog: bumped the search API page size cap to 200",
+   "timestamp": "2024-10-18T10:27:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "olivia",
+   "content": "added an index on orders(created_at)",
+   "timestamp": "2024-10-18T10:38:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "carol",
+   "content": "draft PRD for Q4 in the drive",
+   "timestamp": "2024-10-18T10:46:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "trent",
+   "content": "\ud83c\udf89 work anniversary",
+   "timestamp": "2024-10-18T10:56:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "mallory",
+   "content": "lunch order by noon",
+   "timestamp": "2024-10-18T11:00:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "olivia",
+   "content": "PR #771 up for review",
+   "timestamp": "2024-10-18T11:01:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "judy",
+   "content": "who owns the refunds worker now?",
+   "timestamp": "2024-10-18T11:24:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "peggy",
+   "content": "who took my mug",
+   "timestamp": "2024-10-18T11:27:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "trent",
+   "content": "OpenAPI spec is regenerated nightly now",
+   "timestamp": "2024-10-18T11:35:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "trent",
+   "content": "draft PRD for Q4 in the drive",
+   "timestamp": "2024-10-18T11:48:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "dave",
+   "content": "draft PRD for Q4 in the drive",
+   "timestamp": "2024-10-18T12:11:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "niaj",
+   "content": "who owns the refunds worker now?",
+   "timestamp": "2024-10-18T12:12:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "olivia",
+   "content": "checkout latency normal",
+   "timestamp": "2024-10-18T12:12:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "frank",
+   "content": "draft PRD for Q4 in the drive",
+   "timestamp": "2024-10-18T12:19:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "heidi",
+   "content": "lunch order by noon",
+   "timestamp": "2024-10-18T12:33:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "heidi",
+   "content": "who owns the refunds worker now?",
+   "timestamp": "2024-10-18T12:40:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "grace",
+   "content": "who owns the refunds worker now?",
+   "timestamp": "2024-10-18T12:41:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "judy",
+   "content": "changelog: bumped the search API page size cap to 200",
+   "timestamp": "2024-10-18T12:52:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "peggy",
+   "content": "psql connection pool maxed during the spike",
+   "timestamp": "2024-10-18T12:56:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "ivan",
+   "content": "checkout latency normal",
+   "timestamp": "2024-10-18T13:01:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "carol",
+   "content": "free snacks in the kitchen",
+   "timestamp": "2024-10-18T13:33:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "alice",
+   "content": "OpenAPI spec is regenerated nightly now",
+   "timestamp": "2024-10-18T13:36:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "ivan",
+   "content": "customer asked about bulk export again",
+   "timestamp": "2024-10-18T13:47:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "niaj",
+   "content": "migrating the jobs queue Tuesday",
+   "timestamp": "2024-10-18T13:59:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "dave",
+   "content": "free snacks in the kitchen",
+   "timestamp": "2024-10-18T14:11:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "olivia",
+   "content": "PSA: rotate your tokens this week",
+   "timestamp": "2024-10-18T14:44:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "grace",
+   "content": "who took my mug",
+   "timestamp": "2024-10-18T15:49:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "frank",
+   "content": "who took my mug",
+   "timestamp": "2024-10-18T15:50:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "carol",
+   "content": "deprecating the old /v1 endpoints soon",
+   "timestamp": "2024-10-18T16:01:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "victor",
+   "content": "the webhooks signing secret rotates next week",
+   "timestamp": "2024-10-18T16:08:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "erin",
+   "content": "free snacks in the kitchen",
+   "timestamp": "2024-10-18T16:20:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "carol",
+   "content": "deprecation calendar is in the wiki",
+   "timestamp": "2024-10-18T16:25:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "heidi",
+   "content": "coffee machine broken again",
+   "timestamp": "2024-10-18T16:48:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "bob",
+   "content": "welcome to the new folks \ud83d\udc4b",
+   "timestamp": "2024-10-18T16:54:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "alice",
+   "content": "anyone at the meetup tonight?",
+   "timestamp": "2024-10-18T16:55:00+00:00"
+  },
+  {
+   "channel": "api-changes",
+   "author": "carol",
+   "content": "OpenAPI spec is regenerated nightly now",
+   "timestamp": "2024-10-18T17:04:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "carol",
+   "content": "lunch order by noon",
+   "timestamp": "2024-10-18T17:16:00+00:00"
+  },
+  {
+   "channel": "product",
+   "author": "mallory",
+   "content": "pricing page copy refresh",
+   "timestamp": "2024-10-18T17:24:00+00:00"
+  }
+ ]
+}

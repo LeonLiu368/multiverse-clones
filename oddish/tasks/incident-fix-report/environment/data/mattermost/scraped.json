@@ -1,0 +1,3088 @@
+{
+ "messages": [
+  {
+   "channel": "engineering",
+   "author": "grace",
+   "content": "PR #903 up",
+   "timestamp": "2024-11-04T09:16:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "heidi",
+   "content": "added tracing to the gateway",
+   "timestamp": "2024-11-04T09:30:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "pagerduty",
+   "content": "db failover done",
+   "timestamp": "2024-11-04T09:41:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "grace",
+   "content": "coffee machine broken",
+   "timestamp": "2024-11-04T09:53:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "frank",
+   "content": "reminder: blameless postmortems",
+   "timestamp": "2024-11-04T10:00:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "niaj",
+   "content": "TIL you can pin messages",
+   "timestamp": "2024-11-04T10:25:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "ivan",
+   "content": "kudos to support \ud83d\ude4c",
+   "timestamp": "2024-11-04T10:38:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "pagerduty",
+   "content": "runbook updated",
+   "timestamp": "2024-11-04T10:43:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "trent",
+   "content": "merged #910",
+   "timestamp": "2024-11-04T11:01:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "peggy",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-11-04T11:07:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "niaj",
+   "content": "flaky test again",
+   "timestamp": "2024-11-04T11:24:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "deploybot",
+   "content": "cdn cache purge done",
+   "timestamp": "2024-11-04T11:29:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "ivan",
+   "content": "added tracing to the gateway",
+   "timestamp": "2024-11-04T11:35:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "mallory",
+   "content": "PR #903 up",
+   "timestamp": "2024-11-04T11:49:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "carol",
+   "content": "postmortem template is pinned",
+   "timestamp": "2024-11-04T11:54:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "judy",
+   "content": "bumped grafana agent",
+   "timestamp": "2024-11-04T12:19:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "bob",
+   "content": "morning all \u2615",
+   "timestamp": "2024-11-04T12:49:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "carol",
+   "content": "coffee machine broken",
+   "timestamp": "2024-11-04T12:53:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "erin",
+   "content": "\ud83c\udf89 work anniversary",
+   "timestamp": "2024-11-04T13:04:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "grafana",
+   "content": "cdn cache purge done",
+   "timestamp": "2024-11-04T13:22:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "olivia",
+   "content": "TIL you can pin messages",
+   "timestamp": "2024-11-04T13:23:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "grace",
+   "content": "free snacks",
+   "timestamp": "2024-11-04T13:31:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "alice",
+   "content": "bumped grafana agent",
+   "timestamp": "2024-11-04T13:47:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "grace",
+   "content": "reminder: blameless postmortems",
+   "timestamp": "2024-11-04T14:19:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "peggy",
+   "content": "wifi flaky again",
+   "timestamp": "2024-11-04T14:27:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "carol",
+   "content": "cache TTL ticket open",
+   "timestamp": "2024-11-04T14:58:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "frank",
+   "content": "pagerduty schedule swapped",
+   "timestamp": "2024-11-04T15:16:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "grace",
+   "content": "runbook updated",
+   "timestamp": "2024-11-04T15:28:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "frank",
+   "content": "moving secrets to vault",
+   "timestamp": "2024-11-04T15:30:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "victor",
+   "content": "handoff: nothing active",
+   "timestamp": "2024-11-04T15:39:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "alice",
+   "content": "PR #903 up",
+   "timestamp": "2024-11-04T16:09:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "niaj",
+   "content": "action items tracked in Jira",
+   "timestamp": "2024-11-04T16:16:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "niaj",
+   "content": "db failover done",
+   "timestamp": "2024-11-04T16:23:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "mallory",
+   "content": "merged #910",
+   "timestamp": "2024-11-04T17:38:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "grace",
+   "content": "cdn cache purge done",
+   "timestamp": "2024-11-04T17:44:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "grace",
+   "content": "flaky test again",
+   "timestamp": "2024-11-05T09:03:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "erin",
+   "content": "rebased, CI green",
+   "timestamp": "2024-11-05T09:26:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "ivan",
+   "content": "merged #910",
+   "timestamp": "2024-11-05T09:29:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "bob",
+   "content": "\ud83c\udf89 work anniversary",
+   "timestamp": "2024-11-05T09:37:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "grace",
+   "content": "coffee machine broken",
+   "timestamp": "2024-11-05T10:12:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "dave",
+   "content": "staging stuck?",
+   "timestamp": "2024-11-05T10:16:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "mallory",
+   "content": "last week's checkout PM is in the drive",
+   "timestamp": "2024-11-05T10:19:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "olivia",
+   "content": "postmortem template is pinned",
+   "timestamp": "2024-11-05T10:19:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "grace",
+   "content": "deprecating /v1 soon",
+   "timestamp": "2024-11-05T10:31:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "trent",
+   "content": "the api alert is set to fire at 5% error rate on a single sample, like it always has",
+   "timestamp": "2024-11-05T11:00:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "grace",
+   "content": "staging stuck?",
+   "timestamp": "2024-11-05T11:24:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "mallory",
+   "content": "jobs queue migration Tuesday",
+   "timestamp": "2024-11-05T12:05:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "judy",
+   "content": "kudos to support \ud83d\ude4c",
+   "timestamp": "2024-11-05T12:27:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "grafana",
+   "content": "secondary is heidi this week",
+   "timestamp": "2024-11-05T12:29:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "bob",
+   "content": "index added on events(ts)",
+   "timestamp": "2024-11-05T13:01:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "pagerduty",
+   "content": "checkout latency normal",
+   "timestamp": "2024-11-05T13:29:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "victor",
+   "content": "checkout latency normal",
+   "timestamp": "2024-11-05T13:57:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "olivia",
+   "content": "TIL you can pin messages",
+   "timestamp": "2024-11-05T14:17:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "dave",
+   "content": "\ud83c\udf89 work anniversary",
+   "timestamp": "2024-11-05T14:20:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "erin",
+   "content": "deprecating /v1 soon",
+   "timestamp": "2024-11-05T14:21:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "olivia",
+   "content": "welcome new folks \ud83d\udc4b",
+   "timestamp": "2024-11-05T14:22:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "olivia",
+   "content": "rebased, CI green",
+   "timestamp": "2024-11-05T14:27:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "carol",
+   "content": "checkout latency normal",
+   "timestamp": "2024-11-05T14:35:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "ivan",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-11-05T14:46:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "trent",
+   "content": "checkout latency normal",
+   "timestamp": "2024-11-05T14:47:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "carol",
+   "content": "checkout latency normal",
+   "timestamp": "2024-11-05T14:59:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "heidi",
+   "content": "free snacks",
+   "timestamp": "2024-11-05T15:07:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "bob",
+   "content": "lunch by noon",
+   "timestamp": "2024-11-05T15:08:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "olivia",
+   "content": "rotate your tokens",
+   "timestamp": "2024-11-05T15:09:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "victor",
+   "content": "rotate your tokens",
+   "timestamp": "2024-11-05T15:23:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "victor",
+   "content": "db failover done",
+   "timestamp": "2024-11-05T15:32:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "grace",
+   "content": "connection pool tuning",
+   "timestamp": "2024-11-05T15:55:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "peggy",
+   "content": "all-hands Thursday",
+   "timestamp": "2024-11-05T16:06:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "dave",
+   "content": "all-hands Thursday",
+   "timestamp": "2024-11-05T16:23:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "frank",
+   "content": "silenced the noisy disk alert for now",
+   "timestamp": "2024-11-05T16:27:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "mallory",
+   "content": "action items tracked in Jira",
+   "timestamp": "2024-11-05T16:31:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "ci-bot",
+   "content": "db failover done",
+   "timestamp": "2024-11-05T16:36:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "grace",
+   "content": "silenced the noisy disk alert for now",
+   "timestamp": "2024-11-05T16:40:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "frank",
+   "content": "postmortem template is pinned",
+   "timestamp": "2024-11-05T16:48:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "bob",
+   "content": "welcome new folks \ud83d\udc4b",
+   "timestamp": "2024-11-05T16:49:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "alice",
+   "content": "pagerduty schedule swapped",
+   "timestamp": "2024-11-05T16:56:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "niaj",
+   "content": "\ud83c\udf89 work anniversary",
+   "timestamp": "2024-11-05T16:57:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "niaj",
+   "content": "TIL you can pin messages",
+   "timestamp": "2024-11-05T16:58:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "carol",
+   "content": "pagerduty schedule swapped",
+   "timestamp": "2024-11-05T17:30:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "erin",
+   "content": "cdn cache purge done",
+   "timestamp": "2024-11-05T17:40:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "erin",
+   "content": "postmortem template is pinned",
+   "timestamp": "2024-11-05T17:50:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "ivan",
+   "content": "all-hands Thursday",
+   "timestamp": "2024-11-05T17:53:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "carol",
+   "content": "bumped grafana agent",
+   "timestamp": "2024-11-05T18:00:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "pagerduty",
+   "content": "handoff: nothing active",
+   "timestamp": "2024-11-06T09:01:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "grafana",
+   "content": "cdn cache purge done",
+   "timestamp": "2024-11-06T09:05:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "heidi",
+   "content": "checkout latency normal",
+   "timestamp": "2024-11-06T09:11:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "niaj",
+   "content": "action items tracked in Jira",
+   "timestamp": "2024-11-06T09:11:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "niaj",
+   "content": "merged #910",
+   "timestamp": "2024-11-06T09:21:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "frank",
+   "content": "bumped grafana agent",
+   "timestamp": "2024-11-06T09:47:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "grace",
+   "content": "TIL you can pin messages",
+   "timestamp": "2024-11-06T09:52:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "bob",
+   "content": "PR #903 up",
+   "timestamp": "2024-11-06T10:04:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "grace",
+   "content": "jobs queue migration Tuesday",
+   "timestamp": "2024-11-06T10:07:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "erin",
+   "content": "staging stuck?",
+   "timestamp": "2024-11-06T10:19:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "heidi",
+   "content": "last week's checkout PM is in the drive",
+   "timestamp": "2024-11-06T10:30:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "grace",
+   "content": "action items tracked in Jira",
+   "timestamp": "2024-11-06T10:34:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "olivia",
+   "content": "welcome new folks \ud83d\udc4b",
+   "timestamp": "2024-11-06T10:42:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "peggy",
+   "content": "added tracing to the gateway",
+   "timestamp": "2024-11-06T10:47:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "mallory",
+   "content": "reminder: blameless postmortems",
+   "timestamp": "2024-11-06T10:56:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "judy",
+   "content": "who took my mug",
+   "timestamp": "2024-11-06T10:58:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "victor",
+   "content": "could the 3am pages be the DB? we saw a connection blip around then",
+   "timestamp": "2024-11-06T11:11:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "heidi",
+   "content": "rebased, CI green",
+   "timestamp": "2024-11-06T11:16:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "olivia",
+   "content": "cache TTL ticket open",
+   "timestamp": "2024-11-06T11:20:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "grace",
+   "content": "added tracing to the gateway",
+   "timestamp": "2024-11-06T11:31:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "alice",
+   "content": "action items tracked in Jira",
+   "timestamp": "2024-11-06T11:31:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "erin",
+   "content": "db failover done",
+   "timestamp": "2024-11-06T12:10:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "victor",
+   "content": "index added on events(ts)",
+   "timestamp": "2024-11-06T12:21:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "trent",
+   "content": "flaky test again",
+   "timestamp": "2024-11-06T12:22:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "olivia",
+   "content": "PR #903 up",
+   "timestamp": "2024-11-06T12:32:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "grace",
+   "content": "action items tracked in Jira",
+   "timestamp": "2024-11-06T12:40:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "heidi",
+   "content": "handoff: nothing active",
+   "timestamp": "2024-11-06T13:07:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "judy",
+   "content": "jobs queue migration Tuesday",
+   "timestamp": "2024-11-06T13:33:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "grafana",
+   "content": "cdn cache purge done",
+   "timestamp": "2024-11-06T13:42:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "peggy",
+   "content": "deprecating /v1 soon",
+   "timestamp": "2024-11-06T13:47:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "deploybot",
+   "content": "runbook updated",
+   "timestamp": "2024-11-06T13:57:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "ivan",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-11-06T13:59:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "carol",
+   "content": "flaky test again",
+   "timestamp": "2024-11-06T14:00:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "ivan",
+   "content": "index added on events(ts)",
+   "timestamp": "2024-11-06T14:07:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "erin",
+   "content": "silenced the noisy disk alert for now",
+   "timestamp": "2024-11-06T14:13:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "peggy",
+   "content": "wifi flaky again",
+   "timestamp": "2024-11-06T14:13:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "grace",
+   "content": "cdn cache purge done",
+   "timestamp": "2024-11-06T14:52:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "dave",
+   "content": "free snacks",
+   "timestamp": "2024-11-06T15:55:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "erin",
+   "content": "added tracing to the gateway",
+   "timestamp": "2024-11-06T17:09:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "judy",
+   "content": "welcome new folks \ud83d\udc4b",
+   "timestamp": "2024-11-06T17:12:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "bob",
+   "content": "reminder: blameless postmortems",
+   "timestamp": "2024-11-06T17:15:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "ivan",
+   "content": "morning all \u2615",
+   "timestamp": "2024-11-06T17:21:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "judy",
+   "content": "staging stuck?",
+   "timestamp": "2024-11-06T17:32:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "ivan",
+   "content": "jobs queue migration Tuesday",
+   "timestamp": "2024-11-06T17:45:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "niaj",
+   "content": "handoff: nothing active",
+   "timestamp": "2024-11-06T17:52:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "heidi",
+   "content": "\ud83c\udf89 work anniversary",
+   "timestamp": "2024-11-06T17:57:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "olivia",
+   "content": "deprecating /v1 soon",
+   "timestamp": "2024-11-06T17:59:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "ivan",
+   "content": "added tracing to the gateway",
+   "timestamp": "2024-11-07T09:25:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "peggy",
+   "content": "welcome new folks \ud83d\udc4b",
+   "timestamp": "2024-11-07T09:29:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "trent",
+   "content": "connection pool tuning",
+   "timestamp": "2024-11-07T09:46:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "carol",
+   "content": "merged #910",
+   "timestamp": "2024-11-07T09:50:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "frank",
+   "content": "PR #903 up",
+   "timestamp": "2024-11-07T10:03:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "ivan",
+   "content": "index added on events(ts)",
+   "timestamp": "2024-11-07T10:32:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "peggy",
+   "content": "reminder: blameless postmortems",
+   "timestamp": "2024-11-07T11:03:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "heidi",
+   "content": "wifi flaky again",
+   "timestamp": "2024-11-07T11:08:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "olivia",
+   "content": "why do we keep getting paged at 3am for nothing",
+   "timestamp": "2024-11-07T11:22:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "peggy",
+   "content": "index added on events(ts)",
+   "timestamp": "2024-11-07T11:30:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "carol",
+   "content": "handoff: nothing active",
+   "timestamp": "2024-11-07T11:35:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "mallory",
+   "content": "last week's checkout PM is in the drive",
+   "timestamp": "2024-11-07T11:45:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "grace",
+   "content": "PR #903 up",
+   "timestamp": "2024-11-07T12:13:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "erin",
+   "content": "secondary is heidi this week",
+   "timestamp": "2024-11-07T12:23:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "frank",
+   "content": "[resolved] email provider degraded",
+   "timestamp": "2024-11-07T12:24:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "trent",
+   "content": "wifi flaky again",
+   "timestamp": "2024-11-07T12:30:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "grafana",
+   "content": "runbook updated",
+   "timestamp": "2024-11-07T12:33:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "ivan",
+   "content": "last week's checkout PM is in the drive",
+   "timestamp": "2024-11-07T12:40:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "judy",
+   "content": "\ud83c\udf89 work anniversary",
+   "timestamp": "2024-11-07T12:43:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "niaj",
+   "content": "secondary is heidi this week",
+   "timestamp": "2024-11-07T12:51:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "dave",
+   "content": "welcome new folks \ud83d\udc4b",
+   "timestamp": "2024-11-07T13:01:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "trent",
+   "content": "jobs queue migration Tuesday",
+   "timestamp": "2024-11-07T13:01:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "erin",
+   "content": "coffee machine broken",
+   "timestamp": "2024-11-07T13:37:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "trent",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-11-07T13:55:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "niaj",
+   "content": "rotate your tokens",
+   "timestamp": "2024-11-07T14:00:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "frank",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-11-07T14:54:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "ivan",
+   "content": "\ud83c\udf89 work anniversary",
+   "timestamp": "2024-11-07T15:23:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "heidi",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-11-07T15:58:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "peggy",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-11-07T16:30:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "alice",
+   "content": "deprecating /v1 soon",
+   "timestamp": "2024-11-07T16:50:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "ivan",
+   "content": "cache TTL ticket open",
+   "timestamp": "2024-11-07T17:06:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "mallory",
+   "content": "reminder: blameless postmortems",
+   "timestamp": "2024-11-07T17:19:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "alice",
+   "content": "rotate your tokens",
+   "timestamp": "2024-11-07T17:26:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "victor",
+   "content": "added tracing to the gateway",
+   "timestamp": "2024-11-07T17:27:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "mallory",
+   "content": "wifi flaky again",
+   "timestamp": "2024-11-07T17:32:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "trent",
+   "content": "wifi flaky again",
+   "timestamp": "2024-11-07T17:58:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "heidi",
+   "content": "handoff: nothing active",
+   "timestamp": "2024-11-07T17:58:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "victor",
+   "content": "pagerduty schedule swapped",
+   "timestamp": "2024-11-08T09:28:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "victor",
+   "content": "staging stuck?",
+   "timestamp": "2024-11-08T09:32:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "frank",
+   "content": "free snacks",
+   "timestamp": "2024-11-08T09:38:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "ivan",
+   "content": "secondary is heidi this week",
+   "timestamp": "2024-11-08T09:39:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "dave",
+   "content": "who took my mug",
+   "timestamp": "2024-11-08T09:39:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "ivan",
+   "content": "free snacks",
+   "timestamp": "2024-11-08T09:44:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "frank",
+   "content": "connection pool tuning",
+   "timestamp": "2024-11-08T09:49:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "bob",
+   "content": "db failover done",
+   "timestamp": "2024-11-08T10:22:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "erin",
+   "content": "handoff: nothing active",
+   "timestamp": "2024-11-08T10:34:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "alice",
+   "content": "secondary is heidi this week",
+   "timestamp": "2024-11-08T10:40:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "alice",
+   "content": "pagerduty schedule swapped",
+   "timestamp": "2024-11-08T10:54:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "bob",
+   "content": "index added on events(ts)",
+   "timestamp": "2024-11-08T11:03:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "ivan",
+   "content": "staging stuck?",
+   "timestamp": "2024-11-08T11:03:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "pagerduty",
+   "content": ":rotating_light: PagerDuty: api error-rate 6% (1 sample over threshold) \u2014 paged on-call at 03:14 UTC",
+   "timestamp": "2024-11-08T11:03:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "judy",
+   "content": "reminder: blameless postmortems",
+   "timestamp": "2024-11-08T11:13:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "alice",
+   "content": "ack \u2014 looking. error rate is already back to 0.4%. another single-sample blip.",
+   "timestamp": "2024-11-08T11:18:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "erin",
+   "content": "PR #903 up",
+   "timestamp": "2024-11-08T11:33:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "bob",
+   "content": "this is the 4th 3am page this week and every one was a single transient spike that self-resolved. our alert pages on ONE breach at 5%.",
+   "timestamp": "2024-11-08T11:41:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "carol",
+   "content": "db failover done",
+   "timestamp": "2024-11-08T11:42:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "victor",
+   "content": "could it be the DB connection blips? we saw one around 03:00.",
+   "timestamp": "2024-11-08T11:51:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "trent",
+   "content": "deprecating /v1 soon",
+   "timestamp": "2024-11-08T12:05:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "carol",
+   "content": "checked \u2014 DB was healthy, the 5xx were a brief upstream timeout that cleared in <30s. so the DB is a red herring.",
+   "timestamp": "2024-11-08T12:14:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "grace",
+   "content": "coffee machine broken",
+   "timestamp": "2024-11-08T12:23:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "carol",
+   "content": "root cause of the pager fatigue: should_page has no sustained-breach requirement \u2014 a single window at >=5% pages immediately, so transient spikes wake people up.",
+   "timestamp": "2024-11-08T12:27:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "trent",
+   "content": "\ud83c\udf89 work anniversary",
+   "timestamp": "2024-11-08T12:35:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "ivan",
+   "content": "postmortem template is pinned",
+   "timestamp": "2024-11-08T12:35:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "judy",
+   "content": "pagerduty schedule swapped",
+   "timestamp": "2024-11-08T12:42:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "niaj",
+   "content": "reminder: blameless postmortems",
+   "timestamp": "2024-11-08T12:46:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "dave",
+   "content": "proposal: require multiple consecutive breaches before paging, but keep an immediate path for real emergencies.",
+   "timestamp": "2024-11-08T12:51:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "pagerduty",
+   "content": "runbook updated",
+   "timestamp": "2024-11-08T12:53:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "bob",
+   "content": "secondary is heidi this week",
+   "timestamp": "2024-11-08T12:53:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "trent",
+   "content": "handoff: nothing active",
+   "timestamp": "2024-11-08T13:01:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "carol",
+   "content": "Agreed new paging policy: page only after >=3 CONSECUTIVE breaches at >=5% error rate. Keep a critical fast-path: if error rate >=25%, page on the first breach. Anything below 5% never pages.",
+   "timestamp": "2024-11-08T13:01:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "alice",
+   "content": "\ud83d\udc4d implementing should_page with that, and I'll write the postmortem in #postmortems with the root cause.",
+   "timestamp": "2024-11-08T13:24:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "mallory",
+   "content": "postmortem template is pinned",
+   "timestamp": "2024-11-08T14:08:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "carol",
+   "content": "index added on events(ts)",
+   "timestamp": "2024-11-08T14:17:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "bob",
+   "content": "flaky test again",
+   "timestamp": "2024-11-08T14:19:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "dave",
+   "content": "free snacks",
+   "timestamp": "2024-11-08T15:00:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "frank",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-11-08T15:07:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "alice",
+   "content": "moving secrets to vault",
+   "timestamp": "2024-11-08T15:27:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "carol",
+   "content": "free snacks",
+   "timestamp": "2024-11-08T15:29:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "bob",
+   "content": "reminder: blameless postmortems",
+   "timestamp": "2024-11-08T15:32:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "alice",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-11-08T15:39:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "peggy",
+   "content": "cdn cache purge done",
+   "timestamp": "2024-11-08T15:57:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "deploybot",
+   "content": "secondary is heidi this week",
+   "timestamp": "2024-11-08T15:57:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "alice",
+   "content": "action items tracked in Jira",
+   "timestamp": "2024-11-08T16:06:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "alice",
+   "content": "runbook updated",
+   "timestamp": "2024-11-08T16:07:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "peggy",
+   "content": "welcome new folks \ud83d\udc4b",
+   "timestamp": "2024-11-08T16:08:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "mallory",
+   "content": "coffee machine broken",
+   "timestamp": "2024-11-08T16:11:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "grace",
+   "content": "wifi flaky again",
+   "timestamp": "2024-11-08T16:56:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "carol",
+   "content": "silenced the noisy disk alert for now",
+   "timestamp": "2024-11-08T17:24:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "alice",
+   "content": "runbook updated",
+   "timestamp": "2024-11-08T17:25:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "olivia",
+   "content": "handoff: nothing active",
+   "timestamp": "2024-11-08T17:25:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "alice",
+   "content": "silenced the noisy disk alert for now",
+   "timestamp": "2024-11-08T17:44:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "ivan",
+   "content": "secondary is heidi this week",
+   "timestamp": "2024-11-08T17:44:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "peggy",
+   "content": "staging stuck?",
+   "timestamp": "2024-11-09T09:07:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "alice",
+   "content": "moving secrets to vault",
+   "timestamp": "2024-11-09T09:10:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "peggy",
+   "content": "rebased, CI green",
+   "timestamp": "2024-11-09T09:16:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "mallory",
+   "content": "coffee machine broken",
+   "timestamp": "2024-11-09T09:18:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "victor",
+   "content": "jobs queue migration Tuesday",
+   "timestamp": "2024-11-09T09:21:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "niaj",
+   "content": "action items tracked in Jira",
+   "timestamp": "2024-11-09T09:48:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "judy",
+   "content": "bumped grafana agent",
+   "timestamp": "2024-11-09T09:55:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "victor",
+   "content": "secondary is heidi this week",
+   "timestamp": "2024-11-09T10:06:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "grace",
+   "content": "jobs queue migration Tuesday",
+   "timestamp": "2024-11-09T10:11:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "heidi",
+   "content": "added tracing to the gateway",
+   "timestamp": "2024-11-09T10:14:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "peggy",
+   "content": "moving secrets to vault",
+   "timestamp": "2024-11-09T10:51:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "olivia",
+   "content": "kudos to support \ud83d\ude4c",
+   "timestamp": "2024-11-09T11:16:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "peggy",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-11-09T12:01:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "dave",
+   "content": "last week's checkout PM is in the drive",
+   "timestamp": "2024-11-09T12:29:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "grace",
+   "content": "jobs queue migration Tuesday",
+   "timestamp": "2024-11-09T12:40:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "olivia",
+   "content": "who took my mug",
+   "timestamp": "2024-11-09T12:48:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "olivia",
+   "content": "coffee machine broken",
+   "timestamp": "2024-11-09T12:48:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "erin",
+   "content": "\ud83c\udf89 work anniversary",
+   "timestamp": "2024-11-09T13:25:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "mallory",
+   "content": "silenced the noisy disk alert for now",
+   "timestamp": "2024-11-09T13:30:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "dave",
+   "content": "pagerduty schedule swapped",
+   "timestamp": "2024-11-09T13:45:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "dave",
+   "content": "reminder: blameless postmortems",
+   "timestamp": "2024-11-09T13:48:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "heidi",
+   "content": "deprecating /v1 soon",
+   "timestamp": "2024-11-09T13:54:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "carol",
+   "content": "free snacks",
+   "timestamp": "2024-11-09T14:04:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "frank",
+   "content": "free snacks",
+   "timestamp": "2024-11-09T14:13:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "grace",
+   "content": "action items tracked in Jira",
+   "timestamp": "2024-11-09T14:45:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "victor",
+   "content": "staging stuck?",
+   "timestamp": "2024-11-09T14:52:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "deploybot",
+   "content": "pagerduty schedule swapped",
+   "timestamp": "2024-11-09T15:06:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "erin",
+   "content": "all-hands Thursday",
+   "timestamp": "2024-11-09T15:28:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "peggy",
+   "content": "deprecating /v1 soon",
+   "timestamp": "2024-11-09T15:31:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "peggy",
+   "content": "staging stuck?",
+   "timestamp": "2024-11-09T15:32:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "peggy",
+   "content": "TIL you can pin messages",
+   "timestamp": "2024-11-09T15:41:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "erin",
+   "content": "db failover done",
+   "timestamp": "2024-11-09T15:50:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "erin",
+   "content": "who took my mug",
+   "timestamp": "2024-11-09T16:22:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "victor",
+   "content": "postmortem template is pinned",
+   "timestamp": "2024-11-09T16:30:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "bob",
+   "content": "cdn cache purge done",
+   "timestamp": "2024-11-09T16:49:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "ci-bot",
+   "content": "db failover done",
+   "timestamp": "2024-11-09T17:09:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "judy",
+   "content": "silenced the noisy disk alert for now",
+   "timestamp": "2024-11-09T17:16:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "carol",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-11-09T17:18:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "bob",
+   "content": "morning all \u2615",
+   "timestamp": "2024-11-09T17:53:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "mallory",
+   "content": "action items tracked in Jira",
+   "timestamp": "2024-11-10T09:19:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "heidi",
+   "content": "cdn cache purge done",
+   "timestamp": "2024-11-10T09:25:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "bob",
+   "content": "lunch by noon",
+   "timestamp": "2024-11-10T09:27:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "alice",
+   "content": "postmortem template is pinned",
+   "timestamp": "2024-11-10T09:35:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "dave",
+   "content": "runbook updated",
+   "timestamp": "2024-11-10T09:47:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "olivia",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-11-10T09:50:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "victor",
+   "content": "connection pool tuning",
+   "timestamp": "2024-11-10T10:06:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "victor",
+   "content": "free snacks",
+   "timestamp": "2024-11-10T10:17:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "heidi",
+   "content": "action items tracked in Jira",
+   "timestamp": "2024-11-10T10:43:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "peggy",
+   "content": "moving secrets to vault",
+   "timestamp": "2024-11-10T10:59:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "heidi",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-11-10T11:19:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "grafana",
+   "content": "[resolved] email provider degraded",
+   "timestamp": "2024-11-10T11:28:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "bob",
+   "content": "moving secrets to vault",
+   "timestamp": "2024-11-10T11:47:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "heidi",
+   "content": "TIL you can pin messages",
+   "timestamp": "2024-11-10T11:48:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "pagerduty",
+   "content": "cdn cache purge done",
+   "timestamp": "2024-11-10T11:59:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "carol",
+   "content": "TIL you can pin messages",
+   "timestamp": "2024-11-10T12:14:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "heidi",
+   "content": "db failover done",
+   "timestamp": "2024-11-10T12:41:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "heidi",
+   "content": "db failover done",
+   "timestamp": "2024-11-10T12:42:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "peggy",
+   "content": "\ud83c\udf89 work anniversary",
+   "timestamp": "2024-11-10T12:53:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "carol",
+   "content": "reminder: blameless postmortems",
+   "timestamp": "2024-11-10T13:02:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "victor",
+   "content": "free snacks",
+   "timestamp": "2024-11-10T13:05:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "grafana",
+   "content": "pagerduty schedule swapped",
+   "timestamp": "2024-11-10T13:06:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "grace",
+   "content": "who took my mug",
+   "timestamp": "2024-11-10T13:11:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "mallory",
+   "content": "added tracing to the gateway",
+   "timestamp": "2024-11-10T13:22:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "ivan",
+   "content": "postmortem template is pinned",
+   "timestamp": "2024-11-10T14:17:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "ivan",
+   "content": "rebased, CI green",
+   "timestamp": "2024-11-10T14:40:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "grace",
+   "content": "\ud83c\udf89 work anniversary",
+   "timestamp": "2024-11-10T14:41:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "judy",
+   "content": "flaky test again",
+   "timestamp": "2024-11-10T14:58:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "bob",
+   "content": "lunch by noon",
+   "timestamp": "2024-11-10T14:59:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "olivia",
+   "content": "runbook updated",
+   "timestamp": "2024-11-10T15:25:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "grace",
+   "content": "cdn cache purge done",
+   "timestamp": "2024-11-10T15:26:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "carol",
+   "content": "moving secrets to vault",
+   "timestamp": "2024-11-10T15:47:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "deploybot",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-11-10T16:06:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "mallory",
+   "content": "deprecating /v1 soon",
+   "timestamp": "2024-11-10T16:52:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "ivan",
+   "content": "reminder: blameless postmortems",
+   "timestamp": "2024-11-10T17:12:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "bob",
+   "content": "welcome new folks \ud83d\udc4b",
+   "timestamp": "2024-11-10T17:33:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "olivia",
+   "content": "reminder: blameless postmortems",
+   "timestamp": "2024-11-11T09:00:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "dave",
+   "content": "cache TTL ticket open",
+   "timestamp": "2024-11-11T09:08:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "pagerduty",
+   "content": "[resolved] email provider degraded",
+   "timestamp": "2024-11-11T09:11:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "peggy",
+   "content": "all-hands Thursday",
+   "timestamp": "2024-11-11T09:12:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "frank",
+   "content": "moving secrets to vault",
+   "timestamp": "2024-11-11T09:20:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "judy",
+   "content": "bumped grafana agent",
+   "timestamp": "2024-11-11T10:11:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "dave",
+   "content": "postmortem template is pinned",
+   "timestamp": "2024-11-11T10:26:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "dave",
+   "content": "\ud83c\udf89 work anniversary",
+   "timestamp": "2024-11-11T10:36:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "frank",
+   "content": "lunch by noon",
+   "timestamp": "2024-11-11T10:52:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "bob",
+   "content": "deprecating /v1 soon",
+   "timestamp": "2024-11-11T10:56:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "peggy",
+   "content": "morning all \u2615",
+   "timestamp": "2024-11-11T11:13:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "alice",
+   "content": "silenced the noisy disk alert for now",
+   "timestamp": "2024-11-11T11:20:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "trent",
+   "content": "last week's checkout PM is in the drive",
+   "timestamp": "2024-11-11T11:22:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "ivan",
+   "content": "flaky test again",
+   "timestamp": "2024-11-11T11:49:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "bob",
+   "content": "reminder: blameless postmortems",
+   "timestamp": "2024-11-11T11:56:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "peggy",
+   "content": "secondary is heidi this week",
+   "timestamp": "2024-11-11T11:57:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "erin",
+   "content": "reminder: blameless postmortems",
+   "timestamp": "2024-11-11T12:07:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "deploybot",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-11-11T12:11:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "erin",
+   "content": "jobs queue migration Tuesday",
+   "timestamp": "2024-11-11T12:21:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "heidi",
+   "content": "flaky test again",
+   "timestamp": "2024-11-11T12:50:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "heidi",
+   "content": "action items tracked in Jira",
+   "timestamp": "2024-11-11T12:56:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "trent",
+   "content": "bumped grafana agent",
+   "timestamp": "2024-11-11T12:58:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "ivan",
+   "content": "lunch by noon",
+   "timestamp": "2024-11-11T13:15:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "trent",
+   "content": "coffee machine broken",
+   "timestamp": "2024-11-11T13:17:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "grace",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-11-11T13:42:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "grafana",
+   "content": "checkout latency normal",
+   "timestamp": "2024-11-11T14:02:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "frank",
+   "content": "who took my mug",
+   "timestamp": "2024-11-11T14:10:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "peggy",
+   "content": "deprecating /v1 soon",
+   "timestamp": "2024-11-11T14:13:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "heidi",
+   "content": "added tracing to the gateway",
+   "timestamp": "2024-11-11T14:15:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "judy",
+   "content": "runbook updated",
+   "timestamp": "2024-11-11T14:20:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "alice",
+   "content": "pagerduty schedule swapped",
+   "timestamp": "2024-11-11T14:30:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "judy",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-11-11T14:35:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "grafana",
+   "content": "pagerduty schedule swapped",
+   "timestamp": "2024-11-11T14:51:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "dave",
+   "content": "last week's checkout PM is in the drive",
+   "timestamp": "2024-11-11T14:51:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "dave",
+   "content": "postmortem template is pinned",
+   "timestamp": "2024-11-11T15:01:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "trent",
+   "content": "index added on events(ts)",
+   "timestamp": "2024-11-11T15:28:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "peggy",
+   "content": "cdn cache purge done",
+   "timestamp": "2024-11-11T15:36:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "alice",
+   "content": "pagerduty schedule swapped",
+   "timestamp": "2024-11-11T15:36:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "bob",
+   "content": "morning all \u2615",
+   "timestamp": "2024-11-11T15:47:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "heidi",
+   "content": "TIL you can pin messages",
+   "timestamp": "2024-11-11T15:55:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "grace",
+   "content": "free snacks",
+   "timestamp": "2024-11-11T16:02:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "niaj",
+   "content": "action items tracked in Jira",
+   "timestamp": "2024-11-11T16:04:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "heidi",
+   "content": "TIL you can pin messages",
+   "timestamp": "2024-11-11T16:07:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "trent",
+   "content": "PR #903 up",
+   "timestamp": "2024-11-11T16:43:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "grace",
+   "content": "last week's checkout PM is in the drive",
+   "timestamp": "2024-11-11T16:48:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "bob",
+   "content": "[resolved] email provider degraded",
+   "timestamp": "2024-11-11T16:54:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "bob",
+   "content": "handoff: nothing active",
+   "timestamp": "2024-11-11T17:00:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "frank",
+   "content": "merged #910",
+   "timestamp": "2024-11-11T17:20:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "heidi",
+   "content": "deprecating /v1 soon",
+   "timestamp": "2024-11-11T17:42:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "erin",
+   "content": "moving secrets to vault",
+   "timestamp": "2024-11-11T17:43:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "judy",
+   "content": "staging stuck?",
+   "timestamp": "2024-11-12T09:07:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "bob",
+   "content": "deprecating /v1 soon",
+   "timestamp": "2024-11-12T09:29:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "dave",
+   "content": "coffee machine broken",
+   "timestamp": "2024-11-12T09:38:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "dave",
+   "content": "[resolved] email provider degraded",
+   "timestamp": "2024-11-12T09:45:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "deploybot",
+   "content": "runbook updated",
+   "timestamp": "2024-11-12T09:53:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "alice",
+   "content": "deprecating /v1 soon",
+   "timestamp": "2024-11-12T10:07:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "frank",
+   "content": "db failover done",
+   "timestamp": "2024-11-12T10:18:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "victor",
+   "content": "secondary is heidi this week",
+   "timestamp": "2024-11-12T10:24:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "deploybot",
+   "content": "pagerduty schedule swapped",
+   "timestamp": "2024-11-12T10:43:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "ivan",
+   "content": "PR #903 up",
+   "timestamp": "2024-11-12T10:43:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "frank",
+   "content": "who took my mug",
+   "timestamp": "2024-11-12T10:46:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "erin",
+   "content": "TIL you can pin messages",
+   "timestamp": "2024-11-12T10:54:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "bob",
+   "content": "PR #903 up",
+   "timestamp": "2024-11-12T10:59:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "ci-bot",
+   "content": "silenced the noisy disk alert for now",
+   "timestamp": "2024-11-12T11:04:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "pagerduty",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-11-12T11:25:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "erin",
+   "content": "coffee machine broken",
+   "timestamp": "2024-11-12T12:13:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "erin",
+   "content": "who took my mug",
+   "timestamp": "2024-11-12T12:15:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "bob",
+   "content": "lunch by noon",
+   "timestamp": "2024-11-12T12:50:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "judy",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-11-12T12:58:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "victor",
+   "content": "added tracing to the gateway",
+   "timestamp": "2024-11-12T13:13:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "mallory",
+   "content": "reminder: blameless postmortems",
+   "timestamp": "2024-11-12T13:26:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "ivan",
+   "content": "silenced the noisy disk alert for now",
+   "timestamp": "2024-11-12T13:29:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "victor",
+   "content": "reminder: blameless postmortems",
+   "timestamp": "2024-11-12T13:35:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "frank",
+   "content": "moving secrets to vault",
+   "timestamp": "2024-11-12T13:39:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "peggy",
+   "content": "who took my mug",
+   "timestamp": "2024-11-12T14:41:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "dave",
+   "content": "moving secrets to vault",
+   "timestamp": "2024-11-12T14:45:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "ivan",
+   "content": "checkout latency normal",
+   "timestamp": "2024-11-12T15:01:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "alice",
+   "content": "postmortem template is pinned",
+   "timestamp": "2024-11-12T15:17:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "victor",
+   "content": "flaky test again",
+   "timestamp": "2024-11-12T15:32:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "alice",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-11-12T15:37:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "olivia",
+   "content": "action items tracked in Jira",
+   "timestamp": "2024-11-12T15:51:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "carol",
+   "content": "bumped grafana agent",
+   "timestamp": "2024-11-12T15:56:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "grace",
+   "content": "rotate your tokens",
+   "timestamp": "2024-11-12T16:07:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "niaj",
+   "content": "kudos to support \ud83d\ude4c",
+   "timestamp": "2024-11-12T16:10:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "ivan",
+   "content": "free snacks",
+   "timestamp": "2024-11-12T16:17:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "heidi",
+   "content": "[resolved] email provider degraded",
+   "timestamp": "2024-11-12T16:24:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "dave",
+   "content": "secondary is heidi this week",
+   "timestamp": "2024-11-12T16:49:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "peggy",
+   "content": "action items tracked in Jira",
+   "timestamp": "2024-11-12T16:54:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "judy",
+   "content": "silenced the noisy disk alert for now",
+   "timestamp": "2024-11-12T17:02:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "alice",
+   "content": "rebased, CI green",
+   "timestamp": "2024-11-12T17:21:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "mallory",
+   "content": "flaky test again",
+   "timestamp": "2024-11-12T17:43:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "victor",
+   "content": "moving secrets to vault",
+   "timestamp": "2024-11-12T17:47:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "bob",
+   "content": "last week's checkout PM is in the drive",
+   "timestamp": "2024-11-12T17:49:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "mallory",
+   "content": "merged #910",
+   "timestamp": "2024-11-12T17:52:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "mallory",
+   "content": "bumped grafana agent",
+   "timestamp": "2024-11-12T17:54:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "trent",
+   "content": "TIL you can pin messages",
+   "timestamp": "2024-11-12T18:00:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "niaj",
+   "content": "checkout latency normal",
+   "timestamp": "2024-11-13T09:08:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "heidi",
+   "content": "moving secrets to vault",
+   "timestamp": "2024-11-13T09:18:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "grace",
+   "content": "cache TTL ticket open",
+   "timestamp": "2024-11-13T09:36:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "mallory",
+   "content": "welcome new folks \ud83d\udc4b",
+   "timestamp": "2024-11-13T09:43:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "peggy",
+   "content": "action items tracked in Jira",
+   "timestamp": "2024-11-13T09:54:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "trent",
+   "content": "morning all \u2615",
+   "timestamp": "2024-11-13T09:54:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "dave",
+   "content": "cache TTL ticket open",
+   "timestamp": "2024-11-13T10:25:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "grace",
+   "content": "\ud83c\udf89 work anniversary",
+   "timestamp": "2024-11-13T10:28:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "mallory",
+   "content": "staging stuck?",
+   "timestamp": "2024-11-13T10:39:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "heidi",
+   "content": "silenced the noisy disk alert for now",
+   "timestamp": "2024-11-13T10:53:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "victor",
+   "content": "all-hands Thursday",
+   "timestamp": "2024-11-13T10:57:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "ivan",
+   "content": "connection pool tuning",
+   "timestamp": "2024-11-13T11:28:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "frank",
+   "content": "merged #910",
+   "timestamp": "2024-11-13T12:31:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "grace",
+   "content": "moving secrets to vault",
+   "timestamp": "2024-11-13T13:07:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "carol",
+   "content": "welcome new folks \ud83d\udc4b",
+   "timestamp": "2024-11-13T13:25:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "ci-bot",
+   "content": "runbook updated",
+   "timestamp": "2024-11-13T13:50:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "heidi",
+   "content": "cdn cache purge done",
+   "timestamp": "2024-11-13T13:53:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "mallory",
+   "content": "[resolved] email provider degraded",
+   "timestamp": "2024-11-13T13:57:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "erin",
+   "content": "action items tracked in Jira",
+   "timestamp": "2024-11-13T14:02:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "ci-bot",
+   "content": "[resolved] email provider degraded",
+   "timestamp": "2024-11-13T14:10:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "grace",
+   "content": "who took my mug",
+   "timestamp": "2024-11-13T14:36:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "peggy",
+   "content": "db failover done",
+   "timestamp": "2024-11-13T15:12:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "trent",
+   "content": "connection pool tuning",
+   "timestamp": "2024-11-13T15:17:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "heidi",
+   "content": "kudos to support \ud83d\ude4c",
+   "timestamp": "2024-11-13T15:22:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "peggy",
+   "content": "bumped grafana agent",
+   "timestamp": "2024-11-13T15:31:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "grafana",
+   "content": "handoff: nothing active",
+   "timestamp": "2024-11-13T15:45:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "grace",
+   "content": "staging stuck?",
+   "timestamp": "2024-11-13T16:12:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "erin",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-11-13T16:14:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "ivan",
+   "content": "lunch by noon",
+   "timestamp": "2024-11-13T16:26:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "dave",
+   "content": "bumped grafana agent",
+   "timestamp": "2024-11-13T16:29:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "ivan",
+   "content": "cdn cache purge done",
+   "timestamp": "2024-11-13T16:34:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "deploybot",
+   "content": "pagerduty schedule swapped",
+   "timestamp": "2024-11-13T17:20:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "trent",
+   "content": "merged #910",
+   "timestamp": "2024-11-13T17:22:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "bob",
+   "content": "secondary is heidi this week",
+   "timestamp": "2024-11-13T17:38:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "mallory",
+   "content": "silenced the noisy disk alert for now",
+   "timestamp": "2024-11-13T17:40:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "judy",
+   "content": "bumped grafana agent",
+   "timestamp": "2024-11-13T17:53:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "ivan",
+   "content": "coffee machine broken",
+   "timestamp": "2024-11-13T17:57:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "ivan",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-11-14T09:09:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "trent",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-11-14T09:09:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "mallory",
+   "content": "checkout latency normal",
+   "timestamp": "2024-11-14T09:22:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "erin",
+   "content": "cache TTL ticket open",
+   "timestamp": "2024-11-14T09:23:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "victor",
+   "content": "flaky test again",
+   "timestamp": "2024-11-14T09:37:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "judy",
+   "content": "merged #910",
+   "timestamp": "2024-11-14T09:59:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "dave",
+   "content": "connection pool tuning",
+   "timestamp": "2024-11-14T10:25:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "grace",
+   "content": "[resolved] email provider degraded",
+   "timestamp": "2024-11-14T10:27:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "dave",
+   "content": "last week's checkout PM is in the drive",
+   "timestamp": "2024-11-14T10:30:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "alice",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-11-14T10:35:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "judy",
+   "content": "kudos to support \ud83d\ude4c",
+   "timestamp": "2024-11-14T10:35:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "erin",
+   "content": "rebased, CI green",
+   "timestamp": "2024-11-14T11:02:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "heidi",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-11-14T11:05:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "dave",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-11-14T11:10:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "mallory",
+   "content": "postmortem template is pinned",
+   "timestamp": "2024-11-14T11:17:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "frank",
+   "content": "last week's checkout PM is in the drive",
+   "timestamp": "2024-11-14T11:19:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "frank",
+   "content": "secondary is heidi this week",
+   "timestamp": "2024-11-14T11:33:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "carol",
+   "content": "runbook updated",
+   "timestamp": "2024-11-14T11:35:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "heidi",
+   "content": "secondary is heidi this week",
+   "timestamp": "2024-11-14T11:51:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "judy",
+   "content": "connection pool tuning",
+   "timestamp": "2024-11-14T12:07:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "victor",
+   "content": "merged #910",
+   "timestamp": "2024-11-14T12:47:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "judy",
+   "content": "rebased, CI green",
+   "timestamp": "2024-11-14T13:11:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "frank",
+   "content": "checkout latency normal",
+   "timestamp": "2024-11-14T13:12:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "mallory",
+   "content": "secondary is heidi this week",
+   "timestamp": "2024-11-14T13:16:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "judy",
+   "content": "reminder: blameless postmortems",
+   "timestamp": "2024-11-14T13:18:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "ci-bot",
+   "content": "handoff: nothing active",
+   "timestamp": "2024-11-14T13:26:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "victor",
+   "content": "handoff: nothing active",
+   "timestamp": "2024-11-14T13:44:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "frank",
+   "content": "pagerduty schedule swapped",
+   "timestamp": "2024-11-14T13:59:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "trent",
+   "content": "moving secrets to vault",
+   "timestamp": "2024-11-14T14:07:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "peggy",
+   "content": "rotate your tokens",
+   "timestamp": "2024-11-14T14:34:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "grace",
+   "content": "PR #903 up",
+   "timestamp": "2024-11-14T14:37:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "dave",
+   "content": "\ud83c\udf89 work anniversary",
+   "timestamp": "2024-11-14T14:40:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "ivan",
+   "content": "\ud83d\udc36 dog of the day",
+   "timestamp": "2024-11-14T14:57:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "grace",
+   "content": "moving secrets to vault",
+   "timestamp": "2024-11-14T15:12:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "ivan",
+   "content": "secondary is heidi this week",
+   "timestamp": "2024-11-14T15:13:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "peggy",
+   "content": "kudos to support \ud83d\ude4c",
+   "timestamp": "2024-11-14T15:18:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "dave",
+   "content": "postmortem template is pinned",
+   "timestamp": "2024-11-14T15:37:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "victor",
+   "content": "merged #910",
+   "timestamp": "2024-11-14T16:03:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "alice",
+   "content": "coffee machine broken",
+   "timestamp": "2024-11-14T16:06:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "judy",
+   "content": "TIL you can pin messages",
+   "timestamp": "2024-11-14T16:14:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "victor",
+   "content": "rotate your tokens",
+   "timestamp": "2024-11-14T16:15:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "carol",
+   "content": "action items tracked in Jira",
+   "timestamp": "2024-11-14T16:17:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "grace",
+   "content": "wifi flaky again",
+   "timestamp": "2024-11-14T16:22:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "erin",
+   "content": "lunch by noon",
+   "timestamp": "2024-11-14T16:23:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "bob",
+   "content": "jobs queue migration Tuesday",
+   "timestamp": "2024-11-14T16:29:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "grace",
+   "content": "cache TTL ticket open",
+   "timestamp": "2024-11-14T16:36:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "pagerduty",
+   "content": "cdn cache purge done",
+   "timestamp": "2024-11-14T16:59:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "olivia",
+   "content": "lunch by noon",
+   "timestamp": "2024-11-14T17:26:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "trent",
+   "content": "secondary is heidi this week",
+   "timestamp": "2024-11-15T09:16:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "heidi",
+   "content": "merged #910",
+   "timestamp": "2024-11-15T09:28:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "dave",
+   "content": "[resolved] email provider degraded",
+   "timestamp": "2024-11-15T09:57:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "alice",
+   "content": "action items tracked in Jira",
+   "timestamp": "2024-11-15T10:25:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "judy",
+   "content": "silenced the noisy disk alert for now",
+   "timestamp": "2024-11-15T10:31:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "grace",
+   "content": "runbook updated",
+   "timestamp": "2024-11-15T10:36:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "ivan",
+   "content": "flaky test again",
+   "timestamp": "2024-11-15T10:42:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "peggy",
+   "content": "last week's checkout PM is in the drive",
+   "timestamp": "2024-11-15T10:47:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "trent",
+   "content": "who took my mug",
+   "timestamp": "2024-11-15T10:55:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "peggy",
+   "content": "checkout latency normal",
+   "timestamp": "2024-11-15T11:04:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "victor",
+   "content": "[resolved] email provider degraded",
+   "timestamp": "2024-11-15T11:51:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "frank",
+   "content": "runbook updated",
+   "timestamp": "2024-11-15T13:03:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "bob",
+   "content": "connection pool tuning",
+   "timestamp": "2024-11-15T14:16:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "niaj",
+   "content": "all-hands Thursday",
+   "timestamp": "2024-11-15T14:26:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "olivia",
+   "content": "postmortem template is pinned",
+   "timestamp": "2024-11-15T14:27:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "frank",
+   "content": "postmortem template is pinned",
+   "timestamp": "2024-11-15T15:03:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "niaj",
+   "content": "[resolved] email provider degraded",
+   "timestamp": "2024-11-15T15:15:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "trent",
+   "content": "who took my mug",
+   "timestamp": "2024-11-15T15:40:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "alice",
+   "content": "cache TTL ticket open",
+   "timestamp": "2024-11-15T16:03:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "bob",
+   "content": "bumped grafana agent",
+   "timestamp": "2024-11-15T16:11:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "carol",
+   "content": "wifi flaky again",
+   "timestamp": "2024-11-15T16:27:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "heidi",
+   "content": "staging stuck?",
+   "timestamp": "2024-11-15T16:38:00+00:00"
+  },
+  {
+   "channel": "oncall",
+   "author": "victor",
+   "content": "silenced the noisy disk alert for now",
+   "timestamp": "2024-11-15T16:55:00+00:00"
+  },
+  {
+   "channel": "incidents",
+   "author": "dave",
+   "content": "[resolved] elevated 5xx 14:02-14:18",
+   "timestamp": "2024-11-15T16:59:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "olivia",
+   "content": "bumped grafana agent",
+   "timestamp": "2024-11-15T17:04:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "erin",
+   "content": "morning all \u2615",
+   "timestamp": "2024-11-15T17:20:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "dave",
+   "content": "free snacks",
+   "timestamp": "2024-11-15T17:23:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "alice",
+   "content": "moving secrets to vault",
+   "timestamp": "2024-11-15T17:25:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "olivia",
+   "content": "postmortem template is pinned",
+   "timestamp": "2024-11-15T17:28:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "bob",
+   "content": "jobs queue migration Tuesday",
+   "timestamp": "2024-11-15T17:28:00+00:00"
+  },
+  {
+   "channel": "postmortems",
+   "author": "ivan",
+   "content": "last week's checkout PM is in the drive",
+   "timestamp": "2024-11-15T17:30:00+00:00"
+  },
+  {
+   "channel": "random",
+   "author": "victor",
+   "content": "coffee machine broken",
+   "timestamp": "2024-11-15T17:31:00+00:00"
+  },
+  {
+   "channel": "general",
+   "author": "grace",
+   "content": "all-hands Thursday",
+   "timestamp": "2024-11-15T17:40:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "carol",
+   "content": "PR #903 up",
+   "timestamp": "2024-11-15T17:40:00+00:00"
+  },
+  {
+   "channel": "engineering",
+   "author": "niaj",
+   "content": "bumped grafana agent",
+   "timestamp": "2024-11-15T17:54:00+00:00"
+  },
+  {
+   "channel": "backend",
+   "author": "bob",
+   "content": "connection pool tuning",
+   "timestamp": "2024-11-15T17:57:00+00:00"
+  }
+ ]
+}

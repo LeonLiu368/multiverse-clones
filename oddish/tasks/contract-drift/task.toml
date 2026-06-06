@@ -1,0 +1,29 @@
+schema_version = "1.2"
+name = "abundant-mattermost/contract-drift"
+description = "Observability + SWE task. A payments client targets a deprecated API contract and its test suite fails. The new contract (field names, integer-cent units, version marker, required idempotency_key, and a field renamed partway through the discussion) was announced by the platform team in a heavy, noisy workspace — not in the repo. The agent must use the `slack` tool to dig through chat history, recover the current contract (catching the customer_id->customer correction and ignoring deprecated-v1 traps), update the client, and make the suite pass. A hidden grading test pins the exact contract. nop=0, oracle=1."
+
+[metadata]
+category = "software-engineering"
+service = "slack"
+tools = ["slack"]
+tags = ["slack", "observability", "swe", "tool-use", "exploration", "mcp", "tests"]
+
+[agent]
+timeout_sec = 2400
+
+[verifier]
+timeout_sec = 600
+
+[environment]
+cpus = 2
+memory_mb = 4096
+storage_mb = 12288
+gpus = 0
+allow_internet = true
+workdir = "/workspace"
+build_timeout_sec = 1800
+
+# The `slack` MCP server made available to the agent (Harbor MCPServerConfig schema).
+mcp_servers = [
+  { name = "slack", transport = "stdio", command = "/usr/local/bin/slack-mcp", args = [] },
+]
