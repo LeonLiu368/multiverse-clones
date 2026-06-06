@@ -11,11 +11,12 @@ Every task is a `docker compose` project with two services:
 - **`mattermost`** — the real Mattermost server (`mattermost/mattermost-team-edition:8.1.1`)
   with an **embedded Postgres** inside the same container. This is the "world" the agent
   operates on.
-- **`client`** — a small Debian image where the **agent** runs. It carries the agent's tools
-  (`mmctl` and `mmctl-mcp`) and the verifier scripts.
+- **`client`** — a small Debian image where the **agent** runs. It carries the agent's
+  Slack-branded tool — the `slack` CLI and `slack` MCP server (thin wrappers over `mmctl` /
+  `mmctl-mcp`) — plus the verifier scripts.
 
-They share one Docker network and find each other **by service name**: the client talks to the
-server at `http://mattermost:8065`. We deliberately declare **no `networks:`** block in the
+They share one Docker network and find each other **by service name**: the client (via the
+`slack` facade) talks to the server at `http://mattermost:8065`. We deliberately declare **no `networks:`** block in the
 compose file, because the Harbor/Oddish runtime injects its own networking onto the client; an
 explicit network would conflict with it. Both services pin `platform: linux/amd64` (Mattermost
 and `mmctl` ship only for amd64).
@@ -68,13 +69,14 @@ different "issue, go fix it" scenarios.
 
 ### 4. The client wires up the agent's tools
 The `client` container only starts once the server's healthcheck passes (`depends_on:
-service_healthy`). Its entrypoint then logs `mmctl` into the server with the admin credentials
-and waits until the workspace is actually seeded, so by the time the agent arrives, both the
-CLI and the MCP tools "just work" with no setup.
+service_healthy`). Its entrypoint then authenticates the workspace connection with the admin
+credentials and waits until the workspace is actually seeded, so by the time the agent arrives,
+both the `slack` CLI and the `slack` MCP server "just work" with no setup.
 
 ### 5. The agent acts
-The agent reads `instruction.md` (which states only the symptom and that it has admin tools),
-then explores and remediates using `mmctl` and/or the `mattermost` MCP tools.
+The agent reads `instruction.md` (which states only the symptom and that it has the `slack`
+tool), then explores and remediates using the `slack` CLI and/or the `slack` MCP tools. See
+[TOOLS.md](TOOLS.md) for the surface.
 
 ### 6. The verifier scores
 Harbor runs `tests/test.sh` (a thin wrapper) → `tests/run_verifier.sh` **inside the client

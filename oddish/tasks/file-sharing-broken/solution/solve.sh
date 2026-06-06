@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Oracle: file attachments were disabled server-wide; re-enable them.
+# Oracle: file sharing was disabled workspace-wide; re-enable it through the `slack` tool.
 set -euo pipefail
-mmctl config set FileSettings.EnableFileAttachments true
-echo "oracle: re-enabled file attachments"
+slack admin.setFileSharing true
+echo "oracle: re-enabled file sharing via slack"

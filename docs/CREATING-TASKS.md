@@ -27,10 +27,11 @@ tasks/<name>/
   task.toml            # Harbor task config (incl. the MCP server registration)
   instruction.md       # the symptom only — minimal hand-holding
   environment/
-    Dockerfile                 # client image (mmctl + mmctl-mcp)  — copy as-is
-    client-entrypoint.sh       # authenticates mmctl, waits for seed — copy as-is
-    mcp-mmctl.sh               # MCP launcher wrapper             — copy as-is
-    docker-compose.yaml        # client + mattermost              — copy as-is
+    Dockerfile                 # client image (slack facade over mmctl/mmctl-mcp) — copy as-is
+    client-entrypoint.sh       # authenticates the connection, waits for seed     — copy as-is
+    slack                      # the `slack` CLI (Slack Web API style)            — copy as-is
+    slack-mcp.sh               # the `slack` MCP launcher                         — copy as-is
+    docker-compose.yaml        # client + mattermost                              — copy as-is
     mattermost/
       Dockerfile               # service image                    — copy as-is
       entrypoint.sh            # boot + seed + run fault.sh        — copy as-is
@@ -38,7 +39,7 @@ tasks/<name>/
     data/mattermost/
       scraped.json             # the seed workspace (can be shared across tasks)
       fault.sh   ← YOU WRITE   # injects the "issue" over REST at seed time
-  solution/solve.sh   ← YOU WRITE   # the oracle fix (uses mmctl)
+  solution/solve.sh   ← YOU WRITE   # the oracle fix (uses the `slack` tool)
   tests/
     test.sh                    # orchestrator                     — copy as-is
     run_verifier.sh ← YOU WRITE  # reads state back over REST, writes reward
@@ -59,14 +60,17 @@ TOK="$(curl -s -i -X POST http://localhost:8065/api/v4/users/login -H 'Content-T
 # ... use $TOK to deactivate a user / archive a channel / flip a config flag ...
 ```
 
-**2. `instruction.md`** — state only the **symptom** and that the agent has admin tools. Do not
-reveal the root cause or the command to run.
+**2. `instruction.md`** — state only the **symptom** and that the agent has the `slack` tool
+(CLI + MCP). Do not reveal the root cause or the method to run.
 
-**3. `solution/solve.sh`** — the oracle, runs *in the client* with `mmctl` already authed:
+**3. `solution/solve.sh`** — the oracle, runs *in the client* with the `slack` tool ready:
 
 ```bash
-mmctl user activate carol      # whatever single command fixes the injected fault
+slack admin.users.setActive carol true   # whatever single `slack` method fixes the fault
 ```
+
+If your fix needs a `slack` method that doesn't exist yet, add it to the `environment/slack`
+wrapper (map it to the right `mmctl`/REST call) and keep the agent-facing name Slack-flavored.
 
 **4. `tests/run_verifier.sh`** — runs *in the client*, logs in as admin, reads the fixed state
 over REST, and writes `0`/`1` to `/logs/verifier/reward.txt`. Keep the check **outcome-based**

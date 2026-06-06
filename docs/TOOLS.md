@@ -1,77 +1,87 @@
-# The agent's tool surface
+# The agent's tool surface: `slack`
 
-Each task gives the agent **two interchangeable ways** to operate the Mattermost workspace.
-Both talk to the same server over the same remote (TCP) connection; the agent can use either.
+The agent operates the workspace through a single Slack-branded tool called **`slack`**,
+available in two interchangeable forms. Both are a **thin facade** over the real Mattermost
+tooling (`mmctl` / `mmctl-mcp`) — the agent sees "Slack", the backend is Mattermost.
 
-## 1. `mmctl` — the official Mattermost CLI
+## 1. `slack` CLI (Slack Web API style)
 
-A real admin CLI, copied verbatim out of the Mattermost product image (so the version always
-matches the server). In the `client` container it is **pre-authenticated** as admin, so the
-agent can run commands immediately. A few examples:
+A small wrapper (`environment/slack`) exposing Slack Web API-style methods. In the `client`
+container it is pre-authenticated, so the agent can run it immediately. `slack help` lists
+everything:
 
-```bash
-mmctl user list                              # list users
-mmctl user search carol                      # find a user
-mmctl user activate carol                    # reactivate a deactivated user
-mmctl channel list test-demo                 # list channels on the team
-mmctl channel unarchive test-demo:deploys    # restore an archived channel
-mmctl post list test-demo:incidents -n 50    # read a channel's history
-mmctl post create test-demo:incidents -m "…" # post a message
-mmctl config get  FileSettings.EnableFileAttachments
-mmctl config set  FileSettings.EnableFileAttachments true
+```
+Conversations (channels):
+  slack conversations.list [--archived]      # active channels, or archived ones with --archived
+  slack conversations.info       <channel>   # {id, name, is_archived, is_private, purpose}
+  slack conversations.history    <channel> [count]
+  slack conversations.create     <name>
+  slack conversations.archive    <channel>
+  slack conversations.unarchive  <channel>
+Chat:
+  slack chat.postMessage         <channel> <text...>
+Users (members):
+  slack users.list                           # [{id, name, deleted}]
+  slack users.info               <user>      # {id, name, real_name, email, deleted}
+Admin:
+  slack admin.users.setActive    <user> <true|false>
+  slack admin.getFileSharing
+  slack admin.setFileSharing     <true|false>
+  slack auth.test
 ```
 
-Run `mmctl --help` (or `mmctl <group> --help`) inside the client to discover the rest.
+- **Read/diagnostic methods** (`conversations.list/info`, `users.list/info`, `admin.getFileSharing`)
+  return **Slack-shaped JSON** with the fields that make a problem visible — e.g. `deleted: true`
+  for a deactivated member, `is_archived: true` for a hidden channel. They read the workspace API
+  directly.
+- **Action methods** (`conversations.unarchive`, `chat.postMessage`, `admin.users.setActive`,
+  `admin.setFileSharing`, …) perform the change via `mmctl` underneath.
+- Anything unrecognized is **passed straight through** to the underlying CLI, so nothing is
+  blocked.
 
-## 2. `mmctl-mcp` — an MCP server (~65 tools)
+The workspace name is injected automatically; the agent never has to know about it.
 
-The same capabilities, exposed as structured **MCP tools** so MCP-aware agents can call them
-directly. It is registered the **Harbor-native way** in each task's `task.toml`:
+## 2. `slack` MCP server
+
+Registered the **Harbor-native way** in each task's `task.toml`:
 
 ```toml
 [environment]
 mcp_servers = [
-  { name = "mattermost", transport = "stdio", command = "/usr/local/bin/mcp-mmctl", args = [] },
+  { name = "slack", transport = "stdio", command = "/usr/local/bin/slack-mcp", args = [] },
 ]
 ```
 
 The Harbor agent runtime launches that stdio server and writes it into the agent's own MCP
-config (e.g. Claude's `~/.claude.json`), so the tools auto-load. Under the hood each tool simply
-shells out to `mmctl` over the remote auth context.
+config (e.g. Claude's `~/.claude.json`), so the tools auto-load under the name **`slack`**.
+`slack-mcp` authenticates the connection and then hands off to the underlying MCP server, which
+exposes the workspace operations as structured tools (`channel_list`, `channel_unarchive`,
+`post_create`, `user_activate`, `config_get`/`config_set`, …).
 
-### The full tool list (65 tools)
+## How the facade maps down
 
-| Group | Tools |
+| Agent sees (`slack`) | Runs underneath |
 |---|---|
-| generic | `mmctl` (run any mmctl command), `system_info` |
-| posts | `post_create`, `post_list`, `post_delete` |
-| channels | `channel_list`, `channel_create`, `channel_search`, `channel_archive`, `channel_unarchive` |
-| users | `user_list`, `user_search`, `user_create`, `user_activate`, `user_deactivate`, `user_email`, `user_add_team`, `user_add_channel` |
-| teams | `team_list`, `team_create`, `team_search`, `team_modify`, `team_rename` |
-| bots | `bot_list`, `bot_create`, `bot_assign`, `bot_enable`, `bot_disable` |
-| webhooks | `webhook_list`, `webhook_show`, `webhook_create_incoming`, `webhook_create_outgoing`, `webhook_delete` |
-| auth | `auth_list`, `auth_set`, `auth_current` |
-| roles & permissions | `role_system_admin`, `role_member`, `permission_add`, `permission_remove`, `permission_reset` |
-| groups | `group_channel_list`, `group_team_list`, `group_channel_status`, `group_team_status`, `group_channel_enable`, `group_channel_disable`, `group_team_enable`, `group_team_disable` |
-| plugins | `plugin_list`, `plugin_enable`, `plugin_disable`, `plugin_marketplace_list` |
-| config & jobs | `config_get`, `config_set`, `config_show`, `job_list`, `job_update` |
-| enterprise* | `license_remove`, `license_upload`, `license_upload_string`, `oauth_list`, `ldap_sync`, `ldap_idmigrate`, `saml_auth_data_reset` |
-
-\* Enterprise/admin tools are present but several require an enterprise license; the
-chat-operations tools (posts / channels / users / teams / bots / webhooks / config) are what
-the current tasks actually use.
+| `slack conversations.list [--archived]` | REST `GET /teams/{id}/channels[/deleted]` → Slack-shaped JSON |
+| `slack conversations.unarchive <c>` | `mmctl channel unarchive <ws>:<c>` |
+| `slack chat.postMessage <c> <text>` | `mmctl post create <ws>:<c> -m <text>` |
+| `slack users.info <u>` | REST `GET /users/username/<u>` → `{…, deleted}` |
+| `slack admin.users.setActive <u> true` | `mmctl user activate <u>` |
+| `slack admin.setFileSharing true` | `mmctl config set FileSettings.EnableFileAttachments true` |
+| `slack` MCP tools | `mmctl-mcp` (remote-auth patched) |
 
 ## "Minimal hand-holding" by design
 
-Task instructions tell the agent **only the symptom** and that it has admin tools — never which
-command to run. The agent has to explore the tool surface (e.g. realize that a deactivated user
-is hidden from the default `user list` and needs the inactive filter, or that an archived
-channel won't show in `channel list`) to diagnose and fix the issue. That exploration is the
-skill being measured.
+Task instructions tell the agent **only the symptom** and that it has the `slack` tool — never
+which method to run. The agent has to explore (`slack help`, then the right read method/flag) to
+make the problem visible — a deactivated member only shows as `deleted: true` in `users.info`; an
+archived channel only appears under `conversations.list --archived`; a disabled setting only
+shows via `admin.getFileSharing`. That exploration is the skill being measured.
 
-## Scoping note
+## Why a facade (lightweight) rather than a full Slack API
 
-This surface is **full workspace admin** — much broader than any one task needs. We keep it
-broad on purpose (it mirrors a real admin's access) and rely on the **task instruction +
-verifier** to define the objective. If you want a tightly-scoped eval, you can trim the tool
-list in `task.toml`'s `mcp_servers` / instruction without changing the service.
+This is intentionally a **lightweight Slack rename**: real Slack method names and Slack-shaped
+read output, but mapped onto Mattermost rather than reimplementing Slack's API byte-for-byte. It
+makes the environment *look* like Slack to the agent with almost no code, while keeping the
+battle-tested Mattermost backend. If you later need true Slack-API fidelity (real Slack SDKs,
+exact JSON), that's the job of the from-scratch Slack clone on the other branch.

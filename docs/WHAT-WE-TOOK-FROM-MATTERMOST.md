@@ -9,15 +9,20 @@ we changed, and the tradeoffs that come with reuse.
 | Taken | From | Used as | Replaces (what we'd otherwise build) |
 |---|---|---|---|
 | `mattermost/mattermost-team-edition:8.1.1` image | Docker Hub (official) | the chat **service** | an entire chat backend: channels, threads, reactions, DMs, users, roles, server config, full REST API v4 |
-| **`mmctl`** binary | copied out of the image (`/mattermost/bin/mmctl`) | the agent's **CLI** | a hand-written admin CLI |
-| **`mmctl-mcp`** | `github.com/mattermost/mmctl-mcp` (pinned commit, built from source) | the agent's **MCP** server, ~65 tools | a hand-written MCP server |
+| **`mmctl`** binary | copied out of the image (`/mattermost/bin/mmctl`) | engine behind the `slack` **CLI** | a hand-written admin CLI |
+| **`mmctl-mcp`** | `github.com/mattermost/mmctl-mcp` (pinned commit, built from source) | engine behind the `slack` **MCP** server | a hand-written MCP server |
 | **REST API v4** | the running server | the **verifier's** read-back channel | a custom state-inspection layer |
 | Embedded-Postgres entrypoint pattern | adapted from APEX-SWE's Mattermost setup | the service **boot sequence** | a working DB+server-in-one-container script |
 | Seed format `{messages:[{channel,author,content,timestamp}]}` | APEX-SWE convention | the **seed** input | a bespoke seed schema |
 
 The net result: the only code we actually *own* is a ~150-line Python seeder, a handful of
-small shell scripts (entrypoints, fault injectors, verifiers), and the task definitions.
-Everything that is hard — the chat product and the agent tooling — is reused.
+small shell scripts (entrypoints, fault injectors, verifiers, and the `slack` facade), and the
+task definitions. Everything that is hard — the chat product and the agent tooling — is reused.
+
+**The `slack` facade.** The agent never sees `mmctl`/`mmctl-mcp` or "Mattermost". A thin
+`slack` wrapper (CLI + MCP) presents Slack Web API-style methods and Slack-shaped output and maps
+them down to the reused tooling, so the environment *looks like Slack* to the agent. This is a
+**lightweight rename**, not a byte-for-byte Slack API — see [TOOLS.md](TOOLS.md).
 
 ## What we changed (and why)
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Oracle: #deploys was archived; unarchive (restore) it.
+# Oracle: #deploys was archived; restore it through the `slack` tool.
 set -euo pipefail
-mmctl channel unarchive test-demo:deploys
-echo "oracle: unarchived #deploys"
+slack conversations.unarchive deploys
+echo "oracle: unarchived #deploys via slack"

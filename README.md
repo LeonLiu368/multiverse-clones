@@ -22,11 +22,11 @@ Everything runs as a **multi-container Harbor task** and is **Oddish-runnable** 
    │   │  client          │  ───────────────────────►  │  mattermost    │  │
    │   │  (the agent)     │     http://mattermost:8065 │  real product  │  │
    │   │                  │  ◄───────────────────────  │  + Postgres    │  │
-   │   │  tools:          │                            │                │  │
-   │   │   • mmctl (CLI)  │                            │  seeded with a │  │
-   │   │   • mmctl-mcp    │                            │  workspace +   │  │
-   │   │     (65 MCP      │                            │  an injected   │  │
-   │   │      tools)      │                            │  "fault"       │  │
+   │   │  tool: `slack`   │                            │                │  │
+   │   │   • slack CLI    │                            │  seeded with a │  │
+   │   │   • slack MCP    │                            │  workspace +   │  │
+   │   │  (thin facade    │                            │  an injected   │  │
+   │   │   over mmctl)    │                            │  "fault"       │  │
    │   └────────┬─────────┘                            └────────────────┘  │
    │            │ after the agent acts, the verifier (in the client)        │
    │            ▼ reads workspace state back over REST and scores 0 or 1     │
@@ -38,11 +38,14 @@ Two containers per task:
 - **`mattermost`** — the real Mattermost server (team edition 8.1.1) with embedded Postgres,
   seeded at startup with a believable workspace, then a small **fault** is injected (the
   "issue" the agent must fix).
-- **`client`** — where the agent lives. It gets two interchangeable tool surfaces pointed at
-  the server: the **`mmctl`** CLI and the **`mmctl-mcp`** MCP server.
+- **`client`** — where the agent lives. It gets a single, **Slack-branded** tool called
+  **`slack`**, in two interchangeable forms: a `slack` **CLI** (Slack Web API-style methods like
+  `conversations.list`, `chat.postMessage`, `users.info`) and a `slack` **MCP** server. Both are
+  a thin facade over the real Mattermost tooling (`mmctl` / `mmctl-mcp`) underneath — so to the
+  agent the environment looks like Slack, while the backend is real Mattermost.
 
-The agent never sees the seed data on disk — it can only reach the workspace through its
-tools, exactly like a real admin. That's what makes scoring trustworthy.
+The agent never sees the seed data on disk — it can only reach the workspace through the `slack`
+tool, exactly like a real admin. That's what makes scoring trustworthy.
 
 ---
 
@@ -71,17 +74,20 @@ MCP server, we take them straight from the Mattermost ecosystem.
 | Taken | Used as | What it saved us |
 |---|---|---|
 | `mattermost/mattermost-team-edition:8.1.1` Docker image | the chat **service** | a full product: channels, threads, reactions, DMs, users, roles, config, REST API |
-| **`mmctl`** (copied from the image, exact version) | the agent's **CLI** | a real admin CLI — no hand-written tool |
-| **`mmctl-mcp`** (built from pinned source, 1-line patch) | the agent's **MCP** server (~65 tools) | a real MCP surface — no hand-written MCP server |
-| **REST API v4** | the **verifier's** read-back channel | deterministic scoring with no custom query layer |
+| **`mmctl`** (copied from the image, exact version) | the engine behind the `slack` **CLI** | a real admin CLI — no hand-written tool |
+| **`mmctl-mcp`** (built from pinned source, 1-line patch) | the engine behind the `slack` **MCP** server | a real MCP surface — no hand-written MCP server |
+| **REST API v4** | the **verifier's** read-back channel (and the `slack` CLI's diagnostic reads) | deterministic scoring with no custom query layer |
 | Embedded-Postgres boot pattern (from APEX-SWE) | the service **entrypoint** | a working single-container DB+server |
 
-→ Full reuse inventory + tradeoffs: **[docs/WHAT-WE-TOOK-FROM-MATTERMOST.md](docs/WHAT-WE-TOOK-FROM-MATTERMOST.md)**
-→ The complete tool surface (all 65 MCP tools + mmctl): **[docs/TOOLS.md](docs/TOOLS.md)**
+The agent doesn't see any of these names — they sit behind the **`slack`** facade (see below).
 
-**The one tradeoff worth knowing up front:** Mattermost is *not* Slack-API-compatible, and the
-product image is amd64-only (we pin `platform: linux/amd64`; Modal runs amd64 natively). In
-exchange we get a real, full-featured chat server and real agent tooling for almost no code.
+→ Full reuse inventory + tradeoffs: **[docs/WHAT-WE-TOOK-FROM-MATTERMOST.md](docs/WHAT-WE-TOOK-FROM-MATTERMOST.md)**
+→ The `slack` tool surface (CLI methods + MCP), and how it maps down: **[docs/TOOLS.md](docs/TOOLS.md)**
+
+**The one tradeoff worth knowing up front:** the Slack surface is a *lightweight facade* — Slack
+method names and Slack-shaped JSON over a Mattermost backend, not a byte-for-byte Slack API. The
+product image is also amd64-only (we pin `platform: linux/amd64`; Modal runs amd64 natively). In
+exchange we get a real, full-featured chat server and real tooling for almost no code.
 
 ---
 
@@ -94,10 +100,11 @@ exchange we get a real, full-featured chat server and real agent tooling for alm
    creates a workspace (admin, team, channels, users, message history).
 3. **Inject the fault.** A per-task `fault.sh` then breaks one thing over the REST API (e.g.
    deactivates a user). This is the "issue."
-4. **Wire the client.** Once the server is healthy, the `client` container logs `mmctl` in and
-   waits until the workspace is ready, so the agent's tools work the moment it arrives.
-5. **Agent acts.** The agent reads `instruction.md`, explores with `mmctl`/MCP, and fixes the
-   issue.
+4. **Wire the client.** Once the server is healthy, the `client` container authenticates the
+   workspace connection and waits until it's ready, so the `slack` CLI and `slack` MCP server
+   work the moment the agent arrives.
+5. **Agent acts.** The agent reads `instruction.md`, explores with the `slack` tool (CLI or MCP),
+   and fixes the issue.
 6. **Verify.** A verifier in the client reads the workspace back over REST and writes `0` or
    `1` to `/logs/verifier/reward.txt`. `nop` (do nothing) → 0; `oracle` (reference fix) → 1.
 

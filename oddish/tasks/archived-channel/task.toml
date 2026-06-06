@@ -1,12 +1,12 @@
 schema_version = "1.2"
 name = "abundant-mattermost/archived-channel"
-description = "Observability/remediation task on a real Mattermost workspace: a channel the team relies on has been archived and vanished. The agent is told only the symptom and which tools it has; it must explore (mmctl / mmctl-mcp) to diagnose and restore it. Verified deterministically via the Mattermost REST API (nop=0, oracle=1)."
+description = "Observability/remediation task on a seeded Slack workspace: a channel the team relies on has been archived and vanished. The agent is told only the symptom and that it has the `slack` tool (CLI + MCP); it must explore to diagnose and restore it. Verified deterministically via the workspace API (nop=0, oracle=1)."
 
 [metadata]
 category = "knowledge-work"
-service = "mattermost"
-tools = ["mmctl", "mmctl-mcp"]
-tags = ["mattermost", "multi-service", "observability", "diagnose-and-fix", "exploration", "mcp"]
+service = "slack"
+tools = ["slack"]
+tags = ["slack", "multi-service", "observability", "diagnose-and-fix", "exploration", "cli", "mcp"]
 
 [agent]
 timeout_sec = 1800
@@ -23,8 +23,8 @@ allow_internet = true
 workdir = "/app"
 build_timeout_sec = 1800
 
-# MCP server made available to the agent (Harbor MCPServerConfig schema). The agent runtime
-# launches this stdio server and auto-discovers its ~60 mmctl-backed tools.
+# The `slack` MCP server made available to the agent (Harbor MCPServerConfig schema). The
+# agent runtime launches this stdio server and auto-discovers its workspace tools.
 mcp_servers = [
-  { name = "mattermost", transport = "stdio", command = "/usr/local/bin/mcp-mmctl", args = [] },
+  { name = "slack", transport = "stdio", command = "/usr/local/bin/slack-mcp", args = [] },
 ]

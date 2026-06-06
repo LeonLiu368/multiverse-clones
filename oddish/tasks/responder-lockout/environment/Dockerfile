@@ -1,7 +1,7 @@
-# Agent/client image (the `client` service). The agent's tools are:
-#   - mmctl          : the official Mattermost CLI (copied from the Mattermost image)
-#   - mmctl-mcp      : an MCP server exposing ~60 mmctl tools (built from source, patched)
-# curl+jq are included for the split-harness verifier.
+# Agent/client image (the `client` service). The agent sees a Slack-branded surface:
+#   - slack          : a `slack` CLI (Slack Web API-style methods) wrapping mmctl
+#   - slack (MCP)    : a `slack` MCP server (slack-mcp -> mmctl-mcp)
+# Underlying (hidden from the agent): mmctl + mmctl-mcp. curl+jq are for the verifier.
 
 # --- Stage 1: the exact-version mmctl binary, straight from the Mattermost product image.
 FROM mattermost/mattermost-team-edition:8.1.1 AS mmsrc
@@ -26,12 +26,16 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends curl jq ca-certificates bash && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# Underlying tooling (hidden from the agent): the official mmctl CLI + the mmctl-mcp server.
 COPY --from=mmsrc /mattermost/bin/mmctl /usr/local/bin/mmctl
 COPY --from=mcpbuild /out/mmctl-mcp /usr/local/bin/mmctl-mcp
 
+# The Slack-branded surface the agent actually uses: a `slack` CLI (Slack Web API style)
+# and a `slack` MCP launcher, both thin wrappers over the tooling above.
 COPY client-entrypoint.sh /usr/local/bin/client-entrypoint.sh
-COPY mcp-mmctl.sh /usr/local/bin/mcp-mmctl
-RUN chmod +x /usr/local/bin/client-entrypoint.sh /usr/local/bin/mcp-mmctl
+COPY slack /usr/local/bin/slack
+COPY slack-mcp.sh /usr/local/bin/slack-mcp
+RUN chmod +x /usr/local/bin/client-entrypoint.sh /usr/local/bin/slack /usr/local/bin/slack-mcp
 
 ENV MM_URL=http://mattermost:8065 \
     MM_TEAM=test-demo \
@@ -39,6 +43,6 @@ ENV MM_URL=http://mattermost:8065 \
     MM_ADMIN_PASS=AdminUser123!
 
 WORKDIR /app
-# Authenticates mmctl as admin, waits until #incidents is seeded, then stays alive so the
-# agent can drop in with mmctl already configured (and mmctl-mcp ready over stdio).
+# Authenticates the workspace connection, waits until the workspace is seeded, then stays
+# alive so the agent can drop in with `slack` (CLI + MCP) already configured.
 ENTRYPOINT ["/usr/local/bin/client-entrypoint.sh"]

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Oracle: carol was deactivated; reactivate her.
+# Oracle: carol was deactivated; reactivate her through the `slack` tool.
 set -euo pipefail
-mmctl user activate carol
-echo "oracle: reactivated carol"
+slack admin.users.setActive carol true
+echo "oracle: reactivated carol via slack"
