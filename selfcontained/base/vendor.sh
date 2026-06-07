@@ -14,7 +14,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 BASE="$(pwd)"
 TASKS_DIR="$(cd ../../oddish/tasks && pwd)"
-VERBATIM=(Dockerfile main-entrypoint.sh .dockerignore slackcli)
+VERBATIM=(Dockerfile main-entrypoint.sh .dockerignore)
 for taskpath in "$TASKS_DIR"/*/; do
   task="$(basename "$taskpath")"
   env="$taskpath/environment"
@@ -26,4 +26,4 @@ for taskpath in "$TASKS_DIR"/*/; do
   sed "s/__TASK__/$task/g" "$BASE/docker-compose.yaml" > "$env/docker-compose.yaml"
   echo "vendored -> $task"
 done
-echo "done. (api pulls slack-service; data/ and codebase/ are task-owned and untouched.)"
+echo "done. (slack CLI + MCP are baked in slack-service; data/ and codebase/ are task-owned and untouched.)"

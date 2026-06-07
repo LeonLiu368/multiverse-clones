@@ -1,15 +1,14 @@
 # slack-service — THE single image we build + push (ghcr.io/abundant-ai/slack-service).
-# It is the whole backend: real Mattermost (bound to 127.0.0.1, never exposed) + the Slack Web
-# API gateway on :80 + the seeder. Tasks PULL this image for their `api` service — nothing here
-# is rebuilt per task. The agent only ever reaches the gateway; Mattermost, its /api/v4, its
-# :8065 port, and its server headers are not visible from the agent's container.
+# Contains: real Mattermost + Slack Web API gateway (:80) + seeder + agent tools (slack CLI +
+# slack-mcp MCP server). Tasks build FROM this image; they only need to add their codebase.
 # The chat to seed is mounted at /data/mattermost at run time (task-specific, not baked in).
 FROM mattermost/mattermost-team-edition:8.1.1
 USER root
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        postgresql-14 postgresql-client-14 sudo python3 python3-pip curl jq && \
-    pip3 install --no-cache-dir fastapi "uvicorn[standard]" httpx psycopg2-binary requests && \
+        postgresql-14 postgresql-client-14 sudo python3 python3-pip curl jq git && \
+    pip3 install --no-cache-dir fastapi "uvicorn[standard]" httpx psycopg2-binary requests \
+        "slack_sdk>=3.27" "mcp>=1.2" pytest && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY slackgw /opt/slackgw
@@ -18,7 +17,16 @@ COPY api-entrypoint.sh /usr/local/bin/api-entrypoint.sh
 COPY seed.sh /usr/local/bin/task-seed.sh
 RUN chmod +x /usr/local/bin/api-entrypoint.sh /usr/local/bin/task-seed.sh
 
-ENV PYTHONPATH=/opt \
+# Agent tools: slack CLI + slack-mcp MCP server. Baked here so tasks get them for free
+# without copying any tool files. PYTHONPATH=/opt:/opt/slackcli makes the package importable.
+COPY slackcli /opt/slackcli
+RUN printf '#!/usr/bin/env python3\nfrom slackcli.cli import main\nmain()\n' \
+        > /usr/local/bin/slack && \
+    printf '#!/usr/bin/env python3\nfrom slackcli.mcp_server import main\nmain()\n' \
+        > /usr/local/bin/slack-mcp && \
+    chmod +x /usr/local/bin/slack /usr/local/bin/slack-mcp
+
+ENV PYTHONPATH=/opt:/opt/slackcli \
     MM_URL=http://localhost:8065 \
     MM_TEAM=test-demo \
     MM_ADMIN_USER=admin@demo.local \
