@@ -8,9 +8,10 @@ reference: [`selfcontained/isolated/`](../selfcontained/isolated/).
 - **`api` (sidecar)** — the backend. The prebuilt **`slack-service`** image (pulled, not built):
   **real Mattermost** bound to `127.0.0.1:8065` (never exposed) + the **Slack Web API gateway**
   (`slackgw`, FastAPI) on `:80`. The agent reaches only the gateway, at the neutral host `api`.
-- **`main`** — where the **agent** runs. A thin `python:slim` build (no Mattermost tells): `curl` +
-  the official **`slack_sdk`**, `python` + `pytest`, and the **codebase at `/workspace`**. Slack
-  creds are baked as image env (`SLACK_API_URL=http://api`, `SLACK_BOT_TOKEN=xoxb-…`).
+- **`main`** — where the **agent** runs. A thin `python:slim` build (no Mattermost tells) with the
+  **`slack` CLI** + the **`slack-mcp`** MCP server (from the `slackcli` package), `python` + `pytest`,
+  and the **codebase at `/workspace`**. Slack creds are baked as image env (`SLACK_API_URL=http://api`,
+  `SLACK_BOT_TOKEN=xoxb-…`). The agent operates Slack only through the CLI/MCP — consistent tool use.
 
 There is **no `networks:` block** — Harbor injects `network_mode` on the agent service, which is
 mutually exclusive with `networks:` (a real Modal failure). Isolation comes from binding
@@ -35,9 +36,9 @@ Mattermost to localhost inside `api`, not from network plumbing. Service-name DN
    The compose healthcheck (`/api/auth.test` up + MM ping) only passes after this — so "api
    healthy" means "seeded and serving."
 4. **The agent starts.** `main` `depends_on: api healthy`, so it starts post-seed. Its baked env
-   makes curl + `slack_sdk` work immediately against `http://api`.
+   makes the `slack` CLI + MCP work immediately against the gateway.
 5. **The agent acts.** It reads `instruction.md` (symptom + "you have the Slack Web API"), uses
-   `slack_sdk`/curl to recover the buried fact from the chat, edits the code at `/workspace`, and
+   the `slack` CLI / MCP to recover the buried fact from the chat, edits the code at `/workspace`, and
    — for the incident task — posts a postmortem via `chat.postMessage`.
 6. **The verifier scores.** `tests/test.sh` → `tests/run_verifier.sh` (in `main`). It copies the
    candidate package **plus the trusted tests** (canonical invariant tests + a HIDDEN

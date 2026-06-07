@@ -29,7 +29,7 @@ without it) and **(b) using it is non-trivial** (the fact is buried among distra
    │   ┌────────────────────┐         Slack Web API          ┌──────────────────────┐ │
    │   │  main (agent)      │  ───────────────────────────►  │  api  (sidecar)      │ │
    │   │                    │     http://api/api/<method>    │                      │ │
-   │   │  curl + slack_sdk  │  ◄───────────────────────────  │  slackgw gateway :80 │ │
+   │   │  slack CLI + MCP   │  ◄───────────────────────────  │  slackgw gateway :80 │ │
    │   │  SLACK_API_URL,    │     {"ok":true,...} Slack JSON  │     │  translates     │ │
    │   │  SLACK_BOT_TOKEN    │                                │     ▼  to /api/v4     │ │
    │   │  python+pytest     │                                │  Mattermost (real)   │ │
@@ -46,9 +46,9 @@ without it) and **(b) using it is non-trivial** (the fact is buried among distra
   envelopes, `C…`/`U…` ids, `ts` strings, snake_case errors), translates to Mattermost `/api/v4`,
   validates an `xoxb-` token, and scrubs backend/framework headers. From the agent, Mattermost,
   its port, `/api/v4`, and its headers are **all invisible**.
-- **`main`** — the agent: `curl` + the official **`slack_sdk`**, configured the real way via
-  `SLACK_API_URL` / `SLACK_BOT_TOKEN` env, plus `python`/`pytest` and the codebase at
-  `/workspace`. It reaches only the neutral host `api`.
+- **`main`** — the agent: the **`slack` CLI** + the **`slack` MCP server** (the `slackcli` package),
+  configured via `SLACK_API_URL` / `SLACK_BOT_TOKEN` env, plus `python`/`pytest` and the codebase at
+  `/workspace`. It reaches only the neutral host `api`. No raw SDK/curl in the task instructions.
 - **No `networks:` block** (Harbor injects `network_mode`, which conflicts); IP/port isolation is
   achieved by binding Mattermost to localhost inside the sidecar. Both services pin `linux/amd64`.
 
@@ -65,12 +65,12 @@ release process: [docs/IMAGE-RELEASE.md](docs/IMAGE-RELEASE.md).
 
 | Task | Codebase problem | Buried in Slack (critical + non-trivial) | Beyond coding |
 |---|---|---|---|
-| **buried-spec** | `billing/fees.py::overdue_fee` unimplemented | the *agreed* fee policy — superseded proposals (grace 7→5, 2/4/6→1.5/3/5, $10→$5) + traps | — |
-| **contract-drift** | `payments/charge.py` on a dead API contract | the v2 contract incl. a mid-thread **`customer_id`→`customer` correction** + v1 traps | — |
-| **incident-fix-report** | `monitoring/alerts.py::should_page` unimplemented | the agreed paging policy + a **red-herring** DB hypothesis | **post a postmortem to #postmortems** |
+| **buried-spec** | `ratelimit/bucket.py` token-bucket constants are wrong | the *agreed* load-test config (CAPACITY 200→100, REFILL_RATE 15.0→**10.0** correction, OVERDRAFT 10→0) + traps | — |
+| **contract-drift** | `events/publisher.py` emits the v1 event schema | the v2 schema incl. a mid-thread **`author_id`→`actor_id` correction** + float→int-ms + v1 traps | — |
+| **incident-fix-report** | `budget/monitor.py::check_budget` thresholds are wrong | the agreed SLO thresholds (`>=0.05`/90%, warn `>=0.01`/75%, latency-paging) + a 0.10 trap | **post thresholds to #error-budget-reports** |
 
 All three validated `nop=0 / oracle=1`; each also checked so a wrong-but-plausible fix still
-scores **0**, and `incident-fix-report` scores 0 if the code is fixed but the postmortem isn't
+scores **0**, and `incident-fix-report` scores 0 if the code is fixed but the notification isn't
 posted (the communication is read back through the gateway).
 
 ---
@@ -81,7 +81,7 @@ posted (the communication is read back through the gateway).
   pins the exact answer.
 - The verifier grades the candidate package + trusted tests in an **isolated `/tmp` dir** — editing
   `/workspace/tests` can't game it.
-- `slack_sdk`/`search.messages` is **noisy on purpose** — superseded + agreed values both surface.
+- `slack search` (`search.messages`) is **noisy on purpose** — superseded + agreed values both surface.
 
 → Tool surface: [docs/TOOLS.md](docs/TOOLS.md) · Lifecycle/isolation: [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md)
 → Authoring: [docs/CREATING-TASKS.md](docs/CREATING-TASKS.md) · Reuse/tradeoffs: [docs/WHAT-WE-TOOK-FROM-MATTERMOST.md](docs/WHAT-WE-TOOK-FROM-MATTERMOST.md)

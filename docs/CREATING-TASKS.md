@@ -20,15 +20,15 @@ gateway, or the seeder in a task. See [IMAGE-RELEASE.md](IMAGE-RELEASE.md).
 ## Anatomy (copy an existing task — e.g. `buried-spec`)
 ```
 tasks/<name>/
-  task.toml            # service="slack", tools=["slack-web-api","slack_sdk","curl"], workdir="/workspace"
-  instruction.md       # symptom + "Slack at $SLACK_API_URL / $SLACK_BOT_TOKEN (curl or slack_sdk)"; NEVER the buried fact
+  task.toml            # service="slack", tools=["slack-cli","slack-mcp"] + [[environment.mcp_servers]], workdir="/workspace"
+  instruction.md       # symptom + "you have the slack CLI + MCP"; NEVER the buried fact
   environment/
-    Dockerfile           # thin agent: FROM python:slim + slack_sdk + COPY codebase  (Harbor builds the `main` service)
+    Dockerfile           # thin agent: FROM python:slim + slackcli (slack CLI+MCP) + COPY codebase (Harbor builds `main`)
     main-entrypoint.sh   # keepalive
     docker-compose.yaml  # api: image: slack-service (PULLED) + data mount; main: build ./Dockerfile
     data/mattermost/{generate.py, scraped.json}   ← YOU WRITE generate.py; commit scraped.json (deterministic, heavy)
     codebase/          ← YOU WRITE: working module(s) [tests pass] + a stub/buggy target [fails] + a breadcrumb to Slack
-  solution/solve.sh    ← YOU WRITE: oracle edits /workspace; for comms tasks also curl chat.postMessage to the gateway
+  solution/solve.sh    ← YOU WRITE: oracle edits /workspace; for comms tasks also `slack post <channel> "..."`
   tests/
     test.sh            # orchestration — copy
     run_verifier.sh    ← YOU WRITE/ADAPT: grade in /tmp (candidate pkg + trusted tests); comms checks via the gateway
@@ -46,8 +46,8 @@ service; the `api` service is `image:`-only so it's pulled — that's why the ba
 - **`codebase/`** → a working module (tests pass) + the stub/buggy target (tests fail) with a
   docstring/README/error breadcrumb pointing to the workspace chat.
 - **`instruction.md`** → symptom + the Slack Web API creds; never the buried fact.
-- **`solution/solve.sh`** → oracle: edit `/workspace`; for comms, `curl chat.postMessage` to
-  `$SLACK_API_URL` (the agent can't reach Mattermost, only the gateway).
+- **`solution/solve.sh`** → oracle: edit `/workspace`; for comms, `slack post <channel> "..."`
+  (the agent's CLI — it can't reach Mattermost, only the gateway).
 - **`tests/trusted/`** → invariant-only visible tests + the HIDDEN `test_grade_*.py` (reference
   impl / exact cases). **Must be `test_grade_*.py`** or pytest won't collect it (false-pass hole).
 - **`tests/run_verifier.sh`** → copy candidate pkg + trusted tests to `/tmp/grade.$$`, run pytest

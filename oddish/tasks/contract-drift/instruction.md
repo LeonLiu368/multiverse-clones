@@ -14,19 +14,21 @@ Slack workspace. They are **not** recorded in this repo.
 Recover the v2 spec and update `build_event_payload` so the full suite passes without
 breaking tests that already pass.
 
-You have access to the team's **Slack** via its Web API:
+You operate the team's **Slack** through two equivalent tools — use whichever you prefer:
 
-- base URL: **`$SLACK_API_URL`**  token: **`$SLACK_BOT_TOKEN`**
-- use `curl` or the preinstalled official **`slack_sdk`**:
+- the **`slack` CLI** (preinstalled in your shell):
 
 ```bash
-python3 - <<'PY'
-import os
-from slack_sdk import WebClient
-c = WebClient(token=os.environ["SLACK_BOT_TOKEN"], base_url=os.environ["SLACK_API_URL"] + "/api/")
-print([ch["name"] for ch in c.conversations_list()["channels"]])
-PY
+slack channels                             # list channels
+slack history platform-infra --limit 100   # read a channel (by name or C... id)
+slack search "rate limit"                  # full-text search (noisy on purpose - read carefully)
+slack post <channel> "<text>"              # post a message
+slack whoami                               # who am I
+# add --json to any command for raw JSON
 ```
+
+- the **`slack` MCP server** - the same operations as MCP tools: `slack_list_channels`,
+  `slack_history`, `slack_search`, `slack_list_users`, `slack_post_message`, `slack_whoami`.
 
 Read carefully — there was a mid-thread correction on one of the field names; use the
 corrected name, not the original suggestion.

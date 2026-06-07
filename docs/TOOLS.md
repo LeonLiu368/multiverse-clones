@@ -1,36 +1,37 @@
-# The agent's tool surface: the Slack Web API
+# The agent's tool surface: the `slack` CLI + MCP
 
-The agent operates the workspace through a **realistic Slack Web API** — the same way real Slack
-automation works: HTTP methods like `conversations.history` and `chat.postMessage`, `{"ok":...}`
-envelopes, `C…`/`U…` ids, `ts` strings, an `xoxb-` bearer token. There is **no bespoke CLI** (a
-custom CLI is itself a simulation tell). Under the hood a small FastAPI gateway (`slackgw/`)
-translates each Slack method to a real Mattermost backend; the agent never sees Mattermost.
+The agent operates the workspace through **two equivalent Slack tools** — consistent across every
+task (no raw SDK/curl in the instructions):
+
+- the **`slack` CLI** — a command-line tool in the agent's shell.
+- the **`slack` MCP server** (`slack-mcp`, stdio) — the same operations as MCP tools.
+
+Both are thin clients of a **realistic Slack Web API** (the `slackgw/` FastAPI gateway: `{"ok":...}`
+envelopes, `C…`/`U…` ids, `ts` strings, an `xoxb-` token). Under the hood the gateway translates each
+Slack method to a real Mattermost backend; the agent never sees Mattermost. Both tools ship in the
+agent image from the `slackcli` package (single source: `selfcontained/base/slackcli/`); the MCP
+server is declared per task in `task.toml` (`[[environment.mcp_servers]]`, stdio, `command="slack-mcp"`).
 
 ## How the agent calls it
-Configured the real-Slack way, baked into the agent image as env (so every shell/exec has it):
-
-- `SLACK_API_URL` = `http://api`  (a neutral host; the backend sidecar)
-- `SLACK_BOT_TOKEN` = `xoxb-…`
+The tools read `$SLACK_API_URL` (`http://api`, neutral host) and `$SLACK_BOT_TOKEN` (`xoxb-…`),
+baked into the agent image as env.
 
 ```bash
-# official SDK (preinstalled)
-python3 - <<'PY'
-import os
-from slack_sdk import WebClient
-c = WebClient(token=os.environ["SLACK_BOT_TOKEN"], base_url=os.environ["SLACK_API_URL"] + "/api/")
-print([ch["name"] for ch in c.conversations_list()["channels"]])
-print(c.search_messages(query="overdue fee")["messages"]["matches"][:3])
-c.chat_postMessage(channel="postmortems", text="ROOT CAUSE: ...")
-PY
-
-# or curl
-curl -s "$SLACK_API_URL/api/conversations.history?channel=C0000000000&limit=50" \
-  -H "Authorization: Bearer $SLACK_BOT_TOKEN"
-curl -s -X POST "$SLACK_API_URL/api/chat.postMessage" -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
-  --data-urlencode channel=postmortems --data-urlencode "text=ROOT CAUSE: ..."
+# the `slack` CLI
+slack channels                              # list channels
+slack history platform-infra --limit 100    # read a channel (name or C… id)
+slack search "overdue fee"                  # full-text search (noisy on purpose)
+slack post postmortems "ROOT CAUSE: ..."    # post a message
+slack whoami                                # identity
+# --json on any command for raw JSON
 ```
 
-## Methods implemented (task-scoped)
+```
+# the `slack` MCP tools (same ops): slack_list_channels, slack_history, slack_search,
+#                                    slack_list_users, slack_post_message, slack_whoami
+```
+
+## Methods implemented (task-scoped) — what the CLI/MCP call under the hood
 | Method | Returns |
 |---|---|
 | `auth.test` | `{ok, url, team, user, team_id, user_id}` |
@@ -54,6 +55,6 @@ cursor fields, and snake_case error codes (`not_authed`, `channel_not_found`, `u
 - **No service-name tell in URLs** beyond the neutral host `api`; no `:8065`, no Mattermost.
 
 ## Minimal hand-holding by design
-Instructions tell the agent only the symptom + that it has the Slack Web API (`$SLACK_API_URL` /
-`$SLACK_BOT_TOKEN`). It must explore (list channels, read history, search) and **disambiguate**
-superseded vs. agreed values — that exploration is the skill being measured.
+Instructions tell the agent only the symptom + that it has the `slack` CLI / MCP tools. It must
+explore (list channels, read history, search) and **disambiguate** superseded vs. agreed values —
+that exploration is the skill being measured.

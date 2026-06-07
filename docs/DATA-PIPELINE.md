@@ -119,7 +119,7 @@ service (`main`); a service with `image:` only (the backend) is **pulled**, not 
 
 **`main` — BUILT** per task from the thin `environment/Dockerfile`:
 - `FROM python:3.12-slim`
-- curl, jq, git, `slack_sdk`, pytest
+- curl, jq, git, the `slackcli` package (`slack` CLI + `slack-mcp`), pytest
 - COPYs `main-entrypoint.sh` and **`codebase/`** → `/workspace`
 - Sets ENV: `SLACK_API_URL=http://api`, `SLACK_BOT_TOKEN=xoxb-acme-eval-0001`
 - Deliberately thin/clean so the agent container has no Mattermost tells.
@@ -160,9 +160,9 @@ The agent in `main` has:
 - `/workspace` — the broken codebase (tests fail; the fix depends on a fact in the chat).
 - `$SLACK_API_URL=http://api` and `$SLACK_BOT_TOKEN=xoxb-acme-eval-0001` baked into the image env
   (visible to every shell and `docker exec` — not just login shells).
-- `curl`, `python3`, the official `slack_sdk`, `pytest`.
+- the `slack` CLI + the `slack` MCP server (slackcli), `python3`, `pytest`.
 
-It reads `instruction.md`, runs the tests to see the failures, then uses `slack_sdk`/curl to
+It reads `instruction.md`, runs the tests to see the failures, then uses the `slack` CLI / MCP to
 explore the workspace: listing channels, reading history, searching. It must disambiguate
 superseded proposals from the final agreed values, fix the code, and (for the comms task) post a
 message back through the gateway.

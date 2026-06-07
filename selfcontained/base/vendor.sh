@@ -14,7 +14,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 BASE="$(pwd)"
 TASKS_DIR="$(cd ../../oddish/tasks && pwd)"
-VERBATIM=(Dockerfile main-entrypoint.sh .dockerignore)
+VERBATIM=(Dockerfile main-entrypoint.sh .dockerignore slackcli)
 for taskpath in "$TASKS_DIR"/*/; do
   task="$(basename "$taskpath")"
   env="$taskpath/environment"

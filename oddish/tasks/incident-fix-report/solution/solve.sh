@@ -24,9 +24,7 @@ def check_budget(
     return {"status": status, "should_page": should_page}
 PY
 
-curl -s -X POST "${SLACK_API_URL}/api/chat.postMessage" \
-  -H "Authorization: Bearer ${SLACK_BOT_TOKEN}" \
-  --data-urlencode "channel=error-budget-reports" \
-  --data-urlencode "text=Error budget monitor updated with agreed SLO thresholds. error_rate threshold: 0.05 (critical), 0.01 (warning). budget threshold: 90% (critical), 75% (warning). Paging: always on critical; on warning only if latency p99 > 1000ms."
+# Post the notification via the agent's `slack` CLI (consistent tool use).
+slack post error-budget-reports "Error budget monitor updated with agreed SLO thresholds. error_rate threshold: 0.05 (critical), 0.01 (warning). budget threshold: 90% (critical), 75% (warning). Paging: always on critical; on warning only if latency p99 > 1000ms."
 
 echo "oracle: fixed budget/monitor.py and posted to #error-budget-reports"
