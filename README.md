@@ -52,8 +52,12 @@ without it) and **(b) using it is non-trivial** (the fact is buried among distra
 - **No `networks:` block** (Harbor injects `network_mode`, which conflicts); IP/port isolation is
   achieved by binding Mattermost to localhost inside the sidecar. Both services pin `linux/amd64`.
 
-Canonical reference artifact: **[`selfcontained/isolated/`](selfcontained/isolated/)**. The
-gateway lives in **[`slackgw/`](slackgw/)**.
+The whole backend (Mattermost + gateway + seeder) is **one prebuilt image**,
+**`ghcr.io/abundant-ai/slack-service`**, built once from
+[`selfcontained/base/`](selfcontained/base/) and **pulled** by every task's `api` service — never
+rebuilt per task. The agent (`main`) is a thin `python:slim` build with the codebase, so it carries
+no Mattermost tells. Reference compose: [`selfcontained/isolated/`](selfcontained/isolated/);
+release process: [docs/IMAGE-RELEASE.md](docs/IMAGE-RELEASE.md).
 
 ---
 
@@ -91,9 +95,10 @@ posted (the communication is read back through the gateway).
 cd /path/to/oddish/oddish
 uv run oddish run /path/to/this-repo/oddish/tasks -c /path/to/this-repo/oddish/sweep.yaml
 
-# Locally, validate one task end-to-end (first build pulls Mattermost; ~5-8 min)
+# Locally, validate one task end-to-end
+REGISTRY=ghcr.io/abundant-ai TAG=latest selfcontained/base/build.sh   # once: build slack-service locally
 cd oddish/tasks/buried-spec/environment
-docker compose up -d --build            # api healthy = seeded; main has baked SLACK_* env
+docker compose up -d --build            # api PULLS slack-service (seeds); main builds thin agent
 MAIN=$(docker compose ps -q main)
 docker cp ../tests "$MAIN":/tests && docker cp ../solution "$MAIN":/solution
 docker exec -i "$MAIN" bash /tests/run_verifier.sh     # nop    -> reward 0
@@ -104,11 +109,15 @@ docker compose down -v
 
 ## Repo layout
 ```
-slackgw/                         # the Slack Web API gateway (FastAPI) over Mattermost
-selfcontained/isolated/          # canonical 2-container artifact (Dockerfile.api/main, entrypoints, compose, seed)
+selfcontained/
+  base/                          # SINGLE SOURCE: Dockerfile.service (the pushed image) + slackgw/ +
+                                 #   seed.py + entrypoints; plus the thin agent Dockerfile, compose, vendor.sh
+  isolated/                      # reference compose (api pulls slack-service, main builds thin)
+.github/workflows/build-service-image.yml   # builds + pushes slack-service to GHCR on push to main
 oddish/
   manifest.yaml / sweep.yaml     # the 3 tasks + agents
-  tasks/<task>/                  # each: environment/ (flat: Dockerfile.api/main, slackgw/, seed.py, data/, codebase/),
-                                 #       instruction.md, solution/solve.sh, tests/{test.sh,run_verifier.sh,trusted/}
+  tasks/<task>/                  # each: environment/ (Dockerfile [thin agent] + main-entrypoint.sh +
+                                 #   docker-compose.yaml + data/ + codebase/ — NO backend build, it's pulled),
+                                 #   instruction.md, solution/solve.sh, tests/{test.sh,run_verifier.sh,trusted/}
 docs/                            # ENVIRONMENT, TOOLS, CREATING-TASKS, WHAT-WE-TOOK-FROM-MATTERMOST, audits/
 ```

@@ -4,13 +4,13 @@ Plain-English walkthrough of the isolated 2-container artifact: where the data c
 the containers talk, how the simulation is hidden, and how the verifier scores. Canonical
 reference: [`selfcontained/isolated/`](../selfcontained/isolated/).
 
-## The two containers
-- **`api` (sidecar)** — the backend. Runs **real Mattermost** bound to `127.0.0.1:8065` (never
-  exposed) plus the **Slack Web API gateway** (`slackgw`, FastAPI) on `:80`. The agent reaches
-  only the gateway, at the neutral host `api`.
-- **`main`** — where the **agent** runs. Has `curl` + the official **`slack_sdk`**, `python` +
-  `pytest`, and the **codebase at `/workspace`**. Slack creds are baked as image env
-  (`SLACK_API_URL=http://api`, `SLACK_BOT_TOKEN=xoxb-…`).
+## The two containers (from ONE pushed image + a thin agent)
+- **`api` (sidecar)** — the backend. The prebuilt **`slack-service`** image (pulled, not built):
+  **real Mattermost** bound to `127.0.0.1:8065` (never exposed) + the **Slack Web API gateway**
+  (`slackgw`, FastAPI) on `:80`. The agent reaches only the gateway, at the neutral host `api`.
+- **`main`** — where the **agent** runs. A thin `python:slim` build (no Mattermost tells): `curl` +
+  the official **`slack_sdk`**, `python` + `pytest`, and the **codebase at `/workspace`**. Slack
+  creds are baked as image env (`SLACK_API_URL=http://api`, `SLACK_BOT_TOKEN=xoxb-…`).
 
 There is **no `networks:` block** — Harbor injects `network_mode` on the agent service, which is
 mutually exclusive with `networks:` (a real Modal failure). Isolation comes from binding
@@ -18,11 +18,12 @@ Mattermost to localhost inside `api`, not from network plumbing. Service-name DN
 `api`. Both services pin `platform: linux/amd64`.
 
 ## Step by step
-1. **Build & upload (self-contained).** Each task's `environment/` holds everything: the backend
-   (`Dockerfile.api`, `api-entrypoint.sh`, `seed.sh`, `slackgw/`, `seed.py`), the agent
-   (`Dockerfile.main`, `main-entrypoint.sh`), `docker-compose.yaml`, the heavy chat
-   (`data/mattermost/scraped.json`), and the `codebase/`. Nothing references files outside the
-   task dir.
+1. **Pull the backend, build the thin agent.** The backend is one prebuilt image,
+   `ghcr.io/abundant-ai/slack-service` (Mattermost + gateway + seeder), pushed by CI and **pulled**
+   by the task's `api` service — never rebuilt. The task's `environment/` carries only: the thin
+   agent `Dockerfile` (+ `main-entrypoint.sh`) that Harbor builds for `main`, the `docker-compose.yaml`,
+   the heavy chat (`data/mattermost/scraped.json`, mounted into `api`), and the `codebase/` (COPY'd
+   into the agent). See [IMAGE-RELEASE.md](IMAGE-RELEASE.md).
 2. **The `api` sidecar boots and seeds itself.** `api-entrypoint.sh` starts Postgres, launches
    Mattermost on `127.0.0.1:8065`, waits for it, then runs `seed.py`, which builds the workspace
    from `data/mattermost/scraped.json` — admin, team `test-demo`, channels, users, message

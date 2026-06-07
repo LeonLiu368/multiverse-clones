@@ -1,6 +1,9 @@
-# Backend sidecar: runs real Mattermost (bound to 127.0.0.1, never exposed) + the Slack Web
-# API gateway on :80. The agent only ever reaches the gateway by IP; Mattermost, its /api/v4,
-# its :8065 port, and its server headers are not visible from the agent's container.
+# slack-service — THE single image we build + push (ghcr.io/abundant-ai/slack-service).
+# It is the whole backend: real Mattermost (bound to 127.0.0.1, never exposed) + the Slack Web
+# API gateway on :80 + the seeder. Tasks PULL this image for their `api` service — nothing here
+# is rebuilt per task. The agent only ever reaches the gateway; Mattermost, its /api/v4, its
+# :8065 port, and its server headers are not visible from the agent's container.
+# The chat to seed is mounted at /data/mattermost at run time (task-specific, not baked in).
 FROM mattermost/mattermost-team-edition:8.1.1
 USER root
 RUN apt-get update && \

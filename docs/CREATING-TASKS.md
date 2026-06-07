@@ -11,15 +11,21 @@ the agent reaches via the Slack Web API. The full checklist lives in the
 2. **Tool use is NON-TRIVIAL** — superseded/contradictory values, off-channel traps, a red
    herring; `search.messages` surfaces the wrong hits too, so the agent must read & disambiguate.
 
+## The backend is one prebuilt image (pulled, not built per task)
+The whole backend — Mattermost + the Slack gateway + the seeder — is the single image
+`ghcr.io/abundant-ai/slack-service`, built once from `selfcontained/base/Dockerfile.service` and
+pushed by CI. A task's `api` service just **pulls** it; you never put a backend Dockerfile, the
+gateway, or the seeder in a task. See [IMAGE-RELEASE.md](IMAGE-RELEASE.md).
+
 ## Anatomy (copy an existing task — e.g. `buried-spec`)
 ```
 tasks/<name>/
   task.toml            # service="slack", tools=["slack-web-api","slack_sdk","curl"], workdir="/workspace"
   instruction.md       # symptom + "Slack at $SLACK_API_URL / $SLACK_BOT_TOKEN (curl or slack_sdk)"; NEVER the buried fact
   environment/
-    Dockerfile.api, api-entrypoint.sh, seed.sh, slackgw/, seed.py   # backend — copy from selfcontained/isolated, unchanged
-    Dockerfile.main, main-entrypoint.sh                              # agent  — copy; Dockerfile.main also COPYs codebase
-    docker-compose.yaml                                              # copy; set unique image tags  <name>-api / <name>-main
+    Dockerfile           # thin agent: FROM python:slim + slack_sdk + COPY codebase  (Harbor builds the `main` service)
+    main-entrypoint.sh   # keepalive
+    docker-compose.yaml  # api: image: slack-service (PULLED) + data mount; main: build ./Dockerfile
     data/mattermost/{generate.py, scraped.json}   ← YOU WRITE generate.py; commit scraped.json (deterministic, heavy)
     codebase/          ← YOU WRITE: working module(s) [tests pass] + a stub/buggy target [fails] + a breadcrumb to Slack
   solution/solve.sh    ← YOU WRITE: oracle edits /workspace; for comms tasks also curl chat.postMessage to the gateway
@@ -28,12 +34,11 @@ tasks/<name>/
     run_verifier.sh    ← YOU WRITE/ADAPT: grade in /tmp (candidate pkg + trusted tests); comms checks via the gateway
     trusted/           ← YOU WRITE: canonical visible tests + the HIDDEN test_grade_*.py
 ```
-The backend/agent build files are identical across tasks (only the image tag + the `data/` and
-`codebase/` differ). **Don't hand-copy them**: they live once in `selfcontained/base/`; run
-`bash selfcontained/base/vendor.sh` to push them into every task's `environment/` (it copies the
-shared files verbatim and templates the compose's image tag per task). Edit shared build logic in
-`selfcontained/base/`, never in a task. The harness builds these Dockerfiles per task (it can't pull
-an external `image:`-only service), and Docker's layer cache reuses the heavy base across tasks.
+The three agent build files (`Dockerfile`, `main-entrypoint.sh`, `docker-compose.yaml`) are
+identical across tasks. **Don't hand-copy them**: they live once in `selfcontained/base/`; run
+`bash selfcontained/base/vendor.sh` to push them into every task (templating the compose image tag).
+Edit shared logic in `selfcontained/base/`, never in a task. Harbor force-builds only the `main`
+service; the `api` service is `image:`-only so it's pulled — that's why the backend never rebuilds.
 
 ## The files you write (per task)
 - **`data/mattermost/generate.py`** → ~500 deterministic noisy messages; inject SUPERSEDED values
@@ -54,7 +59,8 @@ an external `image:`-only service), and Docker's layer cache reuses the heavy ba
 
 ## Validate before shipping (always)
 ```bash
-cd tasks/<name>/environment && docker compose up -d --build
+REGISTRY=ghcr.io/abundant-ai TAG=latest selfcontained/base/build.sh   # once: build slack-service locally
+cd tasks/<name>/environment && docker compose up -d --build           # api pulls slack-service; main builds
 MAIN=$(docker compose ps -q main)
 docker exec -i "$MAIN" sh -c 'curl -s -m5 http://api:8065/api/v4/system/ping -o /dev/null -w "MM:%{http_code}\n"'  # 000/refused
 docker cp ../tests "$MAIN":/tests && docker cp ../solution "$MAIN":/solution
