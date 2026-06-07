@@ -1,0 +1,54 @@
+# 3-service observability stack for variant-paperless-ngx-12865-chat-tickets.
+#
+# Harbor's base compose provides `main` (built from environment/Dockerfile; command,
+# log + resource mounts injected). This file ONLY overrides `main` (to gate it on the
+# two sidecars) and defines the sidecars. Services reach each other by service name on
+# the compose default network.
+#
+# NO `networks:` block and NO `ports:` (Harbor injects network_mode, which conflicts).
+# platform pinned linux/amd64. Seed data is mounted ONLY into the sidecars, never into
+# `main` — the agent must discover the incident through the tools.
+services:
+  main:
+    depends_on:
+      slack: {condition: service_healthy}
+      ticketvector: {condition: service_healthy}
+
+  # Seeded chat. The slack-service image self-seeds from /data/mattermost/scraped.json
+  # via its baked entrypoint (boots Postgres+Mattermost, runs seed.py, then exec's the
+  # Slack gateway on :80). No override needed.
+  slack:
+    image: ghcr.io/abundant-ai/slack-service@sha256:13d7f7892e971154f9643cd660ac12bee6f45ce8012d6212f8f2ef8db3dcacae
+    platform: "linux/amd64"
+    volumes:
+      - ./data/slack/scraped.json:/data/mattermost/scraped.json:ro
+    healthcheck:
+      # auth.test returns HTTP 200 even unauthenticated, so it is a valid liveness probe;
+      # the gateway only binds :80 after seeding completes.
+      test: ["CMD-SHELL", "curl -sf http://localhost:80/api/auth.test >/dev/null || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 60
+      start_period: 150s
+
+  # Seeded issue tracker. The state.json fixture is mounted read-only at a seed path and
+  # copied to the server's writable state file at boot (the server rewrites state on
+  # mutations; a :ro bind at the state path would break that). No curl in this image, so
+  # the healthcheck uses python urllib against /health.
+  ticketvector:
+    image: ghcr.io/abundant-ai/ticketvector-service@sha256:89d4bdf0624fee83464491563ec53a0a816273bfd0ebca95afeb78159d2e2ee9
+    platform: "linux/amd64"
+    entrypoint: ["/bin/sh", "-c"]
+    command: ["cp /seed/state.json /var/lib/ticketvector/state.json && exec python -m world_issues.server"]
+    environment:
+      - WORLD_ISSUES_BIND_HOST=0.0.0.0
+      - WORLD_ISSUES_PORT=8765
+      - WORLD_ISSUES_STATE_FILE=/var/lib/ticketvector/state.json
+    volumes:
+      - ./data/ticketvector/state.json:/seed/state.json:ro
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8765/health', timeout=2).read()\" || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 40
+      start_period: 20s

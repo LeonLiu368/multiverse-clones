@@ -1,0 +1,34 @@
+schema_version = "1.2"
+name = "chat-tickets-observability/variant-paperless-ngx-12856-chat-tickets"
+description = "Observability incident-triage task. The agent is on-call for paperless-ngx and must correlate a seeded issue tracker (ticketvector: linear/jira) and a seeded on-call chat (slack) to localize a production bug, then fix it in /app/repo. Incident: index writes make a single lock-acquire attempt and swallow the failure on contention, so under concurrent bulk consumption a fraction of documents are silently dropped from the search index. Fix: bounded retry with exponential backoff + full jitter in WriteBatch.__enter__, plus a deferred self-heal Celery task on lock exhaustion. The PR's own regression test is the hidden fail->pass verifier; the fix is split across the ticket and the chat thread. nop=0, oracle=1."
+
+[metadata]
+category = "observability"
+source_repo = "paperless-ngx/paperless-ngx"
+source_pr_url = "https://github.com/paperless-ngx/paperless-ngx/pull/12856"
+base_commit = "4ce5f2022c82cf244a08ca797236abbe5dee0390"
+failure_mode = "lock-contention"
+tags = ["observability", "incident-triage", "multi-service", "sre", "tool-use", "chat", "tickets", "lock-contention"]
+
+[agent]
+timeout_sec = 2700
+
+[verifier]
+timeout_sec = 2700
+
+[environment]
+cpus = 4
+memory_mb = 8192
+storage_mb = 40960
+gpus = 0
+allow_internet = true
+workdir = "/app/repo"
+build_timeout_sec = 1800
+
+# The agent operates the issue tracker through the `linear` / `jira` CLIs (ticketvector is
+# CLI-first; remote backend baked into the image via env) and the chat through the `slack`
+# CLI and this MCP server. Only the chat exposes an MCP surface.
+[[environment.mcp_servers]]
+name = "slack"
+transport = "stdio"
+command = "slack-mcp"

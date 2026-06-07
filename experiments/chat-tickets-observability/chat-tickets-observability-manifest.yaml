@@ -1,0 +1,30 @@
+metadata:
+  name: chat-tickets-observability
+  description: |
+    Observability / incident-triage tasks that pair TWO seeded discovery surfaces an
+    agent operates only through tools: a Jira/Linear-style issue tracker (the
+    ghcr.io/abundant-ai/ticketvector-service image, via the `linear`/`jira` CLIs) and a
+    Slack workspace (the ghcr.io/abundant-ai/slack-service image, via the `slack` CLI and
+    slack-mcp). Each task reconstructs a real OSS repo at its pre-fix base commit; the
+    agent must correlate the incident ticket with the on-call chat to localize the root
+    cause, then fix it in /app/repo. Neither surface alone fully localizes the bug — the
+    ticket carries the symptom + which incident is active, the chat carries the exact code
+    path and the agreed fix (past several red herrings). The PR's own regression test is
+    the hidden fail->pass verifier (nop=0, oracle=1). See process.md for the design.
+  task_path: experiments/chat-tickets-observability/tasks
+  n_trials: 3
+  skip_trajectory_analysis: false
+
+tasks:
+  - variant-paperless-ngx-12865-chat-tickets
+  - variant-paperless-ngx-12856-chat-tickets
+
+agents:
+  - name: oracle
+  - name: nop
+  - name: gemini-cli
+    model_name: gemini/gemini-3.1-pro-preview
+  - name: codex
+    model_name: openai/gpt-5.2-codex
+  - name: claude-code
+    model_name: anthropic/claude-opus-4-7
