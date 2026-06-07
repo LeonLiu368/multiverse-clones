@@ -5,8 +5,8 @@ description = "Observability + SWE task. A payments client targets a deprecated 
 [metadata]
 category = "software-engineering"
 service = "slack"
-tools = ["slack"]
-tags = ["slack", "observability", "swe", "tool-use", "exploration", "mcp", "tests"]
+tools = ["slack-web-api", "slack_sdk", "curl"]
+tags = ["slack", "observability", "swe", "tool-use", "exploration", "isolated", "tests"]
 
 [agent]
 timeout_sec = 2400
@@ -22,8 +22,3 @@ gpus = 0
 allow_internet = true
 workdir = "/workspace"
 build_timeout_sec = 1800
-
-# The `slack` MCP server made available to the agent (Harbor MCPServerConfig schema).
-mcp_servers = [
-  { name = "slack", transport = "stdio", command = "/usr/local/bin/slack-mcp", args = [] },
-]

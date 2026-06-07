@@ -1,46 +1,24 @@
-# Multi-service Oddish task: a seeded **real Mattermost** workspace (`mattermost`) + an
-# agent container (`client`) whose tool is `mmctl` (the official Mattermost CLI).
-#
-# Self-contained: both images build from THIS environment/ dir (context: .), which vendors
-# the Mattermost service Dockerfile/seeder and the seed data — so `oddish run` uploads and
-# builds the task with no references outside the task directory.
-#
-# NOTE: no `networks:` here. The Harbor/Oddish runtime injects `network_mode` onto the
-# `client` service (mutually exclusive with an explicit `networks:` key) and wires
-# inter-service networking itself — services still resolve each other by name
-# (client -> http://mattermost:8065). Mirrors the canonical APEX shared compose.
+# Two-container isolation (see selfcontained/isolated for the canonical artifact).
+# api = Mattermost (127.0.0.1-only) + the Slack Web API gateway on :80, reached by the agent at
+# the neutral host `api`. main = the agent (curl + slack_sdk + pytest + the codebase).
+# NO `networks:` block (Harbor injects network_mode, which conflicts). platform pinned amd64.
 services:
-  client:
-    # Mattermost (and thus mmctl) is published for linux/amd64 only; pin the client to the
-    # same arch so the amd64 mmctl binary runs. Oddish/Modal runs amd64 natively; on arm64
-    # dev machines this goes through emulation.
+  api:
+    build: { context: ., dockerfile: Dockerfile.api }
+    image: ${APEX_TASK_DOCKER_FORGE_IMAGE_NAME:-buried-spec-api:local}
     platform: linux/amd64
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: ${APEX_TASK_DOCKER_CLIENT_IMAGE_NAME:-buried-spec-client:local}
-    container_name: ${APEX_TASK_DOCKER_CLIENT_CONTAINER_NAME:-client}
-    environment:
-      - MM_URL=http://mattermost:8065
-      - MM_TEAM=test-demo
-      - MM_ADMIN_USER=admin@demo.local
-      - MM_ADMIN_PASS=AdminUser123!
-    depends_on:
-      mattermost:
-        condition: service_healthy
-
-  mattermost:
-    platform: linux/amd64
-    build:
-      context: .
-      dockerfile: mattermost/Dockerfile
-    image: mattermost-incident:local
-    container_name: mattermost
     volumes:
       - ./data/mattermost:/data/mattermost:ro
     healthcheck:
-      test: ["CMD-SHELL", "curl -sf http://localhost:8065/api/v4/system/ping || exit 1"]
+      test: ["CMD-SHELL", "curl -sf http://localhost:80/api/auth.test >/dev/null && curl -sf http://localhost:8065/api/v4/system/ping >/dev/null || exit 1"]
       interval: 5s
       timeout: 5s
       retries: 60
       start_period: 45s
+  main:
+    build: { context: ., dockerfile: Dockerfile.main }
+    image: ${APEX_TASK_DOCKER_CLIENT_IMAGE_NAME:-buried-spec-main:local}
+    platform: linux/amd64
+    depends_on:
+      api:
+        condition: service_healthy

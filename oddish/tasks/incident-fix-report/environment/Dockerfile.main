@@ -1,0 +1,20 @@
+# Agent container. Tools: curl + the official slack_sdk (Slack Web API, configured the real
+# way via SLACK_API_URL / SLACK_BOT_TOKEN env), and python+pytest to run the /workspace suite.
+# The backend is a neutral host (`api`); Mattermost, its port, /api/v4, and its headers are
+# never visible.
+FROM python:3.12-slim
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl jq git ca-certificates bash && \
+    rm -rf /var/lib/apt/lists/*
+RUN pip install --no-cache-dir slack_sdk pytest
+
+ENV SLACK_API_URL=http://api \
+    SLACK_BOT_TOKEN=xoxb-acme-eval-0001
+
+COPY main-entrypoint.sh /usr/local/bin/main-entrypoint.sh
+RUN chmod +x /usr/local/bin/main-entrypoint.sh
+
+# The codebase the agent works on.
+COPY codebase /workspace
+WORKDIR /workspace
+ENTRYPOINT ["/usr/local/bin/main-entrypoint.sh"]

@@ -20,22 +20,16 @@ if ( cd "$GRADE" && python -m pytest -q -p no:cacheprovider ) >/logs/verifier/py
 fi
 rm -rf "$GRADE"
 
-# ---- (B) communication check, via the workspace REST API
-URL="${MM_URL:-http://mattermost:8065}"; TEAM="${MM_TEAM:-test-demo}"
-U="${MM_ADMIN_USER:-admin@demo.local}"; P="${MM_ADMIN_PASS:-AdminUser123!}"
-TOKEN="$(curl -sS -i -X POST "$URL/api/v4/users/login" -H 'Content-Type: application/json' \
-  -d "{\"login_id\":\"$U\",\"password\":\"$P\"}" 2>/dev/null | tr -d '\r' | awk 'tolower($1)=="token:"{print $2}')"
+# ---- (B) communication check, via the Slack Web API (the same gateway the agent uses; the
+# Mattermost backend is not reachable from here). reward requires a #postmortems message that
+# names the root cause and the sustained/consecutive-breach fix.
+BASE="${SLACK_API_URL:-http://api}"; TOK="${SLACK_BOT_TOKEN:-xoxb-acme-eval-0001}"
 comm_ok=0
-if [ -n "$TOKEN" ]; then
-  TID="$(curl -sS -H "Authorization: Bearer $TOKEN" "$URL/api/v4/teams/name/$TEAM" | jq -r '.id // empty')"
-  CID="$(curl -sS -H "Authorization: Bearer $TOKEN" "$URL/api/v4/teams/$TID/channels/name/postmortems" | jq -r '.id // empty')"
-  if [ -n "$CID" ]; then
-    hits="$(curl -sS -H "Authorization: Bearer $TOKEN" "$URL/api/v4/channels/$CID/posts?per_page=200" \
-      | jq '[.posts[]? | select((.message|ascii_downcase|contains("root cause"))
-             and ((.message|ascii_downcase|contains("consecutive")) or (.message|ascii_downcase|contains("sustained"))))] | length' 2>/dev/null)"
-    [ "${hits:-0}" -ge 1 ] && comm_ok=1
-  fi
-fi
+hits="$(curl -sS "$BASE/api/conversations.history?channel=postmortems&limit=200" \
+  -H "Authorization: Bearer $TOK" \
+  | jq '[.messages[]? | select((.text|ascii_downcase|contains("root cause"))
+         and ((.text|ascii_downcase|contains("consecutive")) or (.text|ascii_downcase|contains("sustained"))))] | length' 2>/dev/null)"
+[ "${hits:-0}" -ge 1 ] && comm_ok=1
 
 echo "code_ok=$code_ok comm_ok=$comm_ok"
 if [ "$code_ok" -eq 1 ] && [ "$comm_ok" -eq 1 ]; then
