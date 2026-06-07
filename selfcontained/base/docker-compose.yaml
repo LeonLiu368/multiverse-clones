@@ -1,0 +1,24 @@
+# Two-container isolation (see selfcontained/isolated for the canonical artifact).
+# api = Mattermost (127.0.0.1-only) + the Slack Web API gateway on :80, reached by the agent at
+# the neutral host `api`. main = the agent (curl + slack_sdk + pytest + the codebase).
+# NO `networks:` block (Harbor injects network_mode, which conflicts). platform pinned amd64.
+services:
+  api:
+    build: { context: ., dockerfile: Dockerfile.api }
+    image: ${APEX_TASK_DOCKER_FORGE_IMAGE_NAME:-__TASK__-api:local}
+    platform: linux/amd64
+    volumes:
+      - ./data/mattermost:/data/mattermost:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:80/api/auth.test >/dev/null && curl -sf http://localhost:8065/api/v4/system/ping >/dev/null || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 60
+      start_period: 45s
+  main:
+    build: { context: ., dockerfile: Dockerfile.main }
+    image: ${APEX_TASK_DOCKER_CLIENT_IMAGE_NAME:-__TASK__-main:local}
+    platform: linux/amd64
+    depends_on:
+      api:
+        condition: service_healthy

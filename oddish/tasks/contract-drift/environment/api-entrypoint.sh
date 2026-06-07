@@ -37,10 +37,12 @@ for i in $(seq 1 60); do curl -s http://localhost:8065/api/v4/system/ping >/dev/
 [ -f /data/mattermost/scraped.json ] && cp /data/mattermost/scraped.json /tmp/scraped.json
 python3 /opt/seed.py || echo "⚠️ seed.py error"
 
-# Per-task seed hook (optional): runs against the Slack GATEWAY once it is reachable, or does
-# extra Mattermost-side setup. Invoked with the gateway not yet up, so it should use MM REST on
-# localhost or be a no-op; most tasks seed purely via scraped.json above.
+# Per-task seed hook (optional). Two no-op-by-default hooks: the baked seed.sh, and an optional
+# script a task drops in its data dir (mounted at /data/mattermost/seed.sh) for setup that doesn't
+# warrant editing the image. Invoked with the gateway not yet up, so a hook should use MM REST on
+# localhost (admin login) or be a no-op; most tasks seed purely via scraped.json above and need neither.
 [ -x /usr/local/bin/task-seed.sh ] && bash /usr/local/bin/task-seed.sh || true
+[ -f /data/mattermost/seed.sh ] && bash /data/mattermost/seed.sh || true
 
 # The agent's Slack token is baked into the main image as env (xoxb-), the way a real Slack app
 # is configured; the gateway validates that same token. Readiness is signalled simply by the

@@ -28,8 +28,12 @@ tasks/<name>/
     run_verifier.sh    ← YOU WRITE/ADAPT: grade in /tmp (candidate pkg + trusted tests); comms checks via the gateway
     trusted/           ← YOU WRITE: canonical visible tests + the HIDDEN test_grade_*.py
 ```
-The backend/agent/compose files are identical across tasks (only image tags + the mounted
-`data/` and `codebase/` differ) — copy them from `selfcontained/isolated/` and the buried-spec task.
+The backend/agent build files are identical across tasks (only the image tag + the `data/` and
+`codebase/` differ). **Don't hand-copy them**: they live once in `selfcontained/base/`; run
+`bash selfcontained/base/vendor.sh` to push them into every task's `environment/` (it copies the
+shared files verbatim and templates the compose's image tag per task). Edit shared build logic in
+`selfcontained/base/`, never in a task. The harness builds these Dockerfiles per task (it can't pull
+an external `image:`-only service), and Docker's layer cache reuses the heavy base across tasks.
 
 ## The files you write (per task)
 - **`data/mattermost/generate.py`** → ~500 deterministic noisy messages; inject SUPERSEDED values
