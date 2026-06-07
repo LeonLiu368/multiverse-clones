@@ -1,31 +1,21 @@
-# Task compose. ONE image is pulled (the prebuilt backend); only the agent is built.
-#
-#   api  — the prebuilt `slack-service` image (Mattermost + Slack gateway + seeder), PULLED, never
-#          rebuilt per task. The chat to seed is mounted at /data/mattermost. Override the image
-#          with SLACK_SERVICE_IMAGE for local/registry selection.
-#   main — the agent (Harbor's required service name). Built from the thin ./Dockerfile (clean
-#          python + the codebase) so the agent container has no Mattermost tells. Harbor force-
-#          builds `main`; everything else with only `image:` is pulled (so api is never built).
+# Single-container task compose. The `main` service contains both the Mattermost backend +
+# Slack gateway AND the agent tools — simpler than the two-container setup (no api sidecar).
+# Harbor force-builds `main` from environment/Dockerfile (FROM slack-service + slackcli + codebase).
 #
 # NO `networks:` block (Harbor injects network_mode, which conflicts). platform pinned amd64.
+# The healthcheck gates agent start: harbor/oddish waits for `main` healthy before running the agent.
 services:
-  api:
-    image: ${SLACK_SERVICE_IMAGE:-ghcr.io/abundant-ai/slack-service:latest}
-    platform: linux/amd64
-    volumes:
-      - ./data/mattermost:/data/mattermost:ro
-    healthcheck:
-      test: ["CMD-SHELL", "curl -sf http://localhost:80/api/auth.test >/dev/null && curl -sf http://localhost:8065/api/v4/system/ping >/dev/null || exit 1"]
-      interval: 5s
-      timeout: 5s
-      retries: 60
-      start_period: 45s
   main:
     build:
       context: .
       dockerfile: Dockerfile
     image: ${APEX_TASK_DOCKER_CLIENT_IMAGE_NAME:-incident-fix-report-main:local}
     platform: linux/amd64
-    depends_on:
-      api:
-        condition: service_healthy
+    volumes:
+      - ./data/mattermost:/data/mattermost:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:80/api/auth.test >/dev/null || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 60
+      start_period: 120s

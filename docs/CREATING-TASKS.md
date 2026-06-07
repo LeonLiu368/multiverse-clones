@@ -1,6 +1,6 @@
 # Creating a new task
 
-These are **observability + codebase** tasks on the **isolated Slack-gateway artifact**: a
+These are **observability + codebase** tasks on the **single-container Slack artifact**: a
 failing pytest suite at `/workspace` whose fix depends on a fact buried in heavy Slack chat that
 the agent reaches via the Slack Web API. The full checklist lives in the
 **`slack-observability-task-builder`** skill — invoke it when building one. Quick version:
@@ -11,11 +11,12 @@ the agent reaches via the Slack Web API. The full checklist lives in the
 2. **Tool use is NON-TRIVIAL** — superseded/contradictory values, off-channel traps, a red
    herring; `search.messages` surfaces the wrong hits too, so the agent must read & disambiguate.
 
-## The backend is one prebuilt image (pulled, not built per task)
+## The backend is one prebuilt image (task builds FROM it)
 The whole backend — Mattermost + the Slack gateway + the seeder — is the single image
 `ghcr.io/abundant-ai/slack-service`, built once from `selfcontained/base/Dockerfile.service` and
-pushed by CI. A task's `api` service just **pulls** it; you never put a backend Dockerfile, the
-gateway, or the seeder in a task. See [IMAGE-RELEASE.md](IMAGE-RELEASE.md).
+pushed by CI. The task's `Dockerfile` does `FROM ghcr.io/abundant-ai/slack-service:latest` and
+adds only the agent tools + codebase. Harbor builds this thin layer per task; no separate `api`
+sidecar. See [IMAGE-RELEASE.md](IMAGE-RELEASE.md).
 
 ## Anatomy (copy an existing task — e.g. `buried-spec`)
 ```
@@ -23,22 +24,21 @@ tasks/<name>/
   task.toml            # service="slack", tools=["slack-cli","slack-mcp"] + [[environment.mcp_servers]], workdir="/workspace"
   instruction.md       # symptom + "you have the slack CLI + MCP"; NEVER the buried fact
   environment/
-    Dockerfile           # thin agent: FROM python:slim + slackcli (slack CLI+MCP) + COPY codebase (Harbor builds `main`)
-    main-entrypoint.sh   # keepalive
-    docker-compose.yaml  # api: image: slack-service (PULLED) + data mount; main: build ./Dockerfile
+    Dockerfile           # FROM slack-service:latest + slackcli (slack CLI+MCP) + codebase (Harbor builds `main`)
+    main-entrypoint.sh   # boots PG+MM+seed+gateway, then keepalive
+    docker-compose.yaml  # single `main` service: build + data mount + healthcheck
     data/mattermost/{generate.py, scraped.json}   ← YOU WRITE generate.py; commit scraped.json (deterministic, heavy)
     codebase/          ← YOU WRITE: working module(s) [tests pass] + a stub/buggy target [fails] + a breadcrumb to Slack
   solution/solve.sh    ← YOU WRITE: oracle edits /workspace; for comms tasks also `slack post <channel> "..."`
   tests/
     test.sh            # orchestration — copy
-    run_verifier.sh    ← YOU WRITE/ADAPT: grade in /tmp (candidate pkg + trusted tests); comms checks via the gateway
+    run_verifier.sh    ← YOU WRITE/ADAPT: grade in /tmp (candidate pkg + trusted tests); comms checks via SLACK_API_URL
     trusted/           ← YOU WRITE: canonical visible tests + the HIDDEN test_grade_*.py
 ```
-The three agent build files (`Dockerfile`, `main-entrypoint.sh`, `docker-compose.yaml`) are
-identical across tasks. **Don't hand-copy them**: they live once in `selfcontained/base/`; run
-`bash selfcontained/base/vendor.sh` to push them into every task (templating the compose image tag).
-Edit shared logic in `selfcontained/base/`, never in a task. Harbor force-builds only the `main`
-service; the `api` service is `image:`-only so it's pulled — that's why the backend never rebuilds.
+The three build files (`Dockerfile`, `main-entrypoint.sh`, `docker-compose.yaml`) are identical
+across tasks. **Don't hand-copy them**: they live once in `selfcontained/base/`; run
+`bash selfcontained/base/vendor.sh` to push them into every task (also copies `slackcli/`).
+Edit shared logic in `selfcontained/base/`, never in a task.
 
 ## The files you write (per task)
 - **`data/mattermost/generate.py`** → ~500 deterministic noisy messages; inject SUPERSEDED values
@@ -47,11 +47,12 @@ service; the `api` service is `image:`-only so it's pulled — that's why the ba
   docstring/README/error breadcrumb pointing to the workspace chat.
 - **`instruction.md`** → symptom + the Slack Web API creds; never the buried fact.
 - **`solution/solve.sh`** → oracle: edit `/workspace`; for comms, `slack post <channel> "..."`
-  (the agent's CLI — it can't reach Mattermost, only the gateway).
+  (uses `SLACK_API_URL=http://localhost` baked in the image).
 - **`tests/trusted/`** → invariant-only visible tests + the HIDDEN `test_grade_*.py` (reference
   impl / exact cases). **Must be `test_grade_*.py`** or pytest won't collect it (false-pass hole).
-- **`tests/run_verifier.sh`** → copy candidate pkg + trusted tests to `/tmp/grade.$$`, run pytest
-  there (never `/workspace/tests`); for comms, read back via `conversations.history`.
+- **`tests/run_verifier.sh`** → copy candidate pkg + trusted tests to `/tmp/grade.$$`, run
+  `python3 -m pytest` there (never `/workspace/tests`); for comms, read back via
+  `conversations.history` on `${SLACK_API_URL:-http://localhost}`.
 
 ## Two rules that keep it reliable
 - **Key reward on the fixed state.** Confirm a deliberately-wrong-but-invariant impl still → 0.
@@ -59,15 +60,17 @@ service; the `api` service is `image:`-only so it's pulled — that's why the ba
 
 ## Validate before shipping (always)
 ```bash
-REGISTRY=ghcr.io/abundant-ai TAG=latest selfcontained/base/build.sh   # once: build slack-service locally
-cd tasks/<name>/environment && docker compose up -d --build           # api pulls slack-service; main builds
+cd tasks/<name>/environment
+docker compose up -d --build   # builds FROM slack-service:latest + task layer; single container
 MAIN=$(docker compose ps -q main)
-docker exec -i "$MAIN" sh -c 'curl -s -m5 http://api:8065/api/v4/system/ping -o /dev/null -w "MM:%{http_code}\n"'  # 000/refused
+# wait for healthy (~30s — Mattermost boot + seed + gateway)
 docker cp ../tests "$MAIN":/tests && docker cp ../solution "$MAIN":/solution
-docker exec -i "$MAIN" bash /tests/run_verifier.sh          # nop -> 0
+docker exec -i "$MAIN" slack whoami                                      # CLI works
+docker exec -i "$MAIN" bash /tests/run_verifier.sh                       # nop -> 0
 # wrong-but-invariant impl -> still 0
-docker exec -i "$MAIN" bash /solution/solve.sh && docker exec -i "$MAIN" bash /tests/run_verifier.sh   # oracle -> 1
+docker exec -i "$MAIN" bash /solution/solve.sh
+docker exec -i "$MAIN" bash /tests/run_verifier.sh                       # oracle -> 1
 docker compose down -v
 ```
 Also: `task.toml` validates against Harbor's `TaskConfig`; no `networks:`; `platform: linux/amd64`;
-unique per-task image tags. Deeper QA: `skillz:harbor-task-audit`, `verifier-attack-lab`.
+unique per-task image tags; verifier uses `python3`, not `python`. Deeper QA: `skillz:harbor-task-audit`.

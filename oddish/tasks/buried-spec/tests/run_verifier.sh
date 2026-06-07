@@ -10,7 +10,7 @@ cp -r /workspace/ratelimit "$GRADE/ratelimit"
 cp "$TRUSTED"/test_bucket.py "$TRUSTED"/test_middleware.py "$TRUSTED"/test_grade_bucket.py "$GRADE/"
 
 cd "$GRADE"
-if python -m pytest -q -p no:cacheprovider >/logs/verifier/pytest.log 2>&1; then
+if python3 -m pytest -q -p no:cacheprovider >/logs/verifier/pytest.log 2>&1; then
   echo "1" > /logs/verifier/reward.txt
   echo "reward=1 (candidate ratelimit passes the trusted suite, including hidden config grading)"
 else

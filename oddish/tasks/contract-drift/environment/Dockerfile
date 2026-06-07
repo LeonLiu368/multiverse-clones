@@ -1,23 +1,32 @@
-# Agent container (the Harbor `main` service) — the ONLY thing built per task, and deliberately
-# THIN: a clean python base + the agent's Slack tools + the codebase, so the container carries zero
-# Mattermost/gateway tells (this is what preserves realism). The heavy backend is the prebuilt
-# `slack-service` image, pulled (not built) for the `api` service.
-#
-# The agent operates Slack through the `slack` CLI and the `slack-mcp` MCP server (both from the
-# vendored slackcli package) — consistent tool use, no raw SDK/curl in the task instructions. The
-# backend is the neutral host `api`; Mattermost, its port, /api/v4, and its headers are never visible.
-FROM python:3.12-slim
+# Agent container (Harbor `main`) — single-container design.
+# Built per task FROM the prebuilt slack-service image (Mattermost + gateway + seeder),
+# then adds the agent tools (slack CLI + MCP) and the task codebase on top.
+# Harbor force-builds `main` from this Dockerfile; the base image is pulled from GHCR.
+FROM ghcr.io/abundant-ai/slack-service:latest
+
+# Add git (not in the service base image) for agent use.
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl jq git ca-certificates bash && \
+    apt-get install -y --no-install-recommends git && \
     rm -rf /var/lib/apt/lists/*
 
-# The agent's Slack tools: installs the `slack` CLI + the `slack-mcp` MCP server (and their deps
-# slack_sdk + mcp). pytest for the /workspace suite.
+# Add the agent's Slack tools: the `slack` CLI + `slack-mcp` MCP server.
+# The service image already has PYTHONPATH=/opt, so slackcli is importable directly
+# from /opt/slackcli. We install its deps explicitly and write wrapper scripts for the
+# CLI entry points (avoids pip/setuptools version issues on the Debian base).
 COPY slackcli /opt/slackcli
-RUN pip install --no-cache-dir /opt/slackcli pytest
+RUN pip3 install --no-cache-dir "slack_sdk>=3.27" "mcp>=1.2" pytest && \
+    printf '#!/usr/bin/env python3\nfrom slackcli.cli import main\nmain()\n' \
+        > /usr/local/bin/slack && \
+    printf '#!/usr/bin/env python3\nfrom slackcli.mcp_server import main\nmain()\n' \
+        > /usr/local/bin/slack-mcp && \
+    chmod +x /usr/local/bin/slack /usr/local/bin/slack-mcp
 
-ENV SLACK_API_URL=http://api \
-    SLACK_BOT_TOKEN=xoxb-acme-eval-0001
+# Gateway runs on localhost (same container as the agent).
+# Extend PYTHONPATH so slackcli (at /opt/slackcli/slackcli/) is importable as `slackcli`.
+# (The service image sets PYTHONPATH=/opt; /opt/slackcli is the project root, not the package.)
+ENV SLACK_API_URL=http://localhost \
+    SLACK_BOT_TOKEN=xoxb-acme-eval-0001 \
+    PYTHONPATH=/opt:/opt/slackcli
 
 COPY main-entrypoint.sh /usr/local/bin/main-entrypoint.sh
 RUN chmod +x /usr/local/bin/main-entrypoint.sh

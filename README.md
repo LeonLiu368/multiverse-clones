@@ -1,9 +1,9 @@
 # Slack-observability + codebase tasks (isolated, for Harbor / Oddish)
 
-> **Branch:** `mattermost-focused-implementation`. The agent operates a realistic **Slack Web
-> API** that is served by a small gateway over a real **Mattermost** backend — packaged as a
-> 2-container **isolated** artifact that hides the simulation (no Mattermost/`:8065`/`/api/v4`
-> tells). The from-scratch Slack clone lives on the `slack-focused-implementation` branch.
+> The agent operates a realistic **Slack Web API** served by a small gateway over a real
+> **Mattermost** backend — packaged as a **single-container** artifact. Harbor force-builds
+> the `main` service `FROM ghcr.io/abundant-ai/slack-service:latest`, adding the agent tools
+> (`slack` CLI + `slack-mcp`) and the task codebase on top.
 
 These are **APEX-SWE-style observability tasks**: the agent is dropped into a workspace with
 **heavy, noisy Slack history** *and* a **codebase whose tests fail**, and must use its tools to
@@ -22,42 +22,34 @@ without it) and **(b) using it is non-trivial** (the fact is buried among distra
 
 ---
 
-## Architecture (the isolated artifact)
+## Architecture (single-container)
 
 ```
-   ┌──────────────────────────────── one Harbor task ────────────────────────────────┐
-   │   ┌────────────────────┐         Slack Web API          ┌──────────────────────┐ │
-   │   │  main (agent)      │  ───────────────────────────►  │  api  (sidecar)      │ │
-   │   │                    │     http://api/api/<method>    │                      │ │
-   │   │  slack CLI + MCP   │  ◄───────────────────────────  │  slackgw gateway :80 │ │
-   │   │  SLACK_API_URL,    │     {"ok":true,...} Slack JSON  │     │  translates     │ │
-   │   │  SLACK_BOT_TOKEN    │                                │     ▼  to /api/v4     │ │
-   │   │  python+pytest     │                                │  Mattermost (real)   │ │
-   │   │  /workspace = repo │   the fix-info is NOT in the   │  bound 127.0.0.1 —   │ │
-   │   │  whose tests FAIL  │   repo — only in the chat      │  UNREACHABLE by agent│ │
-   │   └─────────┬──────────┘                                └──────────────────────┘ │
-   │             ▼  verifier: pytest (hidden grader, isolated dir) [+ comms via gateway]│
-   │                /logs/verifier/reward.txt                                          │
-   └───────────────────────────────────────────────────────────────────────────────────┘
+   ┌──────────────────────────── one Harbor task ────────────────────────────────────┐
+   │   ┌──────────────────────────────────────────────────────────────────────────┐  │
+   │   │  main  (the only container)                                              │  │
+   │   │                                                                          │  │
+   │   │  Mattermost (127.0.0.1:8065) + slackgw gateway (:80)                    │  │
+   │   │  slack CLI + slack-mcp  ──► http://localhost/api/<method>                │  │
+   │   │  SLACK_API_URL=http://localhost  SLACK_BOT_TOKEN=xoxb-…                  │  │
+   │   │  python3 + pytest  /workspace = repo whose tests FAIL                   │  │
+   │   └──────────────────────────────────┬───────────────────────────────────────┘  │
+   │                                      ▼ verifier: pytest (hidden grader) +       │
+   │                                        comms check via gateway                  │
+   │                                        /logs/verifier/reward.txt                │
+   └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-- **`api` sidecar** — real **Mattermost** bound to `127.0.0.1` (never exposed) + a **Slack Web
-  API gateway** (`slackgw`, FastAPI) on `:80`. The gateway speaks faithful Slack (`{"ok":...}`
-  envelopes, `C…`/`U…` ids, `ts` strings, snake_case errors), translates to Mattermost `/api/v4`,
-  validates an `xoxb-` token, and scrubs backend/framework headers. From the agent, Mattermost,
-  its port, `/api/v4`, and its headers are **all invisible**.
-- **`main`** — the agent: the **`slack` CLI** + the **`slack` MCP server** (the `slackcli` package),
-  configured via `SLACK_API_URL` / `SLACK_BOT_TOKEN` env, plus `python`/`pytest` and the codebase at
-  `/workspace`. It reaches only the neutral host `api`. No raw SDK/curl in the task instructions.
-- **No `networks:` block** (Harbor injects `network_mode`, which conflicts); IP/port isolation is
-  achieved by binding Mattermost to localhost inside the sidecar. Both services pin `linux/amd64`.
+- **`main`** — one container does everything: real **Mattermost** (bound to `127.0.0.1:8065`)
+  + the **Slack Web API gateway** (`slackgw`, FastAPI) on `:80` + the agent tools (**`slack` CLI**
+  + **`slack-mcp`** MCP server, from the `slackcli` package) + `python3`/`pytest` + the codebase
+  at `/workspace`. The gateway speaks faithful Slack (`{"ok":...}` envelopes, `C…`/`U…` ids, `ts`
+  strings, snake_case errors). `SLACK_API_URL=http://localhost`.
+- **No `networks:` block** (Harbor injects `network_mode`, which conflicts). `linux/amd64`.
 
-The whole backend (Mattermost + gateway + seeder) is **one prebuilt image**,
-**`ghcr.io/abundant-ai/slack-service`**, built once from
-[`selfcontained/base/`](selfcontained/base/) and **pulled** by every task's `api` service — never
-rebuilt per task. The agent (`main`) is a thin `python:slim` build with the codebase, so it carries
-no Mattermost tells. Reference compose: [`selfcontained/isolated/`](selfcontained/isolated/);
-release process: [docs/IMAGE-RELEASE.md](docs/IMAGE-RELEASE.md).
+Harbor force-builds `main` `FROM ghcr.io/abundant-ai/slack-service:latest` (Mattermost +
+gateway + seeder, built once by CI) and adds the `slackcli` package + codebase on top — so
+tasks never rebuild the heavy backend. Release process: [docs/IMAGE-RELEASE.md](docs/IMAGE-RELEASE.md).
 
 ---
 
@@ -96,10 +88,10 @@ cd /path/to/oddish/oddish
 uv run oddish run /path/to/this-repo/oddish/tasks -c /path/to/this-repo/oddish/sweep.yaml
 
 # Locally, validate one task end-to-end
-REGISTRY=ghcr.io/abundant-ai TAG=latest selfcontained/base/build.sh   # once: build slack-service locally
 cd oddish/tasks/buried-spec/environment
-docker compose up -d --build            # api PULLS slack-service (seeds); main builds thin agent
+docker compose up -d --build   # builds FROM slack-service:latest (pulls base), starts single container
 MAIN=$(docker compose ps -q main)
+# wait for healthy (Mattermost boot + seed + gateway ~30s)
 docker cp ../tests "$MAIN":/tests && docker cp ../solution "$MAIN":/solution
 docker exec -i "$MAIN" bash /tests/run_verifier.sh     # nop    -> reward 0
 docker exec -i "$MAIN" bash /solution/solve.sh

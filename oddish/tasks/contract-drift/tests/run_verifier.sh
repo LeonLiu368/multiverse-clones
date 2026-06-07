@@ -10,7 +10,7 @@ cp -r /workspace/events "$GRADE/events"
 cp "$TRUSTED"/test_publisher.py "$TRUSTED"/test_pipeline.py "$TRUSTED"/test_grade_publisher.py "$GRADE/"
 
 cd "$GRADE"
-if python -m pytest -q -p no:cacheprovider >/logs/verifier/pytest.log 2>&1; then
+if python3 -m pytest -q -p no:cacheprovider >/logs/verifier/pytest.log 2>&1; then
   echo "1" > /logs/verifier/reward.txt
   echo "reward=1 (candidate events passes the trusted suite, including hidden v2-schema grading)"
 else

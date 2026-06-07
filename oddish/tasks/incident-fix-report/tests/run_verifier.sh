@@ -11,7 +11,7 @@ cp -r /workspace/budget "$GRADE/budget"
 cp "$TRUSTED"/test_monitor.py "$TRUSTED"/test_window.py "$TRUSTED"/test_grade_monitor.py "$GRADE/"
 
 code_ok=0
-if ( cd "$GRADE" && python -m pytest -q -p no:cacheprovider ) >/logs/verifier/pytest.log 2>&1; then
+if ( cd "$GRADE" && python3 -m pytest -q -p no:cacheprovider ) >/logs/verifier/pytest.log 2>&1; then
   code_ok=1
 fi
 rm -rf "$GRADE"

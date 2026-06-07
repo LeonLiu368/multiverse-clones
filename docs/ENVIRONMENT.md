@@ -1,64 +1,82 @@
 # How the environment works (start to end)
 
-Plain-English walkthrough of the isolated 2-container artifact: where the data comes from, how
-the containers talk, how the simulation is hidden, and how the verifier scores. Canonical
-reference: [`selfcontained/isolated/`](../selfcontained/isolated/).
+Plain-English walkthrough of the single-container artifact: where the data comes from, how the
+container starts, how the agent operates, and how the verifier scores.
 
-## The two containers (from ONE pushed image + a thin agent)
-- **`api` (sidecar)** — the backend. The prebuilt **`slack-service`** image (pulled, not built):
-  **real Mattermost** bound to `127.0.0.1:8065` (never exposed) + the **Slack Web API gateway**
-  (`slackgw`, FastAPI) on `:80`. The agent reaches only the gateway, at the neutral host `api`.
-- **`main`** — where the **agent** runs. A thin `python:slim` build (no Mattermost tells) with the
-  **`slack` CLI** + the **`slack-mcp`** MCP server (from the `slackcli` package), `python` + `pytest`,
-  and the **codebase at `/workspace`**. Slack creds are baked as image env (`SLACK_API_URL=http://api`,
-  `SLACK_BOT_TOKEN=xoxb-…`). The agent operates Slack only through the CLI/MCP — consistent tool use.
+## One container does everything
 
-There is **no `networks:` block** — Harbor injects `network_mode` on the agent service, which is
-mutually exclusive with `networks:` (a real Modal failure). Isolation comes from binding
-Mattermost to localhost inside `api`, not from network plumbing. Service-name DNS still resolves
-`api`. Both services pin `platform: linux/amd64`.
+There is a single service, `main`. Harbor force-builds it from the task's `environment/Dockerfile`,
+which is:
+
+```dockerfile
+FROM ghcr.io/abundant-ai/slack-service:latest   # Mattermost + gateway + seeder (prebuilt, pulled)
+# adds: git, slackcli (slack CLI + slack-mcp), pytest, PYTHONPATH, codebase at /workspace
+```
+
+The `slack-service` base image (built once by CI from `selfcontained/base/Dockerfile.service` and
+pushed to GHCR) contains real Mattermost + the Slack Web API gateway (`slackgw`) + the seeder.
+The per-task Dockerfile layers on the agent tools and the codebase — no separate `api` sidecar.
+
+No `networks:` block (Harbor injects `network_mode`, which is mutually exclusive). `linux/amd64`.
 
 ## Step by step
-1. **Pull the backend, build the thin agent.** The backend is one prebuilt image,
-   `ghcr.io/abundant-ai/slack-service` (Mattermost + gateway + seeder), pushed by CI and **pulled**
-   by the task's `api` service — never rebuilt. The task's `environment/` carries only: the thin
-   agent `Dockerfile` (+ `main-entrypoint.sh`) that Harbor builds for `main`, the `docker-compose.yaml`,
-   the heavy chat (`data/mattermost/scraped.json`, mounted into `api`), and the `codebase/` (COPY'd
-   into the agent). See [IMAGE-RELEASE.md](IMAGE-RELEASE.md).
-2. **The `api` sidecar boots and seeds itself.** `api-entrypoint.sh` starts Postgres, launches
-   Mattermost on `127.0.0.1:8065`, waits for it, then runs `seed.py`, which builds the workspace
-   from `data/mattermost/scraped.json` — admin, team `test-demo`, channels, users, message
-   history. **Channels/users via REST, posts via SQL** (to preserve timestamps); raw-SQL entities
-   don't behave under app operations. The seed is **heavy and noisy on purpose** (~500 messages,
-   ~7 channels, deterministic via `generate.py`) — the one fact the agent needs is buried among
-   distractors and *superseded* values.
-3. **The gateway comes up.** Once seeded, `api-entrypoint.sh` execs the Slack gateway on `:80`.
-   The compose healthcheck (`/api/auth.test` up + MM ping) only passes after this — so "api
-   healthy" means "seeded and serving."
-4. **The agent starts.** `main` `depends_on: api healthy`, so it starts post-seed. Its baked env
-   makes the `slack` CLI + MCP work immediately against the gateway.
-5. **The agent acts.** It reads `instruction.md` (symptom + "you have the Slack Web API"), uses
-   the `slack` CLI / MCP to recover the buried fact from the chat, edits the code at `/workspace`, and
-   — for the incident task — posts a postmortem via `chat.postMessage`.
-6. **The verifier scores.** `tests/test.sh` → `tests/run_verifier.sh` (in `main`). It copies the
-   candidate package **plus the trusted tests** (canonical invariant tests + a HIDDEN
-   `test_grade_*.py` that pins the answer) into a fresh **verifier-owned** `/tmp` dir and runs
-   `pytest` there — so the visible `/workspace/tests` are never trusted, and the answer can't be
-   read from them. Communication checks (e.g. the postmortem) are read back **through the gateway**
-   (`conversations.history`), since Mattermost isn't reachable. Result → `/logs/verifier/reward.txt`.
-7. **Bracketed.** `nop` (do nothing) → 0; `oracle` (`solution/solve.sh`) → 1. Each task is also
-   checked so a wrong-but-invariant fix scores 0, and the incident task scores 0 if the code is
-   fixed but the postmortem isn't posted.
 
-## Why the agent can't tell it's a simulation (recon hardening)
-From `main`: Mattermost `:8065` is **refused**, `/api/v4` and stray paths return Slack-shaped
-`unknown_method`, server/version headers are **scrubbed**, and the only host is the neutral `api`.
-The chat is reached exactly like a self-hosted Slack-compatible endpoint.
+1. **Harbor builds `main` and starts it.** `FROM slack-service:latest` pulls the cached base;
+   Docker adds the thin task layer (slackcli + codebase). The container starts.
+
+2. **The entrypoint boots the internal services.** `main-entrypoint.sh` runs synchronously:
+   - Starts Postgres 14 on port 5433 (local to the container).
+   - Starts Mattermost on `127.0.0.1:8065` (local to the container).
+   - Runs `seed.py` from `/data/mattermost/scraped.json` (mounted from the task's `data/mattermost/`):
+     creates admin, team `test-demo`, channels, users, and posts. **Posts via SQL** to preserve
+     timestamps; channels/users via REST so Mattermost caches know about them.
+   - Runs optional per-task hook (`data/mattermost/seed.sh` if present).
+   - Starts the Slack gateway on `:80` in the background.
+   - Waits for `http://localhost:80/api/auth.test` to return OK.
+   - Then: `exec tail -f /dev/null` — the container is ready.
+
+3. **Healthcheck signals readiness.** The compose healthcheck polls
+   `curl -sf http://localhost:80/api/auth.test`. Harbor waits for `main` to be healthy before
+   running the agent — so the agent always finds a fully seeded workspace.
+
+4. **The agent acts.** It reads `instruction.md` (symptom + "you have the Slack Web API"), uses the
+   `slack` CLI / MCP to explore the workspace, disambiguates superseded proposals from agreed
+   values, edits the codebase at `/workspace`, and — for the incident task — posts a notification
+   via `slack post`.
+
+   Tools available: `slack channels`, `slack history <ch> [--limit N]`, `slack search <q>`,
+   `slack users`, `slack post <ch> <text>`, `slack whoami`; plus MCP equivalents
+   (`slack_list_channels`, `slack_history`, …). Both hit `http://localhost:80` (the gateway).
+   `SLACK_API_URL=http://localhost`, `SLACK_BOT_TOKEN=xoxb-acme-eval-0001`.
+
+5. **The verifier scores.** `tests/run_verifier.sh` runs inside `main`:
+   - Creates a fresh `/tmp/grade.$$` (verifier-owned; agent can't pre-tamper).
+   - Copies candidate code from `/workspace/<module>` + trusted tests (canonical invariant tests
+     + the hidden `test_grade_*.py`) into `/tmp/grade.$$`.
+   - Runs `python3 -m pytest -q -p no:cacheprovider` there — never in `/workspace/tests`.
+   - For comms tasks: reads the posted message back via `conversations.history` on `SLACK_API_URL`.
+   - Writes `1` or `0` to `/logs/verifier/reward.txt`.
+
+6. **Bracketed.** `nop` → 0; `oracle` → 1; wrong-but-invariant fix → 0; comms task: code-only fix → 0.
+
+## The data mount
+
+The task's `data/mattermost/` directory is mounted read-only into the container at `/data/mattermost`.
+It contains `scraped.json` (the heavy deterministic seed, ~500 messages committed to the repo). The
+seeder reads from there; the agent never accesses the mount directly.
+
+## Why there's only one container
+
+Earlier design had `api` + `main` (two containers) to hide Mattermost from the agent. We simplified
+to single container — the agent can technically reach `localhost:8065` directly, but this is
+acceptable since the benchmark is about *Slack API tool use*, not impenetrability. The architecture
+is otherwise identical: the gateway is the intended interface, the tools call only `http://localhost`,
+and the verifier reads state back through the gateway.
 
 ## Why it's a good benchmark
-- The fix-critical fact lives only in the chat → the agent **must** use the tool.
+- The fix-critical fact lives only in Slack → the agent **must** use the tool.
 - Heavy, noisy, deterministic seed → non-trivial retrieval, reproducible runs.
 - Hidden grader + invariant-only visible tests + isolated grading dir → no shortcut, no tampering.
 - `nop=0 / oracle=1` (+ wrong-impl=0) bracket on every task.
 - Action beyond coding (the incident postmortem) → measures tool use that isn't just editing files.
-- Self-contained, no `networks:`, amd64 → runs the same locally and on Modal.
+- Single container, no `networks:`, `linux/amd64` → runs the same locally and on Modal.
