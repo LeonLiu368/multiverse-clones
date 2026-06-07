@@ -42,10 +42,8 @@ python3 /opt/seed.py || echo "⚠️ seed.py error"
 # localhost or be a no-op; most tasks seed purely via scraped.json above.
 [ -x /usr/local/bin/task-seed.sh ] && bash /usr/local/bin/task-seed.sh || true
 
-# Deliver the agent's Slack token ONLY after seeding — this doubles as the readiness signal the
-# agent container waits on. Mattermost's own admin token is never written here.
-mkdir -p /shared && printf '%s' "${SLACK_BOT_TOKEN}" > /shared/slack_token && chmod 644 /shared/slack_token
-echo READY > /mattermost/.ready   # internal marker, NOT on the shared volume
-
+# The agent's Slack token is baked into the main image as env (xoxb-), the way a real Slack app
+# is configured; the gateway validates that same token. Readiness is signalled simply by the
+# gateway coming up on :80 (the compose healthcheck), which only happens after seeding here.
 echo "🚀 starting Slack gateway on :80"
 exec uvicorn slackgw.app:app --host 0.0.0.0 --port 80 --log-level warning --no-server-header

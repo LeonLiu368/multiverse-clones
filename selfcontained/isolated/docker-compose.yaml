@@ -1,18 +1,17 @@
 # Two-container isolation. The agent runs in `main`; the backend (Mattermost + the Slack Web
-# API gateway) runs in the `api` sidecar. The agent reaches ONLY the gateway, by IP it resolves
-# at runtime — no service name, no :8065, no /api/v4, no Mattermost headers are visible.
+# API gateway) runs in the `api` sidecar. The agent reaches ONLY the gateway, at the neutral
+# host `api` — no :8065, no /api/v4, no Mattermost headers are visible (MM is bound to 127.0.0.1
+# inside the sidecar). Slack creds are baked into the `main` image as env.
 #
 # NO `networks:` block on purpose: the Harbor/Oddish runtime injects `network_mode` on the agent
 # service, which is mutually exclusive with an explicit `networks:` key (a known Modal failure).
-# We get IP-only addressing without it: Mattermost is bound to 127.0.0.1 inside `api`, and the
-# agent discovers the sidecar's IP via DNS at start. Both services pin linux/amd64 (MM is amd64).
+# Service-name DNS still works. Both services pin linux/amd64 (Mattermost is amd64-only).
 services:
   api:
     build: { context: ., dockerfile: Dockerfile.api }
     image: ${APEX_TASK_DOCKER_FORGE_IMAGE_NAME:-slack-api:local}
     platform: linux/amd64
     volumes:
-      - shared:/shared
       - ./data/mattermost:/data/mattermost:ro
     healthcheck:
       test: ["CMD-SHELL", "curl -sf http://localhost:80/api/auth.test >/dev/null && curl -sf http://localhost:8065/api/v4/system/ping >/dev/null || exit 1"]
@@ -28,9 +27,3 @@ services:
     depends_on:
       api:
         condition: service_healthy
-    # Token delivered at the standard secrets path (not a tell-y mount name).
-    volumes:
-      - shared:/run/secrets:ro
-
-volumes:
-  shared:
