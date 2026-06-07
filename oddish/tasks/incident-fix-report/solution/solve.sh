@@ -17,7 +17,10 @@ def should_page(error_rate: float, consecutive_breaches: int) -> bool:
     return False
 PY
 
-# Action beyond coding: write the postmortem to #postmortems.
-slack chat.postMessage postmortems "ROOT CAUSE: the pager-fatigue incident was caused by should_page firing on a single transient breach at a low 5% threshold with no sustained-breach requirement, so brief self-resolving spikes paged on-call (the DB connection blip was a red herring). Fix / new policy: page only after >=3 consecutive breaches at >=5% error rate, with a critical fast-path to page immediately at >=25%; below 5% never pages." >/dev/null
+# Action beyond coding: post the postmortem to #postmortems via the Slack Web API.
+curl -s -X POST "${SLACK_API_URL}/api/chat.postMessage" \
+  -H "Authorization: Bearer ${SLACK_BOT_TOKEN}" \
+  --data-urlencode "channel=postmortems" \
+  --data-urlencode "text=ROOT CAUSE: the pager-fatigue incident was caused by should_page firing on a single transient breach at a low 5% threshold with no sustained-breach requirement, so brief self-resolving spikes paged on-call (the DB connection blip was a red herring). Fix / new policy: page only after >=3 consecutive breaches at >=5% error rate, with a critical fast-path to page immediately at >=25%; below 5% never pages." >/dev/null
 
 echo "oracle: implemented should_page and posted the postmortem to #postmortems"

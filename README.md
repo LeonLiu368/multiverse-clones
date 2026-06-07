@@ -1,13 +1,14 @@
-# Slack-observability + codebase tasks (for Harbor / Oddish)
+# Slack-observability + codebase tasks (isolated, for Harbor / Oddish)
 
-> **Branch:** `mattermost-focused-implementation`. The agent operates a real (seeded) Slack
-> workspace through a **`slack`** tool (CLI + MCP) that is a thin facade over a real Mattermost
-> backend. (The from-scratch Slack clone lives on the `slack-focused-implementation` branch.)
+> **Branch:** `mattermost-focused-implementation`. The agent operates a realistic **Slack Web
+> API** that is served by a small gateway over a real **Mattermost** backend — packaged as a
+> 2-container **isolated** artifact that hides the simulation (no Mattermost/`:8065`/`/api/v4`
+> tells). The from-scratch Slack clone lives on the `slack-focused-implementation` branch.
 
-This repo holds **APEX-SWE-style observability tasks**: the agent is dropped into a workspace
-with **heavy, noisy Slack history** *and* a **codebase whose tests are failing**, and must use
-its tools to recover information that is **only** available in the chat — then fix the code so
-the suite passes. One task also requires **posting a postmortem back to Slack**.
+These are **APEX-SWE-style observability tasks**: the agent is dropped into a workspace with
+**heavy, noisy Slack history** *and* a **codebase whose tests fail**, and must use its tools to
+recover information that is **only** available in the chat — then fix the code so the suite
+passes. One task also requires **posting a postmortem back to Slack**.
 
 It directly measures the benchmark's core question:
 
@@ -15,74 +16,71 @@ It directly measures the benchmark's core question:
 > (MCP / CLI / API / codebase / local env) to gather information and complete difficult tasks,
 > including action beyond coding (verification, deployment, communication)?*
 
-Every task is built so that **(a) the chat tool is critical** — the fix is impossible without
-it — and **(b) using it is non-trivial** — the needed fact is buried among distractors and
-superseded values, so a naive keyword search returns the *wrong* answers.
+Two properties are engineered in: **(a) the chat tool is critical** (the fix is impossible
+without it) and **(b) using it is non-trivial** (the fact is buried among distractors and
+*superseded* values, so a naive search returns the wrong answers).
 
 ---
 
-## In one picture
+## Architecture (the isolated artifact)
 
 ```
-   ┌────────────────────────────── one Harbor task ──────────────────────────────┐
-   │   ┌────────────────────┐        HTTP (REST)        ┌────────────────────┐     │
-   │   │  client (agent)    │ ───────────────────────►  │  mattermost        │     │
-   │   │                    │   http://mattermost:8065  │  (real product)    │     │
-   │   │  tool: `slack`     │ ◄───────────────────────  │  seeded with ~500  │     │
-   │   │   • slack CLI      │                           │  noisy messages;   │     │
-   │   │   • slack MCP      │                           │  the key fact is   │     │
-   │   │                    │                           │  buried in there   │     │
-   │   │  /workspace = a    │                           └────────────────────┘     │
-   │   │  codebase whose    │   the fix info is NOT in the repo — only in chat      │
-   │   │  pytest suite      │                                                       │
-   │   │  is FAILING        │   verifier: restore trusted tests + a HIDDEN grader,  │
-   │   └─────────┬──────────┘   run pytest in an isolated dir, score 0/1            │
-   │             ▼  /logs/verifier/reward.txt        (incident task also checks a   │
-   │                                                  postmortem was posted to Slack)│
-   └───────────────────────────────────────────────────────────────────────────────┘
+   ┌──────────────────────────────── one Harbor task ────────────────────────────────┐
+   │   ┌────────────────────┐         Slack Web API          ┌──────────────────────┐ │
+   │   │  main (agent)      │  ───────────────────────────►  │  api  (sidecar)      │ │
+   │   │                    │     http://api/api/<method>    │                      │ │
+   │   │  curl + slack_sdk  │  ◄───────────────────────────  │  slackgw gateway :80 │ │
+   │   │  SLACK_API_URL,    │     {"ok":true,...} Slack JSON  │     │  translates     │ │
+   │   │  SLACK_BOT_TOKEN    │                                │     ▼  to /api/v4     │ │
+   │   │  python+pytest     │                                │  Mattermost (real)   │ │
+   │   │  /workspace = repo │   the fix-info is NOT in the   │  bound 127.0.0.1 —   │ │
+   │   │  whose tests FAIL  │   repo — only in the chat      │  UNREACHABLE by agent│ │
+   │   └─────────┬──────────┘                                └──────────────────────┘ │
+   │             ▼  verifier: pytest (hidden grader, isolated dir) [+ comms via gateway]│
+   │                /logs/verifier/reward.txt                                          │
+   └───────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-Two containers: **`mattermost`** (the chat backend, seeded with heavy synthetic history) and
-**`client`** (where the agent runs — it has the `slack` tool, python+pytest, and the codebase at
-`/workspace`). The agent can only reach the chat through `slack`, and the fix-critical fact is
-never on disk — so the verifier's result genuinely reflects whether the agent used its tools.
+- **`api` sidecar** — real **Mattermost** bound to `127.0.0.1` (never exposed) + a **Slack Web
+  API gateway** (`slackgw`, FastAPI) on `:80`. The gateway speaks faithful Slack (`{"ok":...}`
+  envelopes, `C…`/`U…` ids, `ts` strings, snake_case errors), translates to Mattermost `/api/v4`,
+  validates an `xoxb-` token, and scrubs backend/framework headers. From the agent, Mattermost,
+  its port, `/api/v4`, and its headers are **all invisible**.
+- **`main`** — the agent: `curl` + the official **`slack_sdk`**, configured the real way via
+  `SLACK_API_URL` / `SLACK_BOT_TOKEN` env, plus `python`/`pytest` and the codebase at
+  `/workspace`. It reaches only the neutral host `api`.
+- **No `networks:` block** (Harbor injects `network_mode`, which conflicts); IP/port isolation is
+  achieved by binding Mattermost to localhost inside the sidecar. Both services pin `linux/amd64`.
+
+Canonical reference artifact: **[`selfcontained/isolated/`](selfcontained/isolated/)**. The
+gateway lives in **[`slackgw/`](slackgw/)**.
 
 ---
 
 ## The tasks
 
-| Task | The codebase problem | What's buried in Slack (critical + non-trivial) | Beyond coding |
+| Task | Codebase problem | Buried in Slack (critical + non-trivial) | Beyond coding |
 |---|---|---|---|
-| **buried-spec** | `billing/fees.py::overdue_fee` unimplemented; suite fails | the *agreed* fee policy (grace, tiers, min, cap, rounding) — with **superseded** proposals (grace 7→5, 2/4/6→1.5/3/5, $10→$5) and off-channel traps | — |
-| **contract-drift** | `payments/charge.py` targets a deprecated API contract | the **v2 contract** (field names, integer cents, version, required `idempotency_key`) — incl. a mid-thread **`customer_id`→`customer` correction** and v1 traps | — |
-| **incident-fix-report** | `monitoring/alerts.py::should_page` unimplemented after a pager-fatigue incident | the agreed **paging policy** (≥3 consecutive breaches at ≥5%, fast-path ≥25%) — with a **red-herring** DB hypothesis and the old thresholds as traps | **post a root-cause postmortem to #postmortems** |
+| **buried-spec** | `billing/fees.py::overdue_fee` unimplemented | the *agreed* fee policy — superseded proposals (grace 7→5, 2/4/6→1.5/3/5, $10→$5) + traps | — |
+| **contract-drift** | `payments/charge.py` on a dead API contract | the v2 contract incl. a mid-thread **`customer_id`→`customer` correction** + v1 traps | — |
+| **incident-fix-report** | `monitoring/alerts.py::should_page` unimplemented | the agreed paging policy + a **red-herring** DB hypothesis | **post a postmortem to #postmortems** |
 
-All three are validated `nop=0 / oracle=1`. Each is also checked so a **wrong-but-plausible** fix
-(one that satisfies the visible invariant tests, or uses a *superseded* value) still scores **0**,
-and `incident-fix-report` scores 0 if the code is fixed but the postmortem isn't posted.
-
-→ How to author another one: **[docs/CREATING-TASKS.md](docs/CREATING-TASKS.md)** (and the
-`slack-observability-task-builder` skill).
+All three validated `nop=0 / oracle=1`; each also checked so a wrong-but-plausible fix still
+scores **0**, and `incident-fix-report` scores 0 if the code is fixed but the postmortem isn't
+posted (the communication is read back through the gateway).
 
 ---
 
-## Why the tool use is genuinely required (anti-shortcut design)
+## Why the tool use is genuinely required (anti-shortcut)
+- The fix-critical fact is only in Slack — never in the repo or visible tests.
+- Visible tests are **invariant-only**; a **hidden** `test_grade_*.py` (staged only at grade time)
+  pins the exact answer.
+- The verifier grades the candidate package + trusted tests in an **isolated `/tmp` dir** — editing
+  `/workspace/tests` can't game it.
+- `slack_sdk`/`search.messages` is **noisy on purpose** — superseded + agreed values both surface.
 
-- **The fix-critical fact is only in Slack** — never in the repo, README, or visible tests.
-- **Visible tests are invariant-only** (non-negativity, monotonicity, shape) — they do *not*
-  encode the policy/contract, so the agent can't read the answer from them.
-- **A hidden grading test pins the exact answer.** It lives in `tests/trusted/` and is staged by
-  the verifier **only at grade time** (named `test_grade_*.py` so pytest actually collects it).
-- **The verifier grades in an isolated, verifier-owned dir** — it copies the candidate's package
-  + the trusted tests into `/tmp` and runs there, so editing/deleting `/workspace/tests` can't
-  game it (verified by a tamper test).
-- **Search is noisy on purpose.** `slack search.messages "overdue fee"` returns the superseded
-  *and* the agreed values; the agent has to read and disambiguate, not grep one magic word.
-
-→ Full reuse inventory + tradeoffs: **[docs/WHAT-WE-TOOK-FROM-MATTERMOST.md](docs/WHAT-WE-TOOK-FROM-MATTERMOST.md)**
-→ The `slack` tool surface (CLI methods + MCP): **[docs/TOOLS.md](docs/TOOLS.md)**
-→ Lifecycle / containers / seeding / verifiers: **[docs/ENVIRONMENT.md](docs/ENVIRONMENT.md)**
-→ Example QA report: **[docs/audits/buried-spec-audit.md](docs/audits/buried-spec-audit.md)**
+→ Tool surface: [docs/TOOLS.md](docs/TOOLS.md) · Lifecycle/isolation: [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md)
+→ Authoring: [docs/CREATING-TASKS.md](docs/CREATING-TASKS.md) · Reuse/tradeoffs: [docs/WHAT-WE-TOOK-FROM-MATTERMOST.md](docs/WHAT-WE-TOOK-FROM-MATTERMOST.md)
 
 ---
 
@@ -95,24 +93,22 @@ uv run oddish run /path/to/this-repo/oddish/tasks -c /path/to/this-repo/oddish/s
 
 # Locally, validate one task end-to-end (first build pulls Mattermost; ~5-8 min)
 cd oddish/tasks/buried-spec/environment
-docker compose up -d --build            # mattermost healthy + ~500-msg seed; codebase at /workspace
-docker cp ../tests client:/tests && docker cp ../solution client:/solution
-docker compose exec -T client bash /tests/run_verifier.sh    # nop    -> reward 0 (suite failing)
-docker compose exec -T client bash /solution/solve.sh
-docker compose exec -T client bash /tests/run_verifier.sh    # oracle -> reward 1
+docker compose up -d --build            # api healthy = seeded; main has baked SLACK_* env
+MAIN=$(docker compose ps -q main)
+docker cp ../tests "$MAIN":/tests && docker cp ../solution "$MAIN":/solution
+docker exec -i "$MAIN" bash /tests/run_verifier.sh     # nop    -> reward 0
+docker exec -i "$MAIN" bash /solution/solve.sh
+docker exec -i "$MAIN" bash /tests/run_verifier.sh     # oracle -> reward 1
 docker compose down -v
 ```
 
 ## Repo layout
-
 ```
+slackgw/                         # the Slack Web API gateway (FastAPI) over Mattermost
+selfcontained/isolated/          # canonical 2-container artifact (Dockerfile.api/main, entrypoints, compose, seed)
 oddish/
-  manifest.yaml / sweep.yaml      # the 3 tasks + agents
-  tasks/
-    buried-spec/         ┐  each a self-contained Harbor task:
-    contract-drift/      ├   environment/ (mattermost service + `slack` facade + codebase/ +
-    incident-fix-report/ ┘   heavy data/) · instruction.md · solution/solve.sh ·
-                             tests/{test.sh,run_verifier.sh,trusted/}  (trusted/ holds the
-                             canonical tests + the HIDDEN test_grade_*.py)
-docs/  ENVIRONMENT.md · WHAT-WE-TOOK-FROM-MATTERMOST.md · TOOLS.md · CREATING-TASKS.md · audits/
+  manifest.yaml / sweep.yaml     # the 3 tasks + agents
+  tasks/<task>/                  # each: environment/ (flat: Dockerfile.api/main, slackgw/, seed.py, data/, codebase/),
+                                 #       instruction.md, solution/solve.sh, tests/{test.sh,run_verifier.sh,trusted/}
+docs/                            # ENVIRONMENT, TOOLS, CREATING-TASKS, WHAT-WE-TOOK-FROM-MATTERMOST, audits/
 ```

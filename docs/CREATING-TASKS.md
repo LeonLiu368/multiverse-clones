@@ -1,70 +1,63 @@
 # Creating a new task
 
-These are **observability + codebase** tasks: a failing test suite at `/workspace` whose fix
-depends on a fact that lives **only** in heavy, noisy Slack history. The full authoring
-checklist (with the anti-reward-hacking rules and the pytest-collection gotcha) is encoded in
-the **`slack-observability-task-builder`** skill — invoke it when building one. This page is the
-quick version.
-
-## What types of tasks fit
-Anything where the *fix-critical* information can be buried in chat and is hard to recover, e.g.:
-- **buried-spec** — implement a function whose policy was agreed in chat (superseded proposals).
-- **contract-drift** — update client code to an API change announced in chat (mid-thread correction).
-- **incident-fix-report** — diagnose a bug from an incident thread, fix it, **and** post a
-  postmortem (action beyond coding).
-Other ideas: a magic constant/threshold decided in chat; a config value; a data-format detail in
-pasted logs; "who owns X / what was decided" that gates the change.
+These are **observability + codebase** tasks on the **isolated Slack-gateway artifact**: a
+failing pytest suite at `/workspace` whose fix depends on a fact buried in heavy Slack chat that
+the agent reaches via the Slack Web API. The full checklist lives in the
+**`slack-observability-task-builder`** skill — invoke it when building one. Quick version:
 
 ## The two bars (non-negotiable)
-1. **Tool use is CRITICAL** — the fact is only in chat; a hidden grader (parameters only in chat)
-   makes the answer unobtainable from the repo or visible tests.
-2. **Tool use is NON-TRIVIAL** — superseded/contradictory values, a decision spread across a
-   thread, off-channel traps, a red herring. `search.messages` should surface the *wrong* hits
-   too, so the agent must read and disambiguate.
+1. **Tool use is CRITICAL** — the fact is only in chat; a hidden grader (params only in chat)
+   makes it unobtainable from the repo/visible tests.
+2. **Tool use is NON-TRIVIAL** — superseded/contradictory values, off-channel traps, a red
+   herring; `search.messages` surfaces the wrong hits too, so the agent must read & disambiguate.
 
 ## Anatomy (copy an existing task — e.g. `buried-spec`)
 ```
 tasks/<name>/
-  task.toml            # service="slack", tools=["slack"], workdir="/workspace", mcp_servers=[slack]
-  instruction.md       # the symptom + "use the slack tool"; NEVER the buried fact
+  task.toml            # service="slack", tools=["slack-web-api","slack_sdk","curl"], workdir="/workspace"
+  instruction.md       # symptom + "Slack at $SLACK_API_URL / $SLACK_BOT_TOKEN (curl or slack_sdk)"; NEVER the buried fact
   environment/
-    Dockerfile, slack, slack-mcp.sh, client-entrypoint.sh    # the client + slack facade (copy)
-    mattermost/{Dockerfile,entrypoint.sh,seed.py}            # chat backend + seeder (copy)
-    data/mattermost/{generate.py, scraped.json}  ← YOU WRITE generate.py, commit scraped.json
-    codebase/          ← YOU WRITE: working module(s) [tests pass] + a stub/buggy target [fails],
-                         with a breadcrumb (docstring/README/error) pointing to chat
-  solution/solve.sh    ← YOU WRITE: oracle (edits only /workspace; for incident-style, also posts)
+    Dockerfile.api, api-entrypoint.sh, seed.sh, slackgw/, seed.py   # backend — copy from selfcontained/isolated, unchanged
+    Dockerfile.main, main-entrypoint.sh                              # agent  — copy; Dockerfile.main also COPYs codebase
+    docker-compose.yaml                                              # copy; set unique image tags  <name>-api / <name>-main
+    data/mattermost/{generate.py, scraped.json}   ← YOU WRITE generate.py; commit scraped.json (deterministic, heavy)
+    codebase/          ← YOU WRITE: working module(s) [tests pass] + a stub/buggy target [fails] + a breadcrumb to Slack
+  solution/solve.sh    ← YOU WRITE: oracle edits /workspace; for comms tasks also curl chat.postMessage to the gateway
   tests/
-    test.sh                                  # orchestration (copy)
-    run_verifier.sh    ← YOU WRITE/ADAPT: grade in /tmp; reward by pytest exit (+ any comms check)
+    test.sh            # orchestration — copy
+    run_verifier.sh    ← YOU WRITE/ADAPT: grade in /tmp (candidate pkg + trusted tests); comms checks via the gateway
     trusted/           ← YOU WRITE: canonical visible tests + the HIDDEN test_grade_*.py
 ```
-To create one, copy `buried-spec`, then swap: `codebase/`, `data/mattermost/generate.py` (+regen
-`scraped.json`), `tests/trusted/*`, `solution/solve.sh`, `instruction.md`, `task.toml`, and the
-`package`/`grade` names in `run_verifier.sh`. Give the client image a unique default tag in
-`docker-compose.yaml` (e.g. `${...:-<name>-client:local}`) to avoid local cross-task collisions.
+The backend/agent/compose files are identical across tasks (only image tags + the mounted
+`data/` and `codebase/` differ) — copy them from `selfcontained/isolated/` and the buried-spec task.
 
-## Rules that keep it reliable (from hard-won experience)
-- **Visible tests are invariant-only** — never encode the buried parameters.
-- **Hidden grader MUST be named `test_grade_*.py`** — pytest only auto-collects `test_*.py`; a
-  `grade_*.py` silently won't run and grading degrades to the invariants (a false-pass hole).
-- **Grade in a fresh verifier-owned dir** (`/tmp/grade.$$`): copy the candidate package + trusted
-  tests there and run pytest there — never run `/workspace/tests`. Defeats test tampering.
-- **Seed via REST, mutate via REST** (the shared `seed.py` creates users/channels via REST,
-  posts via SQL for timestamps). Raw-SQL entities don't behave under app ops.
-- **Key reward on the fixed state.** Confirm a *deliberately wrong* impl that satisfies the
-  invariants still scores 0 (proves the grader runs and bites).
+## The files you write (per task)
+- **`data/mattermost/generate.py`** → ~500 deterministic noisy messages; inject SUPERSEDED values
+  early + the agreed values later + off-channel traps; commit `scraped.json`.
+- **`codebase/`** → a working module (tests pass) + the stub/buggy target (tests fail) with a
+  docstring/README/error breadcrumb pointing to the workspace chat.
+- **`instruction.md`** → symptom + the Slack Web API creds; never the buried fact.
+- **`solution/solve.sh`** → oracle: edit `/workspace`; for comms, `curl chat.postMessage` to
+  `$SLACK_API_URL` (the agent can't reach Mattermost, only the gateway).
+- **`tests/trusted/`** → invariant-only visible tests + the HIDDEN `test_grade_*.py` (reference
+  impl / exact cases). **Must be `test_grade_*.py`** or pytest won't collect it (false-pass hole).
+- **`tests/run_verifier.sh`** → copy candidate pkg + trusted tests to `/tmp/grade.$$`, run pytest
+  there (never `/workspace/tests`); for comms, read back via `conversations.history`.
+
+## Two rules that keep it reliable
+- **Key reward on the fixed state.** Confirm a deliberately-wrong-but-invariant impl still → 0.
+- **Seed via REST, mutate via REST** (the shared `seed.py` does this); raw-SQL entities misbehave.
 
 ## Validate before shipping (always)
 ```bash
 cd tasks/<name>/environment && docker compose up -d --build
-docker cp ../tests client:/tests && docker cp ../solution client:/solution
-docker compose exec -T client bash /tests/run_verifier.sh                      # nop -> 0
-# wrong-but-invariant impl -> must still be 0  (write it, re-run)
-docker compose exec -T client bash /solution/solve.sh
-docker compose exec -T client bash /tests/run_verifier.sh                      # oracle -> 1
+MAIN=$(docker compose ps -q main)
+docker exec -i "$MAIN" sh -c 'curl -s -m5 http://api:8065/api/v4/system/ping -o /dev/null -w "MM:%{http_code}\n"'  # 000/refused
+docker cp ../tests "$MAIN":/tests && docker cp ../solution "$MAIN":/solution
+docker exec -i "$MAIN" bash /tests/run_verifier.sh          # nop -> 0
+# wrong-but-invariant impl -> still 0
+docker exec -i "$MAIN" bash /solution/solve.sh && docker exec -i "$MAIN" bash /tests/run_verifier.sh   # oracle -> 1
 docker compose down -v
 ```
-Also: `task.toml` validates against Harbor's `TaskConfig`/`MCPServerConfig`; compose has no
-explicit `networks:`; both services pin `platform: linux/amd64`. For deeper QA run the
-`skillz:harbor-task-audit` and `verifier-attack-lab` skills.
+Also: `task.toml` validates against Harbor's `TaskConfig`; no `networks:`; `platform: linux/amd64`;
+unique per-task image tags. Deeper QA: `skillz:harbor-task-audit`, `verifier-attack-lab`.
