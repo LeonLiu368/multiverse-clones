@@ -1,34 +1,32 @@
-# Pager-fatigue incident: fix the alert and write the postmortem
+# Error-budget monitor: wrong alert thresholds
 
-The `acme-monitoring` codebase is checked out at **`/workspace`**. Its test suite is failing:
+The `acme-sre-tools` codebase is checked out at **`/workspace`**. Its test suite is failing:
 
 ```bash
 cd /workspace && python -m pytest -q
 ```
 
-On-call has been paged at 3am all week. `monitoring/alerts.py::should_page` is unimplemented
-after the team agreed a new paging policy **during the incident** — but that policy was never
-written into the repo. Two things to do:
+`budget/monitor.py::check_budget` has **wrong alert thresholds and paging conditions** — they
+were set to placeholder values and revised in an SLO review, but the repo was never updated.
+The agreed thresholds live in the team's Slack workspace.
 
-1. **Fix the code.** Recover the agreed paging policy and implement `should_page` so the whole
-   suite passes (don't break tests that already pass).
-2. **Write the postmortem.** Post a short postmortem to the **#postmortems** Slack channel that
-   states the **root cause** of the pager fatigue and the agreed fix.
+Once you fix the code so the suite passes, also **post a notification** to Slack channel
+`#error-budget-reports` confirming the thresholds you applied. The notification must include
+the `error_rate` threshold and the `budget` threshold values.
 
 You have access to the team's **Slack** via its Web API:
 
-- base URL: **`$SLACK_API_URL`**   token: **`$SLACK_BOT_TOKEN`**
-- use `curl` or the preinstalled official **`slack_sdk`** (read `#incidents`; post to
-  `#postmortems` with `chat.postMessage`), e.g.:
+- base URL: **`$SLACK_API_URL`**  token: **`$SLACK_BOT_TOKEN`**
+- use `curl` or the preinstalled official **`slack_sdk`**:
 
 ```bash
 python3 - <<'PY'
 import os
 from slack_sdk import WebClient
 c = WebClient(token=os.environ["SLACK_BOT_TOKEN"], base_url=os.environ["SLACK_API_URL"] + "/api/")
-c.chat_postMessage(channel="postmortems", text="ROOT CAUSE: ...")
+print([ch["name"] for ch in c.conversations_list()["channels"]])
 PY
 ```
 
-Read carefully — there is a red herring in the discussion, and the *old* alert thresholds still
-appear in older messages.
+Several thresholds were proposed and revised during the SLO review — use the **final agreed
+values**, not earlier proposals. The paging condition also involves latency.

@@ -1,14 +1,12 @@
-# acme-payments
+# acme-analytics
 
-Client for the internal charges API. Run the test suite with:
+Analytics event publisher for the ACME platform.
 
-```bash
-cd /workspace && python -m pytest -q
-```
+## Setup
+pip install pytest
+python -m pytest
 
-Some tests are failing. The charges API was migrated to a **new contract** and
-`payments/charge.py::build_charge_request` was left unimplemented for the new version (see the
-note in that file). The exact new request shape — field names, units, required fields,
-version — was communicated by the platform team in the workspace, not written into this repo.
-Recover it and implement `build_charge_request` so the whole suite passes, without breaking
-tests that already pass.
+## Problem
+The analytics pipeline migrated to schema v2. The `events/publisher.py` function still
+produces v1 payloads. The v2 field names and format requirements were announced in the
+team's Slack workspace.

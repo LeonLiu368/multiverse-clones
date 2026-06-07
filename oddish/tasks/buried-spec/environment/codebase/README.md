@@ -1,12 +1,12 @@
-# acme-billing
+# acme-api
 
-Internal billing utilities. Run the test suite with:
+Rate-limiting service for the ACME API gateway.
 
-```bash
-cd /workspace && python -m pytest -q
-```
+## Setup
+pip install pytest
+python -m pytest
 
-Some tests are currently failing. The billing **overdue-fee** rule
-(`billing/fees.py::overdue_fee`) was never implemented — the exact policy was hashed out
-and agreed by the team in the workspace (see the note in `billing/fees.py`). Implement it so
-the whole suite passes, without breaking anything that already passes.
+## Problem
+The test suite is currently failing. The `ratelimit/bucket.py` constants are wrong —
+they were updated after load testing but the repo was never patched. The agreed
+production values are in the team's Slack workspace.
