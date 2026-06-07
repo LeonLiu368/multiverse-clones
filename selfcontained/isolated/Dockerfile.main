@@ -1,0 +1,14 @@
+# Agent container. The agent's "Slack" surface is curl + the official slack_sdk, pointed at the
+# backend sidecar by IP (resolved at runtime). No Mattermost client, no service name, no token
+# baked in — the token arrives at /run/secrets and the IP is discovered at start.
+FROM python:3.12-slim
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl jq git ca-certificates bash && \
+    rm -rf /var/lib/apt/lists/*
+RUN pip install --no-cache-dir slack_sdk
+
+COPY main-entrypoint.sh /usr/local/bin/main-entrypoint.sh
+RUN chmod +x /usr/local/bin/main-entrypoint.sh
+
+WORKDIR /app
+ENTRYPOINT ["/usr/local/bin/main-entrypoint.sh"]
