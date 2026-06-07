@@ -1,3400 +1,1708 @@
 {
- "messages": [
-  {
-   "channel": "design",
-   "author": "carol",
-   "content": "can eng confirm the spacing on the modal?",
-   "timestamp": "2024-09-02T09:02:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "frank",
-   "content": "new icon set in Figma",
-   "timestamp": "2024-09-02T09:15:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "judy",
-   "content": "the empty-state illustration is ready",
-   "timestamp": "2024-09-02T09:18:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "pagerduty",
-   "content": "[resolved] email provider degraded earlier",
-   "timestamp": "2024-09-02T09:25:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "judy",
-   "content": "db failover completed, monitoring",
-   "timestamp": "2024-09-02T09:25:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "mallory",
-   "content": "\ud83d\udc36 dog of the day",
-   "timestamp": "2024-09-02T09:30:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "olivia",
-   "content": "anyone watch the game last night?",
-   "timestamp": "2024-09-02T09:38:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "heidi",
-   "content": "bumped the postgres driver to 2.9",
-   "timestamp": "2024-09-02T09:43:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "deploybot",
-   "content": "rolling back the last deploy to be safe",
-   "timestamp": "2024-09-02T09:44:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "heidi",
-   "content": "welcome to the new folks joining this week \ud83d\udc4b",
-   "timestamp": "2024-09-02T09:53:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "peggy",
-   "content": "is prod slow for anyone else right now?",
-   "timestamp": "2024-09-02T09:55:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "carol",
-   "content": "reminder: invoice run is the 1st of the month",
-   "timestamp": "2024-09-02T10:00:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "peggy",
-   "content": "PSA: please update your 1Password before Friday",
-   "timestamp": "2024-09-02T10:06:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "grace",
-   "content": "user testing notes from yesterday",
-   "timestamp": "2024-09-02T10:08:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "peggy",
-   "content": "db failover completed, monitoring",
-   "timestamp": "2024-09-02T10:44:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "niaj",
-   "content": "user testing notes from yesterday",
-   "timestamp": "2024-09-02T11:01:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "olivia",
-   "content": "what's our SLA on support tickets these days?",
-   "timestamp": "2024-09-02T11:27:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "alice",
-   "content": "reminder: invoice run is the 1st of the month",
-   "timestamp": "2024-09-02T11:31:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "ivan",
-   "content": "draft PRD for Q4 is in the drive",
-   "timestamp": "2024-09-02T11:33:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "grace",
-   "content": "user testing notes from yesterday",
-   "timestamp": "2024-09-02T12:05:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "mallory",
-   "content": "rebased the feature branch, CI is green",
-   "timestamp": "2024-09-02T12:16:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "ivan",
-   "content": "do refunds count against MRR? asking for the deck",
-   "timestamp": "2024-09-02T12:16:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "alice",
-   "content": "checkout latency back to normal",
-   "timestamp": "2024-09-02T12:17:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "mallory",
-   "content": "[resolved] email provider degraded earlier",
-   "timestamp": "2024-09-02T12:19:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "alice",
-   "content": "oncall handoff: nothing active",
-   "timestamp": "2024-09-02T12:21:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "dave",
-   "content": "anyone know why the staging deploy is stuck?",
-   "timestamp": "2024-09-02T12:21:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "olivia",
-   "content": "Stripe webhook retries are noisy, fyi",
-   "timestamp": "2024-09-02T12:33:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "ivan",
-   "content": "anyone watch the game last night?",
-   "timestamp": "2024-09-02T12:46:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "ci-bot",
-   "content": "rolling back the last deploy to be safe",
-   "timestamp": "2024-09-02T13:23:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "trent",
-   "content": "rolling back the last deploy to be safe",
-   "timestamp": "2024-09-02T13:31:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "niaj",
-   "content": "accessibility audit results are in",
-   "timestamp": "2024-09-02T14:12:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "heidi",
-   "content": "draft PRD for Q4 is in the drive",
-   "timestamp": "2024-09-02T14:14:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "grace",
-   "content": "\ud83c\udf89 it's someone's work anniversary",
-   "timestamp": "2024-09-02T14:14:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "heidi",
-   "content": "can we get analytics on trial conversion?",
-   "timestamp": "2024-09-02T14:21:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "grace",
-   "content": "roadmap review pushed to next week",
-   "timestamp": "2024-09-02T14:36:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "niaj",
-   "content": "anyone watch the game last night?",
-   "timestamp": "2024-09-02T14:40:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "mallory",
-   "content": "draft PRD for Q4 is in the drive",
-   "timestamp": "2024-09-02T14:41:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "victor",
-   "content": "user testing notes from yesterday",
-   "timestamp": "2024-09-02T15:01:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "grace",
-   "content": "oncall handoff: nothing active",
-   "timestamp": "2024-09-02T15:13:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "ivan",
-   "content": "free snacks in the kitchen",
-   "timestamp": "2024-09-02T15:34:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "niaj",
-   "content": "competitor shipped a similar feature, fyi",
-   "timestamp": "2024-09-02T15:40:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "mallory",
-   "content": "dark mode tokens need another pass",
-   "timestamp": "2024-09-02T15:52:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "niaj",
-   "content": "\ud83c\udf89 it's someone's work anniversary",
-   "timestamp": "2024-09-02T15:53:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "trent",
-   "content": "[resolved] email provider degraded earlier",
-   "timestamp": "2024-09-02T15:55:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "victor",
-   "content": "we should add a linter rule for that",
-   "timestamp": "2024-09-02T16:19:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "niaj",
-   "content": "draft PRD for Q4 is in the drive",
-   "timestamp": "2024-09-02T16:20:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "olivia",
-   "content": "accessibility audit results are in",
-   "timestamp": "2024-09-02T16:34:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "carol",
-   "content": "we need a decision on the dunning emails",
-   "timestamp": "2024-09-02T16:48:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "erin",
-   "content": "can we get the dunning email copy finalized this week?",
-   "timestamp": "2024-09-02T16:52:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "peggy",
-   "content": "accessibility audit results are in",
-   "timestamp": "2024-09-02T17:00:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "carol",
-   "content": "the tax rounding ticket is still open",
-   "timestamp": "2024-09-02T17:23:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "frank",
-   "content": "\ud83d\udc36 dog of the day",
-   "timestamp": "2024-09-02T17:26:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "bob",
-   "content": "the empty-state illustration is ready",
-   "timestamp": "2024-09-02T17:28:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "dave",
-   "content": "reminder: invoice run is the 1st of the month",
-   "timestamp": "2024-09-02T17:37:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "olivia",
-   "content": "\ud83d\udc36 dog of the day",
-   "timestamp": "2024-09-03T09:00:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "judy",
-   "content": "anyone watch the game last night?",
-   "timestamp": "2024-09-03T09:07:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "bob",
-   "content": "who owns the chargeback flow now?",
-   "timestamp": "2024-09-03T09:13:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "niaj",
-   "content": "roadmap review pushed to next week",
-   "timestamp": "2024-09-03T09:33:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "deploybot",
-   "content": "[resolved] email provider degraded earlier",
-   "timestamp": "2024-09-03T09:39:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "olivia",
-   "content": "new icon set in Figma",
-   "timestamp": "2024-09-03T09:41:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "frank",
-   "content": "checkout latency back to normal",
-   "timestamp": "2024-09-03T09:44:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "bob",
-   "content": "new icon set in Figma",
-   "timestamp": "2024-09-03T09:54:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "grace",
-   "content": "customer asked about bulk export again",
-   "timestamp": "2024-09-03T10:15:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "victor",
-   "content": "anyone know why the staging deploy is stuck?",
-   "timestamp": "2024-09-03T10:27:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "trent",
-   "content": "free snacks in the kitchen",
-   "timestamp": "2024-09-03T10:31:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "olivia",
-   "content": "what's our SLA on support tickets these days?",
-   "timestamp": "2024-09-03T10:32:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "mallory",
-   "content": "free snacks in the kitchen",
-   "timestamp": "2024-09-03T10:45:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "heidi",
-   "content": "new icon set in Figma",
-   "timestamp": "2024-09-03T10:57:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "olivia",
-   "content": "btw what's our late fee these days? i told a customer it's about 2% of balance, hope that's still right",
-   "timestamp": "2024-09-03T11:00:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "peggy",
-   "content": "accessibility audit results are in",
-   "timestamp": "2024-09-03T11:19:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "dave",
-   "content": "bumped the postgres driver to 2.9",
-   "timestamp": "2024-09-03T11:28:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "frank",
-   "content": "old invoices code had a hardcoded 2% late fee and no cap, we ripped it out months ago",
-   "timestamp": "2024-09-03T11:33:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "alice",
-   "content": "the cache layer needs a TTL, opening a ticket",
-   "timestamp": "2024-09-03T12:08:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "carol",
-   "content": "we should add a linter rule for that",
-   "timestamp": "2024-09-03T12:13:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "grace",
-   "content": "checkout latency back to normal",
-   "timestamp": "2024-09-03T12:21:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "carol",
-   "content": "who owns the chargeback flow now?",
-   "timestamp": "2024-09-03T12:41:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "frank",
-   "content": "PSA: please update your 1Password before Friday",
-   "timestamp": "2024-09-03T12:47:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "erin",
-   "content": "rebased the feature branch, CI is green",
-   "timestamp": "2024-09-03T12:53:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "alice",
-   "content": "[resolved] elevated 5xx on the api gateway 14:02-14:18",
-   "timestamp": "2024-09-03T13:02:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "ivan",
-   "content": "[resolved] email provider degraded earlier",
-   "timestamp": "2024-09-03T13:22:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "erin",
-   "content": "office wifi is flaky again, IT is on it",
-   "timestamp": "2024-09-03T13:39:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "niaj",
-   "content": "new icon set in Figma",
-   "timestamp": "2024-09-03T14:17:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "judy",
-   "content": "coffee machine is broken again",
-   "timestamp": "2024-09-03T14:29:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "mallory",
-   "content": "new icon set in Figma",
-   "timestamp": "2024-09-03T15:09:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "frank",
-   "content": "the nightly batch ran 40min, investigating",
-   "timestamp": "2024-09-03T15:09:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "bob",
-   "content": "proration logic needs docs",
-   "timestamp": "2024-09-03T15:15:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "alice",
-   "content": "\ud83d\udc36 dog of the day",
-   "timestamp": "2024-09-03T15:51:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "carol",
-   "content": "who has the Figma link for the new onboarding?",
-   "timestamp": "2024-09-03T15:54:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "peggy",
-   "content": "PR #482 up for review when someone has a sec",
-   "timestamp": "2024-09-03T16:15:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "heidi",
-   "content": "\ud83d\udc36 dog of the day",
-   "timestamp": "2024-09-03T16:20:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "niaj",
-   "content": "dark mode tokens need another pass",
-   "timestamp": "2024-09-03T16:26:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "peggy",
-   "content": "oncall handoff: nothing active",
-   "timestamp": "2024-09-03T16:47:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "peggy",
-   "content": "merged #491, deploying to staging",
-   "timestamp": "2024-09-03T16:52:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "peggy",
-   "content": "\ud83c\udf89 it's someone's work anniversary",
-   "timestamp": "2024-09-03T17:04:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "ivan",
-   "content": "we should add a linter rule for that",
-   "timestamp": "2024-09-03T17:15:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "peggy",
-   "content": "updated the color tokens",
-   "timestamp": "2024-09-03T17:17:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "carol",
-   "content": "free snacks in the kitchen",
-   "timestamp": "2024-09-03T17:33:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "carol",
-   "content": "the nightly batch ran 40min, investigating",
-   "timestamp": "2024-09-03T17:47:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "olivia",
-   "content": "updated the color tokens",
-   "timestamp": "2024-09-03T17:54:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "mallory",
-   "content": "is prod slow for anyone else right now?",
-   "timestamp": "2024-09-03T17:56:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "olivia",
-   "content": "we need a decision on the dunning emails",
-   "timestamp": "2024-09-04T09:31:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "alice",
-   "content": "oncall handoff: nothing active",
-   "timestamp": "2024-09-04T09:56:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "deploybot",
-   "content": "oncall handoff: nothing active",
-   "timestamp": "2024-09-04T09:58:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "erin",
-   "content": "accessibility audit results are in",
-   "timestamp": "2024-09-04T10:09:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "trent",
-   "content": "reminder: invoice run is the 1st of the month",
-   "timestamp": "2024-09-04T10:11:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "trent",
-   "content": "added type hints to the invoices module",
-   "timestamp": "2024-09-04T10:13:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "alice",
-   "content": "the grace period for the office plants is clearly zero, RIP",
-   "timestamp": "2024-09-04T10:35:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "ivan",
-   "content": "the tax rounding ticket is still open",
-   "timestamp": "2024-09-04T10:48:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "victor",
-   "content": "\ud83c\udf89 it's someone's work anniversary",
-   "timestamp": "2024-09-04T10:53:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "peggy",
-   "content": "we need a decision on the dunning emails",
-   "timestamp": "2024-09-04T11:10:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "trent",
-   "content": "someone asked support what the overdue grace period is \u2014 i said 7 days from memory, can someone confirm?",
-   "timestamp": "2024-09-04T11:11:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "ivan",
-   "content": "office wifi is flaky again, IT is on it",
-   "timestamp": "2024-09-04T11:12:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "victor",
-   "content": "roadmap review pushed to next week",
-   "timestamp": "2024-09-04T11:53:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "olivia",
-   "content": "what's our SLA on support tickets these days?",
-   "timestamp": "2024-09-04T12:02:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "judy",
-   "content": "is prod slow for anyone else right now?",
-   "timestamp": "2024-09-04T12:47:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "bob",
-   "content": "can we get the dunning email copy finalized this week?",
-   "timestamp": "2024-09-04T12:57:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "bob",
-   "content": "is prod slow for anyone else right now?",
-   "timestamp": "2024-09-04T13:00:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "mallory",
-   "content": "Stripe webhook retries are noisy, fyi",
-   "timestamp": "2024-09-04T13:35:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "ivan",
-   "content": "who keeps stealing my mug",
-   "timestamp": "2024-09-04T13:49:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "heidi",
-   "content": "[resolved] elevated 5xx on the api gateway 14:02-14:18",
-   "timestamp": "2024-09-04T14:03:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "judy",
-   "content": "heads up: migrating the jobs queue Tuesday",
-   "timestamp": "2024-09-04T14:10:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "alice",
-   "content": "oncall handoff: nothing active",
-   "timestamp": "2024-09-04T14:21:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "bob",
-   "content": "\ud83d\udc36 dog of the day",
-   "timestamp": "2024-09-04T14:25:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "ivan",
-   "content": "\ud83d\udc36 dog of the day",
-   "timestamp": "2024-09-04T14:30:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "mallory",
-   "content": "the grace period for the office plants is clearly zero, RIP",
-   "timestamp": "2024-09-04T14:31:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "judy",
-   "content": "finance close is Friday, please tag any billing PRs",
-   "timestamp": "2024-09-04T14:46:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "olivia",
-   "content": "anyone know why the staging deploy is stuck?",
-   "timestamp": "2024-09-04T14:48:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "erin",
-   "content": "user testing notes from yesterday",
-   "timestamp": "2024-09-04T14:51:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "frank",
-   "content": "who has the Figma link for the new onboarding?",
-   "timestamp": "2024-09-04T14:56:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "grace",
-   "content": "kudos to the support team for clearing the backlog \ud83d\ude4c",
-   "timestamp": "2024-09-04T15:32:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "erin",
-   "content": "kudos to the support team for clearing the backlog \ud83d\ude4c",
-   "timestamp": "2024-09-04T15:36:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "frank",
-   "content": "[resolved] elevated 5xx on the api gateway 14:02-14:18",
-   "timestamp": "2024-09-04T15:45:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "peggy",
-   "content": "PSA: please update your 1Password before Friday",
-   "timestamp": "2024-09-04T15:48:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "bob",
-   "content": "the tax rounding ticket is still open",
-   "timestamp": "2024-09-04T16:10:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "bob",
-   "content": "accessibility audit results are in",
-   "timestamp": "2024-09-04T16:18:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "niaj",
-   "content": "oncall handoff: nothing active",
-   "timestamp": "2024-09-04T16:24:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "ivan",
-   "content": "office wifi is flaky again, IT is on it",
-   "timestamp": "2024-09-04T16:28:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "olivia",
-   "content": "\ud83d\udc36 dog of the day",
-   "timestamp": "2024-09-04T16:30:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "peggy",
-   "content": "checkout latency back to normal",
-   "timestamp": "2024-09-04T17:43:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "alice",
-   "content": "the nightly batch ran 40min, investigating",
-   "timestamp": "2024-09-04T17:50:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "trent",
-   "content": "accessibility audit results are in",
-   "timestamp": "2024-09-04T17:53:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "judy",
-   "content": "checkout latency back to normal",
-   "timestamp": "2024-09-04T17:57:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "heidi",
-   "content": "heads up: migrating the jobs queue Tuesday",
-   "timestamp": "2024-09-05T09:11:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "dave",
-   "content": "[resolved] elevated 5xx on the api gateway 14:02-14:18",
-   "timestamp": "2024-09-05T09:17:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "peggy",
-   "content": "\ud83c\udf89 it's someone's work anniversary",
-   "timestamp": "2024-09-05T09:32:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "olivia",
-   "content": "TIL you can pin messages here",
-   "timestamp": "2024-09-05T10:48:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "mallory",
-   "content": "added type hints to the invoices module",
-   "timestamp": "2024-09-05T10:51:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "carol",
-   "content": "can we get the dunning email copy finalized this week?",
-   "timestamp": "2024-09-05T10:54:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "ivan",
-   "content": "finance close is Friday, please tag any billing PRs",
-   "timestamp": "2024-09-05T11:00:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "peggy",
-   "content": "free snacks in the kitchen",
-   "timestamp": "2024-09-05T11:10:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "mallory",
-   "content": "kudos to the support team for clearing the backlog \ud83d\ude4c",
-   "timestamp": "2024-09-05T11:15:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "victor",
-   "content": "the late fee on my gym membership is like $10 flat, wild",
-   "timestamp": "2024-09-05T11:22:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "frank",
-   "content": "[resolved] elevated 5xx on the api gateway 14:02-14:18",
-   "timestamp": "2024-09-05T11:23:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "carol",
-   "content": "competitor shipped a similar feature, fyi",
-   "timestamp": "2024-09-05T11:25:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "erin",
-   "content": "lunch order going out, reply by noon",
-   "timestamp": "2024-09-05T11:32:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "bob",
-   "content": "oncall handoff: nothing active",
-   "timestamp": "2024-09-05T11:34:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "ivan",
-   "content": "updated the color tokens",
-   "timestamp": "2024-09-05T11:47:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "ivan",
-   "content": "Stripe webhook retries are noisy, fyi",
-   "timestamp": "2024-09-05T11:51:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "mallory",
-   "content": "[resolved] elevated 5xx on the api gateway 14:02-14:18",
-   "timestamp": "2024-09-05T11:55:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "grace",
-   "content": "anyone going to the meetup tonight?",
-   "timestamp": "2024-09-05T12:14:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "victor",
-   "content": "can we get the dunning email copy finalized this week?",
-   "timestamp": "2024-09-05T12:24:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "bob",
-   "content": "morning all \u2615",
-   "timestamp": "2024-09-05T12:27:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "frank",
-   "content": "proration logic needs docs",
-   "timestamp": "2024-09-05T12:44:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "frank",
-   "content": "roadmap review pushed to next week",
-   "timestamp": "2024-09-05T13:07:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "heidi",
-   "content": "db failover completed, monitoring",
-   "timestamp": "2024-09-05T13:23:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "alice",
-   "content": "Kicking off the overdue-fee policy thread. Right now billing.fees.overdue_fee does nothing. Strawman v0: flat 2% of balance after a 7-day grace period.",
-   "timestamp": "2024-09-05T13:24:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "frank",
-   "content": "dark mode tokens need another pass",
-   "timestamp": "2024-09-05T13:35:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "ivan",
-   "content": "the empty-state illustration is ready",
-   "timestamp": "2024-09-05T13:43:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "peggy",
-   "content": "the nightly batch ran 40min, investigating",
-   "timestamp": "2024-09-05T13:47:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "dave",
-   "content": "proration logic needs docs",
-   "timestamp": "2024-09-05T13:52:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "bob",
-   "content": "db failover completed, monitoring",
-   "timestamp": "2024-09-05T14:02:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "judy",
-   "content": "dark mode tokens need another pass",
-   "timestamp": "2024-09-05T14:04:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "erin",
-   "content": "added type hints to the invoices module",
-   "timestamp": "2024-09-05T14:06:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "bob",
-   "content": "the empty-state illustration is ready",
-   "timestamp": "2024-09-05T14:21:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "ivan",
-   "content": "anyone watch the game last night?",
-   "timestamp": "2024-09-05T14:23:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "mallory",
-   "content": "coffee machine is broken again",
-   "timestamp": "2024-09-05T14:35:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "erin",
-   "content": "competitor shipped a similar feature, fyi",
-   "timestamp": "2024-09-05T15:16:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "heidi",
-   "content": "accessibility audit results are in",
-   "timestamp": "2024-09-05T15:17:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "mallory",
-   "content": "can we get the dunning email copy finalized this week?",
-   "timestamp": "2024-09-05T15:20:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "ci-bot",
-   "content": "[resolved] email provider degraded earlier",
-   "timestamp": "2024-09-05T15:54:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "ivan",
-   "content": "rolling back the last deploy to be safe",
-   "timestamp": "2024-09-05T15:58:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "ci-bot",
-   "content": "db failover completed, monitoring",
-   "timestamp": "2024-09-05T16:00:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "peggy",
-   "content": "user testing notes from yesterday",
-   "timestamp": "2024-09-05T16:01:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "peggy",
-   "content": "can we get the dunning email copy finalized this week?",
-   "timestamp": "2024-09-05T16:20:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "mallory",
-   "content": "who keeps stealing my mug",
-   "timestamp": "2024-09-05T16:48:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "ivan",
-   "content": "who owns the chargeback flow now?",
-   "timestamp": "2024-09-05T16:49:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "judy",
-   "content": "what's our SLA on support tickets these days?",
-   "timestamp": "2024-09-05T16:56:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "ci-bot",
-   "content": "checkout latency back to normal",
-   "timestamp": "2024-09-05T17:10:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "heidi",
-   "content": "roadmap review pushed to next week",
-   "timestamp": "2024-09-05T17:11:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "bob",
-   "content": "the pricing page copy needs a refresh",
-   "timestamp": "2024-09-05T17:14:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "mallory",
-   "content": "new icon set in Figma",
-   "timestamp": "2024-09-05T17:28:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "grace",
-   "content": "db failover completed, monitoring",
-   "timestamp": "2024-09-05T17:30:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "heidi",
-   "content": "bumped the postgres driver to 2.9",
-   "timestamp": "2024-09-05T17:37:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "bob",
-   "content": "2% flat undercharges the really old stuff. What about tiers by days overdue \u2014 say 2% (0-30), 4% (30-60), 6% (60+)?",
-   "timestamp": "2024-09-05T17:43:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "carol",
-   "content": "Tiers are fine but legal flagged 4/6% as too high (usury). Finance is comfortable with 1.5% / 3% / 5%.",
-   "timestamp": "2024-09-05T22:22:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "alice",
-   "content": "OK so tiered 1.5 / 3 / 5. Keeping the 7-day grace?",
-   "timestamp": "2024-09-06T03:43:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "ivan",
-   "content": "draft PRD for Q4 is in the drive",
-   "timestamp": "2024-09-06T09:02:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "dave",
-   "content": "7 days is generous and doesn't match our dunning emails (those fire at day 5). Support wants grace = 5 days.",
-   "timestamp": "2024-09-06T09:19:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "grace",
-   "content": "bumped the postgres driver to 2.9",
-   "timestamp": "2024-09-06T09:21:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "trent",
-   "content": "customer asked about bulk export again",
-   "timestamp": "2024-09-06T09:26:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "victor",
-   "content": "do refunds count against MRR? asking for the deck",
-   "timestamp": "2024-09-06T09:31:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "bob",
-   "content": "dark mode tokens need another pass",
-   "timestamp": "2024-09-06T10:07:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "mallory",
-   "content": "free snacks in the kitchen",
-   "timestamp": "2024-09-06T10:16:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "dave",
-   "content": "customer asked about bulk export again",
-   "timestamp": "2024-09-06T10:27:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "mallory",
-   "content": "anyone know why the staging deploy is stuck?",
-   "timestamp": "2024-09-06T10:28:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "judy",
-   "content": "\ud83d\udc36 dog of the day",
-   "timestamp": "2024-09-06T10:28:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "victor",
-   "content": "updated the color tokens",
-   "timestamp": "2024-09-06T10:28:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "grace",
-   "content": "what's our SLA on support tickets these days?",
-   "timestamp": "2024-09-06T10:55:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "mallory",
-   "content": "dark mode tokens need another pass",
-   "timestamp": "2024-09-06T10:59:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "heidi",
-   "content": "oncall handoff: nothing active",
-   "timestamp": "2024-09-06T11:10:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "carol",
-   "content": "checkout latency back to normal",
-   "timestamp": "2024-09-06T11:41:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "dave",
-   "content": "TIL you can pin messages here",
-   "timestamp": "2024-09-06T11:49:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "erin",
-   "content": "user testing notes from yesterday",
-   "timestamp": "2024-09-06T12:00:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "peggy",
-   "content": "TIL you can pin messages here",
-   "timestamp": "2024-09-06T12:58:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "niaj",
-   "content": "db failover completed, monitoring",
-   "timestamp": "2024-09-06T13:03:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "bob",
-   "content": "do refunds count against MRR? asking for the deck",
-   "timestamp": "2024-09-06T13:10:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "carol",
-   "content": "[resolved] email provider degraded earlier",
-   "timestamp": "2024-09-06T13:31:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "bob",
-   "content": "we need a decision on the dunning emails",
-   "timestamp": "2024-09-06T13:41:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "judy",
-   "content": "[resolved] elevated 5xx on the api gateway 14:02-14:18",
-   "timestamp": "2024-09-06T13:55:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "carol",
-   "content": "Good point \u2014 let's make grace 5 days to line up with dunning. So no fee through day 5.",
-   "timestamp": "2024-09-06T14:00:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "peggy",
-   "content": "roadmap review pushed to next week",
-   "timestamp": "2024-09-06T14:09:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "heidi",
-   "content": "bumped the postgres driver to 2.9",
-   "timestamp": "2024-09-06T14:22:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "frank",
-   "content": "checkout latency back to normal",
-   "timestamp": "2024-09-06T14:30:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "trent",
-   "content": "dark mode tokens need another pass",
-   "timestamp": "2024-09-06T14:32:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "peggy",
-   "content": "the pricing page copy needs a refresh",
-   "timestamp": "2024-09-06T14:59:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "ivan",
-   "content": "can someone approve the infra terraform change?",
-   "timestamp": "2024-09-06T15:00:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "erin",
-   "content": "reminder: all-hands moved to Thursday 10am",
-   "timestamp": "2024-09-06T15:03:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "grace",
-   "content": "anyone going to the meetup tonight?",
-   "timestamp": "2024-09-06T15:47:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "ivan",
-   "content": "rolling back the last deploy to be safe",
-   "timestamp": "2024-09-06T15:54:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "trent",
-   "content": "office wifi is flaky again, IT is on it",
-   "timestamp": "2024-09-06T15:57:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "dave",
-   "content": "coffee machine is broken again",
-   "timestamp": "2024-09-06T16:00:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "alice",
-   "content": "do refunds count against MRR? asking for the deck",
-   "timestamp": "2024-09-06T16:16:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "bob",
-   "content": "do refunds count against MRR? asking for the deck",
-   "timestamp": "2024-09-06T16:43:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "trent",
-   "content": "rolling back the last deploy to be safe",
-   "timestamp": "2024-09-06T16:46:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "olivia",
-   "content": "updated the color tokens",
-   "timestamp": "2024-09-06T17:01:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "erin",
-   "content": "Should there be a minimum fee? At 1.5% a tiny balance generates like $0.20, not worth the ledger entry.",
-   "timestamp": "2024-09-06T17:21:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "niaj",
-   "content": "anyone watch the game last night?",
-   "timestamp": "2024-09-06T17:22:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "victor",
-   "content": "office wifi is flaky again, IT is on it",
-   "timestamp": "2024-09-06T17:41:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "judy",
-   "content": "what's our SLA on support tickets these days?",
-   "timestamp": "2024-09-06T17:51:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "bob",
-   "content": "+1 minimum fee. $10?",
-   "timestamp": "2024-09-06T21:30:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "carol",
-   "content": "$10 min is harsh on small balances and support will get complaints. Let's do a $5.00 minimum once any fee applies.",
-   "timestamp": "2024-09-07T05:09:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "niaj",
-   "content": "user testing notes from yesterday",
-   "timestamp": "2024-09-07T09:05:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "victor",
-   "content": "roadmap review pushed to next week",
-   "timestamp": "2024-09-07T09:29:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "ivan",
-   "content": "the empty-state illustration is ready",
-   "timestamp": "2024-09-07T09:40:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "grace",
-   "content": "proration logic needs docs",
-   "timestamp": "2024-09-07T09:40:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "bob",
-   "content": "what's our SLA on support tickets these days?",
-   "timestamp": "2024-09-07T09:57:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "dave",
-   "content": "We also need a ceiling so a huge account doesn't get a five-figure fee \u2014 legal asked for a hard cap. $250?",
-   "timestamp": "2024-09-07T10:12:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "bob",
-   "content": "what's our SLA on support tickets these days?",
-   "timestamp": "2024-09-07T10:13:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "heidi",
-   "content": "\ud83d\udc36 dog of the day",
-   "timestamp": "2024-09-07T10:15:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "judy",
-   "content": "the empty-state illustration is ready",
-   "timestamp": "2024-09-07T10:17:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "victor",
-   "content": "anyone watch the game last night?",
-   "timestamp": "2024-09-07T10:22:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "bob",
-   "content": "oncall handoff: nothing active",
-   "timestamp": "2024-09-07T10:59:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "carol",
-   "content": "dark mode tokens need another pass",
-   "timestamp": "2024-09-07T11:15:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "alice",
-   "content": "can eng confirm the spacing on the modal?",
-   "timestamp": "2024-09-07T11:20:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "mallory",
-   "content": "heads up: migrating the jobs queue Tuesday",
-   "timestamp": "2024-09-07T11:26:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "ivan",
-   "content": "rebased the feature branch, CI is green",
-   "timestamp": "2024-09-07T11:31:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "bob",
-   "content": "the pricing page copy needs a refresh",
-   "timestamp": "2024-09-07T11:46:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "ivan",
-   "content": "rolling back the last deploy to be safe",
-   "timestamp": "2024-09-07T11:54:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "dave",
-   "content": "\ud83d\udc36 dog of the day",
-   "timestamp": "2024-09-07T11:56:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "judy",
-   "content": "[resolved] email provider degraded earlier",
-   "timestamp": "2024-09-07T12:07:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "grace",
-   "content": "the pricing page copy needs a refresh",
-   "timestamp": "2024-09-07T12:26:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "niaj",
-   "content": "coffee machine is broken again",
-   "timestamp": "2024-09-07T12:53:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "carol",
-   "content": "user testing notes from yesterday",
-   "timestamp": "2024-09-07T13:03:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "heidi",
-   "content": "new icon set in Figma",
-   "timestamp": "2024-09-07T13:14:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "deploybot",
-   "content": "db failover completed, monitoring",
-   "timestamp": "2024-09-07T13:21:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "ivan",
-   "content": "anyone know why the staging deploy is stuck?",
-   "timestamp": "2024-09-07T13:23:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "mallory",
-   "content": "customer asked about bulk export again",
-   "timestamp": "2024-09-07T13:24:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "erin",
-   "content": "finance close is Friday, please tag any billing PRs",
-   "timestamp": "2024-09-07T13:28:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "judy",
-   "content": "anyone going to the meetup tonight?",
-   "timestamp": "2024-09-07T13:38:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "ivan",
-   "content": "do refunds count against MRR? asking for the deck",
-   "timestamp": "2024-09-07T14:07:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "bob",
-   "content": "anyone know why the staging deploy is stuck?",
-   "timestamp": "2024-09-07T14:20:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "mallory",
-   "content": "flaky test in test_scheduler again, retrying",
-   "timestamp": "2024-09-07T14:23:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "heidi",
-   "content": "what's our SLA on support tickets these days?",
-   "timestamp": "2024-09-07T14:30:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "mallory",
-   "content": "accessibility audit results are in",
-   "timestamp": "2024-09-07T14:50:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "erin",
-   "content": "[resolved] email provider degraded earlier",
-   "timestamp": "2024-09-07T14:50:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "carol",
-   "content": "Yes, hard cap of $250.00. And round to the nearest cent, half up. Zero/negative balance or non-positive days = no fee, obviously.",
-   "timestamp": "2024-09-07T14:54:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "victor",
-   "content": "draft PRD for Q4 is in the drive",
-   "timestamp": "2024-09-07T15:50:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "ivan",
-   "content": "flaky test in test_scheduler again, retrying",
-   "timestamp": "2024-09-07T15:53:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "trent",
-   "content": "[resolved] email provider degraded earlier",
-   "timestamp": "2024-09-07T16:16:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "ci-bot",
-   "content": "[resolved] email provider degraded earlier",
-   "timestamp": "2024-09-07T16:20:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "dave",
-   "content": "rebased the feature branch, CI is green",
-   "timestamp": "2024-09-07T16:24:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "frank",
-   "content": "do refunds count against MRR? asking for the deck",
-   "timestamp": "2024-09-07T16:33:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "erin",
-   "content": "merged #491, deploying to staging",
-   "timestamp": "2024-09-07T16:35:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "heidi",
-   "content": "db failover completed, monitoring",
-   "timestamp": "2024-09-07T17:24:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "alice",
-   "content": "Locking this in so eng can implement (tracking as BILL-412). overdue_fee = nothing through day 5; then 1.5% of balance for days 6-30, 3% for 31-60, 5% for 61+; floor the fee at $5.00 once it applies; ceiling $250.00; round half-up to the cent; balance <= 0 or days <= 0 returns $0. Closing the thread, thanks all.",
-   "timestamp": "2024-09-07T18:43:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "bob",
-   "content": "\ud83c\udf89 thanks, picking up BILL-412 now.",
-   "timestamp": "2024-09-07T23:34:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "bob",
-   "content": "draft PRD for Q4 is in the drive",
-   "timestamp": "2024-09-08T09:23:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "frank",
-   "content": "do refunds count against MRR? asking for the deck",
-   "timestamp": "2024-09-08T09:28:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "heidi",
-   "content": "customer asked about bulk export again",
-   "timestamp": "2024-09-08T09:42:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "grace",
-   "content": "what's our SLA on support tickets these days?",
-   "timestamp": "2024-09-08T10:08:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "niaj",
-   "content": "lunch order going out, reply by noon",
-   "timestamp": "2024-09-08T10:08:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "grace",
-   "content": "Stripe webhook retries are noisy, fyi",
-   "timestamp": "2024-09-08T10:20:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "judy",
-   "content": "PSA: please update your 1Password before Friday",
-   "timestamp": "2024-09-08T10:29:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "grace",
-   "content": "[resolved] email provider degraded earlier",
-   "timestamp": "2024-09-08T10:46:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "niaj",
-   "content": "bumped the postgres driver to 2.9",
-   "timestamp": "2024-09-08T11:08:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "trent",
-   "content": "db failover completed, monitoring",
-   "timestamp": "2024-09-08T11:14:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "victor",
-   "content": "user testing notes from yesterday",
-   "timestamp": "2024-09-08T11:20:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "grace",
-   "content": "\ud83c\udf89 it's someone's work anniversary",
-   "timestamp": "2024-09-08T11:28:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "grace",
-   "content": "we need a decision on the dunning emails",
-   "timestamp": "2024-09-08T11:46:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "victor",
-   "content": "new icon set in Figma",
-   "timestamp": "2024-09-08T11:56:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "olivia",
-   "content": "roadmap review pushed to next week",
-   "timestamp": "2024-09-08T11:59:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "victor",
-   "content": "can someone approve the infra terraform change?",
-   "timestamp": "2024-09-08T12:02:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "ivan",
-   "content": "bumped the postgres driver to 2.9",
-   "timestamp": "2024-09-08T12:06:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "ivan",
-   "content": "who has the Figma link for the new onboarding?",
-   "timestamp": "2024-09-08T12:15:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "judy",
-   "content": "TIL you can pin messages here",
-   "timestamp": "2024-09-08T12:19:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "niaj",
-   "content": "can we get analytics on trial conversion?",
-   "timestamp": "2024-09-08T12:31:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "frank",
-   "content": "morning all \u2615",
-   "timestamp": "2024-09-08T13:02:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "carol",
-   "content": "added type hints to the invoices module",
-   "timestamp": "2024-09-08T13:05:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "heidi",
-   "content": "added type hints to the invoices module",
-   "timestamp": "2024-09-08T13:23:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "frank",
-   "content": "\ud83c\udf89 it's someone's work anniversary",
-   "timestamp": "2024-09-08T13:33:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "ivan",
-   "content": "can we get the dunning email copy finalized this week?",
-   "timestamp": "2024-09-08T13:35:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "niaj",
-   "content": "can we get the dunning email copy finalized this week?",
-   "timestamp": "2024-09-08T13:41:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "niaj",
-   "content": "rolling back the last deploy to be safe",
-   "timestamp": "2024-09-08T13:47:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "frank",
-   "content": "the grace period for the office plants is clearly zero, RIP",
-   "timestamp": "2024-09-08T13:53:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "pagerduty",
-   "content": "db failover completed, monitoring",
-   "timestamp": "2024-09-08T14:02:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "judy",
-   "content": "new icon set in Figma",
-   "timestamp": "2024-09-08T14:07:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "heidi",
-   "content": "office wifi is flaky again, IT is on it",
-   "timestamp": "2024-09-08T14:37:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "erin",
-   "content": "user testing notes from yesterday",
-   "timestamp": "2024-09-08T14:54:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "judy",
-   "content": "[resolved] email provider degraded earlier",
-   "timestamp": "2024-09-08T15:23:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "dave",
-   "content": "the empty-state illustration is ready",
-   "timestamp": "2024-09-08T15:43:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "grace",
-   "content": "reminder: all-hands moved to Thursday 10am",
-   "timestamp": "2024-09-08T16:17:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "bob",
-   "content": "do refunds count against MRR? asking for the deck",
-   "timestamp": "2024-09-08T16:26:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "trent",
-   "content": "the grace period for the office plants is clearly zero, RIP",
-   "timestamp": "2024-09-08T16:27:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "olivia",
-   "content": "who has the Figma link for the new onboarding?",
-   "timestamp": "2024-09-08T16:46:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "niaj",
-   "content": "db failover completed, monitoring",
-   "timestamp": "2024-09-08T17:00:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "mallory",
-   "content": "coffee machine is broken again",
-   "timestamp": "2024-09-08T17:08:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "bob",
-   "content": "new icon set in Figma",
-   "timestamp": "2024-09-08T17:28:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "carol",
-   "content": "who owns the chargeback flow now?",
-   "timestamp": "2024-09-08T17:34:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "mallory",
-   "content": "accessibility audit results are in",
-   "timestamp": "2024-09-08T17:52:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "erin",
-   "content": "merged #491, deploying to staging",
-   "timestamp": "2024-09-09T09:06:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "victor",
-   "content": "proration logic needs docs",
-   "timestamp": "2024-09-09T09:13:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "alice",
-   "content": "dark mode tokens need another pass",
-   "timestamp": "2024-09-09T09:17:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "olivia",
-   "content": "new icon set in Figma",
-   "timestamp": "2024-09-09T09:27:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "grace",
-   "content": "Stripe webhook retries are noisy, fyi",
-   "timestamp": "2024-09-09T09:27:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "ivan",
-   "content": "free snacks in the kitchen",
-   "timestamp": "2024-09-09T09:49:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "frank",
-   "content": "we should add a linter rule for that",
-   "timestamp": "2024-09-09T10:04:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "erin",
-   "content": "merged #491, deploying to staging",
-   "timestamp": "2024-09-09T10:06:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "dave",
-   "content": "new icon set in Figma",
-   "timestamp": "2024-09-09T10:15:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "heidi",
-   "content": "anyone watch the game last night?",
-   "timestamp": "2024-09-09T10:18:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "grace",
-   "content": "customer asked about bulk export again",
-   "timestamp": "2024-09-09T10:28:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "judy",
-   "content": "kudos to the support team for clearing the backlog \ud83d\ude4c",
-   "timestamp": "2024-09-09T10:31:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "heidi",
-   "content": "accessibility audit results are in",
-   "timestamp": "2024-09-09T10:46:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "erin",
-   "content": "PR #482 up for review when someone has a sec",
-   "timestamp": "2024-09-09T10:51:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "judy",
-   "content": "db failover completed, monitoring",
-   "timestamp": "2024-09-09T11:09:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "judy",
-   "content": "Stripe webhook retries are noisy, fyi",
-   "timestamp": "2024-09-09T11:10:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "ivan",
-   "content": "db failover completed, monitoring",
-   "timestamp": "2024-09-09T11:35:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "carol",
-   "content": "anyone going to the meetup tonight?",
-   "timestamp": "2024-09-09T11:40:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "judy",
-   "content": "reminder: invoice run is the 1st of the month",
-   "timestamp": "2024-09-09T12:10:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "frank",
-   "content": "TIL you can pin messages here",
-   "timestamp": "2024-09-09T12:19:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "olivia",
-   "content": "can eng confirm the spacing on the modal?",
-   "timestamp": "2024-09-09T12:22:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "heidi",
-   "content": "db failover completed, monitoring",
-   "timestamp": "2024-09-09T12:36:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "frank",
-   "content": "the tax rounding ticket is still open",
-   "timestamp": "2024-09-09T12:45:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "victor",
-   "content": "coffee machine is broken again",
-   "timestamp": "2024-09-09T12:54:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "mallory",
-   "content": "oncall handoff: nothing active",
-   "timestamp": "2024-09-09T13:24:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "alice",
-   "content": "updated the color tokens",
-   "timestamp": "2024-09-09T13:27:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "dave",
-   "content": "office wifi is flaky again, IT is on it",
-   "timestamp": "2024-09-09T13:48:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "dave",
-   "content": "the tax rounding ticket is still open",
-   "timestamp": "2024-09-09T14:34:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "trent",
-   "content": "proration logic needs docs",
-   "timestamp": "2024-09-09T14:40:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "ci-bot",
-   "content": "rolling back the last deploy to be safe",
-   "timestamp": "2024-09-09T15:02:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "dave",
-   "content": "new icon set in Figma",
-   "timestamp": "2024-09-09T15:06:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "erin",
-   "content": "anyone watch the game last night?",
-   "timestamp": "2024-09-09T15:25:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "ivan",
-   "content": "user testing notes from yesterday",
-   "timestamp": "2024-09-09T15:36:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "peggy",
-   "content": "can someone approve the infra terraform change?",
-   "timestamp": "2024-09-09T16:09:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "victor",
-   "content": "oncall handoff: nothing active",
-   "timestamp": "2024-09-09T16:11:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "niaj",
-   "content": "rolling back the last deploy to be safe",
-   "timestamp": "2024-09-09T16:55:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "alice",
-   "content": "TIL you can pin messages here",
-   "timestamp": "2024-09-09T17:19:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "trent",
-   "content": "morning all \u2615",
-   "timestamp": "2024-09-09T17:29:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "judy",
-   "content": "lunch order going out, reply by noon",
-   "timestamp": "2024-09-09T17:31:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "heidi",
-   "content": "roadmap review pushed to next week",
-   "timestamp": "2024-09-10T09:03:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "alice",
-   "content": "reminder: invoice run is the 1st of the month",
-   "timestamp": "2024-09-10T09:13:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "victor",
-   "content": "we need a decision on the dunning emails",
-   "timestamp": "2024-09-10T09:20:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "niaj",
-   "content": "updated the color tokens",
-   "timestamp": "2024-09-10T09:43:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "carol",
-   "content": "proration logic needs docs",
-   "timestamp": "2024-09-10T09:47:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "olivia",
-   "content": "db failover completed, monitoring",
-   "timestamp": "2024-09-10T09:51:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "erin",
-   "content": "db failover completed, monitoring",
-   "timestamp": "2024-09-10T10:18:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "peggy",
-   "content": "the cache layer needs a TTL, opening a ticket",
-   "timestamp": "2024-09-10T10:22:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "peggy",
-   "content": "dark mode tokens need another pass",
-   "timestamp": "2024-09-10T10:31:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "dave",
-   "content": "oncall handoff: nothing active",
-   "timestamp": "2024-09-10T10:47:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "dave",
-   "content": "rolling back the last deploy to be safe",
-   "timestamp": "2024-09-10T10:49:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "judy",
-   "content": "can we get the dunning email copy finalized this week?",
-   "timestamp": "2024-09-10T11:01:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "carol",
-   "content": "TIL you can pin messages here",
-   "timestamp": "2024-09-10T11:03:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "niaj",
-   "content": "reminder: invoice run is the 1st of the month",
-   "timestamp": "2024-09-10T11:38:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "victor",
-   "content": "[resolved] email provider degraded earlier",
-   "timestamp": "2024-09-10T12:04:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "victor",
-   "content": "kudos to the support team for clearing the backlog \ud83d\ude4c",
-   "timestamp": "2024-09-10T12:05:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "carol",
-   "content": "accessibility audit results are in",
-   "timestamp": "2024-09-10T12:15:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "dave",
-   "content": "rebased the feature branch, CI is green",
-   "timestamp": "2024-09-10T12:18:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "olivia",
-   "content": "kudos to the support team for clearing the backlog \ud83d\ude4c",
-   "timestamp": "2024-09-10T12:25:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "heidi",
-   "content": "[resolved] email provider degraded earlier",
-   "timestamp": "2024-09-10T12:36:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "olivia",
-   "content": "PSA: please update your 1Password before Friday",
-   "timestamp": "2024-09-10T12:42:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "olivia",
-   "content": "finance close is Friday, please tag any billing PRs",
-   "timestamp": "2024-09-10T12:49:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "grace",
-   "content": "free snacks in the kitchen",
-   "timestamp": "2024-09-10T12:58:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "dave",
-   "content": "coffee machine is broken again",
-   "timestamp": "2024-09-10T13:04:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "trent",
-   "content": "draft PRD for Q4 is in the drive",
-   "timestamp": "2024-09-10T13:06:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "ivan",
-   "content": "oncall handoff: nothing active",
-   "timestamp": "2024-09-10T13:21:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "grace",
-   "content": "rolling back the last deploy to be safe",
-   "timestamp": "2024-09-10T13:21:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "erin",
-   "content": "Stripe webhook retries are noisy, fyi",
-   "timestamp": "2024-09-10T13:33:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "dave",
-   "content": "reminder: all-hands moved to Thursday 10am",
-   "timestamp": "2024-09-10T13:37:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "niaj",
-   "content": "kudos to the support team for clearing the backlog \ud83d\ude4c",
-   "timestamp": "2024-09-10T13:53:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "peggy",
-   "content": "db failover completed, monitoring",
-   "timestamp": "2024-09-10T13:53:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "victor",
-   "content": "dark mode tokens need another pass",
-   "timestamp": "2024-09-10T14:08:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "peggy",
-   "content": "flaky test in test_scheduler again, retrying",
-   "timestamp": "2024-09-10T14:08:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "alice",
-   "content": "who has the Figma link for the new onboarding?",
-   "timestamp": "2024-09-10T14:11:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "olivia",
-   "content": "[resolved] email provider degraded earlier",
-   "timestamp": "2024-09-10T14:20:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "grace",
-   "content": "anyone going to the meetup tonight?",
-   "timestamp": "2024-09-10T14:32:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "trent",
-   "content": "we should add a linter rule for that",
-   "timestamp": "2024-09-10T14:45:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "victor",
-   "content": "flaky test in test_scheduler again, retrying",
-   "timestamp": "2024-09-10T14:46:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "trent",
-   "content": "finance close is Friday, please tag any billing PRs",
-   "timestamp": "2024-09-10T14:51:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "bob",
-   "content": "the tax rounding ticket is still open",
-   "timestamp": "2024-09-10T15:14:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "dave",
-   "content": "office wifi is flaky again, IT is on it",
-   "timestamp": "2024-09-10T15:26:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "dave",
-   "content": "reminder: invoice run is the 1st of the month",
-   "timestamp": "2024-09-10T15:36:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "erin",
-   "content": "lunch order going out, reply by noon",
-   "timestamp": "2024-09-10T15:45:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "ci-bot",
-   "content": "oncall handoff: nothing active",
-   "timestamp": "2024-09-10T16:21:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "alice",
-   "content": "[resolved] email provider degraded earlier",
-   "timestamp": "2024-09-10T16:23:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "bob",
-   "content": "we should add a linter rule for that",
-   "timestamp": "2024-09-10T16:25:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "dave",
-   "content": "who has the Figma link for the new onboarding?",
-   "timestamp": "2024-09-10T16:38:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "frank",
-   "content": "reminder: all-hands moved to Thursday 10am",
-   "timestamp": "2024-09-10T16:46:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "niaj",
-   "content": "oncall handoff: nothing active",
-   "timestamp": "2024-09-10T17:03:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "ivan",
-   "content": "office wifi is flaky again, IT is on it",
-   "timestamp": "2024-09-10T17:15:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "frank",
-   "content": "new icon set in Figma",
-   "timestamp": "2024-09-10T17:16:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "niaj",
-   "content": "can we get analytics on trial conversion?",
-   "timestamp": "2024-09-10T17:18:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "carol",
-   "content": "the grace period for the office plants is clearly zero, RIP",
-   "timestamp": "2024-09-10T17:20:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "erin",
-   "content": "competitor shipped a similar feature, fyi",
-   "timestamp": "2024-09-10T17:36:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "dave",
-   "content": "competitor shipped a similar feature, fyi",
-   "timestamp": "2024-09-11T09:03:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "peggy",
-   "content": "added type hints to the invoices module",
-   "timestamp": "2024-09-11T09:03:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "grace",
-   "content": "checkout latency back to normal",
-   "timestamp": "2024-09-11T09:10:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "alice",
-   "content": "anyone going to the meetup tonight?",
-   "timestamp": "2024-09-11T09:10:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "olivia",
-   "content": "rolling back the last deploy to be safe",
-   "timestamp": "2024-09-11T09:14:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "ivan",
-   "content": "who owns the chargeback flow now?",
-   "timestamp": "2024-09-11T09:33:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "mallory",
-   "content": "anyone going to the meetup tonight?",
-   "timestamp": "2024-09-11T09:59:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "frank",
-   "content": "reminder: invoice run is the 1st of the month",
-   "timestamp": "2024-09-11T10:06:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "grace",
-   "content": "flaky test in test_scheduler again, retrying",
-   "timestamp": "2024-09-11T10:06:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "alice",
-   "content": "finance close is Friday, please tag any billing PRs",
-   "timestamp": "2024-09-11T10:12:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "dave",
-   "content": "the grace period for the office plants is clearly zero, RIP",
-   "timestamp": "2024-09-11T10:41:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "mallory",
-   "content": "flaky test in test_scheduler again, retrying",
-   "timestamp": "2024-09-11T10:46:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "carol",
-   "content": "[resolved] email provider degraded earlier",
-   "timestamp": "2024-09-11T11:00:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "ivan",
-   "content": "we need a decision on the dunning emails",
-   "timestamp": "2024-09-11T11:04:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "alice",
-   "content": "the empty-state illustration is ready",
-   "timestamp": "2024-09-11T11:15:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "dave",
-   "content": "PSA: please update your 1Password before Friday",
-   "timestamp": "2024-09-11T11:17:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "trent",
-   "content": "the tax rounding ticket is still open",
-   "timestamp": "2024-09-11T11:22:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "erin",
-   "content": "do refunds count against MRR? asking for the deck",
-   "timestamp": "2024-09-11T11:41:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "dave",
-   "content": "oncall handoff: nothing active",
-   "timestamp": "2024-09-11T11:47:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "heidi",
-   "content": "merged #491, deploying to staging",
-   "timestamp": "2024-09-11T11:51:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "heidi",
-   "content": "coffee machine is broken again",
-   "timestamp": "2024-09-11T12:11:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "alice",
-   "content": "[resolved] email provider degraded earlier",
-   "timestamp": "2024-09-11T12:26:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "bob",
-   "content": "checkout latency back to normal",
-   "timestamp": "2024-09-11T12:58:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "olivia",
-   "content": "coffee machine is broken again",
-   "timestamp": "2024-09-11T12:59:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "bob",
-   "content": "lunch order going out, reply by noon",
-   "timestamp": "2024-09-11T13:16:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "erin",
-   "content": "who owns the chargeback flow now?",
-   "timestamp": "2024-09-11T13:23:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "mallory",
-   "content": "the empty-state illustration is ready",
-   "timestamp": "2024-09-11T13:55:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "ci-bot",
-   "content": "rolling back the last deploy to be safe",
-   "timestamp": "2024-09-11T13:56:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "alice",
-   "content": "who has the Figma link for the new onboarding?",
-   "timestamp": "2024-09-11T13:58:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "ivan",
-   "content": "who has the Figma link for the new onboarding?",
-   "timestamp": "2024-09-11T14:19:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "bob",
-   "content": "[resolved] email provider degraded earlier",
-   "timestamp": "2024-09-11T14:28:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "niaj",
-   "content": "\ud83d\udc36 dog of the day",
-   "timestamp": "2024-09-11T14:34:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "olivia",
-   "content": "who has the Figma link for the new onboarding?",
-   "timestamp": "2024-09-11T14:41:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "bob",
-   "content": "reminder: all-hands moved to Thursday 10am",
-   "timestamp": "2024-09-11T15:01:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "peggy",
-   "content": "proration logic needs docs",
-   "timestamp": "2024-09-11T15:30:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "mallory",
-   "content": "db failover completed, monitoring",
-   "timestamp": "2024-09-11T15:35:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "dave",
-   "content": "PSA: please update your 1Password before Friday",
-   "timestamp": "2024-09-11T15:36:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "olivia",
-   "content": "who keeps stealing my mug",
-   "timestamp": "2024-09-11T16:01:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "heidi",
-   "content": "new icon set in Figma",
-   "timestamp": "2024-09-11T16:17:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "victor",
-   "content": "rolling back the last deploy to be safe",
-   "timestamp": "2024-09-11T16:20:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "niaj",
-   "content": "draft PRD for Q4 is in the drive",
-   "timestamp": "2024-09-11T16:26:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "mallory",
-   "content": "TIL you can pin messages here",
-   "timestamp": "2024-09-11T16:26:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "victor",
-   "content": "user testing notes from yesterday",
-   "timestamp": "2024-09-11T16:33:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "peggy",
-   "content": "roadmap review pushed to next week",
-   "timestamp": "2024-09-11T16:41:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "mallory",
-   "content": "competitor shipped a similar feature, fyi",
-   "timestamp": "2024-09-11T16:41:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "heidi",
-   "content": "reminder: all-hands moved to Thursday 10am",
-   "timestamp": "2024-09-11T16:57:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "trent",
-   "content": "reminder: all-hands moved to Thursday 10am",
-   "timestamp": "2024-09-11T17:06:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "bob",
-   "content": "anyone going to the meetup tonight?",
-   "timestamp": "2024-09-11T17:36:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "trent",
-   "content": "can we get analytics on trial conversion?",
-   "timestamp": "2024-09-11T17:37:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "peggy",
-   "content": "[resolved] email provider degraded earlier",
-   "timestamp": "2024-09-11T17:48:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "heidi",
-   "content": "new icon set in Figma",
-   "timestamp": "2024-09-12T09:05:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "mallory",
-   "content": "anyone going to the meetup tonight?",
-   "timestamp": "2024-09-12T09:20:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "niaj",
-   "content": "PR #482 up for review when someone has a sec",
-   "timestamp": "2024-09-12T09:22:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "victor",
-   "content": "anyone going to the meetup tonight?",
-   "timestamp": "2024-09-12T09:30:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "grace",
-   "content": "reminder: invoice run is the 1st of the month",
-   "timestamp": "2024-09-12T09:58:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "trent",
-   "content": "the grace period for the office plants is clearly zero, RIP",
-   "timestamp": "2024-09-12T10:07:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "erin",
-   "content": "draft PRD for Q4 is in the drive",
-   "timestamp": "2024-09-12T10:09:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "frank",
-   "content": "free snacks in the kitchen",
-   "timestamp": "2024-09-12T10:12:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "peggy",
-   "content": "heads up: migrating the jobs queue Tuesday",
-   "timestamp": "2024-09-12T10:25:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "victor",
-   "content": "who has the Figma link for the new onboarding?",
-   "timestamp": "2024-09-12T10:49:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "mallory",
-   "content": "updated the color tokens",
-   "timestamp": "2024-09-12T10:55:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "alice",
-   "content": "new icon set in Figma",
-   "timestamp": "2024-09-12T10:59:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "alice",
-   "content": "can we get analytics on trial conversion?",
-   "timestamp": "2024-09-12T11:00:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "carol",
-   "content": "anyone going to the meetup tonight?",
-   "timestamp": "2024-09-12T11:01:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "mallory",
-   "content": "db failover completed, monitoring",
-   "timestamp": "2024-09-12T11:10:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "peggy",
-   "content": "\ud83d\udc36 dog of the day",
-   "timestamp": "2024-09-12T11:36:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "olivia",
-   "content": "\ud83c\udf89 it's someone's work anniversary",
-   "timestamp": "2024-09-12T12:01:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "grace",
-   "content": "the cache layer needs a TTL, opening a ticket",
-   "timestamp": "2024-09-12T12:05:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "mallory",
-   "content": "Stripe webhook retries are noisy, fyi",
-   "timestamp": "2024-09-12T12:09:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "erin",
-   "content": "rebased the feature branch, CI is green",
-   "timestamp": "2024-09-12T12:17:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "peggy",
-   "content": "who owns the chargeback flow now?",
-   "timestamp": "2024-09-12T12:33:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "judy",
-   "content": "who has the Figma link for the new onboarding?",
-   "timestamp": "2024-09-12T12:35:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "grace",
-   "content": "office wifi is flaky again, IT is on it",
-   "timestamp": "2024-09-12T12:42:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "judy",
-   "content": "kudos to the support team for clearing the backlog \ud83d\ude4c",
-   "timestamp": "2024-09-12T12:44:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "victor",
-   "content": "free snacks in the kitchen",
-   "timestamp": "2024-09-12T13:05:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "niaj",
-   "content": "flaky test in test_scheduler again, retrying",
-   "timestamp": "2024-09-12T13:17:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "judy",
-   "content": "\ud83c\udf89 it's someone's work anniversary",
-   "timestamp": "2024-09-12T13:23:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "carol",
-   "content": "user testing notes from yesterday",
-   "timestamp": "2024-09-12T13:31:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "carol",
-   "content": "the empty-state illustration is ready",
-   "timestamp": "2024-09-12T13:44:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "ivan",
-   "content": "morning all \u2615",
-   "timestamp": "2024-09-12T14:00:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "erin",
-   "content": "user testing notes from yesterday",
-   "timestamp": "2024-09-12T14:02:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "victor",
-   "content": "accessibility audit results are in",
-   "timestamp": "2024-09-12T14:04:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "carol",
-   "content": "who has the Figma link for the new onboarding?",
-   "timestamp": "2024-09-12T14:14:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "carol",
-   "content": "coffee machine is broken again",
-   "timestamp": "2024-09-12T14:18:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "alice",
-   "content": "can we get analytics on trial conversion?",
-   "timestamp": "2024-09-12T14:23:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "grace",
-   "content": "we should add a linter rule for that",
-   "timestamp": "2024-09-12T14:26:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "peggy",
-   "content": "kudos to the support team for clearing the backlog \ud83d\ude4c",
-   "timestamp": "2024-09-12T14:30:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "carol",
-   "content": "can we get the dunning email copy finalized this week?",
-   "timestamp": "2024-09-12T14:31:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "heidi",
-   "content": "Stripe webhook retries are noisy, fyi",
-   "timestamp": "2024-09-12T14:36:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "trent",
-   "content": "reminder: all-hands moved to Thursday 10am",
-   "timestamp": "2024-09-12T14:47:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "dave",
-   "content": "who has the Figma link for the new onboarding?",
-   "timestamp": "2024-09-12T15:13:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "olivia",
-   "content": "db failover completed, monitoring",
-   "timestamp": "2024-09-12T15:22:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "bob",
-   "content": "morning all \u2615",
-   "timestamp": "2024-09-12T15:25:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "erin",
-   "content": "is prod slow for anyone else right now?",
-   "timestamp": "2024-09-12T15:25:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "grace",
-   "content": "[resolved] elevated 5xx on the api gateway 14:02-14:18",
-   "timestamp": "2024-09-12T15:29:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "erin",
-   "content": "who has the Figma link for the new onboarding?",
-   "timestamp": "2024-09-12T15:48:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "bob",
-   "content": "rebased the feature branch, CI is green",
-   "timestamp": "2024-09-12T16:08:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "trent",
-   "content": "welcome to the new folks joining this week \ud83d\udc4b",
-   "timestamp": "2024-09-12T16:08:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "trent",
-   "content": "free snacks in the kitchen",
-   "timestamp": "2024-09-12T16:27:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "judy",
-   "content": "customer asked about bulk export again",
-   "timestamp": "2024-09-12T16:42:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "dave",
-   "content": "new icon set in Figma",
-   "timestamp": "2024-09-12T16:46:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "judy",
-   "content": "new icon set in Figma",
-   "timestamp": "2024-09-12T17:08:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "bob",
-   "content": "roadmap review pushed to next week",
-   "timestamp": "2024-09-12T17:41:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "peggy",
-   "content": "we need a decision on the dunning emails",
-   "timestamp": "2024-09-12T17:45:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "ivan",
-   "content": "checkout latency back to normal",
-   "timestamp": "2024-09-12T18:00:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "niaj",
-   "content": "updated the color tokens",
-   "timestamp": "2024-09-13T09:00:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "erin",
-   "content": "updated the color tokens",
-   "timestamp": "2024-09-13T09:32:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "victor",
-   "content": "\ud83c\udf89 it's someone's work anniversary",
-   "timestamp": "2024-09-13T09:43:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "ci-bot",
-   "content": "[resolved] elevated 5xx on the api gateway 14:02-14:18",
-   "timestamp": "2024-09-13T09:51:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "erin",
-   "content": "anyone going to the meetup tonight?",
-   "timestamp": "2024-09-13T10:07:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "erin",
-   "content": "we need a decision on the dunning emails",
-   "timestamp": "2024-09-13T10:12:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "deploybot",
-   "content": "checkout latency back to normal",
-   "timestamp": "2024-09-13T10:14:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "judy",
-   "content": "free snacks in the kitchen",
-   "timestamp": "2024-09-13T10:15:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "heidi",
-   "content": "office wifi is flaky again, IT is on it",
-   "timestamp": "2024-09-13T10:24:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "bob",
-   "content": "roadmap review pushed to next week",
-   "timestamp": "2024-09-13T10:26:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "trent",
-   "content": "updated the color tokens",
-   "timestamp": "2024-09-13T10:41:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "olivia",
-   "content": "do refunds count against MRR? asking for the deck",
-   "timestamp": "2024-09-13T10:54:00+00:00"
-  },
-  {
-   "channel": "engineering",
-   "author": "grace",
-   "content": "added type hints to the invoices module",
-   "timestamp": "2024-09-13T10:55:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "frank",
-   "content": "the empty-state illustration is ready",
-   "timestamp": "2024-09-13T11:03:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "heidi",
-   "content": "anyone watch the game last night?",
-   "timestamp": "2024-09-13T12:22:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "victor",
-   "content": "finance close is Friday, please tag any billing PRs",
-   "timestamp": "2024-09-13T12:58:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "judy",
-   "content": "competitor shipped a similar feature, fyi",
-   "timestamp": "2024-09-13T13:10:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "trent",
-   "content": "Stripe webhook retries are noisy, fyi",
-   "timestamp": "2024-09-13T13:41:00+00:00"
-  },
-  {
-   "channel": "design",
-   "author": "victor",
-   "content": "accessibility audit results are in",
-   "timestamp": "2024-09-13T13:44:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "niaj",
-   "content": "the grace period for the office plants is clearly zero, RIP",
-   "timestamp": "2024-09-13T13:57:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "niaj",
-   "content": "reminder: all-hands moved to Thursday 10am",
-   "timestamp": "2024-09-13T14:01:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "dave",
-   "content": "office wifi is flaky again, IT is on it",
-   "timestamp": "2024-09-13T14:26:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "erin",
-   "content": "Stripe webhook retries are noisy, fyi",
-   "timestamp": "2024-09-13T14:36:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "frank",
-   "content": "finance close is Friday, please tag any billing PRs",
-   "timestamp": "2024-09-13T14:36:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "bob",
-   "content": "oncall handoff: nothing active",
-   "timestamp": "2024-09-13T15:09:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "alice",
-   "content": "coffee machine is broken again",
-   "timestamp": "2024-09-13T15:35:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "frank",
-   "content": "can we get the dunning email copy finalized this week?",
-   "timestamp": "2024-09-13T15:53:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "carol",
-   "content": "proration logic needs docs",
-   "timestamp": "2024-09-13T16:10:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "mallory",
-   "content": "TIL you can pin messages here",
-   "timestamp": "2024-09-13T16:18:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "grace",
-   "content": "rolling back the last deploy to be safe",
-   "timestamp": "2024-09-13T16:21:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "trent",
-   "content": "reminder: invoice run is the 1st of the month",
-   "timestamp": "2024-09-13T16:23:00+00:00"
-  },
-  {
-   "channel": "random",
-   "author": "ivan",
-   "content": "free snacks in the kitchen",
-   "timestamp": "2024-09-13T16:24:00+00:00"
-  },
-  {
-   "channel": "general",
-   "author": "bob",
-   "content": "lunch order going out, reply by noon",
-   "timestamp": "2024-09-13T16:24:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "heidi",
-   "content": "[resolved] email provider degraded earlier",
-   "timestamp": "2024-09-13T16:24:00+00:00"
-  },
-  {
-   "channel": "incidents",
-   "author": "bob",
-   "content": "checkout latency back to normal",
-   "timestamp": "2024-09-13T16:29:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "dave",
-   "content": "competitor shipped a similar feature, fyi",
-   "timestamp": "2024-09-13T16:56:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "alice",
-   "content": "what's our SLA on support tickets these days?",
-   "timestamp": "2024-09-13T17:08:00+00:00"
-  },
-  {
-   "channel": "product",
-   "author": "victor",
-   "content": "roadmap review pushed to next week",
-   "timestamp": "2024-09-13T17:17:00+00:00"
-  },
-  {
-   "channel": "billing-policy",
-   "author": "peggy",
-   "content": "can we get the dunning email copy finalized this week?",
-   "timestamp": "2024-09-13T17:39:00+00:00"
-  }
- ]
+  "messages": [
+    {
+      "channel": "product",
+      "author": "henry",
+      "content": "Q3 roadmap draft is up in Notion, please comment by EOD Friday",
+      "timestamp": "2025-05-19T09:01:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "carol",
+      "content": "lol not again. did anyone restart it?",
+      "timestamp": "2025-05-19T09:18:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "alice",
+      "content": "good morning everyone",
+      "timestamp": "2025-05-19T09:19:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "bob",
+      "content": "morning! coffee machine is broken again btw",
+      "timestamp": "2025-05-19T09:22:00+00:00"
+    },
+    {
+      "channel": "backend",
+      "author": "dave",
+      "content": "token bucket PR is up for review: /pull/421",
+      "timestamp": "2025-05-19T09:31:00+00:00"
+    },
+    {
+      "channel": "backend",
+      "author": "frank",
+      "content": "will look today",
+      "timestamp": "2025-05-19T09:52:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "iris",
+      "content": "standup in 5?",
+      "timestamp": "2025-05-19T10:00:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "alice",
+      "content": "yep, joining now",
+      "timestamp": "2025-05-19T10:07:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "grace",
+      "content": "deployed the new dashboard to staging, let me know if you see anything weird",
+      "timestamp": "2025-05-19T10:18:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "henry",
+      "content": "nice! will check it after standup",
+      "timestamp": "2025-05-19T10:21:00+00:00"
+    },
+    {
+      "channel": "engineering",
+      "author": "dave",
+      "content": "anyone else think we should move the config store off redis? latency spikes every GC",
+      "timestamp": "2025-05-19T11:02:00+00:00"
+    },
+    {
+      "channel": "backend",
+      "author": "bob",
+      "content": "left comments on the _refill method",
+      "timestamp": "2025-05-19T11:04:00+00:00"
+    },
+    {
+      "channel": "product",
+      "author": "grace",
+      "content": "left some comments on the analytics section",
+      "timestamp": "2025-05-19T11:17:00+00:00"
+    },
+    {
+      "channel": "engineering",
+      "author": "bob",
+      "content": "we looked at this last quarter, the issue was write amplification not latency",
+      "timestamp": "2025-05-19T11:30:00+00:00"
+    },
+    {
+      "channel": "product",
+      "author": "henry",
+      "content": "thanks, will review",
+      "timestamp": "2025-05-19T11:30:00+00:00"
+    },
+    {
+      "channel": "engineering",
+      "author": "kate",
+      "content": "what about tiered storage? hot path stays redis, cold moves to postgres",
+      "timestamp": "2025-05-19T11:31:00+00:00"
+    },
+    {
+      "channel": "engineering",
+      "author": "alice",
+      "content": "let's not over-engineer this yet. profile first",
+      "timestamp": "2025-05-19T11:39:00+00:00"
+    },
+    {
+      "channel": "engineering",
+      "author": "dave",
+      "content": "fair point, will open a perf tracking issue",
+      "timestamp": "2025-05-19T11:40:00+00:00"
+    },
+    {
+      "channel": "backend",
+      "author": "dave",
+      "content": "good catches, updated",
+      "timestamp": "2025-05-19T11:43:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "bob",
+      "content": "Fluent Python is solid. also the asyncio docs are actually pretty good these days",
+      "timestamp": "2025-05-19T12:16:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "grace",
+      "content": "anyone have a good Python book recommendation? trying to level up on async",
+      "timestamp": "2025-05-19T12:20:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "liam",
+      "content": "+1 Fluent Python",
+      "timestamp": "2025-05-19T12:27:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "kate",
+      "content": "also check out Python Concurrency with asyncio by Matthew Fowler",
+      "timestamp": "2025-05-19T12:33:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "grace",
+      "content": "thanks all!",
+      "timestamp": "2025-05-19T12:40:00+00:00"
+    },
+    {
+      "channel": "product",
+      "author": "alice",
+      "content": "the API rate limiting story is marked as M1 \u2014 it's a dependency for the partner integrations",
+      "timestamp": "2025-05-19T14:09:00+00:00"
+    },
+    {
+      "channel": "product",
+      "author": "henry",
+      "content": "yes, it's blocking partner onboarding. that's why it's high prio",
+      "timestamp": "2025-05-19T14:11:00+00:00"
+    },
+    {
+      "channel": "backend",
+      "author": "kate",
+      "content": "the consume method signature looks clean. what's the plan for the constants?",
+      "timestamp": "2025-05-19T14:11:00+00:00"
+    },
+    {
+      "channel": "backend",
+      "author": "kate",
+      "content": "makes sense. LGTM on the logic itself",
+      "timestamp": "2025-05-19T14:11:00+00:00"
+    },
+    {
+      "channel": "backend",
+      "author": "dave",
+      "content": "that's the open question, we're doing load tests to figure out the right values",
+      "timestamp": "2025-05-19T14:24:00+00:00"
+    },
+    {
+      "channel": "backend",
+      "author": "frank",
+      "content": "LGTM too, merging after alice approves",
+      "timestamp": "2025-05-19T15:13:00+00:00"
+    },
+    {
+      "channel": "backend",
+      "author": "alice",
+      "content": "approved! nice clean implementation",
+      "timestamp": "2025-05-19T15:39:00+00:00"
+    },
+    {
+      "channel": "backend",
+      "author": "frank",
+      "content": "merged",
+      "timestamp": "2025-05-19T16:04:00+00:00"
+    },
+    {
+      "channel": "product",
+      "author": "alice",
+      "content": "we're on it, running load tests this week",
+      "timestamp": "2025-05-20T09:10:00+00:00"
+    },
+    {
+      "channel": "product",
+      "author": "quinn",
+      "content": "partner A goes live in 3 weeks, we need the limiter sorted",
+      "timestamp": "2025-05-20T09:19:00+00:00"
+    },
+    {
+      "channel": "product",
+      "author": "henry",
+      "content": "what's the expected throughput for partner A?",
+      "timestamp": "2025-05-20T09:26:00+00:00"
+    },
+    {
+      "channel": "engineering",
+      "author": "liam",
+      "content": "PR open for the new healthcheck endpoint: /pull/418",
+      "timestamp": "2025-05-20T09:31:00+00:00"
+    },
+    {
+      "channel": "product",
+      "author": "alice",
+      "content": "about 80-100 req/s at peak. current limiter caps at 50 which will cause issues",
+      "timestamp": "2025-05-20T09:31:00+00:00"
+    },
+    {
+      "channel": "product",
+      "author": "henry",
+      "content": "we definitely need to fix that before launch",
+      "timestamp": "2025-05-20T09:36:00+00:00"
+    },
+    {
+      "channel": "backend",
+      "author": "liam",
+      "content": "question: should TokenBucket be a singleton or instantiated per client?",
+      "timestamp": "2025-05-20T10:01:00+00:00"
+    },
+    {
+      "channel": "engineering",
+      "author": "kate",
+      "content": "left some comments, mostly nits",
+      "timestamp": "2025-05-20T10:02:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "dave",
+      "content": "ping me when the dashboard is prod-ready @grace",
+      "timestamp": "2025-05-20T10:12:00+00:00"
+    },
+    {
+      "channel": "backend",
+      "author": "liam",
+      "content": "makes sense, thanks",
+      "timestamp": "2025-05-20T10:22:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "grace",
+      "content": "should be ready by Thursday, finishing the chart drilldowns",
+      "timestamp": "2025-05-20T10:25:00+00:00"
+    },
+    {
+      "channel": "backend",
+      "author": "bob",
+      "content": "per-client for now. global singleton gets complicated with multi-tenant",
+      "timestamp": "2025-05-20T10:25:00+00:00"
+    },
+    {
+      "channel": "engineering",
+      "author": "liam",
+      "content": "fixed, rebased",
+      "timestamp": "2025-05-20T10:43:00+00:00"
+    },
+    {
+      "channel": "engineering",
+      "author": "bob",
+      "content": "LGTM, merging",
+      "timestamp": "2025-05-20T11:20:00+00:00"
+    },
+    {
+      "channel": "engineering",
+      "author": "alice",
+      "content": "nice, that was a long time coming",
+      "timestamp": "2025-05-20T11:24:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "quinn",
+      "content": "reminder: sprint retro Friday 3pm",
+      "timestamp": "2025-05-20T14:11:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "bob",
+      "content": "thumbsup",
+      "timestamp": "2025-05-20T14:11:00+00:00"
+    },
+    {
+      "channel": "engineering",
+      "author": "frank",
+      "content": "heads up: I'm touching the auth middleware this week, might have a short outage window fri night",
+      "timestamp": "2025-05-21T09:01:00+00:00"
+    },
+    {
+      "channel": "engineering",
+      "author": "carol",
+      "content": "please post in #incidents if anything goes sideways",
+      "timestamp": "2025-05-21T09:05:00+00:00"
+    },
+    {
+      "channel": "backend",
+      "author": "carol",
+      "content": "load test harness is set up in /tests/load. run with locust -f locustfile.py",
+      "timestamp": "2025-05-21T09:11:00+00:00"
+    },
+    {
+      "channel": "backend",
+      "author": "frank",
+      "content": "nice, running it now",
+      "timestamp": "2025-05-21T09:17:00+00:00"
+    },
+    {
+      "channel": "engineering",
+      "author": "frank",
+      "content": "will do",
+      "timestamp": "2025-05-21T09:26:00+00:00"
+    },
+    {
+      "channel": "product",
+      "author": "grace",
+      "content": "design mocks for the new settings page are in Figma",
+      "timestamp": "2025-05-21T10:05:00+00:00"
+    },
+    {
+      "channel": "backend",
+      "author": "frank",
+      "content": "first run results in #platform-infra",
+      "timestamp": "2025-05-21T11:02:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "jack",
+      "content": "yeah restarting the wiki pod, 2min",
+      "timestamp": "2025-05-21T11:08:00+00:00"
+    },
+    {
+      "channel": "backend",
+      "author": "dave",
+      "content": "ooh exciting, heading over there",
+      "timestamp": "2025-05-21T11:08:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "liam",
+      "content": "ty!",
+      "timestamp": "2025-05-21T11:10:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "frank",
+      "content": "results: at sustained 100 req/s, rejection rate hits 62%. way too high",
+      "timestamp": "2025-05-21T11:10:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "liam",
+      "content": "is the wiki down? getting 504",
+      "timestamp": "2025-05-21T11:12:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "frank",
+      "content": "load test results are in. sharing the key findings here",
+      "timestamp": "2025-05-21T11:13:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "frank",
+      "content": "setup: locust, 50 workers, ramp from 10 to 200 req/s over 5 min, then sustained 100 req/s for 10 min",
+      "timestamp": "2025-05-21T11:13:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "alice",
+      "content": "that explains the partner A incident. those values are placeholder dev defaults, not prod-ready",
+      "timestamp": "2025-05-21T11:15:00+00:00"
+    },
+    {
+      "channel": "backend",
+      "author": "bob",
+      "content": "same, this has been blocking us for too long",
+      "timestamp": "2025-05-21T11:16:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "jack",
+      "content": "wiki is back up",
+      "timestamp": "2025-05-21T11:17:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "frank",
+      "content": "current config: CAPACITY=50, REFILL_RATE=5.0 \u2014 this is what's in bucket.py right now",
+      "timestamp": "2025-05-21T11:19:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "frank",
+      "content": "bucket drains in under 0.5s at peak. refill at 5 tokens/s means clients wait ~9s for recovery",
+      "timestamp": "2025-05-21T11:23:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "dave",
+      "content": "so what do we actually need? partner A is ~80-100 req/s peak. partner B is lower, ~40 req/s",
+      "timestamp": "2025-05-21T11:27:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "bob",
+      "content": "yeah whoever set 50/5.0 must have just put in round numbers. not based on any real traffic data",
+      "timestamp": "2025-05-21T11:30:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "carol",
+      "content": "we want the limiter to handle normal partner traffic without any rejections under steady load",
+      "timestamp": "2025-05-21T11:38:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "carol",
+      "content": "current config: CAPACITY=50, REFILL_RATE=5.0. partners hitting the ceiling",
+      "timestamp": "2025-05-21T11:44:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "carol",
+      "content": "P2 \u2014 elevated 429s on the API gateway. rate limiter rejecting legitimate traffic",
+      "timestamp": "2025-05-21T11:45:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "bob",
+      "content": "so every job start triggers a 429 storm. that's the pattern",
+      "timestamp": "2025-05-21T11:47:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "frank",
+      "content": "yeah we're seeing 40% of partner A's requests getting rejected",
+      "timestamp": "2025-05-21T11:48:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "alice",
+      "content": "CAPACITY=50 is way too low for partner A's traffic pattern. they burst to 80 req/s on job start",
+      "timestamp": "2025-05-21T11:48:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "alice",
+      "content": "and we want burst tolerance \u2014 partners send a batch at job start then steady-state",
+      "timestamp": "2025-05-21T11:50:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "carol",
+      "content": "mitigation: temporarily raising CAPACITY to 80 via feature flag to stop the bleeding",
+      "timestamp": "2025-05-21T11:51:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "alice",
+      "content": "on it, looking at the metrics now",
+      "timestamp": "2025-05-21T11:52:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "olivia",
+      "content": "grafana: token exhaustion graph shows the bucket draining in under 2s",
+      "timestamp": "2025-05-21T11:54:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "alice",
+      "content": "ack, do it. this is an emergency patch, not the final config",
+      "timestamp": "2025-05-21T11:55:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "olivia",
+      "content": "so CAPACITY needs to absorb a burst and REFILL_RATE needs to be high enough to recover quickly",
+      "timestamp": "2025-05-21T11:56:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "carol",
+      "content": "done. 429 rate dropping. still elevated but manageable",
+      "timestamp": "2025-05-21T12:02:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "alice",
+      "content": "good. we need a proper fix though. REFILL_RATE=5.0 is also too slow",
+      "timestamp": "2025-05-21T12:06:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "frank",
+      "content": "partner A's success rate back to 95%, they're happy for now",
+      "timestamp": "2025-05-21T12:14:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "carol",
+      "content": "action item: team to agree proper production config via load test. tracking in #platform-infra",
+      "timestamp": "2025-05-21T12:17:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "olivia",
+      "content": "REFILL_RATE=5.0 means full recovery from empty bucket takes 10 seconds. that's brutal",
+      "timestamp": "2025-05-21T12:21:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "carol",
+      "content": "incident resolved. root cause: CAPACITY=50, REFILL_RATE=5.0 are holdovers from the initial stub values",
+      "timestamp": "2025-05-21T12:23:00+00:00"
+    },
+    {
+      "channel": "product",
+      "author": "henry",
+      "content": "looks nice! a few feedback comments in Figma",
+      "timestamp": "2025-05-21T14:01:00+00:00"
+    },
+    {
+      "channel": "engineering",
+      "author": "noah",
+      "content": "reminder: no hardcoded secrets in PRs. use vault. found one in a draft PR today",
+      "timestamp": "2025-05-21T14:06:00+00:00"
+    },
+    {
+      "channel": "engineering",
+      "author": "noah",
+      "content": "no worries, already scrubbed. just a reminder for everyone",
+      "timestamp": "2025-05-21T14:08:00+00:00"
+    },
+    {
+      "channel": "engineering",
+      "author": "liam",
+      "content": "oops, was that mine? sorry",
+      "timestamp": "2025-05-21T14:09:00+00:00"
+    },
+    {
+      "channel": "product",
+      "author": "grace",
+      "content": "will revise this afternoon",
+      "timestamp": "2025-05-21T14:20:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "alice",
+      "content": "postmortem draft: docs/postmortem-2025-05-21.md \u2014 review before EOD",
+      "timestamp": "2025-05-21T17:15:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "frank",
+      "content": "reviewed, added my section",
+      "timestamp": "2025-05-21T17:49:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "bob",
+      "content": "LGTM on the postmortem",
+      "timestamp": "2025-05-21T18:20:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "frank",
+      "content": "this should handle even the most aggressive partner traffic patterns",
+      "timestamp": "2025-05-22T09:09:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "carol",
+      "content": "postmortem published",
+      "timestamp": "2025-05-22T09:10:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "frank",
+      "content": "CAPACITY=200 gives a big burst buffer. REFILL_RATE=15.0 means recovery from empty in ~13s",
+      "timestamp": "2025-05-22T09:14:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "alice",
+      "content": "hmm, CAPACITY=200 seems too high to me. that's 4x the current value",
+      "timestamp": "2025-05-22T09:16:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "frank",
+      "content": "ok I ran some numbers. my proposal: CAPACITY=200, REFILL_RATE=15.0",
+      "timestamp": "2025-05-22T09:19:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "mia",
+      "content": "anyone have context on why the nightly ETL keeps OOMing?",
+      "timestamp": "2025-05-22T09:28:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "quinn",
+      "content": "thanks for the fast response everyone. reminder that incident response runbook is at /wiki/incidents",
+      "timestamp": "2025-05-22T09:31:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "mia",
+      "content": "appreciate it",
+      "timestamp": "2025-05-22T09:34:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "bob",
+      "content": "agreed, CAPACITY=200 will let a misbehaving client hammer our downstream services",
+      "timestamp": "2025-05-22T09:36:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "bob",
+      "content": "yeah the new aggregation query is rough, I'll open a ticket",
+      "timestamp": "2025-05-22T09:40:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "kate",
+      "content": "what about CAPACITY=120? covers partner A at peak with 20% headroom",
+      "timestamp": "2025-05-22T09:41:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "dave",
+      "content": "CAPACITY=200 is definitely too permissive. we need headroom above partner peaks but not 2x",
+      "timestamp": "2025-05-22T09:42:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "alice",
+      "content": "downstream services are sized for ~120 req/s. if we allow 200-token bursts we could overwhelm them",
+      "timestamp": "2025-05-22T09:43:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "alice",
+      "content": "we'd update the config then. we shouldn't set it speculatively high now",
+      "timestamp": "2025-05-22T09:59:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "noah",
+      "content": "side note: should we add rate limiter config to our security hardening checklist?",
+      "timestamp": "2025-05-22T10:00:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "frank",
+      "content": "120 feels tight. what if we get a new partner with higher traffic?",
+      "timestamp": "2025-05-22T10:00:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "dave",
+      "content": "I'd say CAPACITY=100 is the right compromise. round number, covers partner A, keeps downstream safe",
+      "timestamp": "2025-05-22T10:03:00+00:00"
+    },
+    {
+      "channel": "engineering",
+      "author": "olivia",
+      "content": "infra note: we're migrating k8s node pools next Thursday, expect a rolling restart window 11pm-1am",
+      "timestamp": "2025-05-22T10:09:00+00:00"
+    },
+    {
+      "channel": "engineering",
+      "author": "carol",
+      "content": "will this affect the rate limiter service?",
+      "timestamp": "2025-05-22T10:11:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "bob",
+      "content": "100 makes sense to me. 2x the current value, covers real traffic, doesn't risk downstream",
+      "timestamp": "2025-05-22T10:12:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "alice",
+      "content": "ok, CAPACITY=200 is off the table. let's go with 100. any objections?",
+      "timestamp": "2025-05-22T10:16:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "carol",
+      "content": "yeah, 100 feels right. the incident showed 50 is too low, 200 is too high, 100 is the sweet spot",
+      "timestamp": "2025-05-22T10:19:00+00:00"
+    },
+    {
+      "channel": "engineering",
+      "author": "olivia",
+      "content": "yes briefly, token buckets will reset on restart \u2014 that's expected",
+      "timestamp": "2025-05-22T10:22:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "alice",
+      "content": "yes, I'll add it after we finalize the config",
+      "timestamp": "2025-05-22T10:22:00+00:00"
+    },
+    {
+      "channel": "engineering",
+      "author": "olivia",
+      "content": "agreed, I'll add it",
+      "timestamp": "2025-05-22T10:25:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "olivia",
+      "content": "100 works for me",
+      "timestamp": "2025-05-22T10:26:00+00:00"
+    },
+    {
+      "channel": "engineering",
+      "author": "dave",
+      "content": "we should document that in the runbook",
+      "timestamp": "2025-05-22T10:30:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "frank",
+      "content": "fine with 100 if everyone agrees",
+      "timestamp": "2025-05-22T10:33:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "kate",
+      "content": "thumbsup",
+      "timestamp": "2025-05-22T10:33:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "alice",
+      "content": "CAPACITY=100 agreed.",
+      "timestamp": "2025-05-22T10:35:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "liam",
+      "content": "thumbsup",
+      "timestamp": "2025-05-22T10:40:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "frank",
+      "content": "now for REFILL_RATE. I still think 15.0 is right based on my load test analysis",
+      "timestamp": "2025-05-22T14:08:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "alice",
+      "content": "wait, recovery from empty at CAPACITY=100 and REFILL_RATE=15.0 is 100/15 = 6.67s. that is fast",
+      "timestamp": "2025-05-22T14:13:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "bob",
+      "content": "actually I'm not sure 15.0 is right for our traffic patterns. let me re-read the load test data",
+      "timestamp": "2025-05-22T14:19:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "frank",
+      "content": "at REFILL_RATE=15.0, recovery from empty takes 6.7s. that's acceptable",
+      "timestamp": "2025-05-22T14:20:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "dave",
+      "content": "the load test showed steady-state at 100 req/s. to sustain that without rejections we need REFILL_RATE >= 100? no that's not right",
+      "timestamp": "2025-05-22T14:36:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "dave",
+      "content": "at REFILL_RATE=15.0 that's 6.7s. at 10.0 it's 10s. both seem ok?",
+      "timestamp": "2025-05-22T14:36:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "carol",
+      "content": "REFILL_RATE doesn't need to match peak req/s. it's about recovery speed after a burst",
+      "timestamp": "2025-05-22T14:43:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "alice",
+      "content": "right. partners burst then drop to ~10 req/s steady. so we need to recover 100 tokens in a reasonable window",
+      "timestamp": "2025-05-22T14:50:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "frank",
+      "content": "I ran the numbers with 15.0 and it looked great in the simulation",
+      "timestamp": "2025-05-22T15:00:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "alice",
+      "content": "frank can you share the simulation? I want to double-check",
+      "timestamp": "2025-05-22T15:02:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "frank",
+      "content": "yeah, sharing now: /docs/load-test-simulation.xlsx",
+      "timestamp": "2025-05-22T15:15:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "jack",
+      "content": "anyone watching the match tonight?",
+      "timestamp": "2025-05-22T17:08:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "noah",
+      "content": "not a sports person but let me know who wins lol",
+      "timestamp": "2025-05-22T17:12:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "mia",
+      "content": "yes! can't wait",
+      "timestamp": "2025-05-22T17:13:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "jack",
+      "content": "haha",
+      "timestamp": "2025-05-22T17:16:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "henry",
+      "content": "heads up: product demo with investors tomorrow 2pm. please no deploys during the window",
+      "timestamp": "2025-05-23T09:02:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "alice",
+      "content": "you used p99 burst of 150 req/s but our actual p99 burst is ~100 req/s per the grafana data",
+      "timestamp": "2025-05-23T09:05:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "alice",
+      "content": "frank I looked at the simulation. I think there's an error in the input params",
+      "timestamp": "2025-05-23T09:09:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "frank",
+      "content": "oh let me check",
+      "timestamp": "2025-05-23T09:14:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "alice",
+      "content": "noted, freezing deploys 1:30-4pm tomorrow",
+      "timestamp": "2025-05-23T09:21:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "carol",
+      "content": "ack",
+      "timestamp": "2025-05-23T09:21:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "olivia",
+      "content": "ack",
+      "timestamp": "2025-05-23T09:23:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "frank",
+      "content": "...you're right. I was looking at the wrong percentile row. I used 150 as the input not 100",
+      "timestamp": "2025-05-23T09:24:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "alice",
+      "content": "thanks for catching that frank. so REFILL_RATE=10.0?",
+      "timestamp": "2025-05-23T09:32:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "frank",
+      "content": "correction: I misread the load test data. REFILL_RATE should be 10.0, not 15.0. Apologies.",
+      "timestamp": "2025-05-23T09:39:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "alice",
+      "content": "REFILL_RATE=10.0 agreed.",
+      "timestamp": "2025-05-23T09:50:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "bob",
+      "content": "with the corrected inputs, 10.0 is what the simulation says?",
+      "timestamp": "2025-05-23T09:52:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "frank",
+      "content": "yes, re-ran with p99=100 req/s. REFILL_RATE=10.0 gives the best throughput/rejection tradeoff",
+      "timestamp": "2025-05-23T09:54:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "dave",
+      "content": "10.0 it is. at CAPACITY=100 that means a drained bucket recovers in 10s which is fine",
+      "timestamp": "2025-05-23T09:55:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "olivia",
+      "content": "thumbsup 10.0 makes sense",
+      "timestamp": "2025-05-23T09:57:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "carol",
+      "content": "I'm happy with 10.0. REFILL_RATE=15.0 was a bit too generous anyway",
+      "timestamp": "2025-05-23T09:59:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "kate",
+      "content": "ack",
+      "timestamp": "2025-05-23T10:00:00+00:00"
+    },
+    {
+      "channel": "backend",
+      "author": "kate",
+      "content": "sure, will start after the config ships",
+      "timestamp": "2025-05-23T10:16:00+00:00"
+    },
+    {
+      "channel": "backend",
+      "author": "kate",
+      "content": "after the constants are settled, we should add proper integration tests",
+      "timestamp": "2025-05-23T10:20:00+00:00"
+    },
+    {
+      "channel": "backend",
+      "author": "alice",
+      "content": "agreed, want to take that on?",
+      "timestamp": "2025-05-23T10:24:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "dave",
+      "content": "what about INITIAL_TOKENS? currently set to 50 (same as the old CAPACITY)",
+      "timestamp": "2025-05-23T13:05:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "bob",
+      "content": "should it just equal CAPACITY? start the bucket full seems obvious",
+      "timestamp": "2025-05-23T13:12:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "alice",
+      "content": "yeah, starting full means the first burst works without any warmup. I'd say INITIAL_TOKENS=100",
+      "timestamp": "2025-05-23T13:17:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "carol",
+      "content": "can't think of one for our use case. we're not worried about cold-start thundering herd here",
+      "timestamp": "2025-05-23T13:21:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "liam",
+      "content": "any reason NOT to start full?",
+      "timestamp": "2025-05-23T13:35:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "alice",
+      "content": "INITIAL_TOKENS=100 agreed.",
+      "timestamp": "2025-05-23T13:44:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "frank",
+      "content": "agreed, INITIAL_TOKENS=100 (=CAPACITY) makes sense. start full, let it drain naturally",
+      "timestamp": "2025-05-23T13:45:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "kate",
+      "content": "thumbsup",
+      "timestamp": "2025-05-23T13:46:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "alice",
+      "content": "I don't like overdraft for a production rate limiter. it means we can't reason about the exact burst ceiling",
+      "timestamp": "2025-05-23T15:10:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "bob",
+      "content": "overdraft means clients can go slightly over CAPACITY before getting rejected. 5 tokens feels like a safety valve",
+      "timestamp": "2025-05-23T15:11:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "bob",
+      "content": "last one: OVERDRAFT_ALLOWANCE. currently 5. should we keep it?",
+      "timestamp": "2025-05-23T15:12:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "frank",
+      "content": "I was thinking OVERDRAFT=10 actually. gives more burst tolerance",
+      "timestamp": "2025-05-23T15:15:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "carol",
+      "content": "from the SRE perspective, strict limits are easier to debug. if downstream sees >CAPACITY req/s, something is wrong",
+      "timestamp": "2025-05-23T15:28:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "dave",
+      "content": "OVERDRAFT=10 on top of CAPACITY=100 means up to 110 requests can burst. that's not what we told the downstream service owners",
+      "timestamp": "2025-05-23T15:31:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "frank",
+      "content": "ok fair point. strict limiting it is",
+      "timestamp": "2025-05-23T15:33:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "bob",
+      "content": "hmm, I still kind of like the flexibility of overdraft=5. it's only 5 extra tokens",
+      "timestamp": "2025-05-23T15:40:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "alice",
+      "content": "no, I agree with carol and olivia. overdraft=0 for production. we document the CAPACITY clearly and hold to it",
+      "timestamp": "2025-05-23T15:42:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "olivia",
+      "content": "SLAs to downstream assume CAPACITY is the hard ceiling. overdraft breaks that contract",
+      "timestamp": "2025-05-23T15:45:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "carol",
+      "content": "vote: 0 or non-zero overdraft?",
+      "timestamp": "2025-05-23T15:45:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "carol",
+      "content": "0",
+      "timestamp": "2025-05-23T15:54:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "olivia",
+      "content": "0",
+      "timestamp": "2025-05-23T15:54:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "kate",
+      "content": "0",
+      "timestamp": "2025-05-23T15:54:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "bob",
+      "content": "0 (I'll come around)",
+      "timestamp": "2025-05-23T15:54:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "alice",
+      "content": "0",
+      "timestamp": "2025-05-23T15:55:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "frank",
+      "content": "0 (fine, convinced)",
+      "timestamp": "2025-05-23T15:56:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "liam",
+      "content": "0",
+      "timestamp": "2025-05-23T15:58:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "dave",
+      "content": "0",
+      "timestamp": "2025-05-23T16:07:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "alice",
+      "content": "OVERDRAFT_ALLOWANCE=0 agreed.",
+      "timestamp": "2025-05-23T16:12:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "peter",
+      "content": "thanks everyone, big one tomorrow",
+      "timestamp": "2025-05-23T17:12:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "frank",
+      "content": "ack thumbsup",
+      "timestamp": "2025-05-23T17:14:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "olivia",
+      "content": "infra is ready on our end. green light",
+      "timestamp": "2025-05-23T17:16:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "carol",
+      "content": "monitoring is ready, I'll watch the dashboards tonight",
+      "timestamp": "2025-05-23T17:17:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "alice",
+      "content": "OK locking this: CAPACITY=100, REFILL_RATE=10.0, INITIAL_TOKENS=100, OVERDRAFT_ALLOWANCE=0. deploying tonight.",
+      "timestamp": "2025-05-23T17:20:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "bob",
+      "content": "ack thumbsup",
+      "timestamp": "2025-05-23T17:21:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "dave",
+      "content": "ack, will update the PR",
+      "timestamp": "2025-05-23T17:24:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "peter",
+      "content": "great job team. partner A launch is depending on this",
+      "timestamp": "2025-05-23T17:32:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "quinn",
+      "content": "nice work everyone. this was a thorough process",
+      "timestamp": "2025-05-23T17:33:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "carol",
+      "content": "deploy complete. new config is live: CAPACITY=100, REFILL_RATE=10.0, INITIAL_TOKENS=100, OVERDRAFT=0",
+      "timestamp": "2025-05-24T00:43:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "carol",
+      "content": "rejection rate dropped from 62% to <1%. token exhaustion gone from dashboards",
+      "timestamp": "2025-05-24T00:45:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "alice",
+      "content": "excellent! great work everyone",
+      "timestamp": "2025-05-24T08:17:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "frank",
+      "content": "glad we caught the simulation error. 15.0 would have been slightly too aggressive",
+      "timestamp": "2025-05-24T08:19:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "dave",
+      "content": "the new constants feel much more principled than the old placeholder values",
+      "timestamp": "2025-05-24T08:21:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "bob",
+      "content": "and good call on CAPACITY=100 vs 200. downstream services haven't even noticed",
+      "timestamp": "2025-05-24T08:25:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "olivia",
+      "content": "I'll document the final values in the runbook",
+      "timestamp": "2025-05-24T09:02:00+00:00"
+    },
+    {
+      "channel": "backend",
+      "author": "liam",
+      "content": "should middleware.py have its own config override or always use bucket defaults?",
+      "timestamp": "2025-05-24T09:06:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "alice",
+      "content": "thanks olivia. also: please remember bucket.py still has the old placeholder values in the repo \u2014 PR is pending merge",
+      "timestamp": "2025-05-24T09:07:00+00:00"
+    },
+    {
+      "channel": "product",
+      "author": "henry",
+      "content": "perfect. I'll update the partner timeline",
+      "timestamp": "2025-05-24T09:10:00+00:00"
+    },
+    {
+      "channel": "backend",
+      "author": "alice",
+      "content": "always bucket defaults for now. keep it simple",
+      "timestamp": "2025-05-24T09:11:00+00:00"
+    },
+    {
+      "channel": "backend",
+      "author": "liam",
+      "content": "ack",
+      "timestamp": "2025-05-24T09:11:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "dave",
+      "content": "PR #423 is up, updating the constants to the agreed values",
+      "timestamp": "2025-05-24T09:12:00+00:00"
+    },
+    {
+      "channel": "product",
+      "author": "henry",
+      "content": "anyone have an ETA on the rate limiter config fix?",
+      "timestamp": "2025-05-24T09:18:00+00:00"
+    },
+    {
+      "channel": "product",
+      "author": "alice",
+      "content": "we finalized the config last night, deploying tonight or tomorrow",
+      "timestamp": "2025-05-24T09:19:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "alice",
+      "content": "linking for reference: CAPACITY=100, REFILL_RATE=10.0, INITIAL_TOKENS=100, OVERDRAFT_ALLOWANCE=0",
+      "timestamp": "2025-05-24T09:35:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "quinn",
+      "content": "company offsite is booked for August. more details soon",
+      "timestamp": "2025-05-24T10:01:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "kate",
+      "content": "reviewed PR #423, LGTM",
+      "timestamp": "2025-05-24T10:04:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "alice",
+      "content": "exciting!!",
+      "timestamp": "2025-05-24T10:10:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "quinn",
+      "content": "lol no promises",
+      "timestamp": "2025-05-24T10:12:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "frank",
+      "content": "LGTM on PR #423 too",
+      "timestamp": "2025-05-24T10:16:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "bob",
+      "content": "please not another escape room",
+      "timestamp": "2025-05-24T10:18:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "alice",
+      "content": "merging PR #423 now",
+      "timestamp": "2025-05-24T10:18:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "liam",
+      "content": "CI is being slow today, probably the flaky test in test_middleware.py again",
+      "timestamp": "2025-05-24T10:27:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "alice",
+      "content": "...wait, CI is running. will merge when green",
+      "timestamp": "2025-05-24T10:30:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "alice",
+      "content": "CI green. merged",
+      "timestamp": "2025-05-24T10:45:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "dave",
+      "content": "finally the repo matches prod",
+      "timestamp": "2025-05-24T10:48:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "olivia",
+      "content": "looks like a noisy neighbor in the k8s namespace, not rate limiting",
+      "timestamp": "2025-05-24T14:16:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "carol",
+      "content": "P3 \u2014 slight uptick in latency on /api/v2/events. investigating",
+      "timestamp": "2025-05-24T14:19:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "carol",
+      "content": "confirmed, throttling the noisy workload now",
+      "timestamp": "2025-05-24T14:35:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "carol",
+      "content": "resolved. unrelated to rate limiter",
+      "timestamp": "2025-05-24T14:43:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "grace",
+      "content": "congrats everyone",
+      "timestamp": "2025-05-24T16:03:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "quinn",
+      "content": "demo went great! investors loved the new UI. good job team",
+      "timestamp": "2025-05-24T16:09:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "bob",
+      "content": "nice work henry!",
+      "timestamp": "2025-05-24T16:16:00+00:00"
+    },
+    {
+      "channel": "product",
+      "author": "quinn",
+      "content": "great coordination everyone, partner launch is back on track",
+      "timestamp": "2025-05-24T17:16:00+00:00"
+    },
+    {
+      "channel": "product",
+      "author": "henry",
+      "content": "thumbsup",
+      "timestamp": "2025-05-24T17:17:00+00:00"
+    },
+    {
+      "channel": "product",
+      "author": "alice",
+      "content": "congrats team",
+      "timestamp": "2025-05-24T17:20:00+00:00"
+    },
+    {
+      "channel": "engineering",
+      "author": "iris",
+      "content": "regression suite green on staging after the auth middleware update",
+      "timestamp": "2025-05-25T09:00:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "alice",
+      "content": "thumbsup looks good. keeping a close eye for the next few days",
+      "timestamp": "2025-05-25T09:06:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "carol",
+      "content": "metrics look stable after 12h. no incidents, rejection rate <0.5%",
+      "timestamp": "2025-05-25T09:07:00+00:00"
+    },
+    {
+      "channel": "engineering",
+      "author": "alice",
+      "content": "ack, post in #general when it's done",
+      "timestamp": "2025-05-25T09:17:00+00:00"
+    },
+    {
+      "channel": "engineering",
+      "author": "frank",
+      "content": "great! moving to prod tonight",
+      "timestamp": "2025-05-25T09:24:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "frank",
+      "content": "partner A is happy. they reported near-zero 429s since the config change",
+      "timestamp": "2025-05-25T09:27:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "alice",
+      "content": "will do",
+      "timestamp": "2025-05-25T10:08:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "quinn",
+      "content": "great outcome. I'm updating the post-mortem with the final resolution",
+      "timestamp": "2025-05-25T10:17:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "noah",
+      "content": "quick reminder to rotate your API keys \u2014 security audit is next week",
+      "timestamp": "2025-05-25T10:19:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "dave",
+      "content": "on it",
+      "timestamp": "2025-05-25T10:21:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "iris",
+      "content": "test traffic from staging is properly isolated now, won't affect prod rate limiter",
+      "timestamp": "2025-05-25T11:09:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "jack",
+      "content": "good, staging was bleeding into prod metrics last week",
+      "timestamp": "2025-05-25T11:19:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "carol",
+      "content": "that's been fixed in the ingress rules",
+      "timestamp": "2025-05-25T11:28:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "olivia",
+      "content": "also updated the runbook with: CAPACITY=100, REFILL_RATE=10.0, INITIAL_TOKENS=100 (=CAPACITY), OVERDRAFT_ALLOWANCE=0 (strict)",
+      "timestamp": "2025-05-26T09:03:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "iris",
+      "content": "anyone need pet sitting the week of the offsite? I have two cats",
+      "timestamp": "2025-05-26T09:06:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "grace",
+      "content": "I can help! DM me",
+      "timestamp": "2025-05-26T09:19:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "carol",
+      "content": "48h post-deploy: all green",
+      "timestamp": "2025-05-26T09:50:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "noah",
+      "content": "also updated the on-call runbook with the new rate limiter config values for reference",
+      "timestamp": "2025-05-26T10:12:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "alice",
+      "content": "perfect, thanks noah",
+      "timestamp": "2025-05-26T10:25:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "iris",
+      "content": "QA env is fully upgraded to Python 3.12 now, let me know if anything breaks",
+      "timestamp": "2025-05-26T11:07:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "liam",
+      "content": "awesome, we were waiting on that",
+      "timestamp": "2025-05-26T11:10:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "kate",
+      "content": "merged! finally",
+      "timestamp": "2025-05-26T11:20:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "carol",
+      "content": "all systems nominal for the week. monitoring looks healthy after the config deploy",
+      "timestamp": "2025-05-27T09:09:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "alice",
+      "content": "marking this incident thread closed. great job everyone on the load test and config work",
+      "timestamp": "2025-05-27T09:12:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "alice",
+      "content": "agreed! it's going to be great",
+      "timestamp": "2025-05-27T09:13:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "peter",
+      "content": "excited for the offsite, it's been too long since we've all been in one room",
+      "timestamp": "2025-05-27T09:17:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "peter",
+      "content": "solid engineering process. the right answer took a few iterations but we got there",
+      "timestamp": "2025-05-27T09:18:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "olivia",
+      "content": "grafana shows token exhaustion is gone. CAPACITY=100 and the new REFILL_RATE doing their job",
+      "timestamp": "2025-05-27T09:20:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "alice",
+      "content": "thumbsup great. new config seems stable",
+      "timestamp": "2025-05-27T09:22:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "frank",
+      "content": "nice to see the incident count drop",
+      "timestamp": "2025-05-27T09:27:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "bob",
+      "content": "lesson learned: don't leave placeholder values in prod configs lol",
+      "timestamp": "2025-05-27T09:31:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "alice",
+      "content": "yes. for future reference: the agreed production constants are CAPACITY=100, REFILL_RATE=10.0, INITIAL_TOKENS=100, OVERDRAFT_ALLOWANCE=0",
+      "timestamp": "2025-05-27T09:34:00+00:00"
+    },
+    {
+      "channel": "platform-infra",
+      "author": "frank",
+      "content": "and double-check your load test inputs before proposing values",
+      "timestamp": "2025-05-27T09:37:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "carol",
+      "content": "anyone asks why we changed them \u2014 see the postmortem and #platform-infra discussion",
+      "timestamp": "2025-05-27T10:09:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "carol",
+      "content": "yep. reminder: the OLD values (CAPACITY=50, REFILL_RATE=5.0) are what caused the P2 last week",
+      "timestamp": "2025-05-27T10:11:00+00:00"
+    },
+    {
+      "channel": "engineering",
+      "author": "quinn",
+      "content": "velocity metrics for this sprint look really good, team",
+      "timestamp": "2025-05-27T17:13:00+00:00"
+    },
+    {
+      "channel": "engineering",
+      "author": "kate",
+      "content": "that rate limiter work took forever but it's finally done",
+      "timestamp": "2025-05-27T17:15:00+00:00"
+    },
+    {
+      "channel": "engineering",
+      "author": "bob",
+      "content": "carrying over only 2 tickets which is a record",
+      "timestamp": "2025-05-27T17:23:00+00:00"
+    },
+    {
+      "channel": "engineering",
+      "author": "alice",
+      "content": "yes! shoutout to everyone who debugged the load test",
+      "timestamp": "2025-05-27T17:27:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "jack",
+      "content": "fingers crossed",
+      "timestamp": "2025-05-28T09:06:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "carol",
+      "content": "PagerDuty quiet for 48h",
+      "timestamp": "2025-05-28T09:12:00+00:00"
+    },
+    {
+      "channel": "incidents",
+      "author": "olivia",
+      "content": "let's keep it that way",
+      "timestamp": "2025-05-28T09:24:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "mia",
+      "content": "have a good weekend",
+      "timestamp": "2025-05-28T17:13:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "alice",
+      "content": "cheers",
+      "timestamp": "2025-05-28T17:16:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "jack",
+      "content": "pagerduty is quiet, that's a win",
+      "timestamp": "2025-05-28T17:16:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "quinn",
+      "content": "happy Friday all, great sprint",
+      "timestamp": "2025-05-28T17:19:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "bob",
+      "content": "cheers",
+      "timestamp": "2025-05-28T17:22:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "carol",
+      "content": "fingers crossed",
+      "timestamp": "2025-05-28T17:29:00+00:00"
+    }
+  ]
 }

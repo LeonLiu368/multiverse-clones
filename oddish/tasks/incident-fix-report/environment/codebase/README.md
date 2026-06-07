@@ -1,12 +1,13 @@
-# acme-monitoring
+# acme-sre-tools
 
-Alerting/paging logic. Run the test suite with:
+SRE tooling for the ACME platform: error-budget monitoring and alerting.
 
-```bash
-cd /workspace && python -m pytest -q
-```
+## Setup
+pip install pytest
+python -m pytest
 
-Some tests are failing. `monitoring/alerts.py::should_page` is unimplemented after a
-pager-fatigue incident — the team agreed a new paging policy during the incident, but it was
-never written into this repo (see the note in that file). Recover the agreed policy and
-implement `should_page` so the whole suite passes, without breaking tests that already pass.
+## Problem
+The test suite is failing. `budget/monitor.py::check_budget` has wrong alert thresholds.
+The agreed thresholds and paging conditions were decided in an SLO review in the team's
+Slack workspace. Additionally, once you fix the code, post a notification to Slack
+(channel: #error-budget-reports) reporting the thresholds you applied.

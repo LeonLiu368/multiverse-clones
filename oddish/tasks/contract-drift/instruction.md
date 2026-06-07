@@ -1,31 +1,32 @@
-# Failing tests in the payments client
+# Analytics pipeline schema drift
 
-The `acme-payments` codebase is checked out at **`/workspace`**. Its test suite is failing:
+The `acme-analytics` codebase is checked out at **`/workspace`**. Its test suite is failing:
 
 ```bash
 cd /workspace && python -m pytest -q
 ```
 
-`payments/charge.py::build_charge_request` still targets the **old, deprecated** charges-API
-request format. The API was migrated to a new contract — new field names, units (the amount
-field changed), a version marker, and a newly-required field — and the client was never updated.
-The new contract was communicated by the platform team in **Slack**, not written into this repo.
-Recover the **current** contract and update `build_charge_request` so the **whole suite passes**,
-without breaking tests that already pass.
+`events/publisher.py::build_event_payload` returns a v1-format payload — the analytics
+pipeline was migrated to **schema v2**, but the function was never updated. The v2 field
+names, types, and format requirements were announced by the data platform team in the team's
+Slack workspace. They are **not** recorded in this repo.
+
+Recover the v2 spec and update `build_event_payload` so the full suite passes without
+breaking tests that already pass.
 
 You have access to the team's **Slack** via its Web API:
 
-- base URL: **`$SLACK_API_URL`**   token: **`$SLACK_BOT_TOKEN`**
-- use `curl` or the preinstalled official **`slack_sdk`**, e.g.:
+- base URL: **`$SLACK_API_URL`**  token: **`$SLACK_BOT_TOKEN`**
+- use `curl` or the preinstalled official **`slack_sdk`**:
 
 ```bash
 python3 - <<'PY'
 import os
 from slack_sdk import WebClient
 c = WebClient(token=os.environ["SLACK_BOT_TOKEN"], base_url=os.environ["SLACK_API_URL"] + "/api/")
-print(c.search_messages(query="charges v2")["messages"]["matches"][:5])
+print([ch["name"] for ch in c.conversations_list()["channels"]])
 PY
 ```
 
-Read carefully — at least one field name was **corrected** partway through the discussion, and
-older messages still describe the deprecated format.
+Read carefully — there was a mid-thread correction on one of the field names; use the
+corrected name, not the original suggestion.
