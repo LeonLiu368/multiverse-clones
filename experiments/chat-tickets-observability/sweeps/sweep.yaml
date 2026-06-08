@@ -4,10 +4,6 @@
 #
 # Validate the controls (oracle=1 / nop=0) before spending model trials.
 
-task_names:
-  - variant-paperless-ngx-12865-chat-tickets
-  - variant-paperless-ngx-12856-chat-tickets
-
 agents:
   - name: oracle
   - name: nop
