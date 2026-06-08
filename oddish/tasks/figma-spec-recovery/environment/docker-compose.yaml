@@ -10,7 +10,7 @@
 # This task's design data is provided PER TASK by mounting fixture.json into the
 # `figma` service container ONLY — never into `main` — so the agent can reach the
 # seeded spec solely through the API. (For local validation, tag your local build as
-# this image name: `docker build -f docker/Dockerfile -t ghcr.io/abundant-ai/figma-service:latest .`)
+# this image name: `docker build -f docker/Dockerfile -t ghcr.io/leonliu368/figma-service:latest .`)
 services:
   main:
     environment:
@@ -22,7 +22,7 @@ services:
         condition: service_healthy
 
   figma:
-    image: ghcr.io/abundant-ai/figma-service:latest
+    image: ghcr.io/leonliu368/figma-service:latest
     environment:
       - FIGMA_FIXTURE=/srv/fixture.json
     volumes:

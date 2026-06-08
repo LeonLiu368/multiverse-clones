@@ -1,7 +1,7 @@
 # Oddish tasks (abundant-figma-clone)
 
 Harbor/Oddish "observability + codebase" tasks built on the Figma clone. Each task
-**pulls** the single `ghcr.io/abundant-ai/figma-service` image as its `figma`
+**pulls** the single `ghcr.io/leonliu368/figma-service` image as its `figma`
 service and provides its design data **per task** by mounting a `fixture.json` into
 that service container only — so the seeded spec is reachable solely through the
 Figma tools (`figma-cli` + `figma-mcp`), never readable from the agent's container.
@@ -19,7 +19,7 @@ Figma tools (`figma-cli` + `figma-mcp`), never readable from the agent's contain
 
 ```bash
 # 1) build the one pulled service image (or let CI publish it)
-docker build -f docker/Dockerfile -t ghcr.io/abundant-ai/figma-service:latest .
+docker build -f docker/Dockerfile -t ghcr.io/leonliu368/figma-service:latest .
 
 # 2) local nop/oracle/decoy validation (no Harbor runner needed)
 bash oddish/tasks/figma-spec-recovery/validate_local.sh     # PASS: nop=0 oracle=1 decoy=0

@@ -9,12 +9,12 @@
 #   decoy  → 0   (plausible-but-wrong v1 values, even with a comment posted)
 #
 # Requires the figma-service image. Build it first from the repo root:
-#   docker build -f docker/Dockerfile -t ghcr.io/abundant-ai/figma-service:latest .
+#   docker build -f docker/Dockerfile -t ghcr.io/leonliu368/figma-service:latest .
 set -uo pipefail
 cd "$(dirname "$0")"
 TASK_DIR="$(pwd)"
 NET=figmaval$$
-IMG_SVC=ghcr.io/abundant-ai/figma-service:latest
+IMG_SVC=ghcr.io/leonliu368/figma-service:latest
 IMG_AGENT=figma-agent-local:$$
 KEY=Pr1cingCardSpecFile001
 
