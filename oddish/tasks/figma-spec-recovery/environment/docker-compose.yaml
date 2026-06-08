@@ -1,0 +1,37 @@
+# Merged on top of Harbor's base compose. Harbor auto-configures the `main` (agent)
+# container from environment/Dockerfile; here we only OVERRIDE `main` (point it at the
+# service + wait for health) and ADD the `figma` service.
+#
+# No `networks:` — Harbor wires networking (and injects network_mode on `main` for the
+# Modal/DinD provider, which is mutually exclusive with an explicit networks: key).
+# The agent reaches the service by name at http://figma:3000.
+#
+# The `figma` service is the prebuilt, pulled figma-service image (NOT built per task).
+# This task's design data is provided PER TASK by mounting fixture.json into the
+# `figma` service container ONLY — never into `main` — so the agent can reach the
+# seeded spec solely through the API. (For local validation, tag your local build as
+# this image name: `docker build -f docker/Dockerfile -t ghcr.io/abundant-ai/figma-service:latest .`)
+services:
+  main:
+    environment:
+      - FIGMA_API_URL=http://figma:3000
+      - FIGMA_TOKEN=figma-clone-token
+      - FIGMA_FILE_KEY=Pr1cingCardSpecFile001
+    depends_on:
+      figma:
+        condition: service_healthy
+
+  figma:
+    image: ghcr.io/abundant-ai/figma-service:latest
+    environment:
+      - FIGMA_FIXTURE=/srv/fixture.json
+    volumes:
+      - ./fixture.json:/srv/fixture.json:ro
+    expose:
+      - "3000"
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:3000/health')\" || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
