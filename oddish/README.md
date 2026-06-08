@@ -1,10 +1,12 @@
 # Oddish tasks (abundant-figma-clone)
 
 Harbor/Oddish "observability + codebase" tasks built on the Figma clone. Each task
-**pulls** the single `ghcr.io/leonliu368/figma-service` image as its `figma`
-service and provides its design data **per task** by mounting a `fixture.json` into
-that service container only — so the seeded spec is reachable solely through the
-Figma tools (`figma-cli` + `figma-mcp`), never readable from the agent's container.
+runs a `figma` service (the single `figma-service` image — `build:` + `image:` in the
+compose, so the harness builds it locally and needs no registry auth, while the
+`ghcr.io/leonliu368/figma-service` tag stays available to pull) and provides its
+design data **per task** by mounting a `fixture.json` into that service container
+only — so the seeded spec is reachable solely through the Figma tools
+(`figma-cli` + `figma-mcp`), never readable from the agent's container.
 
 ## Tasks
 

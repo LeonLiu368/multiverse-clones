@@ -6,11 +6,15 @@
 # Modal/DinD provider, which is mutually exclusive with an explicit networks: key).
 # The agent reaches the service by name at http://figma:3000.
 #
-# The `figma` service is the prebuilt, pulled figma-service image (NOT built per task).
-# This task's design data is provided PER TASK by mounting fixture.json into the
-# `figma` service container ONLY — never into `main` — so the agent can reach the
-# seeded spec solely through the API. (For local validation, tag your local build as
-# this image name: `docker build -f docker/Dockerfile -t ghcr.io/leonliu368/figma-service:latest .`)
+# The `figma` service carries BOTH `build:` and `image:`. Harbor's docker provider runs
+# `docker compose build` (which builds every service with a build section) then `up`; the
+# build tags the image with the `image:` name, so `up` uses the local build and never pulls
+# from a registry — no GHCR auth needed. The `image:` name still matches the published
+# ghcr.io/leonliu368/figma-service for anyone who prefers to pull it.
+#
+# This task's design data is provided PER TASK by mounting fixture.json into the `figma`
+# service container ONLY — never into `main` — so the agent reaches the seeded spec solely
+# through the API.
 services:
   main:
     environment:
@@ -23,6 +27,9 @@ services:
 
   figma:
     image: ghcr.io/leonliu368/figma-service:latest
+    build:
+      context: .
+      dockerfile: figma.Dockerfile
     environment:
       - FIGMA_FIXTURE=/srv/fixture.json
     volumes:

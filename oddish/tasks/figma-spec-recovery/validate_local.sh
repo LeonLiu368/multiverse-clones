@@ -23,6 +23,8 @@ trap cleanup EXIT
 
 echo "### building agent image"
 docker build -q -t "$IMG_AGENT" "$TASK_DIR/environment" >/dev/null
+echo "### building figma service image (from the vendored figma.Dockerfile — no registry pull)"
+docker build -q -t "$IMG_SVC" -f "$TASK_DIR/environment/figma.Dockerfile" "$TASK_DIR/environment" >/dev/null
 
 run_scenario() {  # $1 = name, $2 = setup-cmd (run inside main before verifier)
   local name="$1" setup="$2"
