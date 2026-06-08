@@ -1,50 +1,34 @@
-# Harbor compose override: gates main on all three sidecars.
-# NO networks: block (Harbor injects network_mode). NO ports:.
 services:
   main:
-    depends_on:
-      slack:       {condition: service_healthy}
-      ticketvector: {condition: service_healthy}
-      github:      {condition: service_healthy}
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${MAIN_IMAGE_NAME}
+    working_dir: /app
+    environment:
+      GH_HOST: http://github
+      GH_TOKEN_FILE: /run/secrets/token
+      WORLD_ISSUES_AGENT_MODE: "1"
+      WORLD_ISSUES_BACKEND: remote
+      WORLD_ISSUES_OUTPUT: json
+      WORLD_ISSUES_ACTOR: agent
+      PLANE_BASE_URL: http://127.0.0.1:8765
+      PYTHONPATH: /opt:/opt/ticketvector:/opt/slackcli
+      SLACK_API_URL: http://slack
+      SLACK_BOT_TOKEN: test-token-acme-eval
     volumes:
       - ghc-shared:/run/secrets:ro
+    depends_on:
+      github:
+        condition: service_healthy
+      slack:
+        condition: service_healthy
 
-  # Mattermost-backed Slack API. Seeds from ./data/slack/scraped.json.
-  slack:
-    image: ghcr.io/abundant-ai/slack-service@sha256:13d7f7892e971154f9643cd660ac12bee6f45ce8012d6212f8f2ef8db3dcacae
-    platform: "linux/amd64"
-    volumes:
-      - ./data/slack/scraped.json:/data/mattermost/scraped.json:ro
-    healthcheck:
-      test: ["CMD-SHELL", "curl -sf http://localhost:80/api/auth.test >/dev/null || exit 1"]
-      interval: 5s
-      timeout: 5s
-      retries: 60
-      start_period: 150s
-
-  # Ticketvector issue tracker. State loaded from seed file at boot.
-  ticketvector:
-    image: ghcr.io/abundant-ai/ticketvector-service@sha256:89d4bdf0624fee83464491563ec53a0a816273bfd0ebca95afeb78159d2e2ee9
-    platform: "linux/amd64"
-    entrypoint: ["/bin/sh", "-c"]
-    command: ["cp /seed/state.json /var/lib/ticketvector/state.json && exec python -m world_issues.server"]
-    environment:
-      - WORLD_ISSUES_BIND_HOST=0.0.0.0
-      - WORLD_ISSUES_PORT=8765
-      - WORLD_ISSUES_STATE_FILE=/var/lib/ticketvector/state.json
-    volumes:
-      - ./data/ticketvector/state.json:/seed/state.json:ro
-    healthcheck:
-      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8765/health', timeout=2).read()\" || exit 1"]
-      interval: 5s
-      timeout: 5s
-      retries: 40
-      start_period: 20s
-
-  # Offline GitHub forge. Runs seed.sh on first boot, token -> ghc-shared volume.
   github:
-    image: ghcr.io/abundant-ai/ghc-service@sha256:d4e88d7fa4af0ae84213d54f4b884b3a8954ebad9fe88b6f6fb97cea1443b3cf
-    platform: "linux/amd64"
+    image: ghcr.io/abundant-ai/ghc-service:latest
+    hostname: github
+    platform: linux/amd64
     volumes:
       - ghc-shared:/shared
       - ./data/github/seed.sh:/usr/local/bin/task-seed.sh:ro
@@ -54,6 +38,32 @@ services:
       timeout: 5s
       retries: 60
       start_period: 45s
+
+  ticketvector:
+    image: ghcr.io/abundant-ai/ticketvector-service:main
+    network_mode: service:main
+    platform: linux/amd64
+    environment:
+      WORLD_ISSUES_STATE_FILE: /var/lib/ticketvector/state.json
+      WORLD_ISSUES_BIND_HOST: 0.0.0.0
+      WORLD_ISSUES_PORT: "8765"
+      WORLD_ISSUES_ACTOR: agent
+    volumes:
+      - ./data/ticketvector/state.json:/var/lib/ticketvector/state.json
+
+  slack:
+    image: ghcr.io/abundant-ai/slack-service:latest
+    platform: linux/amd64
+    environment:
+      SLACK_BOT_TOKEN: test-token-acme-eval
+    volumes:
+      - ./data/slack:/data/mattermost:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:80/api/auth.test >/dev/null || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 24
+      start_period: 30s
 
 volumes:
   ghc-shared:
