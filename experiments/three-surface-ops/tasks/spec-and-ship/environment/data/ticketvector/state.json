@@ -1,0 +1,154 @@
+{
+  "base_url": "https://plane.local",
+  "attachments": {},
+  "comments": {
+    "feat-301": [
+      {
+        "id": "comment-301-1",
+        "issue": "feat-301",
+        "author": {"id": "user-dana", "handle": "dana", "name": "Dana Park"},
+        "body": "Spec finalized in #eng-design. Ready to implement.",
+        "created_at": "2026-06-01T15:00:00Z",
+        "updated_at": "2026-06-01T15:00:00Z"
+      },
+      {
+        "id": "comment-301-2",
+        "issue": "feat-301",
+        "author": {"id": "user-alice", "handle": "alice", "name": "Alice Reyes"},
+        "body": "Assigned to you — see the design channel for the regex and error format we agreed on.",
+        "created_at": "2026-06-02T09:01:00Z",
+        "updated_at": "2026-06-02T09:01:00Z"
+      }
+    ],
+    "feat-300": [],
+    "feat-299": [],
+    "feat-298": []
+  },
+  "cycles": [
+    {
+      "id": "cycle-2026-06-a",
+      "name": "Sprint 2026-06-A",
+      "starts_at": "2026-06-01",
+      "ends_at": "2026-06-14"
+    }
+  ],
+  "history": {},
+  "issues": [
+    {
+      "id": "feat-301",
+      "identifier": "FEAT-301",
+      "title": "Add email validation to /api/register",
+      "description": "Users can currently register with invalid email addresses (no @ sign, no domain, etc). We need server-side validation. The implementation spec was agreed in #eng-design — see that channel for the exact details. Repo: acme/platform, file: register.py.",
+      "state": {"id": "state-progress", "name": "In Progress", "type": "started"},
+      "priority": 2,
+      "assignees": [{"id": "user-agent", "handle": "agent", "name": "Agent User"}],
+      "labels": [
+        {"id": "label-feature", "name": "feature", "description": ""},
+        {"id": "label-validation", "name": "validation", "description": ""}
+      ],
+      "links": [],
+      "cycle": {
+        "id": "cycle-2026-06-a",
+        "name": "Sprint 2026-06-A",
+        "starts_at": "2026-06-01",
+        "ends_at": "2026-06-14"
+      },
+      "comments_count": 2,
+      "attachments_count": 0,
+      "created_at": "2026-05-29T10:00:00Z",
+      "updated_at": "2026-06-02T09:01:00Z"
+    },
+    {
+      "id": "feat-300",
+      "identifier": "FEAT-300",
+      "title": "Add pagination to /api/users list",
+      "description": "The /api/users endpoint returns all users in a single response. Add cursor-based pagination with a `limit` and `cursor` query parameter. Max page size 100.",
+      "state": {"id": "state-done", "name": "Done", "type": "completed"},
+      "priority": 2,
+      "assignees": [{"id": "user-bob", "handle": "bob", "name": "Bob Nakamura"}],
+      "labels": [
+        {"id": "label-feature", "name": "feature", "description": ""},
+        {"id": "label-api", "name": "api", "description": ""}
+      ],
+      "links": [],
+      "cycle": {
+        "id": "cycle-2026-06-a",
+        "name": "Sprint 2026-06-A",
+        "starts_at": "2026-06-01",
+        "ends_at": "2026-06-14"
+      },
+      "comments_count": 0,
+      "attachments_count": 0,
+      "created_at": "2026-05-20T09:00:00Z",
+      "updated_at": "2026-05-30T16:00:00Z"
+    },
+    {
+      "id": "feat-299",
+      "identifier": "FEAT-299",
+      "title": "Dark mode for admin dashboard",
+      "description": "Add a dark mode toggle to the admin dashboard UI. Should respect the user's OS preference by default and allow manual override via a settings toggle.",
+      "state": {"id": "state-todo", "name": "Todo", "type": "unstarted"},
+      "priority": 3,
+      "assignees": [{"id": "user-bob", "handle": "bob", "name": "Bob Nakamura"}],
+      "labels": [
+        {"id": "label-feature", "name": "feature", "description": ""},
+        {"id": "label-ui", "name": "ui", "description": ""}
+      ],
+      "links": [],
+      "cycle": {
+        "id": "cycle-2026-06-a",
+        "name": "Sprint 2026-06-A",
+        "starts_at": "2026-06-01",
+        "ends_at": "2026-06-14"
+      },
+      "comments_count": 0,
+      "attachments_count": 0,
+      "created_at": "2026-05-25T14:00:00Z",
+      "updated_at": "2026-05-25T14:00:00Z"
+    },
+    {
+      "id": "feat-298",
+      "identifier": "FEAT-298",
+      "title": "Export users to CSV",
+      "description": "Admin users need to be able to export the full user list to CSV for reporting purposes. Export should include id, name, email, and created_at columns.",
+      "state": {"id": "state-progress", "name": "In Progress", "type": "started"},
+      "priority": 2,
+      "assignees": [{"id": "user-dana", "handle": "dana", "name": "Dana Park"}],
+      "labels": [
+        {"id": "label-feature", "name": "feature", "description": ""},
+        {"id": "label-admin", "name": "admin", "description": ""}
+      ],
+      "links": [],
+      "cycle": {
+        "id": "cycle-2026-06-a",
+        "name": "Sprint 2026-06-A",
+        "starts_at": "2026-06-01",
+        "ends_at": "2026-06-14"
+      },
+      "comments_count": 0,
+      "attachments_count": 0,
+      "created_at": "2026-06-01T09:00:00Z",
+      "updated_at": "2026-06-01T09:00:00Z"
+    }
+  ],
+  "labels": [
+    {"id": "label-feature", "name": "feature", "description": ""},
+    {"id": "label-validation", "name": "validation", "description": ""},
+    {"id": "label-api", "name": "api", "description": ""},
+    {"id": "label-ui", "name": "ui", "description": ""},
+    {"id": "label-admin", "name": "admin", "description": ""}
+  ],
+  "members": [
+    {"id": "user-agent", "handle": "agent", "name": "Agent User"},
+    {"id": "user-alice", "handle": "alice", "name": "Alice Reyes"},
+    {"id": "user-bob", "handle": "bob", "name": "Bob Nakamura"},
+    {"id": "user-dana", "handle": "dana", "name": "Dana Park"}
+  ],
+  "modules": [],
+  "states": [
+    {"id": "state-todo", "name": "Todo", "type": "unstarted"},
+    {"id": "state-progress", "name": "In Progress", "type": "started"},
+    {"id": "state-done", "name": "Done", "type": "completed"}
+  ],
+  "workspace": {"id": "ws1", "name": "acme", "slug": "acme"}
+}

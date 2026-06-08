@@ -1,0 +1,153 @@
+{
+  "base_url": "https://plane.local",
+  "attachments": {},
+  "comments": {
+    "prod-101": [
+      {
+        "id": "comment-101-1",
+        "issue": "prod-101",
+        "author": {"id": "user-alice", "handle": "alice", "name": "Alice Chen"},
+        "body": "On it, checking logs now.",
+        "created_at": "2026-06-08T09:11:00Z",
+        "updated_at": "2026-06-08T09:11:00Z"
+      },
+      {
+        "id": "comment-101-2",
+        "issue": "prod-101",
+        "author": {"id": "user-bob", "handle": "bob", "name": "Bob Kim"},
+        "body": "Looks like it's only happening on empty query strings — see #ops-oncall for the full diagnosis thread.",
+        "created_at": "2026-06-08T09:20:00Z",
+        "updated_at": "2026-06-08T09:20:00Z"
+      }
+    ],
+    "prod-99": [],
+    "prod-98": [],
+    "prod-97": []
+  },
+  "cycles": [
+    {
+      "id": "cycle-2026-06-a",
+      "name": "Sprint 2026-06-A",
+      "starts_at": "2026-06-01",
+      "ends_at": "2026-06-14"
+    }
+  ],
+  "history": {},
+  "issues": [
+    {
+      "id": "prod-101",
+      "identifier": "PROD-101",
+      "title": "Incident: /api/search returning 500 on empty query",
+      "description": "Error rate elevated on /api/search. Requests with an empty query string (?q=) are returning HTTP 500. Started around 09:05 UTC on 2026-06-08. Check #ops-oncall for the root-cause thread and the agreed fix. Repo: acme/webapp.",
+      "state": {"id": "state-progress", "name": "In Progress", "type": "started"},
+      "priority": 1,
+      "assignees": [{"id": "user-agent", "handle": "agent", "name": "Agent User"}],
+      "labels": [
+        {"id": "label-incident", "name": "incident", "description": ""},
+        {"id": "label-p1", "name": "p1", "description": ""},
+        {"id": "label-search", "name": "search", "description": ""}
+      ],
+      "links": [],
+      "cycle": {
+        "id": "cycle-2026-06-a",
+        "name": "Sprint 2026-06-A",
+        "starts_at": "2026-06-01",
+        "ends_at": "2026-06-14"
+      },
+      "comments_count": 2,
+      "attachments_count": 0,
+      "created_at": "2026-06-08T09:10:00Z",
+      "updated_at": "2026-06-08T09:10:00Z"
+    },
+    {
+      "id": "prod-99",
+      "identifier": "PROD-99",
+      "title": "Slow response on /api/users (>2s p99)",
+      "description": "The /api/users endpoint is occasionally exceeding 2s at p99 latency. Not user-visible degradation yet but worth investigating. Low priority compared to active incidents.",
+      "state": {"id": "state-todo", "name": "Todo", "type": "unstarted"},
+      "priority": 3,
+      "assignees": [],
+      "labels": [
+        {"id": "label-perf", "name": "performance", "description": ""}
+      ],
+      "links": [],
+      "cycle": {
+        "id": "cycle-2026-06-a",
+        "name": "Sprint 2026-06-A",
+        "starts_at": "2026-06-01",
+        "ends_at": "2026-06-14"
+      },
+      "comments_count": 0,
+      "attachments_count": 0,
+      "created_at": "2026-06-05T14:00:00Z",
+      "updated_at": "2026-06-05T14:00:00Z"
+    },
+    {
+      "id": "prod-98",
+      "identifier": "PROD-98",
+      "title": "Memory leak in worker process — resolved last sprint",
+      "description": "Worker process was gradually consuming memory over 24h cycles, causing OOM restarts every ~2 days. Fixed by patching the task queue drain logic in v2.3.1.",
+      "state": {"id": "state-done", "name": "Done", "type": "completed"},
+      "priority": 2,
+      "assignees": [{"id": "user-mia", "handle": "mia", "name": "Mia Torres"}],
+      "labels": [
+        {"id": "label-bug", "name": "bug", "description": ""}
+      ],
+      "links": [],
+      "cycle": {
+        "id": "cycle-2026-06-a",
+        "name": "Sprint 2026-06-A",
+        "starts_at": "2026-06-01",
+        "ends_at": "2026-06-14"
+      },
+      "comments_count": 0,
+      "attachments_count": 0,
+      "created_at": "2026-05-28T10:00:00Z",
+      "updated_at": "2026-06-03T16:00:00Z"
+    },
+    {
+      "id": "prod-97",
+      "identifier": "PROD-97",
+      "title": "Disk usage alert on prod-db-02",
+      "description": "prod-db-02 crossed 80% disk utilisation. Bob is investigating. Likely WAL accumulation from the recent long-running migration. Not related to current search incident.",
+      "state": {"id": "state-progress", "name": "In Progress", "type": "started"},
+      "priority": 2,
+      "assignees": [{"id": "user-bob", "handle": "bob", "name": "Bob Kim"}],
+      "labels": [
+        {"id": "label-infra", "name": "infra", "description": ""}
+      ],
+      "links": [],
+      "cycle": {
+        "id": "cycle-2026-06-a",
+        "name": "Sprint 2026-06-A",
+        "starts_at": "2026-06-01",
+        "ends_at": "2026-06-14"
+      },
+      "comments_count": 0,
+      "attachments_count": 0,
+      "created_at": "2026-06-07T11:00:00Z",
+      "updated_at": "2026-06-07T11:00:00Z"
+    }
+  ],
+  "labels": [
+    {"id": "label-incident", "name": "incident", "description": ""},
+    {"id": "label-p1", "name": "p1", "description": ""},
+    {"id": "label-search", "name": "search", "description": ""},
+    {"id": "label-bug", "name": "bug", "description": ""},
+    {"id": "label-perf", "name": "performance", "description": ""},
+    {"id": "label-infra", "name": "infra", "description": ""}
+  ],
+  "members": [
+    {"id": "user-agent", "handle": "agent", "name": "Agent User"},
+    {"id": "user-alice", "handle": "alice", "name": "Alice Chen"},
+    {"id": "user-bob", "handle": "bob", "name": "Bob Kim"},
+    {"id": "user-mia", "handle": "mia", "name": "Mia Torres"}
+  ],
+  "modules": [],
+  "states": [
+    {"id": "state-todo", "name": "Todo", "type": "unstarted"},
+    {"id": "state-progress", "name": "In Progress", "type": "started"},
+    {"id": "state-done", "name": "Done", "type": "completed"}
+  ],
+  "workspace": {"id": "ws1", "name": "acme", "slug": "acme"}
+}

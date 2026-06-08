@@ -1,0 +1,34 @@
+metadata:
+  name: three-surface-ops
+  description: |
+    Three incident/engineering tasks that require the agent to correlate ALL THREE
+    seeded discovery surfaces — an issue tracker (ticketvector: linear/jira CLIs),
+    a Slack workspace (slack-service: slack CLI + slack-mcp), and an offline GitHub
+    forge (ghc-service: gh CLI) — then implement the fix and ship it via PR.
+
+    Each surface holds a distinct, non-redundant fragment: the ticket names the
+    active work item and its severity; the Slack thread contains the root-cause
+    diagnosis or implementation spec agreed by the team; the GitHub repo holds the
+    code to fix or extend. Neither ticket nor chat alone is sufficient — only the
+    intersection of all three localises what to change and how. nop=0, oracle=1.
+  task_path: experiments/three-surface-ops/tasks
+  n_trials: 3
+  skip_trajectory_analysis: false
+
+tasks:
+  - oncall-fix-and-close
+  - cve-patch-pr
+  - spec-and-ship
+
+agents:
+  - name: oracle
+  - name: nop
+  - name: gemini-cli
+    model_name: gemini/gemini-3.1-pro-preview
+    n_trials: 3
+  - name: codex
+    model_name: openai/gpt-5.2-codex
+    n_trials: 2
+  - name: claude-code
+    model_name: anthropic/claude-opus-4-7
+    n_trials: 2
