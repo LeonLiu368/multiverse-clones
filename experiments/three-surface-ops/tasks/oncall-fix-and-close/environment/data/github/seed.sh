@@ -1,14 +1,20 @@
 #!/usr/bin/env bash
 # Seed: acme/webapp with a buggy search.py (crashes on empty term).
-# Runs inside the github sidecar with GH_HOST=http://localhost and GH_TOKEN set.
-set -uo pipefail
+set -euo pipefail
 
-R=acme/webapp
+REPO=webapp
 
-gh repo create "$R" -d "acme web application" >/dev/null 2>&1 || true
+gh repo create "$REPO" --description "acme web application" >/dev/null 2>&1 || true
 
-# Seed the buggy search module
-SEARCH=$(cat <<'PYEOF' | base64 -w0
+work="$(mktemp -d)"
+git clone "http://localhost/acme/${REPO}.git" "$work/repo" >/dev/null 2>&1
+cd "$work/repo"
+git config user.email agent@example.local
+git config user.name "Agent User"
+git checkout --orphan task-main >/dev/null 2>&1 || true
+git rm -rf . >/dev/null 2>&1 || true
+
+cat > search.py << 'PYEOF'
 import re
 
 
@@ -35,14 +41,13 @@ def get_user(user_id):
     users = [u for u in _DB["users"] if u["id"] == user_id]
     return users[0] if users else None
 PYEOF
-)
 
-gh api "repos/$R/contents/search.py" -X POST \
-  -f content="$SEARCH" \
-  -f message="add search module" \
-  -f branch=main >/dev/null 2>&1 || true
+cat > README.md << 'EOF'
+# webapp
+The acme web application.
+EOF
 
-gh api "repos/$R/contents/README.md" -X POST \
-  -f content="$(printf '# webapp\nThe acme web application.\n' | base64 -w0)" \
-  -f message="readme" \
-  -f branch=main >/dev/null 2>&1 || true
+git add .
+GIT_AUTHOR_DATE="2026-06-07T12:00:00Z" GIT_COMMITTER_DATE="2026-06-07T12:00:00Z" \
+  git commit -m "Initial snapshot" >/dev/null 2>&1
+git push origin task-main:main >/dev/null 2>&1

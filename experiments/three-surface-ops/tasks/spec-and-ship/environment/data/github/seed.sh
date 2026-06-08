@@ -1,51 +1,41 @@
 #!/usr/bin/env bash
+# Seed: acme/platform with register.py missing email validation.
 set -euo pipefail
 
-# Seed acme/platform with register.py missing email validation
+REPO=platform
 
-ghc repo create acme/platform --private || true
-cd /tmp && rm -rf platform
-ghc repo clone acme/platform
-cd platform
+gh repo create "$REPO" --description "acme platform service" >/dev/null 2>&1 || true
 
-cat > README.md << 'EOF'
-# platform
+work="$(mktemp -d)"
+git clone "http://localhost/acme/${REPO}.git" "$work/repo" >/dev/null 2>&1
+cd "$work/repo"
+git config user.email agent@example.local
+git config user.name "Agent User"
+git checkout --orphan task-main >/dev/null 2>&1 || true
+git rm -rf . >/dev/null 2>&1 || true
 
-ACME platform monorepo. Core application services.
-
-## Structure
-
-- `register.py` — user registration endpoint
-- `login.py` — authentication endpoint
-
-## Running
-
-```bash
-python -m uvicorn app:main --host 0.0.0.0 --port 8080
-```
-EOF
-
-cat > register.py << 'EOF'
-"""User registration."""
-
+cat > register.py << 'PYEOF'
 import hashlib
-import secrets
 
 
 def hash_password(pw):
-    salt = secrets.token_hex(16)
-    hashed = hashlib.pbkdf2_hmac("sha256", pw.encode(), salt.encode(), 100000)
-    return f"{salt}:{hashed.hex()}"
+    return hashlib.sha256(pw.encode()).hexdigest()
 
 
 def create_user(email, password):
-    """Register a new user. No input validation currently."""
+    """Register a new user. No email validation currently."""
     if not email or not password:
         return {"error": "email and password required"}, 400
     user = db.create({"email": email, "password": hash_password(password)})
     return {"id": user["id"], "email": user["email"]}, 201
+PYEOF
+
+cat > README.md << 'EOF'
+# platform
+The acme platform service.
 EOF
 
-git add README.md register.py
-git commit -m "initial: add registration module"
-git push origin main
+git add .
+GIT_AUTHOR_DATE="2026-06-07T12:00:00Z" GIT_COMMITTER_DATE="2026-06-07T12:00:00Z" \
+  git commit -m "Initial snapshot" >/dev/null 2>&1
+git push --force origin task-main:main >/dev/null 2>&1

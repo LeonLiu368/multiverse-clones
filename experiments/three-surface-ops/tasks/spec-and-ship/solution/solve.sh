@@ -2,7 +2,7 @@
 set -euo pipefail
 
 cd /tmp && rm -rf platform
-gh repo clone acme/platform && cd platform
+gh repo clone acme/platform platform && cd platform
 
 cat > register.py << 'EOF'
 """User registration."""
@@ -47,6 +47,6 @@ for i in $(seq 1 10); do
   gh pr merge "$PR_NUM" -R acme/platform --method squash && break || sleep 3
 done
 
-linear issue edit FEAT-301 --state Done 2>/dev/null \
+linear issue update FEAT-301 --state Done 2>/dev/null \
   || linear issue close FEAT-301 2>/dev/null \
   || true

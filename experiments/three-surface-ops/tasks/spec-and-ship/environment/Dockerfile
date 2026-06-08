@@ -13,6 +13,8 @@ RUN ln -sf "$(command -v python3)" /usr/local/bin/python && \
     chmod +x /usr/local/bin/gh /usr/local/bin/ghc /usr/local/bin/linear /usr/local/bin/jira /usr/local/bin/slack /usr/local/bin/slack-mcp && \
     mkdir -p /app && \
     mkdir -p /var/lib/ticketvector && chmod 700 /var/lib/ticketvector && \
+    git config --system user.email agent@example.local && \
+    git config --system user.name "Agent User" && \
     chown -R root:root /opt/ghclone /opt/ticketvector /opt/slackcli /var/lib/ticketvector && \
     chown -R agent:agent /app
 WORKDIR /app
