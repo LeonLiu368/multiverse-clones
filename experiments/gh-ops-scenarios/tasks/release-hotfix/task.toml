@@ -1,0 +1,24 @@
+schema_version = "1.2"
+name = "gh-ops-scenarios/release-hotfix"
+description = "A critical bug in billing.py on the release-v1.1 branch multiplies tax by 100x. The agent must find the blocker issue, fix billing.py on the release-v1.1 branch via a PR (NOT targeting main), merge the PR, cut a v1.1.1 patch release, and close the issue. nop=0, oracle=1."
+
+[metadata]
+category = "swe"
+source_repo = "acme/billing"
+failure_mode = "release-process"
+tags = ["gh", "hotfix", "release", "multi-container", "realistic", "branching"]
+
+[agent]
+timeout_sec = 1800
+
+[verifier]
+timeout_sec = 300
+
+[environment]
+cpus = 2
+memory_mb = 3072
+storage_mb = 12288
+gpus = 0
+allow_internet = false
+workdir = "/app"
+build_timeout_sec = 2400

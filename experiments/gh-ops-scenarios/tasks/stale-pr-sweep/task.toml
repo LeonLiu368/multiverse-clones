@@ -1,0 +1,24 @@
+schema_version = "1.2"
+name = "gh-ops-scenarios/stale-pr-sweep"
+description = "Audit three open PRs in acme/platform: two have their linked tracking issues already closed (stale), one has an open issue (active). Close the two stale PRs with a brief comment explaining the closure; leave the active PR untouched. nop=0, oracle=1."
+
+[metadata]
+category = "swe"
+source_repo = "acme/platform"
+failure_mode = "process-hygiene"
+tags = ["gh", "pr-management", "triage", "multi-container", "realistic"]
+
+[agent]
+timeout_sec = 1800
+
+[verifier]
+timeout_sec = 300
+
+[environment]
+cpus = 2
+memory_mb = 3072
+storage_mb = 12288
+gpus = 0
+allow_internet = false
+workdir = "/app"
+build_timeout_sec = 2400

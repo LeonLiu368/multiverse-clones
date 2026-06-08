@@ -1,0 +1,35 @@
+metadata:
+  name: gh-ops-scenarios
+  description: |
+    Three realistic GitHub-operations scenarios where the agent operates an offline
+    Forgejo forge through the `gh` CLI (ghcr.io/abundant-ai/ghc-service sidecar).
+    Tasks cover: fixing a SQL-injection vulnerability and shipping it via a reviewed
+    PR (security-patch-pr), auditing open PRs and closing stale ones whose tracking
+    issues were resolved without the PR (stale-pr-sweep), and cherry-picking a
+    bug-fix onto a release branch, merging it via PR, and cutting a patch release
+    (release-hotfix). All verifiers check outcome state via `gh api` — not command
+    transcripts. nop=0, oracle=1.
+  task_path: experiments/gh-ops-scenarios/tasks
+  n_trials: 3
+  skip_trajectory_analysis: false
+
+tasks:
+  - security-patch-pr
+  - stale-pr-sweep
+  - release-hotfix
+
+agents:
+  - name: oracle
+  - name: nop
+  - name: gemini-cli
+    model_name: gemini/gemini-3.1-pro-preview
+    n_trials: 3
+  - name: codex
+    model_name: openai/gpt-5.2-codex
+    n_trials: 2
+  - name: claude-code
+    model_name: anthropic/claude-opus-4-7
+    n_trials: 2
+  - name: cursor-cli
+    model_name: cursor/composer
+    n_trials: 2
