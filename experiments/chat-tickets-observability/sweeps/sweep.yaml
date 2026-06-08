@@ -16,3 +16,6 @@ agents:
   - name: claude-code
     model_name: anthropic/claude-opus-4-7
     n_trials: 2
+  - name: cursor-cli
+    model_name: cursor/composer
+    n_trials: 2
