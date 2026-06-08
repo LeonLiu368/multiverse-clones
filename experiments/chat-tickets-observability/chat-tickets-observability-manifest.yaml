@@ -20,8 +20,8 @@ tasks:
   - variant-paperless-ngx-12856-chat-tickets
 
 agents:
-  - oracle
-  - nop
+  - name: oracle
+  - name: nop
   - name: gemini-cli
     model_name: gemini/gemini-3.1-pro-preview
     n_trials: 3
