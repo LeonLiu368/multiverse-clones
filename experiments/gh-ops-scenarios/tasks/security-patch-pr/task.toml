@@ -19,6 +19,6 @@ cpus = 2
 memory_mb = 3072
 storage_mb = 12288
 gpus = 0
-allow_internet = false
+allow_internet = true
 workdir = "/app"
 build_timeout_sec = 2400
