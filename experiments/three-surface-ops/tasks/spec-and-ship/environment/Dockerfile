@@ -9,8 +9,10 @@ COPY --from=gh-tools /opt/ghclone /opt/ghclone
 COPY --from=gh-tools /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.10/dist-packages
 COPY --from=ticketvector-tools /usr/local/bin/linear /usr/local/bin/jira /usr/local/bin/
 COPY --from=ticketvector-tools /opt/ticketvector /opt/ticketvector
+COPY wait-for-seed.sh /usr/local/bin/wait-for-seed
 RUN ln -sf "$(command -v python3)" /usr/local/bin/python && \
-    chmod +x /usr/local/bin/gh /usr/local/bin/ghc /usr/local/bin/linear /usr/local/bin/jira /usr/local/bin/slack /usr/local/bin/slack-mcp && \
+    chmod +x /usr/local/bin/gh /usr/local/bin/ghc /usr/local/bin/linear /usr/local/bin/jira \
+             /usr/local/bin/slack /usr/local/bin/slack-mcp /usr/local/bin/wait-for-seed && \
     mkdir -p /app && \
     mkdir -p /var/lib/ticketvector && chmod 700 /var/lib/ticketvector && \
     git config --system user.email agent@example.local && \
