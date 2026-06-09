@@ -1,15 +1,13 @@
-# On-call incident — active
+# On-call incident — fix ready for review
 
-You are the on-call engineer. An incident is active.
-
-Investigate using the three tools wired into your environment, find the root cause,
-and fix it.
+You are the on-call engineer. A team member has already diagnosed the incident
+and submitted a fix as a pull request. Your job is to validate the fix against
+the context across all three surfaces, then merge it and close the ticket.
 
 ## Issue tracker — `linear` / `jira`
 
 ```bash
 linear issue mine                        # your assigned tickets
-linear issue list                        # project backlog
 linear issue view PROD-101 --comments    # full incident ticket
 ```
 
@@ -18,22 +16,19 @@ linear issue view PROD-101 --comments    # full incident ticket
 ```bash
 slack channels
 slack history ops-oncall --limit 100
-slack search "search endpoint"
 # or use the slack-mcp MCP server
 ```
 
 ## Code — `gh` / `git`
 
 ```bash
-gh repo list                             # repos you have access to
-gh repo clone acme/webapp
+gh pr list -R acme/webapp                # the open fix PR
+gh pr view 1 -R acme/webapp             # PR description and diff
+gh repo clone acme/webapp               # clone to inspect code if needed
 ```
 
 ## What to do
 
-Correlate the incident ticket with the on-call discussion to identify the exact
-root cause. The ticket describes the symptom; the chat thread has the diagnosis and
-agreed fix. Implement the fix in the repo, ship it via a reviewed and merged pull
-request, and move the ticket to Done.
-
-**Do not modify any test files.**
+Read the incident ticket, the on-call discussion, and the open pull request.
+Verify the PR's fix matches what the team agreed in the Slack thread.
+If correct, approve and merge it, then set PROD-101 to Done.

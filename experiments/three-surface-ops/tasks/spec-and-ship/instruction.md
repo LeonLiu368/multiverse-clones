@@ -1,7 +1,7 @@
-# Feature implementation
+# Feature PR — ready for final review and merge
 
-A feature is ready to implement. You have the ticket, the design discussion, and
-access to the codebase.
+A feature has been designed, agreed on, and implemented as a pull request.
+You are the assigned engineer responsible for the final review and merge.
 
 ## Issue tracker — `linear` / `jira`
 
@@ -15,19 +15,20 @@ linear issue view FEAT-301 --comments
 ```bash
 slack channels
 slack history eng-design --limit 100
-slack search "email validation"
+# or use the slack-mcp MCP server
 ```
 
 ## Code — `gh` / `git`
 
 ```bash
-gh repo list
-gh repo clone acme/platform
+gh pr list -R acme/platform              # the open feature PR
+gh pr view 1 -R acme/platform           # PR description and diff
+gh repo clone acme/platform             # clone to inspect code if needed
 ```
 
 ## What to do
 
-The ticket describes the requirement. The Slack design channel has the team's
-agreed implementation spec — the exact details of how to implement it (regex,
-error handling, which function to modify). Implement it exactly as the team agreed,
-ship via a reviewed and merged pull request, and move the ticket to Done.
+Read the feature ticket, the implementation spec agreed in the Slack design
+channel, and the open pull request. Verify the PR implements exactly what the
+team specified (regex pattern, error code, which function). If it matches, approve
+and merge it, then move FEAT-301 to Done.
