@@ -6,6 +6,12 @@
 # so the agent can only influence the result through the source code.
 set -uo pipefail
 
+# Absolute path to the verifier's starting directory. The script later `cd`s
+# into a temporary clone to run the tests, so the primary reward.txt must be
+# written by absolute path or it would land in the clone (and the harness would
+# read the stale initial value).
+START_DIR="$(pwd)"
+
 LOG_DIR="/logs/verifier"
 mkdir -p "$LOG_DIR" 2>/dev/null || LOG_DIR="${TMPDIR:-/tmp}/verifier"
 mkdir -p "$LOG_DIR" 2>/dev/null || true
@@ -14,7 +20,7 @@ mkdir -p "$VERIFIER_DIR" 2>/dev/null || VERIFIER_DIR=""
 
 write_reward() {
   local v="$1"
-  echo "$v" > reward.txt 2>/dev/null || true
+  echo "$v" > "$START_DIR/reward.txt" 2>/dev/null || true
   echo "$v" > "$LOG_DIR/reward.txt" 2>/dev/null || true
   [ -n "$VERIFIER_DIR" ] && echo "$v" > "$VERIFIER_DIR/reward.txt" 2>/dev/null || true
 }
@@ -23,23 +29,59 @@ write_reward 0
 R=acme/webapp
 REPO=webapp
 TOK="$(cat /run/secrets/token 2>/dev/null || echo "${GH_TOKEN:-}")"
+export GH_TOKEN="$TOK"
+export GH_HOST="${GH_HOST:-http://github}"
 
-# ── 1. locate the agent's PR (prefer an open PR; fall back to a merged one) ───
+# Parse the pulls REST payload: print "NUMBER HEADREF" for the first PR whose
+# base is main (falling back to the first PR of any base).
+parse_open_pr() {
+  python3 -c '
+import sys, json
+try:
+    xs = json.load(sys.stdin)
+except Exception:
+    sys.exit(0)
+if not isinstance(xs, list):
+    sys.exit(0)
+cand = [x for x in xs if (x.get("base") or {}).get("ref") == "main"] or xs
+if cand:
+    x = cand[0]
+    print("%s %s" % (x.get("number", ""), (x.get("head") or {}).get("ref", "")))
+'
+}
+
+any_merged() {
+  python3 -c '
+import sys, json
+try:
+    xs = json.load(sys.stdin)
+except Exception:
+    xs = []
+if not isinstance(xs, list):
+    xs = []
+print(int(any(x.get("merged_at") for x in xs)))
+'
+}
+
+# ── 1. locate the agent's PR via the pulls REST endpoint. We deliberately avoid
+#       `gh pr list --base` / `gh pr view --json`, whose flags are not reliably
+#       honored by the offline forge and can exit non-zero (which previously
+#       surfaced as a spurious "no PR found"). ─────────────────────────────────
 PR_NUM=""
 HEAD_REF=""
 USE_MAIN=0
-for _ in $(seq 1 15); do
-  PR_NUM=$(gh pr list -R "$R" --state open --base main --json number --jq '.[0].number' 2>/dev/null)
-  [ -n "$PR_NUM" ] && break
-  sleep 2
+for _ in $(seq 1 20); do
+  line="$(gh api "repos/$R/pulls?state=open&per_page=100" 2>/dev/null | parse_open_pr)"
+  if [ -n "$line" ]; then
+    read -r PR_NUM HEAD_REF <<<"$line"
+    [ -n "$PR_NUM" ] && break
+  fi
+  sleep 3
 done
 
-if [ -n "$PR_NUM" ]; then
-  HEAD_REF=$(gh pr view "$PR_NUM" -R "$R" --json headRefName --jq '.headRefName' 2>/dev/null)
-else
+if [ -z "$PR_NUM" ]; then
   # no open PR — was one merged into main?
-  merged=$(gh api "repos/$R/pulls?state=closed&base=main" 2>/dev/null \
-    | python3 -c 'import sys,json; xs=json.load(sys.stdin); print(int(any(x.get("merged") for x in xs)))' 2>/dev/null)
+  merged="$(gh api "repos/$R/pulls?state=closed&per_page=100" 2>/dev/null | any_merged)"
   if [ "${merged:-0}" = "1" ]; then
     USE_MAIN=1
   else
