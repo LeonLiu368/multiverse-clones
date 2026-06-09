@@ -21,7 +21,7 @@
     {
       "channel": "random",
       "author": "carol",
-      "content": "Coffee machine on 3 is fixed \u2615",
+      "content": "Coffee machine on 3 is fixed ☕",
       "timestamp": "2026-06-06T10:30:00Z"
     },
     {
@@ -75,7 +75,7 @@
     {
       "channel": "security",
       "author": "judy",
-      "content": "we should enforce https everywhere \u2014 redirect any http:// to https:// at the edge and set HSTS.",
+      "content": "we should enforce https everywhere — redirect any http:// to https:// at the edge and set HSTS.",
       "timestamp": "2026-06-05T10:00:00Z"
     },
     {
@@ -169,66 +169,6 @@
       "timestamp": "2026-06-05T15:14:00Z"
     },
     {
-      "channel": "eng",
-      "author": "alice",
-      "content": "We're seeing reports that requests to the legacy partner gateway fail. Their endpoints advertise uppercase schemes like HTTP://gw.partner.example and HTTPS://gw.partner.example. Our client throws 'No connection adapters were found'. Tracking as WEB-101.",
-      "timestamp": "2026-06-06T11:00:00Z"
-    },
-    {
-      "channel": "eng",
-      "author": "bob",
-      "content": "Confirmed. RFC 2396 \u00a73.1 says scheme names are case-insensitive, so HTTP:// and http:// are the same scheme. Our code compares the raw URL against lowercase prefixes, so uppercase schemes never match.",
-      "timestamp": "2026-06-06T11:05:00Z"
-    },
-    {
-      "channel": "eng",
-      "author": "dave",
-      "content": "quick idea before we dig in: could we just url.casefold() the whole thing, or lowercase the entire url up front?",
-      "timestamp": "2026-06-06T11:06:00Z"
-    },
-    {
-      "channel": "eng",
-      "author": "carol",
-      "content": "no \u2014 we saw what lowercasing the whole url did to case-sensitive paths. where exactly does the scheme comparison happen so we can scope it?",
-      "timestamp": "2026-06-06T11:07:00Z"
-    },
-    {
-      "channel": "eng",
-      "author": "bob",
-      "content": "Two places, and BOTH must be fixed or the partner flow still breaks: (1) `Session.get_adapter` in requests/sessions.py does `url.startswith(prefix)`; (2) `HTTPAdapter.cert_verify` in requests/adapters.py does `url.startswith('https')`. A partial fix that only touches one will fail review.",
-      "timestamp": "2026-06-06T11:10:00Z"
-    },
-    {
-      "channel": "eng",
-      "author": "alice",
-      "content": "Agreed on the approach: normalize the scheme by calling `.lower()` on the URL at each comparison site \u2014 e.g. `url.lower().startswith(prefix)`. Do NOT mutate the stored adapter prefixes, and do NOT switch to casefold(); team standard is a plain `.lower()` at the comparison.",
-      "timestamp": "2026-06-06T11:13:00Z"
-    },
-    {
-      "channel": "eng",
-      "author": "bob",
-      "content": "Got it. So: lowercase the URL only for the scheme comparison in get_adapter and in cert_verify. Existing lowercase behavior stays identical, and unknown schemes must still raise ValueError.",
-      "timestamp": "2026-06-06T11:15:00Z"
-    },
-    {
-      "channel": "eng",
-      "author": "alice",
-      "content": "Exactly. Ship it as a PR against main \u2014 no direct pushes. The existing tests in tests/test_basic.py must keep passing.",
-      "timestamp": "2026-06-06T11:17:00Z"
-    },
-    {
-      "channel": "eng",
-      "author": "carol",
-      "content": "I'll review when the PR is up. Make sure HTTPS:// and mixed-case like HtTpS:// both resolve to the https adapter.",
-      "timestamp": "2026-06-06T11:20:00Z"
-    },
-    {
-      "channel": "eng",
-      "author": "bob",
-      "content": "Will do. Branch + PR incoming.",
-      "timestamp": "2026-06-06T11:22:00Z"
-    },
-    {
       "channel": "standup",
       "author": "uma",
       "content": "docs site is down, looking into it.",
@@ -291,7 +231,7 @@
     {
       "channel": "standup",
       "author": "judy",
-      "content": "new hire starts monday, be nice \ud83d\ude42",
+      "content": "new hire starts monday, be nice 🙂",
       "timestamp": "2026-06-07T13:19:00Z"
     },
     {
@@ -453,7 +393,7 @@
     {
       "channel": "deploys",
       "author": "peter",
-      "content": "we got a nice bump in signups this week \ud83c\udf89",
+      "content": "we got a nice bump in signups this week 🎉",
       "timestamp": "2026-06-05T13:22:00Z"
     },
     {
@@ -555,7 +495,7 @@
     {
       "channel": "deploys",
       "author": "dave",
-      "content": "we got a nice bump in signups this week \ud83c\udf89",
+      "content": "we got a nice bump in signups this week 🎉",
       "timestamp": "2026-06-03T14:03:00Z"
     },
     {
@@ -603,7 +543,7 @@
     {
       "channel": "incidents",
       "author": "trent",
-      "content": "new hire starts monday, be nice \ud83d\ude42",
+      "content": "new hire starts monday, be nice 🙂",
       "timestamp": "2026-05-26T11:50:00Z"
     },
     {
@@ -711,7 +651,7 @@
     {
       "channel": "incidents",
       "author": "grace",
-      "content": "we got a nice bump in signups this week \ud83c\udf89",
+      "content": "we got a nice bump in signups this week 🎉",
       "timestamp": "2026-05-27T18:32:00Z"
     },
     {
@@ -735,13 +675,13 @@
     {
       "channel": "incidents",
       "author": "nate",
-      "content": "we got a nice bump in signups this week \ud83c\udf89",
+      "content": "we got a nice bump in signups this week 🎉",
       "timestamp": "2026-05-28T19:13:00Z"
     },
     {
       "channel": "incidents",
       "author": "quinn",
-      "content": "we got a nice bump in signups this week \ud83c\udf89",
+      "content": "we got a nice bump in signups this week 🎉",
       "timestamp": "2026-06-02T08:12:00Z"
     },
     {
@@ -993,7 +933,7 @@
     {
       "channel": "qa",
       "author": "judy",
-      "content": "new hire starts monday, be nice \ud83d\ude42",
+      "content": "new hire starts monday, be nice 🙂",
       "timestamp": "2026-06-03T15:32:00Z"
     },
     {
@@ -1005,7 +945,7 @@
     {
       "channel": "qa",
       "author": "trent",
-      "content": "new hire starts monday, be nice \ud83d\ude42",
+      "content": "new hire starts monday, be nice 🙂",
       "timestamp": "2026-05-26T16:16:00Z"
     },
     {
@@ -1227,7 +1167,7 @@
     {
       "channel": "product",
       "author": "olivia",
-      "content": "new hire starts monday, be nice \ud83d\ude42",
+      "content": "new hire starts monday, be nice 🙂",
       "timestamp": "2026-06-08T10:48:00Z"
     },
     {
@@ -1389,7 +1329,7 @@
     {
       "channel": "design",
       "author": "peter",
-      "content": "new hire starts monday, be nice \ud83d\ude42",
+      "content": "new hire starts monday, be nice 🙂",
       "timestamp": "2026-05-27T19:42:00Z"
     },
     {
@@ -1701,7 +1641,7 @@
     {
       "channel": "releases",
       "author": "mallory",
-      "content": "new hire starts monday, be nice \ud83d\ude42",
+      "content": "new hire starts monday, be nice 🙂",
       "timestamp": "2026-05-28T19:11:00Z"
     },
     {
@@ -1773,7 +1713,7 @@
     {
       "channel": "database",
       "author": "bob",
-      "content": "new hire starts monday, be nice \ud83d\ude42",
+      "content": "new hire starts monday, be nice 🙂",
       "timestamp": "2026-06-08T11:37:00Z"
     },
     {
@@ -2007,7 +1947,7 @@
     {
       "channel": "perf",
       "author": "nate",
-      "content": "we got a nice bump in signups this week \ud83c\udf89",
+      "content": "we got a nice bump in signups this week 🎉",
       "timestamp": "2026-05-28T15:19:00Z"
     },
     {
@@ -2037,13 +1977,13 @@
     {
       "channel": "perf",
       "author": "rachel",
-      "content": "new hire starts monday, be nice \ud83d\ude42",
+      "content": "new hire starts monday, be nice 🙂",
       "timestamp": "2026-06-03T19:24:00Z"
     },
     {
       "channel": "perf",
       "author": "frank",
-      "content": "we got a nice bump in signups this week \ud83c\udf89",
+      "content": "we got a nice bump in signups this week 🎉",
       "timestamp": "2026-05-25T18:15:00Z"
     },
     {
@@ -2109,7 +2049,7 @@
     {
       "channel": "watercooler",
       "author": "carol",
-      "content": "we got a nice bump in signups this week \ud83c\udf89",
+      "content": "we got a nice bump in signups this week 🎉",
       "timestamp": "2026-05-27T14:05:00Z"
     },
     {
@@ -2181,13 +2121,13 @@
     {
       "channel": "watercooler",
       "author": "ivan",
-      "content": "new hire starts monday, be nice \ud83d\ude42",
+      "content": "new hire starts monday, be nice 🙂",
       "timestamp": "2026-05-26T12:30:00Z"
     },
     {
       "channel": "watercooler",
       "author": "mallory",
-      "content": "we got a nice bump in signups this week \ud83c\udf89",
+      "content": "we got a nice bump in signups this week 🎉",
       "timestamp": "2026-06-04T11:46:00Z"
     },
     {
@@ -2211,7 +2151,7 @@
     {
       "channel": "watercooler",
       "author": "heidi",
-      "content": "new hire starts monday, be nice \ud83d\ude42",
+      "content": "new hire starts monday, be nice 🙂",
       "timestamp": "2026-06-01T13:03:00Z"
     },
     {
@@ -2271,7 +2211,7 @@
     {
       "channel": "watercooler",
       "author": "erin",
-      "content": "new hire starts monday, be nice \ud83d\ude42",
+      "content": "new hire starts monday, be nice 🙂",
       "timestamp": "2026-05-30T08:23:00Z"
     },
     {
@@ -2289,7 +2229,7 @@
     {
       "channel": "partners",
       "author": "heidi",
-      "content": "we got a nice bump in signups this week \ud83c\udf89",
+      "content": "we got a nice bump in signups this week 🎉",
       "timestamp": "2026-06-03T10:29:00Z"
     },
     {
@@ -2493,7 +2433,7 @@
     {
       "channel": "marketing",
       "author": "bob",
-      "content": "new hire starts monday, be nice \ud83d\ude42",
+      "content": "new hire starts monday, be nice 🙂",
       "timestamp": "2026-06-04T08:54:00Z"
     },
     {
@@ -2655,7 +2595,7 @@
     {
       "channel": "sales-eng",
       "author": "quinn",
-      "content": "we got a nice bump in signups this week \ud83c\udf89",
+      "content": "we got a nice bump in signups this week 🎉",
       "timestamp": "2026-05-27T08:32:00Z"
     },
     {
@@ -2673,7 +2613,7 @@
     {
       "channel": "sales-eng",
       "author": "bob",
-      "content": "we got a nice bump in signups this week \ud83c\udf89",
+      "content": "we got a nice bump in signups this week 🎉",
       "timestamp": "2026-05-28T14:10:00Z"
     },
     {
@@ -2697,7 +2637,7 @@
     {
       "channel": "sales-eng",
       "author": "sam",
-      "content": "new hire starts monday, be nice \ud83d\ude42",
+      "content": "new hire starts monday, be nice 🙂",
       "timestamp": "2026-05-27T08:48:00Z"
     },
     {
@@ -2709,7 +2649,7 @@
     {
       "channel": "sales-eng",
       "author": "nate",
-      "content": "new hire starts monday, be nice \ud83d\ude42",
+      "content": "new hire starts monday, be nice 🙂",
       "timestamp": "2026-06-07T16:31:00Z"
     },
     {
@@ -2807,6 +2747,114 @@
       "author": "judy",
       "content": "anyone seen the partner integration creds? need them for testing.",
       "timestamp": "2026-06-08T14:31:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "alice",
+      "content": "Partner gateway advertises uppercase schemes like HTTP://gw.partner.example and our client can't match them. Quick fix: just url.casefold() the whole URL up front in get_adapter — casefold covers all the unicode edge cases too.",
+      "timestamp": "2026-05-16T09:00:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "bob",
+      "content": "casefold() is stricter than lower() for unicode, makes sense. Let's casefold the url before the startswith checks.",
+      "timestamp": "2026-05-16T09:05:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "alice",
+      "content": "Good. Ship the casefold approach.",
+      "timestamp": "2026-05-16T09:08:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "carol",
+      "content": "fine as a first cut.",
+      "timestamp": "2026-05-16T09:12:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "alice",
+      "content": "We're seeing reports that requests to the legacy partner gateway fail. Their endpoints advertise uppercase schemes like HTTP://gw.partner.example and HTTPS://gw.partner.example. Our client throws 'No connection adapters were found'. Tracking as WEB-101.",
+      "timestamp": "2026-06-06T11:00:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "bob",
+      "content": "Confirmed. RFC 2396 §3.1 says scheme names are case-insensitive, so HTTP:// and http:// are the same scheme. Our code compares the raw URL against lowercase prefixes, so uppercase schemes never match.",
+      "timestamp": "2026-06-06T11:05:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "carol",
+      "content": "Heads up before anyone reuses the May thread: the casefold plan got reverted. Style guide mandates a plain `.lower()` for URL scheme comparisons, NOT casefold(), and we do NOT lowercase the whole URL — that broke case-sensitive paths last time.",
+      "timestamp": "2026-06-06T11:06:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "dave",
+      "content": "quick idea before we dig in: could we just url.casefold() the whole thing, or lowercase the entire url up front?",
+      "timestamp": "2026-06-06T11:07:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "carol",
+      "content": "no — re-read what I just said. lowercasing the whole url breaks case-sensitive paths, and casefold is off the table. scope it to the scheme comparison only.",
+      "timestamp": "2026-06-06T11:08:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "alice",
+      "content": "Approach is agreed. The exact call sites and the `.lower()` pattern are written up in #web-platform — follow it exactly; a partial fix that misses one site will fail review.",
+      "timestamp": "2026-06-06T11:13:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "alice",
+      "content": "Ship it as a PR against main — no direct pushes. The existing tests in tests/test_basic.py must keep passing.",
+      "timestamp": "2026-06-06T11:17:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "carol",
+      "content": "I'll review when the PR is up. Make sure HTTPS:// and mixed-case like HtTpS:// both resolve to the https adapter.",
+      "timestamp": "2026-06-06T11:20:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "bob",
+      "content": "Will do. Branch + PR incoming.",
+      "timestamp": "2026-06-06T11:22:00Z"
+    },
+    {
+      "channel": "web-platform",
+      "author": "bob",
+      "content": "Lifting the implementation spec for WEB-101 out of #eng so it doesn't drown in the chatter. Two call sites, and BOTH must change or the partner flow still breaks:",
+      "timestamp": "2026-06-06T11:30:00Z"
+    },
+    {
+      "channel": "web-platform",
+      "author": "bob",
+      "content": "(1) `Session.get_adapter` in requests/sessions.py: change `url.startswith(prefix)` → `url.lower().startswith(prefix)`.",
+      "timestamp": "2026-06-06T11:31:00Z"
+    },
+    {
+      "channel": "web-platform",
+      "author": "bob",
+      "content": "(2) `HTTPAdapter.cert_verify` in requests/adapters.py: change `url.startswith('https')` → `url.lower().startswith('https')`.",
+      "timestamp": "2026-06-06T11:32:00Z"
+    },
+    {
+      "channel": "web-platform",
+      "author": "carol",
+      "content": "Normalize at the comparison site only. Do NOT mutate the stored adapter prefixes or re-key self.adapters — the keys stay lowercase ('https://', 'http://'). And plain `.lower()`, not casefold().",
+      "timestamp": "2026-06-06T11:35:00Z"
+    },
+    {
+      "channel": "web-platform",
+      "author": "alice",
+      "content": "Existing lowercase behavior must stay identical, unknown schemes still raise ValueError, and both HTTPS:// and HtTpS:// resolve to the https adapter.",
+      "timestamp": "2026-06-06T11:37:00Z"
     }
   ]
 }

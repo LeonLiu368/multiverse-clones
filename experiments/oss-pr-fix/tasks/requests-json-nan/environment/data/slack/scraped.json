@@ -21,7 +21,7 @@
     {
       "channel": "random",
       "author": "carol",
-      "content": "Lunch truck is back today \ud83c\udf2e",
+      "content": "Lunch truck is back today 🌮",
       "timestamp": "2026-06-06T11:30:00Z"
     },
     {
@@ -33,7 +33,7 @@
     {
       "channel": "random",
       "author": "dave",
-      "content": "anyone else gettin wierd nan values in the fantasy league spreadsheet? \ud83d\ude02",
+      "content": "anyone else gettin wierd nan values in the fantasy league spreadsheet? 😂",
       "timestamp": "2026-06-06T12:05:00Z"
     },
     {
@@ -165,7 +165,7 @@
     {
       "channel": "backend",
       "author": "bob",
-      "content": "no \u2014 silently rewriting the data hides the bug from the caller. product wants a hard failure, not a coerce. lets not do the null-replace hack.",
+      "content": "no — silently rewriting the data hides the bug from the caller. product wants a hard failure, not a coerce. lets not do the null-replace hack.",
       "timestamp": "2026-06-06T09:39:00Z"
     },
     {
@@ -177,7 +177,7 @@
     {
       "channel": "backend",
       "author": "bob",
-      "content": "still a silent coerce, and 'nan' as a string is worse. the agreed direction is in #eng \u2014 raise on invalid floats, dont mutate. take it there.",
+      "content": "still a silent coerce, and 'nan' as a string is worse. the agreed direction is in #eng — raise on invalid floats, dont mutate. take it there.",
       "timestamp": "2026-06-06T09:46:00Z"
     },
     {
@@ -203,60 +203,6 @@
       "author": "rachel",
       "content": "ack. ill mute the auth ones, theyre a seperate rotation. the json body 400s go to the api-service team.",
       "timestamp": "2026-06-06T09:19:00Z"
-    },
-    {
-      "channel": "eng",
-      "author": "alice",
-      "content": "Customers report intermittent 400 Bad Request when they POST telemetry. Payloads sometimes contain float('nan') or float('inf') for missing sensor readings. Tracking as API-202.",
-      "timestamp": "2026-06-06T10:00:00Z"
-    },
-    {
-      "channel": "eng",
-      "author": "bob",
-      "content": "Root cause: in requests/models.py, `PreparedRequest.prepare_body` calls `complexjson.dumps(json)` with default settings. Python's json emits bare `NaN`/`Infinity` tokens, which are valid JS but invalid JSON per RFC 4627 \u00a72.4. The gateway rejects them with a 400, far from where the bad value was introduced.",
-      "timestamp": "2026-06-06T10:05:00Z"
-    },
-    {
-      "channel": "eng",
-      "author": "dave",
-      "content": "before we go deep \u2014 could we just swap NaN for null, or name the new error JSONError / BadJSON? trying to keep it simple.",
-      "timestamp": "2026-06-06T10:07:00Z"
-    },
-    {
-      "channel": "eng",
-      "author": "carol",
-      "content": "No silent coerce, and no ad-hoc name. So we should fail fast at serialization instead of shipping an invalid body. What's the exact contract?",
-      "timestamp": "2026-06-06T10:08:00Z"
-    },
-    {
-      "channel": "eng",
-      "author": "alice",
-      "content": "Agreed contract, please follow exactly so callers can catch it: add a new exception named `InvalidJSONError` in requests/exceptions.py that subclasses `RequestException` \u2014 that way existing `except RequestException` handlers keep working. Not JSONError, not BadJSON \u2014 `InvalidJSONError`.",
-      "timestamp": "2026-06-06T10:10:00Z"
-    },
-    {
-      "channel": "eng",
-      "author": "bob",
-      "content": "And in prepare_body: pass `allow_nan=False` to `complexjson.dumps`, wrap it in try/except, and on `ValueError` raise `InvalidJSONError(ve, request=self)`. Don't silently coerce or drop the value.",
-      "timestamp": "2026-06-06T10:13:00Z"
-    },
-    {
-      "channel": "eng",
-      "author": "alice",
-      "content": "Right. Valid finite payloads must serialize exactly as before \u2014 the existing tests in tests/test_basic.py must keep passing. Only NaN/Infinity should now raise.",
-      "timestamp": "2026-06-06T10:15:00Z"
-    },
-    {
-      "channel": "eng",
-      "author": "carol",
-      "content": "Ship as a PR against main, no direct commits. I'll review. Make sure both float('nan') and float('inf') raise InvalidJSONError.",
-      "timestamp": "2026-06-06T10:18:00Z"
-    },
-    {
-      "channel": "eng",
-      "author": "bob",
-      "content": "On it \u2014 branch + PR shortly.",
-      "timestamp": "2026-06-06T10:20:00Z"
     },
     {
       "channel": "standup",
@@ -375,7 +321,7 @@
     {
       "channel": "standup",
       "author": "victor",
-      "content": "we got a nice bump in signups this week \ud83c\udf89",
+      "content": "we got a nice bump in signups this week 🎉",
       "timestamp": "2026-05-28T08:24:00Z"
     },
     {
@@ -495,7 +441,7 @@
     {
       "channel": "deploys",
       "author": "alice",
-      "content": "new hire starts monday, be nice \ud83d\ude42",
+      "content": "new hire starts monday, be nice 🙂",
       "timestamp": "2026-05-29T15:56:00Z"
     },
     {
@@ -609,7 +555,7 @@
     {
       "channel": "deploys",
       "author": "dave",
-      "content": "we got a nice bump in signups this week \ud83c\udf89",
+      "content": "we got a nice bump in signups this week 🎉",
       "timestamp": "2026-05-29T12:47:00Z"
     },
     {
@@ -621,7 +567,7 @@
     {
       "channel": "deploys",
       "author": "rachel",
-      "content": "new hire starts monday, be nice \ud83d\ude42",
+      "content": "new hire starts monday, be nice 🙂",
       "timestamp": "2026-05-28T08:31:00Z"
     },
     {
@@ -729,7 +675,7 @@
     {
       "channel": "incidents",
       "author": "sam",
-      "content": "new hire starts monday, be nice \ud83d\ude42",
+      "content": "new hire starts monday, be nice 🙂",
       "timestamp": "2026-06-05T16:38:00Z"
     },
     {
@@ -807,7 +753,7 @@
     {
       "channel": "incidents",
       "author": "ivan",
-      "content": "new hire starts monday, be nice \ud83d\ude42",
+      "content": "new hire starts monday, be nice 🙂",
       "timestamp": "2026-05-27T11:02:00Z"
     },
     {
@@ -861,7 +807,7 @@
     {
       "channel": "support",
       "author": "dave",
-      "content": "new hire starts monday, be nice \ud83d\ude42",
+      "content": "new hire starts monday, be nice 🙂",
       "timestamp": "2026-05-29T12:33:00Z"
     },
     {
@@ -1317,7 +1263,7 @@
     {
       "channel": "product",
       "author": "carol",
-      "content": "new hire starts monday, be nice \ud83d\ude42",
+      "content": "new hire starts monday, be nice 🙂",
       "timestamp": "2026-05-26T15:54:00Z"
     },
     {
@@ -1569,7 +1515,7 @@
     {
       "channel": "releases",
       "author": "bob",
-      "content": "new hire starts monday, be nice \ud83d\ude42",
+      "content": "new hire starts monday, be nice 🙂",
       "timestamp": "2026-05-27T18:12:00Z"
     },
     {
@@ -1929,7 +1875,7 @@
     {
       "channel": "database",
       "author": "trent",
-      "content": "new hire starts monday, be nice \ud83d\ude42",
+      "content": "new hire starts monday, be nice 🙂",
       "timestamp": "2026-06-04T13:56:00Z"
     },
     {
@@ -1953,7 +1899,7 @@
     {
       "channel": "perf",
       "author": "olivia",
-      "content": "we got a nice bump in signups this week \ud83c\udf89",
+      "content": "we got a nice bump in signups this week 🎉",
       "timestamp": "2026-05-25T16:06:00Z"
     },
     {
@@ -2127,7 +2073,7 @@
     {
       "channel": "watercooler",
       "author": "rachel",
-      "content": "we got a nice bump in signups this week \ud83c\udf89",
+      "content": "we got a nice bump in signups this week 🎉",
       "timestamp": "2026-06-06T19:31:00Z"
     },
     {
@@ -2199,7 +2145,7 @@
     {
       "channel": "watercooler",
       "author": "rachel",
-      "content": "we got a nice bump in signups this week \ud83c\udf89",
+      "content": "we got a nice bump in signups this week 🎉",
       "timestamp": "2026-05-26T17:47:00Z"
     },
     {
@@ -2217,7 +2163,7 @@
     {
       "channel": "watercooler",
       "author": "victor",
-      "content": "new hire starts monday, be nice \ud83d\ude42",
+      "content": "new hire starts monday, be nice 🙂",
       "timestamp": "2026-05-25T14:08:00Z"
     },
     {
@@ -2283,7 +2229,7 @@
     {
       "channel": "watercooler",
       "author": "dave",
-      "content": "we got a nice bump in signups this week \ud83c\udf89",
+      "content": "we got a nice bump in signups this week 🎉",
       "timestamp": "2026-05-27T08:27:00Z"
     },
     {
@@ -2511,7 +2457,7 @@
     {
       "channel": "marketing",
       "author": "dave",
-      "content": "we got a nice bump in signups this week \ud83c\udf89",
+      "content": "we got a nice bump in signups this week 🎉",
       "timestamp": "2026-06-06T08:07:00Z"
     },
     {
@@ -2837,6 +2783,120 @@
       "author": "rachel",
       "content": "can someone review my PR when you get a sec? not urgent.",
       "timestamp": "2026-05-29T10:52:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "alice",
+      "content": "Couple of 400s on telemetry ingest last sprint when payloads carry NaN for missing sensor readings. Simplest fix I can think of: in prepare_body, catch `json.JSONDecodeError` around the dumps call and re-raise it so callers get a clean failure.",
+      "timestamp": "2026-05-16T09:00:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "bob",
+      "content": "json.JSONDecodeError is already in the stdlib so there's no new class to maintain. Let's just wrap the complexjson.dumps call and raise JSONDecodeError on bad input.",
+      "timestamp": "2026-05-16T09:05:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "alice",
+      "content": "Agreed, keeps us consistent with the stdlib. Shipping it that way for now.",
+      "timestamp": "2026-05-16T09:08:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "carol",
+      "content": "ok, lgtm as a stopgap. we can revisit if it bites us.",
+      "timestamp": "2026-05-16T09:12:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "alice",
+      "content": "Customers report intermittent 400 Bad Request when they POST telemetry. Payloads sometimes contain float('nan') or float('inf') for missing sensor readings. Tracking as API-202.",
+      "timestamp": "2026-06-06T10:00:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "bob",
+      "content": "Root cause: in requests/models.py, `PreparedRequest.prepare_body` calls `complexjson.dumps(json)` with default settings. Python's json emits bare `NaN`/`Infinity` tokens, which are valid JS but invalid JSON per RFC 4627 §2.4. The gateway rejects them with a 400, far from where the bad value was introduced.",
+      "timestamp": "2026-06-06T10:05:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "alice",
+      "content": "And forget the May JSONDecodeError plan — it was wrong on two counts: complexjson.dumps doesn't raise JSONDecodeError (that's a *decode* error), and it's a stdlib class we don't own. We're doing this properly this time.",
+      "timestamp": "2026-06-06T10:06:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "dave",
+      "content": "before we go deep — could we just swap NaN for null, or name the new error JSONError / BadJSON? trying to keep it simple.",
+      "timestamp": "2026-06-06T10:07:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "carol",
+      "content": "No silent coerce, and no ad-hoc name. So we should fail fast at serialization instead of shipping an invalid body. What's the exact contract?",
+      "timestamp": "2026-06-06T10:08:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "alice",
+      "content": "Agreed contract, please follow exactly so callers can catch it: add a new exception named `InvalidJSONError` in requests/exceptions.py that subclasses `RequestException` — that way existing `except RequestException` handlers keep working. Not JSONError, not BadJSON, not JSONDecodeError — `InvalidJSONError`.",
+      "timestamp": "2026-06-06T10:10:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "alice",
+      "content": "The exact prepare_body changes — what we pass to dumps and what we catch — are written up in #api-team. Follow that spec to the letter; I don't want a partial fix.",
+      "timestamp": "2026-06-06T10:12:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "alice",
+      "content": "Right. Valid finite payloads must serialize exactly as before — the existing tests in tests/test_basic.py must keep passing. Only NaN/Infinity should now raise.",
+      "timestamp": "2026-06-06T10:15:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "carol",
+      "content": "Ship as a PR against main, no direct commits. I'll review. Make sure both float('nan') and float('inf') raise InvalidJSONError.",
+      "timestamp": "2026-06-06T10:18:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "bob",
+      "content": "On it — branch + PR shortly.",
+      "timestamp": "2026-06-06T10:20:00Z"
+    },
+    {
+      "channel": "api-team",
+      "author": "bob",
+      "content": "Lifting the implementation detail for API-202 out of #eng so it doesn't get lost in the chatter. Spec for the NaN serialization fix:",
+      "timestamp": "2026-06-06T10:30:00Z"
+    },
+    {
+      "channel": "api-team",
+      "author": "bob",
+      "content": "In `PreparedRequest.prepare_body` (requests/models.py): pass `allow_nan=False` into the `complexjson.dumps(json, ...)` call. With allow_nan=False, json raises ValueError the moment it hits a NaN/Infinity float.",
+      "timestamp": "2026-06-06T10:31:00Z"
+    },
+    {
+      "channel": "api-team",
+      "author": "bob",
+      "content": "Wrap that dumps call in try/except and catch `ValueError` — NOT JSONDecodeError, dumps never raises that. On the ValueError, `raise InvalidJSONError(ve, request=self)`. Pass the original exception object through, not a bare string.",
+      "timestamp": "2026-06-06T10:32:00Z"
+    },
+    {
+      "channel": "api-team",
+      "author": "carol",
+      "content": "And do not substring-check the serialized body for 'NaN' — a JSON string value of \"NaN\" is perfectly valid and must serialize fine. Only the numeric float tokens should raise, and allow_nan=False handles exactly that for you.",
+      "timestamp": "2026-06-06T10:35:00Z"
+    },
+    {
+      "channel": "api-team",
+      "author": "alice",
+      "content": "Exactly. allow_nan=False is the entire mechanism. Finite payloads serialize byte-for-byte identically to today.",
+      "timestamp": "2026-06-06T10:37:00Z"
     }
   ]
 }

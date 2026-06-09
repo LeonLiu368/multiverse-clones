@@ -182,6 +182,20 @@ class TestMixedCaseScheme(unittest.TestCase):
         self.assertTrue(
             self.adapter.cert_verify(None, 'HtTpS://example.com', True, None))
 
+    def test_adapter_prefix_keys_unchanged(self):
+        # The fix must normalize the scheme at the *comparison* site
+        # (url.lower().startswith(prefix)), NOT by mutating the stored adapter
+        # prefix map. A fix that lowercases or re-keys self.adapters (or mounts
+        # an uppercase prefix) corrupts the registry and fails here, even though
+        # it may pass the case-insensitivity tests above.
+        session = Session()
+        session.get_adapter('HTTPS://example.com')
+        self.assertIn('https://', session.adapters)
+        self.assertIn('http://', session.adapters)
+        self.assertNotIn('HTTPS://', session.adapters)
+        self.assertNotIn('HTTP://', session.adapters)
+        self.assertEqual(len(session.adapters), 2)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -145,6 +145,7 @@ if __name__ == '__main__':
 PYEOF
 
 cat > tests/test_bug.py << 'PYEOF'
+import json
 import unittest
 
 from requests.models import PreparedRequest
@@ -169,6 +170,18 @@ class TestJSONNaN(unittest.TestCase):
 
     def test_invalid_json_error_subclasses_request_exception(self):
         self.assertTrue(issubclass(InvalidJSONError, RequestException))
+
+    def test_string_nan_does_not_raise(self):
+        # The string literals "NaN"/"Infinity" are perfectly valid JSON values.
+        # A correct fix uses json.dumps(allow_nan=False), which only rejects the
+        # numeric NaN/Infinity float tokens — not strings that happen to spell
+        # them. A lazy substring check (e.g. `if 'NaN' in body: raise`) wrongly
+        # rejects these and fails here.
+        p = PreparedRequest()
+        p.prepare_body(data=None, files=None, json={'note': 'NaN', 'val': 'Infinity'})
+        self.assertIsInstance(p.body, bytes)
+        self.assertEqual(
+            json.loads(p.body.decode()), {'note': 'NaN', 'val': 'Infinity'})
 
 
 if __name__ == '__main__':
