@@ -1,0 +1,32 @@
+schema_version = "1.2"
+name = "figma-observability/figma-button-states"
+description = "Observability + SWE task. A design-system Button component ships placeholder state values and its hidden grader fails. The finalized spec lives only in a Figma file and is split across THREE sources so no single read suffices: the button height is only in the node tree; the disabled-state opacity is only in a comment; the hover fill requires a 2-hop lookup (a comment says 'use the Primary/600 token', and the styles list resolves Primary/600 → #143FB7) while the Hover node still shows a stale blue; the label is overridden by a comment (the node still reads 'Buy now'); and the corner radius has a superseded-decoy chain (8 → 12 → final 10). The agent must use the `figma` tool (figma-cli + figma-mcp) to read the node tree, the comment thread, and the color styles, recover the exact spec, update the component, and post a completion comment on the Button node. A hidden grader pins the spec; the comment is read back through the API. nop=0, oracle=1."
+
+[metadata]
+category = "observability"
+source_repo = "acme/design-system"
+failure_mode = "stale-design-spec"
+tags = ["figma", "figma-clone", "observability", "swe", "design-spec", "tool-use", "multi-source", "style-tokens"]
+
+[agent]
+timeout_sec = 2700
+
+[verifier]
+timeout_sec = 300
+
+[environment]
+cpus = 2
+memory_mb = 4096
+storage_mb = 16384
+gpus = 0
+allow_internet = true
+workdir = "/app"
+build_timeout_sec = 2400
+
+# The agent operates Figma through the `figma-cli` command and this MCP server (stdio).
+# Both ship in the figma-service image the agent is built from; they reach the figma
+# service via the baked FIGMA_API_URL / FIGMA_TOKEN env.
+[[environment.mcp_servers]]
+name = "figma"
+transport = "stdio"
+command = "figma-mcp"
