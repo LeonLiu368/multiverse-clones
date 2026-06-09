@@ -20,9 +20,12 @@ RUN chmod +x /usr/local/bin/api-entrypoint.sh /usr/local/bin/task-seed.sh
 # Agent tools: slack CLI + slack-mcp MCP server. Baked here so tasks get them for free
 # without copying any tool files. PYTHONPATH=/opt:/opt/slackcli makes the package importable.
 COPY slackcli /opt/slackcli
-RUN printf '#!/usr/bin/env python3\nimport sys\nsys.path.insert(0, "/opt/slackcli")\nsys.path.insert(0, "/opt")\nfrom slackcli.cli import main\nmain()\n' \
+# Wrappers only fix sys.path (the stdio MCP spawn strips PYTHONPATH, so the subprocess can't
+# import slackcli otherwise). SLACK_API_URL/SLACK_BOT_TOKEN recovery lives in slackcli.client
+# (_recover_env reads /proc/1/environ) so it works for both single- and multi-container layouts.
+RUN printf '#!/usr/bin/env python3\nimport sys; sys.path[:0] = ["/opt", "/opt/slackcli"]\nfrom slackcli.cli import main\nmain()\n' \
         > /usr/local/bin/slack && \
-    printf '#!/usr/bin/env python3\n# Self-contained: MCP clients (e.g. mcp.client.stdio) use get_default_environment()\n# which strips PYTHONPATH. Inject sys.path and env defaults here so the subprocess\n# works regardless of how it is spawned.\nimport sys, os\nsys.path.insert(0, "/opt/slackcli")\nsys.path.insert(0, "/opt")\nos.environ.setdefault("SLACK_API_URL", "http://localhost")\nos.environ.setdefault("SLACK_BOT_TOKEN", "xoxb-acme-eval-0001")\nfrom slackcli.mcp_server import main\nmain()\n' \
+    printf '#!/usr/bin/env python3\nimport sys; sys.path[:0] = ["/opt", "/opt/slackcli"]\nfrom slackcli.mcp_server import main\nmain()\n' \
         > /usr/local/bin/slack-mcp && \
     chmod +x /usr/local/bin/slack /usr/local/bin/slack-mcp
 

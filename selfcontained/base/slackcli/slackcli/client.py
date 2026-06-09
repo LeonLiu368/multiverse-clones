@@ -12,7 +12,34 @@ from typing import Any
 from slack_sdk import WebClient
 
 
+def _recover_env() -> None:
+    """Recover Slack config when spawned as an MCP stdio subprocess.
+
+    stdio MCP clients launch the server with get_default_environment(), which keeps only HOME+PATH
+    and strips SLACK_API_URL / SLACK_BOT_TOKEN. PID 1 always carries the container's compose
+    `environment:` block + image ENV, so recover the missing vars from /proc/1/environ. This makes
+    the MCP server authenticate against the right gateway in both single-container (localhost) and
+    multi-container (a `slack` sidecar) layouts, with no per-task config. The CLI is unaffected (it
+    runs in a full shell that already has the vars, so `missing` is empty and this is a no-op).
+    """
+    missing = [k for k in ("SLACK_API_URL", "SLACK_BOT_TOKEN") if not os.environ.get(k)]
+    if not missing:
+        return
+    try:
+        with open("/proc/1/environ", "rb") as fh:
+            for entry in fh.read().split(b"\0"):
+                if b"=" not in entry:
+                    continue
+                k, v = entry.split(b"=", 1)
+                key = k.decode("utf-8", "replace")
+                if key in missing:
+                    os.environ.setdefault(key, v.decode("utf-8", "replace"))
+    except OSError:
+        pass  # /proc/1 unreadable (uid mismatch) -> fall through to the defaults below
+
+
 def _web() -> WebClient:
+    _recover_env()
     base = os.environ.get("SLACK_API_URL", "http://localhost").rstrip("/")
     token = os.environ.get("SLACK_BOT_TOKEN", "xoxb-acme-eval-0001")
     return WebClient(token=token, base_url=base + "/api/")
