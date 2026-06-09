@@ -1,0 +1,42 @@
+services:
+  main:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${MAIN_IMAGE_NAME}
+    entrypoint: ["/bin/bash", "-lc"]
+    command: ["wait-for-seed webapp && sleep infinity"]
+    working_dir: /app
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /tmp/seed-ready"]
+      interval: 2s
+      timeout: 2s
+      retries: 150
+      start_period: 5s
+    environment:
+      GH_HOST: http://github
+      GH_TOKEN_FILE: /run/secrets/token
+      PYTHONPATH: /opt:/opt/ghclone
+    volumes:
+      - ghc-shared:/run/secrets:ro
+    depends_on:
+      github:
+        condition: service_healthy
+
+  github:
+    image: ghcr.io/abundant-ai/ghc-service:latest
+    hostname: github
+    platform: linux/amd64
+    volumes:
+      - ghc-shared:/shared
+      - ./data/github/seed.sh:/usr/local/bin/task-seed.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost/api/healthz >/dev/null || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 60
+      start_period: 45s
+
+volumes:
+  ghc-shared:

@@ -1,0 +1,24 @@
+metadata:
+  name: oss-pr-fix
+  description: |
+    Two pull-request review tasks adapted from real psf/requests bug fixes.
+    The agent is given a pre-seeded GitHub forge where a fix branch and an open
+    PR already exist. It must inspect the diff, verify the fix is correct, then
+    approve and merge the PR.
+
+    Single surface (GitHub only) — no issue tracker or chat required.
+    nop=0, oracle=1.
+  task_path: experiments/oss-pr-fix/tasks
+  n_trials: 3
+  skip_trajectory_analysis: false
+
+tasks:
+  - requests-url-case
+  - requests-json-nan
+
+agents:
+  - name: oracle
+  - name: nop
+  - name: gemini-cli
+    model_name: gemini/gemini-3.1-pro-preview
+    n_trials: 3

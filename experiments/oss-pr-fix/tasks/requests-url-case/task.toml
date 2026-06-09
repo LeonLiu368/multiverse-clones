@@ -1,0 +1,35 @@
+schema_version = "1.3"
+source = "psf/requests PR #1385 — case-insensitive URL scheme matching"
+
+[task]
+name = "oss-pr-fix/requests-url-case"
+description = "The vendored requests library in acme/webapp fails when URLs use uppercase schemes (HTTP:// or HTTPS://). RFC 2396 §3.1 requires scheme names to be treated case-insensitively, but cert_verify() and get_adapter() compare against lowercase-only literals. A patch is already open as a pull request. Inspect the diff, verify .lower() is applied before every scheme-sensitive startswith() call, then approve and merge the PR. nop=0, oracle=1."
+custom_docker_compose = true
+
+[metadata]
+author_name = "Abundant AI"
+author_email = "tasks@abundant.ai"
+author_organization = "Abundant"
+category = "swe"
+source_repo = "acme/webapp"
+difficulty_explanation = "Single-surface GitHub task: read an open PR diff across two Python files, verify the fix adds .lower() in all relevant locations, approve and merge."
+tags = ["gh", "pr-review", "python", "requests", "oss"]
+expert_time_estimate_hours = 0.1
+relevant_experience = "GitHub PR review and merge, Python library internals"
+
+[agent]
+timeout_sec = 1200
+user = "agent"
+
+[verifier]
+timeout_sec = 300
+user = "root"
+
+[environment]
+allow_internet = true
+build_timeout_sec = 2400
+cpus = 2
+memory_mb = 4096
+storage_mb = 20480
+gpus = 0
+workdir = "/app"

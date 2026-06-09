@@ -1,0 +1,35 @@
+schema_version = "1.3"
+source = "psf/requests PR #5810 — reject NaN/Infinity in JSON serialization"
+
+[task]
+name = "oss-pr-fix/requests-json-nan"
+description = "The vendored requests library in acme/api-service silently produces invalid JSON when a payload contains float('nan') or float('inf'). RFC 4627 §2.4 requires JSON numbers to be finite; Python's json.dumps emits NaN/Infinity by default, which most HTTP servers reject with a 400. A patch that adds allow_nan=False and a new InvalidJSONError exception is already open as a pull request. Inspect the diff, verify the fix correctly guards json.dumps and adds the new exception class, then approve and merge the PR. nop=0, oracle=1."
+custom_docker_compose = true
+
+[metadata]
+author_name = "Abundant AI"
+author_email = "tasks@abundant.ai"
+author_organization = "Abundant"
+category = "swe"
+source_repo = "acme/api-service"
+difficulty_explanation = "Single-surface GitHub task: read an open PR diff across two Python files, verify allow_nan=False is present and InvalidJSONError is added, approve and merge."
+tags = ["gh", "pr-review", "python", "requests", "oss", "json"]
+expert_time_estimate_hours = 0.1
+relevant_experience = "GitHub PR review and merge, Python JSON serialization, exception design"
+
+[agent]
+timeout_sec = 1200
+user = "agent"
+
+[verifier]
+timeout_sec = 300
+user = "root"
+
+[environment]
+allow_internet = true
+build_timeout_sec = 2400
+cpus = 2
+memory_mb = 4096
+storage_mb = 20480
+gpus = 0
+workdir = "/app"
