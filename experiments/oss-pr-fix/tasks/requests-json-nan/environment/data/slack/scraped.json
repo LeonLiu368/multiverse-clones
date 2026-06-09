@@ -2897,6 +2897,18 @@
       "author": "alice",
       "content": "Exactly. allow_nan=False is the entire mechanism. Finite payloads serialize byte-for-byte identically to today.",
       "timestamp": "2026-06-06T10:37:00Z"
+    },
+    {
+      "channel": "api-platform",
+      "author": "peter",
+      "content": "btw the v2 analytics-sdk renamed its `InvalidJSONError` to `RequestJSONError` last release. if you grep and hit InvalidJSONError thats the deprecated name over there, dont reintroduce it.",
+      "timestamp": "2026-06-05T16:40:00Z"
+    },
+    {
+      "channel": "api-platform",
+      "author": "quinn",
+      "content": "thats analytics-sdk only though, totally separate from whatever api-service lands for the json body serialize thing. dont conflate them.",
+      "timestamp": "2026-06-05T16:43:00Z"
     }
   ]
 }

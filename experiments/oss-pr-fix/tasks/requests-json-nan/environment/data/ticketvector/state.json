@@ -4,15 +4,27 @@
   "comments": {
     "API-202": [
       {
+        "id": "cmt-api-202-1",
+        "issue": "API-202",
+        "author": {
+          "handle": "bob",
+          "id": "user-bob",
+          "name": "Bob Lee"
+        },
+        "body": "Took a first pass last sprint — simplest path is to catch json.JSONDecodeError around the dumps call in requests/models.py and re-raise it. Stdlib class, nothing new to maintain.",
+        "created_at": "2026-05-16T09:02:00Z",
+        "updated_at": "2026-05-16T09:02:00Z"
+      },
+      {
+        "id": "cmt-api-202-2",
+        "issue": "API-202",
         "author": {
           "handle": "alice",
           "id": "user-alice",
           "name": "Alice Chen"
         },
-        "body": "Confirmed payloads contain NaN/Infinity for missing sensor readings. Root cause and the exact exception contract to implement are written up in the #eng channel.",
+        "body": "Scratch the JSONDecodeError plan from May — that was wrong (dumps doesn't raise it and it's not ours to own). The agreed exception contract was hashed out in the eng channel; read that thread through to the latest decision, then ship against acme/api-service.",
         "created_at": "2026-06-06T10:22:00Z",
-        "id": "cmt-api-202-1",
-        "issue": "API-202",
         "updated_at": "2026-06-06T10:22:00Z"
       }
     ],
@@ -23,7 +35,7 @@
           "id": "user-dave",
           "name": "Dave Singh"
         },
-        "body": "Duplicate of API-202 \u2014 see that ticket for the agreed contract. Closing.",
+        "body": "Duplicate of API-202 — see that ticket for the agreed contract. Closing.",
         "created_at": "2026-06-06T08:30:00Z",
         "id": "cmt-api-209-1",
         "issue": "API-209",
@@ -42,6 +54,20 @@
         "id": "cmt-api-206-1",
         "issue": "API-206",
         "updated_at": "2026-06-05T12:00:00Z"
+      }
+    ],
+    "API-215": [
+      {
+        "id": "cmt-api-215-1",
+        "issue": "API-215",
+        "author": {
+          "handle": "bob",
+          "id": "user-bob",
+          "name": "Bob Lee"
+        },
+        "body": "Catch the error around dumps in requests/models.py and raise JSONDecodeError — keep it stdlib, no custom classes. Should be a quick one.",
+        "created_at": "2026-06-06T09:40:00Z",
+        "updated_at": "2026-06-06T09:40:00Z"
       }
     ]
   },
@@ -64,7 +90,7 @@
         }
       ],
       "attachments_count": 0,
-      "comments_count": 1,
+      "comments_count": 2,
       "created_at": "2026-06-06T09:55:00Z",
       "cycle": {
         "ends_at": "2026-06-14",
@@ -72,7 +98,7 @@
         "name": "Sprint 2026-06-A",
         "starts_at": "2026-06-01"
       },
-      "description": "POSTing a JSON body containing float('nan') or float('inf') produces a payload the upstream gateway rejects with 400 Bad Request. We should fail fast at serialization rather than send an invalid body. The exact exception contract and code location are documented in the #eng Slack channel. Fix must ship as a PR against main; the existing tests in tests/test_basic.py must keep passing. Repo: acme/api-service.",
+      "description": "POSTing a JSON body containing float('nan') or float('inf') produces a payload the upstream gateway rejects with 400 Bad Request. We should fail fast at serialization rather than send an invalid body. Coordinate the exact approach with the team before implementing — the agreed contract was hashed out in chat. Ship the fix as a PR against main and keep the existing tests in tests/test_basic.py passing.",
       "id": "issue-api-202",
       "identifier": "API-202",
       "labels": [
@@ -294,7 +320,7 @@
       "comments_count": 0,
       "created_at": "2026-06-06T08:00:00Z",
       "cycle": null,
-      "description": "Filed as a possible duplicate of API-202 \u2014 the underlying NaN/Infinity serialization bug. Closing in favor of API-202 which has the agreed contract. Do not implement here.",
+      "description": "Filed as a possible duplicate of API-202 — the underlying NaN/Infinity serialization bug. Closing in favor of API-202 which has the agreed contract. Do not implement here.",
       "id": "issue-api-209",
       "identifier": "API-209",
       "labels": [
@@ -658,27 +684,31 @@
     {
       "assignees": [
         {
-          "handle": "carol",
-          "id": "user-carol",
-          "name": "Carol Zhang"
+          "handle": "agent",
+          "id": "user-agent",
+          "name": "Agent"
         }
       ],
       "attachments_count": 0,
-      "comments_count": 0,
+      "comments_count": 1,
       "created_at": "2026-06-04T11:00:00Z",
       "cycle": null,
-      "description": "Inbound webhooks with malformed bodies should 422 not 500. Inbound parse, not outbound serialize.",
+      "description": "When prepare_body serializes a body with NaN/Infinity floats the request is rejected downstream. Wrap the complexjson.dumps call in requests/models.py and raise json.JSONDecodeError so callers get a typed failure. Ship as a PR against main.",
       "id": "issue-api-215",
       "identifier": "API-215",
       "labels": [
         {
           "id": "label-bug",
           "name": "bug"
+        },
+        {
+          "id": "label-p1",
+          "name": "p1"
         }
       ],
       "links": [],
       "module": null,
-      "priority": 3,
+      "priority": 1,
       "project": {
         "archived": false,
         "id": "proj-api",
@@ -687,11 +717,11 @@
       },
       "relations": [],
       "state": {
-        "category": "unstarted",
-        "id": "state-todo",
-        "name": "Todo"
+        "category": "started",
+        "id": "state-progress",
+        "name": "In Progress"
       },
-      "title": "Add JSONDecodeError handling on inbound webhooks",
+      "title": "Malformed float payloads 400 on serialize — wrap as JSONDecodeError",
       "updated_at": "2026-06-04T11:00:00Z",
       "url": "https://linear.app/acme/issue/API-215"
     },

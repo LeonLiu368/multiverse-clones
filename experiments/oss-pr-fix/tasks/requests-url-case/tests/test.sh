@@ -196,6 +196,17 @@ class TestMixedCaseScheme(unittest.TestCase):
         self.assertNotIn('HTTP://', session.adapters)
         self.assertEqual(len(session.adapters), 2)
 
+    def test_get_connection_preserves_path_case(self):
+        # Only the scheme is case-insensitive; paths and query strings are NOT.
+        # The agreed approach scopes `.lower()` to the scheme comparison only —
+        # it does NOT lowercase the whole URL. A fix that does `url = url.lower()`
+        # anywhere on the path passes the adapter-selection tests but corrupts
+        # case-sensitive paths/queries and fails here.
+        adapter = HTTPAdapter()
+        url = 'HTTPS://Example.com/Path/CaseSensitive?Q=AbC'
+        conn = adapter.get_connection(url)
+        self.assertEqual(conn['url'], url)
+
 
 if __name__ == '__main__':
     unittest.main()

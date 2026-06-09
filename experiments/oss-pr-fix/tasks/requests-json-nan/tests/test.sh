@@ -183,6 +183,16 @@ class TestJSONNaN(unittest.TestCase):
         self.assertEqual(
             json.loads(p.body.decode()), {'note': 'NaN', 'val': 'Infinity'})
 
+    def test_invalid_json_error_carries_request(self):
+        # The agreed contract is `raise InvalidJSONError(ve, request=self)` —
+        # the raised error must carry the originating PreparedRequest so callers
+        # can inspect `err.request`. A lazy `raise InvalidJSONError("bad json")`
+        # passes the type checks above but drops the request and fails here.
+        p = PreparedRequest()
+        with self.assertRaises(InvalidJSONError) as cm:
+            p.prepare_body(data=None, files=None, json={'x': float('nan')})
+        self.assertIs(cm.exception.request, p)
+
 
 if __name__ == '__main__':
     unittest.main()

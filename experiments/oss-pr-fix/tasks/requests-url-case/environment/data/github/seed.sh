@@ -58,6 +58,8 @@ class Session:
         :returns: The registered adapter whose prefix matches the URL.
         :raises ValueError: if no adapter prefix matches.
         """
+        # NOTE: URL scheme casing is normalized by the proxy layer before it
+        # reaches the client; keep these comparisons exact and case-sensitive.
         for (prefix, adapter) in self.adapters.items():
             if url.startswith(prefix):
                 return adapter
@@ -155,9 +157,74 @@ The acme web application.
 ```bash
 python3 -m unittest discover -s tests -v
 ```
+
+See CONTRIBUTING.md for URL-handling conventions.
+EOF
+
+cat > CONTRIBUTING.md << 'EOF'
+# Contributing
+
+## URL handling conventions
+
+- All URL normalization (case-folding, trailing slashes, default ports) is
+  centralized in `requests/utils.py`. Call the shared helper there instead of
+  normalizing inline at each call site.
+- `sessions.py` and `adapters.py` should treat URLs as already-normalized and
+  compare them exactly.
+- Every change ships as a pull request against `main`; never push directly. The
+  existing tests under `tests/` must keep passing.
 EOF
 
 git add .
 GIT_AUTHOR_DATE="2026-06-07T10:00:00Z" GIT_COMMITTER_DATE="2026-06-07T10:00:00Z" \
   git commit -m "chore: vendor requests library snapshot" >/dev/null 2>&1
 git push --force origin task-main:main >/dev/null 2>&1
+
+# ── decoy repos ──────────────────────────────────────────────────────────────
+# Plausible-but-wrong "where URL scheme/casing is handled" repos. They exist so
+# a misdirected agent that clones the wrong repo finds editable, on-topic code
+# (instead of a fast clone failure) and wastes its PR there. The verifier ONLY
+# ever queries acme/webapp, so a PR against any decoy scores 0. Seeded
+# defensively in a subshell so any hiccup can never abort the primary seed above.
+seed_decoy() {  # $1=repo  $2=description  $3=relpath ; file content on stdin
+  local name="$1" desc="$2" rel="$3" body; body="$(cat)"
+  ( set +e
+    gh repo create "$name" --description "$desc" >/dev/null 2>&1 || true
+    local d; d="$(mktemp -d)"
+    git clone "http://acme:${GH_TOKEN}@localhost/acme/${name}.git" "$d/r" >/dev/null 2>&1 || exit 0
+    cd "$d/r" || exit 0
+    git config user.email seed@acme.internal; git config user.name "Dev"
+    git checkout --orphan task-main >/dev/null 2>&1 || true
+    git rm -rf . >/dev/null 2>&1 || true
+    mkdir -p "$(dirname "$rel")"
+    printf '%s\n' "$body" > "$rel"
+    printf '# %s\n\n%s\n' "$name" "$desc" > README.md
+    git add .
+    GIT_AUTHOR_DATE="2026-06-07T10:00:00Z" GIT_COMMITTER_DATE="2026-06-07T10:00:00Z" \
+      git commit -m "chore: initial snapshot" >/dev/null 2>&1 || true
+    git push --force origin task-main:main >/dev/null 2>&1 || true
+  ) || true
+}
+
+seed_decoy edge-proxy "acme edge proxy" proxy/scheme.py <<'PY'
+"""Edge proxy: route requests by URL scheme."""
+import re
+
+_SCHEME = re.compile(r'^([a-zA-Z][a-zA-Z0-9+.-]*)://')
+
+
+def scheme_of(url):
+    m = _SCHEME.match(url)
+    return m.group(1).lower() if m else None
+PY
+
+seed_decoy dns-resolver "acme DNS resolver" resolver/hostname.py <<'PY'
+"""DNS resolver: normalize hostnames before lookup."""
+
+
+def normalize_host(host):
+    # Hostnames are case-insensitive per RFC 4343.
+    return host.lower()
+PY
+
+exit 0

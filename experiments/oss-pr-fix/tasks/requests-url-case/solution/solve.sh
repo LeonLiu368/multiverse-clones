@@ -79,12 +79,16 @@ class HTTPAdapter:
         return False
 
     def get_connection(self, url, proxies=None):
-        """Return a connection descriptor for the given URL."""
+        """Return a connection descriptor for the given URL.
+
+        Only the *scheme* is normalized for routing; the URL is returned
+        unchanged so case-sensitive paths and query strings are preserved.
+        """
         proxies = proxies or {}
-        proxy = proxies.get(urlparse(url.lower()).scheme)
+        proxy = proxies.get(urlparse(url).scheme.lower())
         if proxy:
             return {'type': 'proxy', 'proxy': proxy}
-        return {'type': 'direct', 'url': url.lower()}
+        return {'type': 'direct', 'url': url}
 PYEOF
 
 git checkout -b "$BRANCH" >/dev/null 2>&1

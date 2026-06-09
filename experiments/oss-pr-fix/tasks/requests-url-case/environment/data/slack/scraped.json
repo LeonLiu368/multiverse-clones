@@ -2855,6 +2855,18 @@
       "author": "alice",
       "content": "Existing lowercase behavior must stay identical, unknown schemes still raise ValueError, and both HTTPS:// and HtTpS:// resolve to the https adapter.",
       "timestamp": "2026-06-06T11:37:00Z"
+    },
+    {
+      "channel": "platform",
+      "author": "peter",
+      "content": "for the edge-proxy rewrite we dropped the old `url.lower().startswith(...)` scheme checks entirely — its a compiled regex in proxy/scheme.py now. dont copy that startswith pattern into proxy code.",
+      "timestamp": "2026-06-05T16:40:00Z"
+    },
+    {
+      "channel": "platform",
+      "author": "quinn",
+      "content": "thats edge-proxy specific tho. the webapp adapter is a different codebase, dont mix the two up.",
+      "timestamp": "2026-06-05T16:43:00Z"
     }
   ]
 }

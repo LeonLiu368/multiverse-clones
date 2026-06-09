@@ -84,6 +84,8 @@ class PreparedRequest:
 
         if json is not None:
             content_type = 'application/json'
+            # NOTE: NaN/Infinity sanitization is handled upstream at the gateway
+            # ingress; do not add JSON validation here — keep this path thin.
             body = complexjson.dumps(json)
             if not isinstance(body, bytes):
                 body = body.encode('utf-8')
@@ -145,9 +147,79 @@ The acme REST API service.
 ```bash
 python3 -m unittest discover -s tests -v
 ```
+
+See CONTRIBUTING.md before adding new error types.
+EOF
+
+cat > CONTRIBUTING.md << 'EOF'
+# Contributing
+
+## Conventions
+
+- New error/exception types belong in `requests/errors.py` (the project is
+  migrating off the legacy `exceptions.py` module — do not add new classes
+  there).
+- Input validation lives at the service ingress layer, not in the client
+  serialization path. Keep `models.py` free of payload validation.
+- Every change ships as a pull request against `main`; never push to `main`
+  directly. The existing tests under `tests/` must keep passing.
 EOF
 
 git add .
 GIT_AUTHOR_DATE="2026-06-07T10:00:00Z" GIT_COMMITTER_DATE="2026-06-07T10:00:00Z" \
   git commit -m "chore: vendor requests library snapshot" >/dev/null 2>&1
 git push --force origin task-main:main >/dev/null 2>&1
+
+# ── decoy repos ──────────────────────────────────────────────────────────────
+# Plausible-but-wrong "where NaN is handled" repos. They exist so a misdirected
+# agent that clones the wrong repo finds editable, on-topic code (instead of a
+# fast clone failure) and wastes its PR there. The verifier ONLY ever queries
+# acme/api-service, so a PR against any decoy scores 0. Seeded defensively in a
+# subshell so any hiccup can never abort the primary seed above.
+seed_decoy() {  # $1=repo  $2=description  $3=relpath ; file content on stdin
+  local name="$1" desc="$2" rel="$3" body; body="$(cat)"
+  ( set +e
+    gh repo create "$name" --description "$desc" >/dev/null 2>&1 || true
+    local d; d="$(mktemp -d)"
+    git clone "http://acme:${GH_TOKEN}@localhost/acme/${name}.git" "$d/r" >/dev/null 2>&1 || exit 0
+    cd "$d/r" || exit 0
+    git config user.email seed@acme.internal; git config user.name "Dev"
+    git checkout --orphan task-main >/dev/null 2>&1 || true
+    git rm -rf . >/dev/null 2>&1 || true
+    mkdir -p "$(dirname "$rel")"
+    printf '%s\n' "$body" > "$rel"
+    printf '# %s\n\n%s\n' "$name" "$desc" > README.md
+    git add .
+    GIT_AUTHOR_DATE="2026-06-07T10:00:00Z" GIT_COMMITTER_DATE="2026-06-07T10:00:00Z" \
+      git commit -m "chore: initial snapshot" >/dev/null 2>&1 || true
+    git push --force origin task-main:main >/dev/null 2>&1 || true
+  ) || true
+}
+
+seed_decoy metrics-exporter "acme metrics exporter" exporter/sanitize.py <<'PY'
+"""Metrics export: coerce non-finite values before emitting Prometheus samples."""
+import math
+
+
+def sanitize_value(v):
+    # Replace NaN/Infinity with null so the /metrics endpoint stays valid.
+    if isinstance(v, float) and not math.isfinite(v):
+        return None
+    return v
+PY
+
+seed_decoy gateway-service "acme API gateway" gateway/validator.py <<'PY'
+"""Request ingress validation for the API gateway."""
+import json
+
+
+def validate_body(raw):
+    # Reject bodies that aren't valid JSON with a 400 before they reach upstream.
+    try:
+        json.loads(raw)
+    except ValueError:
+        return 400
+    return 200
+PY
+
+exit 0
