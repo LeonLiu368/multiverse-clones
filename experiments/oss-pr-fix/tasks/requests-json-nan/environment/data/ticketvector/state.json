@@ -565,6 +565,499 @@
       "title": "Reject non-finite numbers in the analytics SDK",
       "updated_at": "2026-06-04T13:00:00Z",
       "url": "https://linear.app/acme/issue/SDK-77"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "bob",
+          "id": "user-bob",
+          "name": "Bob Kumar"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-05T09:00:00Z",
+      "cycle": null,
+      "description": "Add a token-bucket rate limiter to /telemetry. Unrelated to body serialization.",
+      "id": "issue-api-213",
+      "identifier": "API-213",
+      "labels": [
+        {
+          "id": "label-enhancement",
+          "name": "enhancement"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 2,
+      "project": {
+        "archived": false,
+        "id": "proj-api",
+        "key": "API",
+        "name": "API Service"
+      },
+      "relations": [],
+      "state": {
+        "category": "unstarted",
+        "id": "state-todo",
+        "name": "Todo"
+      },
+      "title": "Rate-limit the /telemetry ingest endpoint",
+      "updated_at": "2026-06-05T09:00:00Z",
+      "url": "https://linear.app/acme/issue/API-213"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "agent",
+          "id": "user-agent",
+          "name": "Agent User"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-05T10:00:00Z",
+      "cycle": {
+        "ends_at": "2026-06-14",
+        "id": "cycle-2026-06a",
+        "name": "Sprint 2026-06-A",
+        "starts_at": "2026-06-01"
+      },
+      "description": "Large multipart uploads exceed the body cap and 400. Content-length issue, not json.",
+      "id": "issue-api-214",
+      "identifier": "API-214",
+      "labels": [
+        {
+          "id": "label-bug",
+          "name": "bug"
+        },
+        {
+          "id": "label-p2",
+          "name": "p2"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 2,
+      "project": {
+        "archived": false,
+        "id": "proj-api",
+        "key": "API",
+        "name": "API Service"
+      },
+      "relations": [],
+      "state": {
+        "category": "started",
+        "id": "state-progress",
+        "name": "In Progress"
+      },
+      "title": "Gateway returns 400 on oversized multipart uploads",
+      "updated_at": "2026-06-06T09:00:00Z",
+      "url": "https://linear.app/acme/issue/API-214"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "carol",
+          "id": "user-carol",
+          "name": "Carol Zhang"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-04T11:00:00Z",
+      "cycle": null,
+      "description": "Inbound webhooks with malformed bodies should 422 not 500. Inbound parse, not outbound serialize.",
+      "id": "issue-api-215",
+      "identifier": "API-215",
+      "labels": [
+        {
+          "id": "label-bug",
+          "name": "bug"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 3,
+      "project": {
+        "archived": false,
+        "id": "proj-api",
+        "key": "API",
+        "name": "API Service"
+      },
+      "relations": [],
+      "state": {
+        "category": "unstarted",
+        "id": "state-todo",
+        "name": "Todo"
+      },
+      "title": "Add JSONDecodeError handling on inbound webhooks",
+      "updated_at": "2026-06-04T11:00:00Z",
+      "url": "https://linear.app/acme/issue/API-215"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "dave",
+          "id": "user-dave",
+          "name": "Dave Singh"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-03T09:00:00Z",
+      "cycle": null,
+      "description": "Evaluate orjson for response encoding speed. Performance spike, separate from API-202.",
+      "id": "issue-api-216",
+      "identifier": "API-216",
+      "labels": [
+        {
+          "id": "label-chore",
+          "name": "chore"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 3,
+      "project": {
+        "archived": false,
+        "id": "proj-api",
+        "key": "API",
+        "name": "API Service"
+      },
+      "relations": [],
+      "state": {
+        "category": "backlog",
+        "id": "state-backlog",
+        "name": "Backlog"
+      },
+      "title": "Migrate response encoder to orjson",
+      "updated_at": "2026-06-03T09:00:00Z",
+      "url": "https://linear.app/acme/issue/API-216"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "erin",
+          "id": "user-erin",
+          "name": "Erin Park"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-02T09:00:00Z",
+      "cycle": null,
+      "description": "Sunset v1 events payload. Product/docs work.",
+      "id": "issue-api-217",
+      "identifier": "API-217",
+      "labels": [
+        {
+          "id": "label-docs",
+          "name": "docs"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 3,
+      "project": {
+        "archived": false,
+        "id": "proj-api",
+        "key": "API",
+        "name": "API Service"
+      },
+      "relations": [],
+      "state": {
+        "category": "unstarted",
+        "id": "state-todo",
+        "name": "Todo"
+      },
+      "title": "Deprecate the v1 /events schema",
+      "updated_at": "2026-06-02T09:00:00Z",
+      "url": "https://linear.app/acme/issue/API-217"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "frank",
+          "id": "user-frank",
+          "name": "Frank Li"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-05T13:00:00Z",
+      "cycle": null,
+      "description": "p99 shows Infinity when no samples. Metrics math, see metrics-exporter.",
+      "id": "issue-api-218",
+      "identifier": "API-218",
+      "labels": [
+        {
+          "id": "label-bug",
+          "name": "bug"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 3,
+      "project": {
+        "archived": false,
+        "id": "proj-data",
+        "key": "DATA",
+        "name": "Data Platform"
+      },
+      "relations": [],
+      "state": {
+        "category": "started",
+        "id": "state-progress",
+        "name": "In Progress"
+      },
+      "title": "Investigate Infinity in latency histogram",
+      "updated_at": "2026-06-05T13:30:00Z",
+      "url": "https://linear.app/acme/issue/API-218"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "grace",
+          "id": "user-grace",
+          "name": "Grace Okoro"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-04T13:00:00Z",
+      "cycle": null,
+      "description": "analytics-sdk should validate floats client-side. Different repo/requirements.",
+      "id": "issue-api-219",
+      "identifier": "API-219",
+      "labels": [
+        {
+          "id": "label-enhancement",
+          "name": "enhancement"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 3,
+      "project": {
+        "archived": false,
+        "id": "proj-sdk",
+        "key": "SDK",
+        "name": "Client SDK"
+      },
+      "relations": [],
+      "state": {
+        "category": "unstarted",
+        "id": "state-todo",
+        "name": "Todo"
+      },
+      "title": "Client SDK: reject non-finite event values",
+      "updated_at": "2026-06-04T13:00:00Z",
+      "url": "https://linear.app/acme/issue/API-219"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "heidi",
+          "id": "user-heidi",
+          "name": "Heidi Roth"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-03T10:00:00Z",
+      "cycle": null,
+      "description": "Thread X-Request-Id through the logger.",
+      "id": "issue-api-220",
+      "identifier": "API-220",
+      "labels": [
+        {
+          "id": "label-enhancement",
+          "name": "enhancement"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 3,
+      "project": {
+        "archived": false,
+        "id": "proj-api",
+        "key": "API",
+        "name": "API Service"
+      },
+      "relations": [],
+      "state": {
+        "category": "unstarted",
+        "id": "state-todo",
+        "name": "Todo"
+      },
+      "title": "Add request-id to structured logs",
+      "updated_at": "2026-06-03T10:00:00Z",
+      "url": "https://linear.app/acme/issue/API-220"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "agent",
+          "id": "user-agent",
+          "name": "Agent User"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-04T14:00:00Z",
+      "cycle": null,
+      "description": "Occasional CI timeout under load, infra flake. Do not change the test.",
+      "id": "issue-api-221",
+      "identifier": "API-221",
+      "labels": [
+        {
+          "id": "label-test",
+          "name": "test"
+        },
+        {
+          "id": "label-infra",
+          "name": "infra"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 3,
+      "project": {
+        "archived": false,
+        "id": "proj-api",
+        "key": "API",
+        "name": "API Service"
+      },
+      "relations": [],
+      "state": {
+        "category": "started",
+        "id": "state-progress",
+        "name": "In Progress"
+      },
+      "title": "Flaky: test_content_type_is_set times out on CI",
+      "updated_at": "2026-06-05T08:00:00Z",
+      "url": "https://linear.app/acme/issue/API-221"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "ivan",
+          "id": "user-ivan",
+          "name": "Ivan Petrov"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-02T10:00:00Z",
+      "cycle": null,
+      "description": "Docs only.",
+      "id": "issue-api-222",
+      "identifier": "API-222",
+      "labels": [
+        {
+          "id": "label-docs",
+          "name": "docs"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 3,
+      "project": {
+        "archived": false,
+        "id": "proj-api",
+        "key": "API",
+        "name": "API Service"
+      },
+      "relations": [],
+      "state": {
+        "category": "unstarted",
+        "id": "state-todo",
+        "name": "Todo"
+      },
+      "title": "Document the 5MB body size limit",
+      "updated_at": "2026-06-02T10:00:00Z",
+      "url": "https://linear.app/acme/issue/API-222"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "bob",
+          "id": "user-bob",
+          "name": "Bob Kumar"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-03T08:00:00Z",
+      "cycle": null,
+      "description": "Quarterly cert rotation for the gateway.",
+      "id": "issue-api-223",
+      "identifier": "API-223",
+      "labels": [
+        {
+          "id": "label-infra",
+          "name": "infra"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 3,
+      "project": {
+        "archived": false,
+        "id": "proj-ops",
+        "key": "OPS",
+        "name": "Platform Ops"
+      },
+      "relations": [],
+      "state": {
+        "category": "unstarted",
+        "id": "state-todo",
+        "name": "Todo"
+      },
+      "title": "Ops: rotate gateway TLS certs",
+      "updated_at": "2026-06-03T08:00:00Z",
+      "url": "https://linear.app/acme/issue/API-223"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "carol",
+          "id": "user-carol",
+          "name": "Carol Zhang"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-02T09:00:00Z",
+      "cycle": null,
+      "description": "Add a 60s TTL cache for profile reads.",
+      "id": "issue-api-224",
+      "identifier": "API-224",
+      "labels": [
+        {
+          "id": "label-enhancement",
+          "name": "enhancement"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 3,
+      "project": {
+        "archived": false,
+        "id": "proj-api",
+        "key": "API",
+        "name": "API Service"
+      },
+      "relations": [],
+      "state": {
+        "category": "backlog",
+        "id": "state-backlog",
+        "name": "Backlog"
+      },
+      "title": "Cache user-profile lookups",
+      "updated_at": "2026-06-02T09:00:00Z",
+      "url": "https://linear.app/acme/issue/API-224"
     }
   ],
   "labels": [
@@ -685,6 +1178,16 @@
       "handle": "grace",
       "id": "user-grace",
       "name": "Grace Okoro"
+    },
+    {
+      "handle": "heidi",
+      "id": "user-heidi",
+      "name": "Heidi Roth"
+    },
+    {
+      "handle": "ivan",
+      "id": "user-ivan",
+      "name": "Ivan Petrov"
     }
   ],
   "workspace": "acme"

@@ -525,6 +525,499 @@
       "title": "Register MyApp:// deep-link scheme (case sensitivity)",
       "updated_at": "2026-06-04T13:00:00Z",
       "url": "https://linear.app/acme/issue/MOB-90"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "bob",
+          "id": "user-bob",
+          "name": "Bob Kumar"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-05T09:00:00Z",
+      "cycle": null,
+      "description": "Honor 30x redirects that switch scheme. Related area but a different behavior than adapter selection.",
+      "id": "issue-web-110",
+      "identifier": "WEB-110",
+      "labels": [
+        {
+          "id": "label-enhancement",
+          "name": "enhancement"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 2,
+      "project": {
+        "archived": false,
+        "id": "proj-web",
+        "key": "WEB",
+        "name": "Webapp"
+      },
+      "relations": [],
+      "state": {
+        "category": "unstarted",
+        "id": "state-todo",
+        "name": "Todo"
+      },
+      "title": "Follow redirects across http/https hops",
+      "updated_at": "2026-06-05T09:00:00Z",
+      "url": "https://linear.app/acme/issue/WEB-110"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "agent",
+          "id": "user-agent",
+          "name": "Agent User"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-05T10:00:00Z",
+      "cycle": {
+        "ends_at": "2026-06-14",
+        "id": "cycle-2026-06a",
+        "name": "Sprint 2026-06-A",
+        "starts_at": "2026-06-01"
+      },
+      "description": "HTTP_PROXY vs http_proxy handling. Env var casing, not URL scheme matching.",
+      "id": "issue-web-111",
+      "identifier": "WEB-111",
+      "labels": [
+        {
+          "id": "label-bug",
+          "name": "bug"
+        },
+        {
+          "id": "label-p2",
+          "name": "p2"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 2,
+      "project": {
+        "archived": false,
+        "id": "proj-web",
+        "key": "WEB",
+        "name": "Webapp"
+      },
+      "relations": [],
+      "state": {
+        "category": "started",
+        "id": "state-progress",
+        "name": "In Progress"
+      },
+      "title": "Proxy env var parsing is case-sensitive",
+      "updated_at": "2026-06-06T09:00:00Z",
+      "url": "https://linear.app/acme/issue/WEB-111"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "carol",
+          "id": "user-carol",
+          "name": "Carol Zhang"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-04T11:00:00Z",
+      "cycle": null,
+      "description": "Encode non-ascii query params. URL handling but unrelated to scheme case.",
+      "id": "issue-web-112",
+      "identifier": "WEB-112",
+      "labels": [
+        {
+          "id": "label-bug",
+          "name": "bug"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 3,
+      "project": {
+        "archived": false,
+        "id": "proj-web",
+        "key": "WEB",
+        "name": "Webapp"
+      },
+      "relations": [],
+      "state": {
+        "category": "unstarted",
+        "id": "state-todo",
+        "name": "Todo"
+      },
+      "title": "Percent-encode unicode in query strings",
+      "updated_at": "2026-06-04T11:00:00Z",
+      "url": "https://linear.app/acme/issue/WEB-112"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "dave",
+          "id": "user-dave",
+          "name": "Dave Singh"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-03T09:00:00Z",
+      "cycle": null,
+      "description": "Pool key bug for https connections. Perf, not scheme matching.",
+      "id": "issue-web-113",
+      "identifier": "WEB-113",
+      "labels": [
+        {
+          "id": "label-bug",
+          "name": "bug"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 3,
+      "project": {
+        "archived": false,
+        "id": "proj-web",
+        "key": "WEB",
+        "name": "Webapp"
+      },
+      "relations": [],
+      "state": {
+        "category": "backlog",
+        "id": "state-backlog",
+        "name": "Backlog"
+      },
+      "title": "Connection pool not reused for HTTPS",
+      "updated_at": "2026-06-03T09:00:00Z",
+      "url": "https://linear.app/acme/issue/WEB-113"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "erin",
+          "id": "user-erin",
+          "name": "Erin Park"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-02T09:00:00Z",
+      "cycle": null,
+      "description": "Security policy at the edge. edge-proxy repo.",
+      "id": "issue-web-114",
+      "identifier": "WEB-114",
+      "labels": [
+        {
+          "id": "label-security",
+          "name": "security"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 3,
+      "project": {
+        "archived": false,
+        "id": "proj-sec",
+        "key": "SEC",
+        "name": "Security"
+      },
+      "relations": [],
+      "state": {
+        "category": "unstarted",
+        "id": "state-todo",
+        "name": "Todo"
+      },
+      "title": "Add HSTS preload to the edge proxy",
+      "updated_at": "2026-06-02T09:00:00Z",
+      "url": "https://linear.app/acme/issue/WEB-114"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "frank",
+          "id": "user-frank",
+          "name": "Frank Li"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-05T12:00:00Z",
+      "cycle": null,
+      "description": "DNS is case-insensitive; normalize host. resolver repo, different layer.",
+      "id": "issue-web-115",
+      "identifier": "WEB-115",
+      "labels": [
+        {
+          "id": "label-infra",
+          "name": "infra"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 3,
+      "project": {
+        "archived": false,
+        "id": "proj-infra",
+        "key": "INFRA",
+        "name": "Infrastructure"
+      },
+      "relations": [],
+      "state": {
+        "category": "started",
+        "id": "state-progress",
+        "name": "In Progress"
+      },
+      "title": "Resolver: lowercase hostnames before lookup",
+      "updated_at": "2026-06-05T12:30:00Z",
+      "url": "https://linear.app/acme/issue/WEB-115"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "grace",
+          "id": "user-grace",
+          "name": "Grace Okoro"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-04T13:00:00Z",
+      "cycle": null,
+      "description": "ios deep-link routing bug. mobile repo.",
+      "id": "issue-web-116",
+      "identifier": "WEB-116",
+      "labels": [
+        {
+          "id": "label-bug",
+          "name": "bug"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 3,
+      "project": {
+        "archived": false,
+        "id": "proj-mob",
+        "key": "MOB",
+        "name": "Mobile"
+      },
+      "relations": [],
+      "state": {
+        "category": "unstarted",
+        "id": "state-todo",
+        "name": "Todo"
+      },
+      "title": "Mobile deep links drop the path on cold start",
+      "updated_at": "2026-06-04T13:00:00Z",
+      "url": "https://linear.app/acme/issue/WEB-116"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "agent",
+          "id": "user-agent",
+          "name": "Agent User"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-04T14:00:00Z",
+      "cycle": null,
+      "description": "Occasional CI timeout, infra flake. Do not change the test.",
+      "id": "issue-web-117",
+      "identifier": "WEB-117",
+      "labels": [
+        {
+          "id": "label-test",
+          "name": "test"
+        },
+        {
+          "id": "label-infra",
+          "name": "infra"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 3,
+      "project": {
+        "archived": false,
+        "id": "proj-web",
+        "key": "WEB",
+        "name": "Webapp"
+      },
+      "relations": [],
+      "state": {
+        "category": "started",
+        "id": "state-progress",
+        "name": "In Progress"
+      },
+      "title": "Flaky: test_unknown_scheme_raises on CI",
+      "updated_at": "2026-06-05T08:00:00Z",
+      "url": "https://linear.app/acme/issue/WEB-117"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "heidi",
+          "id": "user-heidi",
+          "name": "Heidi Roth"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-02T10:00:00Z",
+      "cycle": null,
+      "description": "Docs only.",
+      "id": "issue-web-118",
+      "identifier": "WEB-118",
+      "labels": [
+        {
+          "id": "label-docs",
+          "name": "docs"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 3,
+      "project": {
+        "archived": false,
+        "id": "proj-web",
+        "key": "WEB",
+        "name": "Webapp"
+      },
+      "relations": [],
+      "state": {
+        "category": "unstarted",
+        "id": "state-todo",
+        "name": "Todo"
+      },
+      "title": "Document supported URL schemes",
+      "updated_at": "2026-06-02T10:00:00Z",
+      "url": "https://linear.app/acme/issue/WEB-118"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "ivan",
+          "id": "user-ivan",
+          "name": "Ivan Petrov"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-03T10:00:00Z",
+      "cycle": null,
+      "description": "Canonicalization bug, not scheme casing.",
+      "id": "issue-web-119",
+      "identifier": "WEB-119",
+      "labels": [
+        {
+          "id": "label-bug",
+          "name": "bug"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 3,
+      "project": {
+        "archived": false,
+        "id": "proj-web",
+        "key": "WEB",
+        "name": "Webapp"
+      },
+      "relations": [],
+      "state": {
+        "category": "unstarted",
+        "id": "state-todo",
+        "name": "Todo"
+      },
+      "title": "Trailing slash redirects loop on some routes",
+      "updated_at": "2026-06-03T10:00:00Z",
+      "url": "https://linear.app/acme/issue/WEB-119"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "bob",
+          "id": "user-bob",
+          "name": "Bob Kumar"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-02T09:00:00Z",
+      "cycle": null,
+      "description": "Routine dep bump.",
+      "id": "issue-web-120",
+      "identifier": "WEB-120",
+      "labels": [
+        {
+          "id": "label-chore",
+          "name": "chore"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 3,
+      "project": {
+        "archived": false,
+        "id": "proj-web",
+        "key": "WEB",
+        "name": "Webapp"
+      },
+      "relations": [],
+      "state": {
+        "category": "completed",
+        "id": "state-done",
+        "name": "Done"
+      },
+      "title": "Upgrade vendored certifi bundle",
+      "updated_at": "2026-06-03T09:00:00Z",
+      "url": "https://linear.app/acme/issue/WEB-120"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "carol",
+          "id": "user-carol",
+          "name": "Carol Zhang"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-02T09:00:00Z",
+      "cycle": null,
+      "description": "Parse [::1] style hosts. URL parsing, unrelated to scheme case.",
+      "id": "issue-web-121",
+      "identifier": "WEB-121",
+      "labels": [
+        {
+          "id": "label-enhancement",
+          "name": "enhancement"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 3,
+      "project": {
+        "archived": false,
+        "id": "proj-web",
+        "key": "WEB",
+        "name": "Webapp"
+      },
+      "relations": [],
+      "state": {
+        "category": "backlog",
+        "id": "state-backlog",
+        "name": "Backlog"
+      },
+      "title": "Support IPv6 literals in the host parser",
+      "updated_at": "2026-06-02T09:00:00Z",
+      "url": "https://linear.app/acme/issue/WEB-121"
     }
   ],
   "labels": [
@@ -645,6 +1138,16 @@
       "handle": "grace",
       "id": "user-grace",
       "name": "Grace Okoro"
+    },
+    {
+      "handle": "heidi",
+      "id": "user-heidi",
+      "name": "Heidi Roth"
+    },
+    {
+      "handle": "ivan",
+      "id": "user-ivan",
+      "name": "Ivan Petrov"
     }
   ],
   "workspace": "acme"
