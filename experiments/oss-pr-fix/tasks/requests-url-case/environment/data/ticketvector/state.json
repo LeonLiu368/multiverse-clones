@@ -4,7 +4,11 @@
   "comments": {
     "WEB-101": [
       {
-        "author": {"handle": "alice", "id": "user-alice", "name": "Alice Chen"},
+        "author": {
+          "handle": "alice",
+          "id": "user-alice",
+          "name": "Alice Chen"
+        },
         "body": "Reproduced against the partner gateway. Their endpoints use uppercase schemes (HTTP://, HTTPS://). Diagnosis and the agreed implementation approach are in the #eng channel.",
         "created_at": "2026-06-06T11:25:00Z",
         "id": "cmt-web-101-1",
@@ -12,97 +16,636 @@
         "updated_at": "2026-06-06T11:25:00Z"
       }
     ],
-    "WEB-100": [],
-    "WEB-099": []
+    "WEB-108": [
+      {
+        "author": {
+          "handle": "dave",
+          "id": "user-dave",
+          "name": "Dave Singh"
+        },
+        "body": "Duplicate of WEB-101 \u2014 see that ticket. Closing.",
+        "created_at": "2026-06-06T08:30:00Z",
+        "id": "cmt-web-108-1",
+        "issue": "WEB-108",
+        "updated_at": "2026-06-06T08:30:00Z"
+      }
+    ],
+    "WEB-104": [
+      {
+        "author": {
+          "handle": "carol",
+          "id": "user-carol",
+          "name": "Carol Zhang"
+        },
+        "body": "Reminder from this incident: never lowercase the whole url, only the part you compare.",
+        "created_at": "2026-06-05T09:00:00Z",
+        "id": "cmt-web-104-1",
+        "issue": "WEB-104",
+        "updated_at": "2026-06-05T09:00:00Z"
+      }
+    ]
   },
   "cycles": [
-    {"ends_at": "2026-06-14", "id": "cycle-2026-06a", "name": "Sprint 2026-06-A", "starts_at": "2026-06-01"}
+    {
+      "ends_at": "2026-06-14",
+      "id": "cycle-2026-06a",
+      "name": "Sprint 2026-06-A",
+      "starts_at": "2026-06-01"
+    }
   ],
   "history": {},
   "issues": [
     {
-      "assignees": [{"handle": "agent", "id": "user-agent", "name": "Agent User"}],
+      "assignees": [
+        {
+          "handle": "agent",
+          "id": "user-agent",
+          "name": "Agent User"
+        }
+      ],
       "attachments_count": 0,
       "comments_count": 1,
       "created_at": "2026-06-06T10:55:00Z",
-      "cycle": {"ends_at": "2026-06-14", "id": "cycle-2026-06a", "name": "Sprint 2026-06-A", "starts_at": "2026-06-01"},
+      "cycle": {
+        "ends_at": "2026-06-14",
+        "id": "cycle-2026-06a",
+        "name": "Sprint 2026-06-A",
+        "starts_at": "2026-06-01"
+      },
       "description": "Requests to URLs with uppercase schemes (e.g. HTTP://gw.partner.example, HTTPS://gw.partner.example) fail with 'No connection adapters were found'. RFC 2396 says schemes are case-insensitive, so these should work. The exact code locations and the agreed implementation approach are documented in the #eng Slack channel. Fix must ship as a PR against main; the existing tests in tests/test_basic.py must keep passing. Repo: acme/webapp.",
       "id": "issue-web-101",
       "identifier": "WEB-101",
-      "labels": [{"id": "label-bug", "name": "bug"}, {"id": "label-p1", "name": "p1"}],
+      "labels": [
+        {
+          "id": "label-bug",
+          "name": "bug"
+        },
+        {
+          "id": "label-p1",
+          "name": "p1"
+        }
+      ],
       "links": [],
       "module": null,
       "priority": 1,
-      "project": {"archived": false, "id": "proj-web", "key": "WEB", "name": "Webapp"},
+      "project": {
+        "archived": false,
+        "id": "proj-web",
+        "key": "WEB",
+        "name": "Webapp"
+      },
       "relations": [],
-      "state": {"category": "started", "id": "state-progress", "name": "In Progress"},
+      "state": {
+        "category": "started",
+        "id": "state-progress",
+        "name": "In Progress"
+      },
       "title": "Uppercase URL schemes fail adapter selection",
       "updated_at": "2026-06-06T11:00:00Z",
       "url": "https://linear.app/acme/issue/WEB-101"
     },
     {
-      "assignees": [{"handle": "carol", "id": "user-carol", "name": "Carol Zhang"}],
+      "assignees": [
+        {
+          "handle": "agent",
+          "id": "user-agent",
+          "name": "Agent User"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-05T10:00:00Z",
+      "cycle": {
+        "ends_at": "2026-06-14",
+        "id": "cycle-2026-06a",
+        "name": "Sprint 2026-06-A",
+        "starts_at": "2026-06-01"
+      },
+      "description": "Add an edge redirect from http:// to https:// plus HSTS. This is an edge/proxy policy, not the client adapter scheme-matching bug. Repo: acme/edge-proxy.",
+      "id": "issue-web-103",
+      "identifier": "WEB-103",
+      "labels": [
+        {
+          "id": "label-security",
+          "name": "security"
+        },
+        {
+          "id": "label-p2",
+          "name": "p2"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 2,
+      "project": {
+        "archived": false,
+        "id": "proj-web",
+        "key": "WEB",
+        "name": "Webapp"
+      },
+      "relations": [],
+      "state": {
+        "category": "started",
+        "id": "state-progress",
+        "name": "In Progress"
+      },
+      "title": "Enforce HTTPS at the edge (redirect http->https)",
+      "updated_at": "2026-06-05T10:30:00Z",
+      "url": "https://linear.app/acme/issue/WEB-103"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "agent",
+          "id": "user-agent",
+          "name": "Agent User"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-04T14:00:00Z",
+      "cycle": {
+        "ends_at": "2026-06-14",
+        "id": "cycle-2026-06a",
+        "name": "Sprint 2026-06-A",
+        "starts_at": "2026-06-01"
+      },
+      "description": "A helper called url.lower() on the WHOLE url and corrupted case-sensitive query params like ?Token=Ab12. Fix is to NOT lowercase the entire url. Cautionary; do not lowercase full urls anywhere.",
+      "id": "issue-web-104",
+      "identifier": "WEB-104",
+      "labels": [
+        {
+          "id": "label-bug",
+          "name": "bug"
+        },
+        {
+          "id": "label-p2",
+          "name": "p2"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 2,
+      "project": {
+        "archived": false,
+        "id": "proj-web",
+        "key": "WEB",
+        "name": "Webapp"
+      },
+      "relations": [],
+      "state": {
+        "category": "started",
+        "id": "state-progress",
+        "name": "In Progress"
+      },
+      "title": "Query params lost when url is lowercased",
+      "updated_at": "2026-06-05T09:00:00Z",
+      "url": "https://linear.app/acme/issue/WEB-104"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "bob",
+          "id": "user-bob",
+          "name": "Bob Kumar"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-04T09:00:00Z",
+      "cycle": null,
+      "description": "Retry idempotent GETs once on ECONNRESET. Unrelated to scheme matching.",
+      "id": "issue-web-105",
+      "identifier": "WEB-105",
+      "labels": [
+        {
+          "id": "label-enhancement",
+          "name": "enhancement"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 3,
+      "project": {
+        "archived": false,
+        "id": "proj-web",
+        "key": "WEB",
+        "name": "Webapp"
+      },
+      "relations": [],
+      "state": {
+        "category": "unstarted",
+        "id": "state-todo",
+        "name": "Todo"
+      },
+      "title": "Add retry on connection reset",
+      "updated_at": "2026-06-04T09:00:00Z",
+      "url": "https://linear.app/acme/issue/WEB-105"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "carol",
+          "id": "user-carol",
+          "name": "Carol Zhang"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-03T11:00:00Z",
+      "cycle": null,
+      "description": "Someone proposed mutating the stored adapter prefixes to handle trailing slashes. Decided against mutating the prefix map. Different from WEB-101; do not change stored prefixes.",
+      "id": "issue-web-106",
+      "identifier": "WEB-106",
+      "labels": [
+        {
+          "id": "label-chore",
+          "name": "chore"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 3,
+      "project": {
+        "archived": false,
+        "id": "proj-web",
+        "key": "WEB",
+        "name": "Webapp"
+      },
+      "relations": [],
+      "state": {
+        "category": "completed",
+        "id": "state-done",
+        "name": "Done"
+      },
+      "title": "Trailing-slash normalization for adapter prefixes",
+      "updated_at": "2026-06-03T12:00:00Z",
+      "url": "https://linear.app/acme/issue/WEB-106"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "carol",
+          "id": "user-carol",
+          "name": "Carol Zhang"
+        }
+      ],
       "attachments_count": 0,
       "comments_count": 0,
       "created_at": "2026-06-05T09:00:00Z",
       "cycle": null,
-      "description": "Add structured logging to the request retry path.",
+      "description": "Add structured logging around request retries.",
       "id": "issue-web-100",
       "identifier": "WEB-100",
-      "labels": [{"id": "label-enhancement", "name": "enhancement"}],
+      "labels": [
+        {
+          "id": "label-enhancement",
+          "name": "enhancement"
+        }
+      ],
       "links": [],
       "module": null,
       "priority": 3,
-      "project": {"archived": false, "id": "proj-web", "key": "WEB", "name": "Webapp"},
+      "project": {
+        "archived": false,
+        "id": "proj-web",
+        "key": "WEB",
+        "name": "Webapp"
+      },
       "relations": [],
-      "state": {"category": "unstarted", "id": "state-todo", "name": "Todo"},
-      "title": "Structured logging for retries",
+      "state": {
+        "category": "unstarted",
+        "id": "state-todo",
+        "name": "Todo"
+      },
+      "title": "Structured logging for the retry path",
       "updated_at": "2026-06-05T09:00:00Z",
       "url": "https://linear.app/acme/issue/WEB-100"
     },
     {
-      "assignees": [{"handle": "bob", "id": "user-bob", "name": "Bob Kumar"}],
+      "assignees": [
+        {
+          "handle": "bob",
+          "id": "user-bob",
+          "name": "Bob Kumar"
+        }
+      ],
       "attachments_count": 0,
       "comments_count": 0,
       "created_at": "2026-06-03T08:00:00Z",
       "cycle": null,
-      "description": "Bump vendored urllib3 to the latest patch release.",
+      "description": "Routine dependency bump of the vendored urllib3 to the latest patch.",
       "id": "issue-web-099",
       "identifier": "WEB-099",
-      "labels": [{"id": "label-chore", "name": "chore"}],
+      "labels": [
+        {
+          "id": "label-chore",
+          "name": "chore"
+        }
+      ],
       "links": [],
       "module": null,
       "priority": 3,
-      "project": {"archived": false, "id": "proj-web", "key": "WEB", "name": "Webapp"},
+      "project": {
+        "archived": false,
+        "id": "proj-web",
+        "key": "WEB",
+        "name": "Webapp"
+      },
       "relations": [],
-      "state": {"category": "completed", "id": "state-done", "name": "Done"},
+      "state": {
+        "category": "completed",
+        "id": "state-done",
+        "name": "Done"
+      },
       "title": "Bump vendored urllib3",
       "updated_at": "2026-06-04T11:00:00Z",
       "url": "https://linear.app/acme/issue/WEB-099"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "dave",
+          "id": "user-dave",
+          "name": "Dave Singh"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-06T08:00:00Z",
+      "cycle": null,
+      "description": "Possible duplicate of WEB-101. Closing in favour of WEB-101 which has the agreed approach in #eng. Do not implement here.",
+      "id": "issue-web-108",
+      "identifier": "WEB-108",
+      "labels": [
+        {
+          "id": "label-chore",
+          "name": "chore"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 3,
+      "project": {
+        "archived": false,
+        "id": "proj-web",
+        "key": "WEB",
+        "name": "Webapp"
+      },
+      "relations": [],
+      "state": {
+        "category": "completed",
+        "id": "state-done",
+        "name": "Done"
+      },
+      "title": "[dup] Mixed-case scheme not recognized",
+      "updated_at": "2026-06-06T08:30:00Z",
+      "url": "https://linear.app/acme/issue/WEB-108"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "agent",
+          "id": "user-agent",
+          "name": "Agent User"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-04T13:00:00Z",
+      "cycle": null,
+      "description": "test_basic times out occassionally on the shared runner. Infra flake; retry passes. Don't touch the test.",
+      "id": "issue-web-109",
+      "identifier": "WEB-109",
+      "labels": [
+        {
+          "id": "label-test",
+          "name": "test"
+        },
+        {
+          "id": "label-infra",
+          "name": "infra"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 3,
+      "project": {
+        "archived": false,
+        "id": "proj-web",
+        "key": "WEB",
+        "name": "Webapp"
+      },
+      "relations": [],
+      "state": {
+        "category": "started",
+        "id": "state-progress",
+        "name": "In Progress"
+      },
+      "title": "Flaky test in tests/test_basic on CI",
+      "updated_at": "2026-06-05T08:00:00Z",
+      "url": "https://linear.app/acme/issue/WEB-109"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "frank",
+          "id": "user-frank",
+          "name": "Frank Li"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-04T12:00:00Z",
+      "cycle": null,
+      "description": "Resolver should normalize hostnames to lowercase since DNS is case-insensitive. Host normalization in the resolver, seperate from the http client scheme fix. Repo: acme/resolver.",
+      "id": "issue-infra-51",
+      "identifier": "INFRA-51",
+      "labels": [
+        {
+          "id": "label-infra",
+          "name": "infra"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 3,
+      "project": {
+        "archived": false,
+        "id": "proj-infra",
+        "key": "INFRA",
+        "name": "Infrastructure"
+      },
+      "relations": [],
+      "state": {
+        "category": "unstarted",
+        "id": "state-todo",
+        "name": "Todo"
+      },
+      "title": "Lowercase hostnames before DNS lookup",
+      "updated_at": "2026-06-04T12:00:00Z",
+      "url": "https://linear.app/acme/issue/INFRA-51"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "grace",
+          "id": "user-grace",
+          "name": "Grace Okoro"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-04T13:00:00Z",
+      "cycle": null,
+      "description": "iOS Info.plist is picky about custom scheme case. Register both myapp:// and MyApp://. Mobile-only; not the webapp http adapter.",
+      "id": "issue-mob-90",
+      "identifier": "MOB-90",
+      "labels": [
+        {
+          "id": "label-enhancement",
+          "name": "enhancement"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 3,
+      "project": {
+        "archived": false,
+        "id": "proj-mob",
+        "key": "MOB",
+        "name": "Mobile"
+      },
+      "relations": [],
+      "state": {
+        "category": "unstarted",
+        "id": "state-todo",
+        "name": "Todo"
+      },
+      "title": "Register MyApp:// deep-link scheme (case sensitivity)",
+      "updated_at": "2026-06-04T13:00:00Z",
+      "url": "https://linear.app/acme/issue/MOB-90"
     }
   ],
   "labels": [
-    {"id": "label-bug", "name": "bug"},
-    {"id": "label-p1", "name": "p1"},
-    {"id": "label-enhancement", "name": "enhancement"},
-    {"id": "label-chore", "name": "chore"}
+    {
+      "id": "label-bug",
+      "name": "bug"
+    },
+    {
+      "id": "label-p1",
+      "name": "p1"
+    },
+    {
+      "id": "label-p2",
+      "name": "p2"
+    },
+    {
+      "id": "label-p3",
+      "name": "p3"
+    },
+    {
+      "id": "label-enhancement",
+      "name": "enhancement"
+    },
+    {
+      "id": "label-docs",
+      "name": "docs"
+    },
+    {
+      "id": "label-chore",
+      "name": "chore"
+    },
+    {
+      "id": "label-test",
+      "name": "test"
+    },
+    {
+      "id": "label-infra",
+      "name": "infra"
+    },
+    {
+      "id": "label-security",
+      "name": "security"
+    }
   ],
   "links": {},
   "modules": [],
-  "project": {"archived": false, "id": "proj-web", "key": "WEB", "name": "Webapp"},
+  "project": {
+    "archived": false,
+    "id": "proj-web",
+    "key": "WEB",
+    "name": "Webapp"
+  },
   "relations": {},
   "states": [
-    {"category": "backlog", "id": "state-backlog", "name": "Backlog"},
-    {"category": "unstarted", "id": "state-todo", "name": "Todo"},
-    {"category": "started", "id": "state-progress", "name": "In Progress"},
-    {"category": "started", "id": "state-review", "name": "In Review"},
-    {"category": "completed", "id": "state-done", "name": "Done"}
+    {
+      "category": "backlog",
+      "id": "state-backlog",
+      "name": "Backlog"
+    },
+    {
+      "category": "unstarted",
+      "id": "state-todo",
+      "name": "Todo"
+    },
+    {
+      "category": "started",
+      "id": "state-progress",
+      "name": "In Progress"
+    },
+    {
+      "category": "started",
+      "id": "state-review",
+      "name": "In Review"
+    },
+    {
+      "category": "completed",
+      "id": "state-done",
+      "name": "Done"
+    }
   ],
   "users": [
-    {"handle": "agent", "id": "user-agent", "name": "Agent User"},
-    {"handle": "alice", "id": "user-alice", "name": "Alice Chen"},
-    {"handle": "bob", "id": "user-bob", "name": "Bob Kumar"},
-    {"handle": "carol", "id": "user-carol", "name": "Carol Zhang"}
+    {
+      "handle": "agent",
+      "id": "user-agent",
+      "name": "Agent User"
+    },
+    {
+      "handle": "alice",
+      "id": "user-alice",
+      "name": "Alice Chen"
+    },
+    {
+      "handle": "bob",
+      "id": "user-bob",
+      "name": "Bob Kumar"
+    },
+    {
+      "handle": "carol",
+      "id": "user-carol",
+      "name": "Carol Zhang"
+    },
+    {
+      "handle": "dave",
+      "id": "user-dave",
+      "name": "Dave Singh"
+    },
+    {
+      "handle": "erin",
+      "id": "user-erin",
+      "name": "Erin Park"
+    },
+    {
+      "handle": "frank",
+      "id": "user-frank",
+      "name": "Frank Li"
+    },
+    {
+      "handle": "grace",
+      "id": "user-grace",
+      "name": "Grace Okoro"
+    }
   ],
   "workspace": "acme"
 }

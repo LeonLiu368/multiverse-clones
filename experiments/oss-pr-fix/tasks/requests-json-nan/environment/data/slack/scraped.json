@@ -1,64 +1,56 @@
 {
   "messages": [
-    {
-      "channel": "general",
-      "author": "alice",
-      "content": "Morning team. The gateway 400 issue is now ticketed as API-202.",
-      "timestamp": "2026-06-06T09:00:00Z"
-    },
-    {
-      "channel": "random",
-      "author": "carol",
-      "content": "Lunch truck is back today 🌮",
-      "timestamp": "2026-06-06T11:30:00Z"
-    },
-    {
-      "channel": "eng",
-      "author": "alice",
-      "content": "Customers report intermittent 400 Bad Request when they POST telemetry. Payloads sometimes contain float('nan') or float('inf') for missing sensor readings. Tracking as API-202.",
-      "timestamp": "2026-06-06T10:00:00Z"
-    },
-    {
-      "channel": "eng",
-      "author": "bob",
-      "content": "Root cause: in requests/models.py, `PreparedRequest.prepare_body` calls `complexjson.dumps(json)` with default settings. Python's json emits bare `NaN`/`Infinity` tokens, which are valid JS but invalid JSON per RFC 4627 §2.4. The gateway rejects them with a 400, far from where the bad value was introduced.",
-      "timestamp": "2026-06-06T10:05:00Z"
-    },
-    {
-      "channel": "eng",
-      "author": "carol",
-      "content": "So we should fail fast at serialization instead of shipping an invalid body. What's the contract?",
-      "timestamp": "2026-06-06T10:08:00Z"
-    },
-    {
-      "channel": "eng",
-      "author": "alice",
-      "content": "Agreed contract, please follow exactly so callers can catch it: add a new exception named `InvalidJSONError` in requests/exceptions.py that subclasses `RequestException` — that way existing `except RequestException` handlers keep working.",
-      "timestamp": "2026-06-06T10:10:00Z"
-    },
-    {
-      "channel": "eng",
-      "author": "bob",
-      "content": "And in prepare_body: pass `allow_nan=False` to `complexjson.dumps`, wrap it in try/except, and on `ValueError` raise `InvalidJSONError(ve, request=self)`. Don't silently coerce or drop the value.",
-      "timestamp": "2026-06-06T10:13:00Z"
-    },
-    {
-      "channel": "eng",
-      "author": "alice",
-      "content": "Right. Valid finite payloads must serialize exactly as before — the existing tests in tests/test_basic.py must keep passing. Only NaN/Infinity should now raise.",
-      "timestamp": "2026-06-06T10:15:00Z"
-    },
-    {
-      "channel": "eng",
-      "author": "carol",
-      "content": "Ship as a PR against main, no direct commits. I'll review. Make sure both float('nan') and float('inf') raise InvalidJSONError.",
-      "timestamp": "2026-06-06T10:18:00Z"
-    },
-    {
-      "channel": "eng",
-      "author": "bob",
-      "content": "On it — branch + PR shortly.",
-      "timestamp": "2026-06-06T10:20:00Z"
-    }
+    {"channel": "general", "author": "alice", "content": "Morning team. The gateway 400 issue is now ticketed as API-202.", "timestamp": "2026-06-06T09:00:00Z"},
+    {"channel": "general", "author": "dave", "content": "thanks alice. busy sprint, lets try to keep #eng focused on the API-202 fix today.", "timestamp": "2026-06-06T09:04:00Z"},
+    {"channel": "general", "author": "carol", "content": "fyi all-hands moved to thurdsay 2pm, calender invite updated.", "timestamp": "2026-06-06T09:20:00Z"},
+
+    {"channel": "random", "author": "carol", "content": "Lunch truck is back today 🌮", "timestamp": "2026-06-06T11:30:00Z"},
+    {"channel": "random", "author": "erin", "content": "my json keeps breaking in postman lol, prob my own fault", "timestamp": "2026-06-06T11:40:00Z"},
+    {"channel": "random", "author": "dave", "content": "anyone else gettin wierd nan values in the fantasy league spreadsheet? 😂", "timestamp": "2026-06-06T12:05:00Z"},
+
+    {"channel": "data-platform", "author": "frank", "content": "heads up: the nightly etl is dropping rows where the sensor column is NaN. we fillna(0) in the spark job before writing parquet.", "timestamp": "2026-06-05T15:00:00Z"},
+    {"channel": "data-platform", "author": "grace", "content": "shoudnt we keep NaN as null in the warehouse instead of 0? 0 skews the averages.", "timestamp": "2026-06-05T15:06:00Z"},
+    {"channel": "data-platform", "author": "frank", "content": "yeah null is cleaner. pandas reads NaN, we cast to None on export. this is seperate from the api stuff btw, pure data pipeline.", "timestamp": "2026-06-05T15:11:00Z"},
+    {"channel": "data-platform", "author": "grace", "content": "agreed. the warehouse NaN handling has nothing to do with the requests json serializer, differnt codebase entirely.", "timestamp": "2026-06-05T15:18:00Z"},
+    {"channel": "data-platform", "author": "frank", "content": "right. for us NaN -> null on write. for the api team thats their call in #eng.", "timestamp": "2026-06-05T15:25:00Z"},
+
+    {"channel": "frontend", "author": "heidi", "content": "the dashboard is rendering 'NaN' in the totals widget again when a metric is missing.", "timestamp": "2026-06-05T16:00:00Z"},
+    {"channel": "frontend", "author": "ivan", "content": "thats a JS thing, isNaN() guard before the render. JSON.parse is fine, its the division that yields NaN client side.", "timestamp": "2026-06-05T16:05:00Z"},
+    {"channel": "frontend", "author": "heidi", "content": "k added a Number.isFinite() check in the component. unrelated to the backend serializer afaik.", "timestamp": "2026-06-05T16:12:00Z"},
+    {"channel": "frontend", "author": "ivan", "content": "correct, pure presentation layer. JSON.stringify in the browser actually throws on circular refs not on NaN, it emits null. anyway not our bug.", "timestamp": "2026-06-05T16:20:00Z"},
+
+    {"channel": "billing", "author": "judy", "content": "billing-service started 400ing on some stripe webhooks last week. body was malformed json.", "timestamp": "2026-06-04T10:00:00Z"},
+    {"channel": "billing", "author": "mallory", "content": "we fixed it by adding a BadRequestError in billing/errors.py and validating the webhook body up front. differnt service though, not api-service.", "timestamp": "2026-06-04T10:08:00Z"},
+    {"channel": "billing", "author": "judy", "content": "right, BadRequestError is billing-only. dont copy that name into the api-service fix, the api team has their own convention.", "timestamp": "2026-06-04T10:15:00Z"},
+    {"channel": "billing", "author": "mallory", "content": "yep. ours subclasses our own BillingError base, totally seperate hierarchy.", "timestamp": "2026-06-04T10:21:00Z"},
+
+    {"channel": "observability", "author": "nate", "content": "grafana panel shows Infinity for the p99 when the denominator is 0. divide by zero in the promql.", "timestamp": "2026-06-05T13:00:00Z"},
+    {"channel": "observability", "author": "olivia", "content": "wrap it in clamp_min or use a recording rule. thats a metrics math issue, not a serialization bug.", "timestamp": "2026-06-05T13:07:00Z"},
+    {"channel": "observability", "author": "nate", "content": "ya. Infinity in the dashboard != Infinity in a request body. the api-service json thing is a diff problem over in #eng.", "timestamp": "2026-06-05T13:14:00Z"},
+
+    {"channel": "api-platform", "author": "peter", "content": "fyi im refactoring the gateway-service error types. adding ValidationError(RequestException) for bad query params.", "timestamp": "2026-06-05T11:00:00Z"},
+    {"channel": "api-platform", "author": "quinn", "content": "nice. note thats gateway-service/exceptions, not the requests lib in api-service. ValidationError is for query param validation only.", "timestamp": "2026-06-05T11:09:00Z"},
+    {"channel": "api-platform", "author": "peter", "content": "correct. dont confuse it with whatever the api-service team lands for the json body issue, that one is about NaN serialization specificaly.", "timestamp": "2026-06-05T11:16:00Z"},
+    {"channel": "api-platform", "author": "quinn", "content": "agreed, two different exception classes in two different repos. ours = ValidationError, theirs = TBD in #eng.", "timestamp": "2026-06-05T11:22:00Z"},
+
+    {"channel": "backend", "author": "dave", "content": "for the API-202 NaN thing, cant we just pre-process the payload and replace NaN with null before json.dumps? quick and done.", "timestamp": "2026-06-06T09:35:00Z"},
+    {"channel": "backend", "author": "bob", "content": "no — silently rewriting the data hides the bug from the caller. product wants a hard failure, not a coerce. lets not do the null-replace hack.", "timestamp": "2026-06-06T09:39:00Z"},
+    {"channel": "backend", "author": "dave", "content": "ok fair. what about json.dumps(payload, default=str)? then NaN becomes 'nan' string.", "timestamp": "2026-06-06T09:42:00Z"},
+    {"channel": "backend", "author": "bob", "content": "still a silent coerce, and 'nan' as a string is worse. the agreed direction is in #eng — raise on invalid floats, dont mutate. take it there.", "timestamp": "2026-06-06T09:46:00Z"},
+    {"channel": "backend", "author": "dave", "content": "got it, moving to #eng for the real contract.", "timestamp": "2026-06-06T09:48:00Z"},
+
+    {"channel": "oncall", "author": "rachel", "content": "page: gateway returning 400s for ~2% of POSTs since 09:00.", "timestamp": "2026-06-06T09:05:00Z"},
+    {"channel": "oncall", "author": "sam", "content": "some of these are auth token expiry (401 wrapped as 400 upstream), some are the NaN payload thing. the NaN ones are API-202, being handled in #eng.", "timestamp": "2026-06-06T09:12:00Z"},
+    {"channel": "oncall", "author": "rachel", "content": "ack. ill mute the auth ones, theyre a seperate rotation. the json body 400s go to the api-service team.", "timestamp": "2026-06-06T09:19:00Z"},
+
+    {"channel": "eng", "author": "alice", "content": "Customers report intermittent 400 Bad Request when they POST telemetry. Payloads sometimes contain float('nan') or float('inf') for missing sensor readings. Tracking as API-202.", "timestamp": "2026-06-06T10:00:00Z"},
+    {"channel": "eng", "author": "bob", "content": "Root cause: in requests/models.py, `PreparedRequest.prepare_body` calls `complexjson.dumps(json)` with default settings. Python's json emits bare `NaN`/`Infinity` tokens, which are valid JS but invalid JSON per RFC 4627 §2.4. The gateway rejects them with a 400, far from where the bad value was introduced.", "timestamp": "2026-06-06T10:05:00Z"},
+    {"channel": "eng", "author": "dave", "content": "before we go deep — could we just swap NaN for null, or name the new error JSONError / BadJSON? trying to keep it simple.", "timestamp": "2026-06-06T10:07:00Z"},
+    {"channel": "eng", "author": "carol", "content": "No silent coerce, and no ad-hoc name. So we should fail fast at serialization instead of shipping an invalid body. What's the exact contract?", "timestamp": "2026-06-06T10:08:00Z"},
+    {"channel": "eng", "author": "alice", "content": "Agreed contract, please follow exactly so callers can catch it: add a new exception named `InvalidJSONError` in requests/exceptions.py that subclasses `RequestException` — that way existing `except RequestException` handlers keep working. Not JSONError, not BadJSON — `InvalidJSONError`.", "timestamp": "2026-06-06T10:10:00Z"},
+    {"channel": "eng", "author": "bob", "content": "And in prepare_body: pass `allow_nan=False` to `complexjson.dumps`, wrap it in try/except, and on `ValueError` raise `InvalidJSONError(ve, request=self)`. Don't silently coerce or drop the value.", "timestamp": "2026-06-06T10:13:00Z"},
+    {"channel": "eng", "author": "alice", "content": "Right. Valid finite payloads must serialize exactly as before — the existing tests in tests/test_basic.py must keep passing. Only NaN/Infinity should now raise.", "timestamp": "2026-06-06T10:15:00Z"},
+    {"channel": "eng", "author": "carol", "content": "Ship as a PR against main, no direct commits. I'll review. Make sure both float('nan') and float('inf') raise InvalidJSONError.", "timestamp": "2026-06-06T10:18:00Z"},
+    {"channel": "eng", "author": "bob", "content": "On it — branch + PR shortly.", "timestamp": "2026-06-06T10:20:00Z"}
   ]
 }

@@ -17,7 +17,7 @@ metadata:
     must keep passing AND hidden tests that exercise the bug (F2P) must pass.
     nop=0, oracle=1.
   task_path: experiments/oss-pr-fix/tasks
-  n_trials: 3
+  n_trials: 1
   skip_trajectory_analysis: false
 
 tasks:
@@ -29,4 +29,7 @@ agents:
   - name: nop
   - name: gemini-cli
     model_name: gemini/gemini-3.1-pro-preview
-    n_trials: 3
+    n_trials: 2
+  - name: cursor-cli
+    model_name: cursor/composer
+    n_trials: 2
