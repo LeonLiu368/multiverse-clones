@@ -1,12 +1,20 @@
 metadata:
   name: oss-pr-fix
   description: |
-    Two pull-request review tasks adapted from real psf/requests bug fixes.
-    The agent is given a pre-seeded GitHub forge where a fix branch and an open
-    PR already exist. It must inspect the diff, verify the fix is correct, then
-    approve and merge the PR.
+    Two multi-surface software-engineering tasks adapted from real psf/requests
+    bug fixes. Each task seeds a repo with a buggy library snapshot and splits
+    the required information across THREE discovery surfaces:
 
-    Single surface (GitHub only) — no issue tracker or chat required.
+      - an issue tracker (ticketvector: linear/jira CLIs) — names the symptom,
+        the repo, and points to chat for the implementation contract;
+      - a Slack workspace (slack-service: slack CLI + slack-mcp) — holds the
+        exact, test-enforced implementation contract;
+      - an offline GitHub forge (ghc-service: gh CLI) — holds the code.
+
+    The agent must read the issue, read the agreed contract in Slack, clone the
+    repo, implement the fix, and open a pull request against main. Grading
+    checks out the PR's head and runs the test suite: the existing tests (P2P)
+    must keep passing AND hidden tests that exercise the bug (F2P) must pass.
     nop=0, oracle=1.
   task_path: experiments/oss-pr-fix/tasks
   n_trials: 3

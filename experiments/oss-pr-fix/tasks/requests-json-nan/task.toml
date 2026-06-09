@@ -3,7 +3,7 @@ source = "psf/requests PR #5810 — reject NaN/Infinity in JSON serialization"
 
 [task]
 name = "oss-pr-fix/requests-json-nan"
-description = "The vendored requests library in acme/api-service silently produces invalid JSON when a payload contains float('nan') or float('inf'). RFC 4627 §2.4 requires JSON numbers to be finite; Python's json.dumps emits NaN/Infinity by default, which most HTTP servers reject with a 400. A patch that adds allow_nan=False and a new InvalidJSONError exception is already open as a pull request. Inspect the diff, verify the fix correctly guards json.dumps and adds the new exception class, then approve and merge the PR. nop=0, oracle=1."
+description = "The requests library vendored into acme/api-service silently serializes float('nan')/float('inf') into request bodies, producing invalid JSON the upstream gateway rejects with 400. The fix requires correlating three surfaces: Linear ticket API-202 names the symptom and repo; the #eng Slack thread holds the exact contract (add InvalidJSONError subclassing RequestException; pass allow_nan=False to json.dumps and re-raise ValueError as InvalidJSONError); the code lives in acme/api-service. The agent must clone the repo, implement the fix, and open a PR against main. Graded by checking out the PR branch and running F2P + P2P unit tests. nop=0, oracle=1."
 custom_docker_compose = true
 
 [metadata]
@@ -12,13 +12,13 @@ author_email = "tasks@abundant.ai"
 author_organization = "Abundant"
 category = "swe"
 source_repo = "acme/api-service"
-difficulty_explanation = "Single-surface GitHub task: read an open PR diff across two Python files, verify allow_nan=False is present and InvalidJSONError is added, approve and merge."
-tags = ["gh", "pr-review", "python", "requests", "oss", "json"]
-expert_time_estimate_hours = 0.1
-relevant_experience = "GitHub PR review and merge, Python JSON serialization, exception design"
+difficulty_explanation = "Multi-surface SWE task: the symptom is in Linear, the precise contract (exact exception name, its base class, allow_nan=False) is only in Slack, and the code is in GitHub. The agent must write the fix and open a PR whose head passes both the existing tests (P2P) and hidden NaN/Infinity tests (F2P)."
+tags = ["gh", "linear", "slack", "multi-surface", "pr", "unit-tests", "python", "requests", "oss", "json"]
+expert_time_estimate_hours = 0.4
+relevant_experience = "Reading issue trackers and chat for requirements, Python JSON serialization, exception design, GitHub PR workflow, writing code to pass a test suite"
 
 [agent]
-timeout_sec = 1200
+timeout_sec = 1800
 user = "agent"
 
 [verifier]
@@ -33,3 +33,8 @@ memory_mb = 4096
 storage_mb = 20480
 gpus = 0
 workdir = "/app"
+
+[[environment.mcp_servers]]
+name = "slack"
+transport = "stdio"
+command = "slack-mcp"

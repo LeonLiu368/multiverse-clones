@@ -1,0 +1,64 @@
+{
+  "messages": [
+    {
+      "channel": "general",
+      "author": "alice",
+      "content": "Morning team. The gateway 400 issue is now ticketed as API-202.",
+      "timestamp": "2026-06-06T09:00:00Z"
+    },
+    {
+      "channel": "random",
+      "author": "carol",
+      "content": "Lunch truck is back today 🌮",
+      "timestamp": "2026-06-06T11:30:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "alice",
+      "content": "Customers report intermittent 400 Bad Request when they POST telemetry. Payloads sometimes contain float('nan') or float('inf') for missing sensor readings. Tracking as API-202.",
+      "timestamp": "2026-06-06T10:00:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "bob",
+      "content": "Root cause: in requests/models.py, `PreparedRequest.prepare_body` calls `complexjson.dumps(json)` with default settings. Python's json emits bare `NaN`/`Infinity` tokens, which are valid JS but invalid JSON per RFC 4627 §2.4. The gateway rejects them with a 400, far from where the bad value was introduced.",
+      "timestamp": "2026-06-06T10:05:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "carol",
+      "content": "So we should fail fast at serialization instead of shipping an invalid body. What's the contract?",
+      "timestamp": "2026-06-06T10:08:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "alice",
+      "content": "Agreed contract, please follow exactly so callers can catch it: add a new exception named `InvalidJSONError` in requests/exceptions.py that subclasses `RequestException` — that way existing `except RequestException` handlers keep working.",
+      "timestamp": "2026-06-06T10:10:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "bob",
+      "content": "And in prepare_body: pass `allow_nan=False` to `complexjson.dumps`, wrap it in try/except, and on `ValueError` raise `InvalidJSONError(ve, request=self)`. Don't silently coerce or drop the value.",
+      "timestamp": "2026-06-06T10:13:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "alice",
+      "content": "Right. Valid finite payloads must serialize exactly as before — the existing tests in tests/test_basic.py must keep passing. Only NaN/Infinity should now raise.",
+      "timestamp": "2026-06-06T10:15:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "carol",
+      "content": "Ship as a PR against main, no direct commits. I'll review. Make sure both float('nan') and float('inf') raise InvalidJSONError.",
+      "timestamp": "2026-06-06T10:18:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "bob",
+      "content": "On it — branch + PR shortly.",
+      "timestamp": "2026-06-06T10:20:00Z"
+    }
+  ]
+}

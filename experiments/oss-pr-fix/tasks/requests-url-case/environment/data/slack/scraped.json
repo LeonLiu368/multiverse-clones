@@ -1,0 +1,76 @@
+{
+  "messages": [
+    {
+      "channel": "general",
+      "author": "alice",
+      "content": "Morning all. Reminder: client demo for the legacy-gateway integration is Thursday.",
+      "timestamp": "2026-06-06T09:00:00Z"
+    },
+    {
+      "channel": "general",
+      "author": "bob",
+      "content": "Thanks. I'll have the URL-handling fix in before then.",
+      "timestamp": "2026-06-06T09:02:00Z"
+    },
+    {
+      "channel": "random",
+      "author": "carol",
+      "content": "Coffee machine on 3 is fixed ☕",
+      "timestamp": "2026-06-06T10:30:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "alice",
+      "content": "We're seeing reports that requests to the legacy partner gateway fail. Their endpoints advertise uppercase schemes like HTTP://gw.partner.example and HTTPS://gw.partner.example. Our client throws 'No connection adapters were found'. Tracking as WEB-101.",
+      "timestamp": "2026-06-06T11:00:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "bob",
+      "content": "Confirmed. RFC 2396 §3.1 says scheme names are case-insensitive, so HTTP:// and http:// are the same scheme. Our code compares the raw URL against lowercase prefixes, so uppercase schemes never match.",
+      "timestamp": "2026-06-06T11:05:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "carol",
+      "content": "Where exactly does the comparison happen?",
+      "timestamp": "2026-06-06T11:07:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "bob",
+      "content": "Two places, and BOTH must be fixed or the partner flow still breaks: (1) `Session.get_adapter` in requests/sessions.py does `url.startswith(prefix)`; (2) `HTTPAdapter.cert_verify` in requests/adapters.py does `url.startswith('https')`. A partial fix that only touches one will fail review.",
+      "timestamp": "2026-06-06T11:10:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "alice",
+      "content": "Agreed on the approach: normalize the scheme by calling `.lower()` on the URL at each comparison site — e.g. `url.lower().startswith(prefix)`. Do NOT mutate the stored adapter prefixes, and do NOT switch to casefold(); team standard is a plain `.lower()` at the comparison.",
+      "timestamp": "2026-06-06T11:13:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "bob",
+      "content": "Got it. So: lowercase the URL only for the scheme comparison in get_adapter and in cert_verify. Existing lowercase behavior stays identical, and unknown schemes must still raise ValueError.",
+      "timestamp": "2026-06-06T11:15:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "alice",
+      "content": "Exactly. Ship it as a PR against main — no direct pushes. The existing tests in tests/test_basic.py must keep passing.",
+      "timestamp": "2026-06-06T11:17:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "carol",
+      "content": "I'll review when the PR is up. Make sure HTTPS:// and mixed-case like HtTpS:// both resolve to the https adapter.",
+      "timestamp": "2026-06-06T11:20:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "bob",
+      "content": "Will do. Branch + PR incoming.",
+      "timestamp": "2026-06-06T11:22:00Z"
+    }
+  ]
+}

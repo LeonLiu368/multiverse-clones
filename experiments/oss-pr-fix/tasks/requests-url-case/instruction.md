@@ -1,40 +1,57 @@
-# Pull request review — case-insensitive URL scheme matching
+# Fix: uppercase URL schemes fail adapter selection
 
-A bug was reported in the `requests` library vendored into `acme/webapp`:
-HTTP adapters silently fail when URLs use uppercase schemes such as
-`HTTP://example.com` or `HTTPS://example.com`.
+You are an engineer at acme. A bug has been filed against the `requests`
+library vendored into `acme/webapp`. Your job is to gather the context from
+the issue tracker and team chat, implement the fix, and ship it as a pull
+request whose code passes the test suite.
 
-RFC 2396 §3.1 requires scheme names to be treated as case-insensitive —
-`HTTP` and `http` are the same scheme. The current code calls
-`url.startswith('https')` and `url.startswith(prefix)` directly, so
-uppercase-scheme URLs bypass SSL certificate verification and adapter selection.
+The required information is split across three surfaces — you will need all of
+them:
 
-A fix has been submitted as an open pull request. Your job is to inspect the
-proposed change, verify it correctly normalizes URL schemes before every
-scheme-sensitive comparison, then approve and merge it.
-
-## Code — `gh` / `git`
+## 1. Issue tracker — `linear`
 
 ```bash
-# list open PRs
-gh pr list -R acme/webapp
+linear issue mine                 # find the issue assigned to you
+linear issue view WEB-101 --comments
+```
 
-# read the PR description and diff
-gh pr view 1 -R acme/webapp
-gh pr diff 1 -R acme/webapp
+The ticket names the symptom and the repository, and points you to the team
+chat for the agreed implementation approach.
 
-# optionally clone to inspect file history
+## 2. Team chat — `slack` (CLI or `slack-mcp` MCP server)
+
+```bash
+slack channels
+slack history eng --limit 100
+```
+
+The `#eng` thread contains the root-cause diagnosis and the **exact**
+implementation contract the team agreed on — which functions must change and
+how. Read it carefully; the test suite enforces that contract.
+
+## 3. Code — `gh` / `git`
+
+```bash
 gh repo clone acme/webapp
+cd webapp
+python3 -m unittest discover -s tests -v   # existing tests (must keep passing)
 ```
 
 ## What to do
 
-Review the diff. Confirm that `.lower()` (or equivalent) is applied before
-every `startswith()` call that checks URL schemes in both
-`requests/adapters.py` and `requests/sessions.py`. If the fix looks correct,
-approve and merge the PR.
+1. Read `WEB-101` in Linear and the `#eng` Slack thread to learn the exact fix.
+2. Clone `acme/webapp` and implement the change in the source.
+3. Make sure the existing tests in `tests/test_basic.py` still pass.
+4. Commit on a new branch, push it, and open a **pull request against `main`**:
 
-```bash
-gh pr review 1 -R acme/webapp --approve -b "LGTM"
-gh pr merge 1 -R acme/webapp --squash
-```
+   ```bash
+   git checkout -b fix/uppercase-url-scheme
+   git commit -am "fix: ..."
+   git push -u origin fix/uppercase-url-scheme
+   gh pr create -R acme/webapp --base main --head fix/uppercase-url-scheme \
+     --title "..." --body "..."
+   ```
+
+Your work is graded by checking out your PR's branch and running the full test
+suite (the existing tests plus additional hidden tests that exercise the bug).
+All tests must pass.

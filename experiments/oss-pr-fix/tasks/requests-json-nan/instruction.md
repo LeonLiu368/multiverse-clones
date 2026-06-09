@@ -1,44 +1,58 @@
-# Pull request review — reject NaN/Infinity in JSON request bodies
+# Fix: invalid JSON body sent when payload contains NaN/Infinity
 
-A bug was reported in the `requests` library vendored into `acme/api-service`:
-sending a JSON payload that contains `float('nan')` or `float('inf')` silently
-produces an invalid JSON body.
+You are an engineer at acme. A bug has been filed against the `requests`
+library vendored into `acme/api-service`. Your job is to gather the context
+from the issue tracker and team chat, implement the fix, and ship it as a pull
+request whose code passes the test suite.
 
-RFC 4627 §2.4 requires that JSON numeric values be finite. Python's
-`json.dumps` emits `NaN` and `Infinity` by default — valid JavaScript, but not
-valid JSON. Most HTTP servers (and strict JSON parsers) respond with a 400 Bad
-Request, making the failure hard to trace back to the serialization layer.
+The required information is split across three surfaces — you will need all of
+them:
 
-A fix that raises a new `InvalidJSONError` exception has been submitted as an
-open pull request. Your job is to inspect the proposed change, verify it
-correctly guards `json.dumps` and adds the exception class, then approve and
-merge it.
-
-## Code — `gh` / `git`
+## 1. Issue tracker — `linear`
 
 ```bash
-# list open PRs
-gh pr list -R acme/api-service
+linear issue mine                 # find the issue assigned to you
+linear issue view API-202 --comments
+```
 
-# read the PR description and diff
-gh pr view 1 -R acme/api-service
-gh pr diff 1 -R acme/api-service
+The ticket names the symptom and the repository, and points you to the team
+chat for the agreed implementation approach.
 
-# optionally clone to inspect file history
+## 2. Team chat — `slack` (CLI or `slack-mcp` MCP server)
+
+```bash
+slack channels
+slack history eng --limit 100
+```
+
+The `#eng` thread contains the root-cause diagnosis and the **exact**
+implementation contract the team agreed on — the new exception's name, what it
+must subclass, and how serialization must change. Read it carefully; the test
+suite enforces that contract.
+
+## 3. Code — `gh` / `git`
+
+```bash
 gh repo clone acme/api-service
+cd api-service
+python3 -m unittest discover -s tests -v   # existing tests (must keep passing)
 ```
 
 ## What to do
 
-Review the diff. Confirm that:
+1. Read `API-202` in Linear and the `#eng` Slack thread to learn the exact fix.
+2. Clone `acme/api-service` and implement the change in the source.
+3. Make sure the existing tests in `tests/test_basic.py` still pass.
+4. Commit on a new branch, push it, and open a **pull request against `main`**:
 
-1. `requests/exceptions.py` adds `InvalidJSONError` as a subclass of `RequestException`.
-2. `requests/models.py` passes `allow_nan=False` to `json.dumps` and raises
-   `InvalidJSONError` on `ValueError`.
+   ```bash
+   git checkout -b fix/json-nan-validation
+   git commit -am "fix: ..."
+   git push -u origin fix/json-nan-validation
+   gh pr create -R acme/api-service --base main --head fix/json-nan-validation \
+     --title "..." --body "..."
+   ```
 
-If the fix looks correct, approve and merge the PR.
-
-```bash
-gh pr review 1 -R acme/api-service --approve -b "LGTM"
-gh pr merge 1 -R acme/api-service --squash
-```
+Your work is graded by checking out your PR's branch and running the full test
+suite (the existing tests plus additional hidden tests that exercise the bug).
+All tests must pass.

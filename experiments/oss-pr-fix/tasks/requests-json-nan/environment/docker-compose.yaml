@@ -6,7 +6,7 @@ services:
       dockerfile: Dockerfile
     image: ${MAIN_IMAGE_NAME}
     entrypoint: ["/bin/bash", "-lc"]
-    command: ["wait-for-seed api-service && sleep infinity"]
+    command: ["wait-for-seed api-service requests/models.py && sleep infinity"]
     working_dir: /app
     healthcheck:
       test: ["CMD-SHELL", "test -f /tmp/seed-ready"]
@@ -17,11 +17,20 @@ services:
     environment:
       GH_HOST: http://github
       GH_TOKEN_FILE: /run/secrets/token
-      PYTHONPATH: /opt:/opt/ghclone
+      WORLD_ISSUES_AGENT_MODE: "1"
+      WORLD_ISSUES_BACKEND: remote
+      WORLD_ISSUES_OUTPUT: json
+      WORLD_ISSUES_ACTOR: agent
+      PLANE_BASE_URL: http://127.0.0.1:8765
+      PYTHONPATH: /opt:/opt/ticketvector:/opt/slackcli
+      SLACK_API_URL: http://slack
+      SLACK_BOT_TOKEN: test-token-acme-eval
     volumes:
       - ghc-shared:/run/secrets:ro
     depends_on:
       github:
+        condition: service_healthy
+      slack:
         condition: service_healthy
 
   github:
@@ -37,6 +46,35 @@ services:
       timeout: 5s
       retries: 60
       start_period: 45s
+
+  ticketvector:
+    image: ghcr.io/abundant-ai/ticketvector-service:main
+    network_mode: service:main
+    platform: linux/amd64
+    depends_on:
+      main:
+        condition: service_healthy
+    environment:
+      WORLD_ISSUES_STATE_FILE: /var/lib/ticketvector/state.json
+      WORLD_ISSUES_BIND_HOST: 0.0.0.0
+      WORLD_ISSUES_PORT: "8765"
+      WORLD_ISSUES_ACTOR: agent
+    volumes:
+      - ./data/ticketvector/state.json:/var/lib/ticketvector/state.json
+
+  slack:
+    image: ghcr.io/abundant-ai/slack-service:latest
+    platform: linux/amd64
+    environment:
+      SLACK_BOT_TOKEN: test-token-acme-eval
+    volumes:
+      - ./data/slack:/data/mattermost:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:80/api/auth.test >/dev/null || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 24
+      start_period: 30s
 
 volumes:
   ghc-shared:

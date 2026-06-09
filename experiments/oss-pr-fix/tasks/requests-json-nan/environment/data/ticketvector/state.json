@@ -1,0 +1,108 @@
+{
+  "attachments": {},
+  "base_url": "https://linear.app/acme",
+  "comments": {
+    "API-202": [
+      {
+        "author": {"handle": "alice", "id": "user-alice", "name": "Alice Chen"},
+        "body": "Confirmed payloads contain NaN/Infinity for missing sensor readings. Root cause and the exact exception contract to implement are written up in the #eng channel.",
+        "created_at": "2026-06-06T10:22:00Z",
+        "id": "cmt-api-202-1",
+        "issue": "API-202",
+        "updated_at": "2026-06-06T10:22:00Z"
+      }
+    ],
+    "API-201": [],
+    "API-200": []
+  },
+  "cycles": [
+    {"ends_at": "2026-06-14", "id": "cycle-2026-06a", "name": "Sprint 2026-06-A", "starts_at": "2026-06-01"}
+  ],
+  "history": {},
+  "issues": [
+    {
+      "assignees": [{"handle": "agent", "id": "user-agent", "name": "Agent User"}],
+      "attachments_count": 0,
+      "comments_count": 1,
+      "created_at": "2026-06-06T09:55:00Z",
+      "cycle": {"ends_at": "2026-06-14", "id": "cycle-2026-06a", "name": "Sprint 2026-06-A", "starts_at": "2026-06-01"},
+      "description": "POSTing a JSON body containing float('nan') or float('inf') produces a payload the upstream gateway rejects with 400 Bad Request. We should fail fast at serialization rather than send an invalid body. The exact exception contract and code location are documented in the #eng Slack channel. Fix must ship as a PR against main; the existing tests in tests/test_basic.py must keep passing. Repo: acme/api-service.",
+      "id": "issue-api-202",
+      "identifier": "API-202",
+      "labels": [{"id": "label-bug", "name": "bug"}, {"id": "label-p1", "name": "p1"}],
+      "links": [],
+      "module": null,
+      "priority": 1,
+      "project": {"archived": false, "id": "proj-api", "key": "API", "name": "API Service"},
+      "relations": [],
+      "state": {"category": "started", "id": "state-progress", "name": "In Progress"},
+      "title": "Invalid JSON body sent when payload contains NaN/Infinity",
+      "updated_at": "2026-06-06T10:00:00Z",
+      "url": "https://linear.app/acme/issue/API-202"
+    },
+    {
+      "assignees": [{"handle": "carol", "id": "user-carol", "name": "Carol Zhang"}],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-05T09:00:00Z",
+      "cycle": null,
+      "description": "Add a request-id header to all outbound calls.",
+      "id": "issue-api-201",
+      "identifier": "API-201",
+      "labels": [{"id": "label-enhancement", "name": "enhancement"}],
+      "links": [],
+      "module": null,
+      "priority": 3,
+      "project": {"archived": false, "id": "proj-api", "key": "API", "name": "API Service"},
+      "relations": [],
+      "state": {"category": "unstarted", "id": "state-todo", "name": "Todo"},
+      "title": "Add request-id header",
+      "updated_at": "2026-06-05T09:00:00Z",
+      "url": "https://linear.app/acme/issue/API-201"
+    },
+    {
+      "assignees": [{"handle": "bob", "id": "user-bob", "name": "Bob Kumar"}],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-03T08:00:00Z",
+      "cycle": null,
+      "description": "Document the retry/backoff defaults in the README.",
+      "id": "issue-api-200",
+      "identifier": "API-200",
+      "labels": [{"id": "label-docs", "name": "docs"}],
+      "links": [],
+      "module": null,
+      "priority": 3,
+      "project": {"archived": false, "id": "proj-api", "key": "API", "name": "API Service"},
+      "relations": [],
+      "state": {"category": "completed", "id": "state-done", "name": "Done"},
+      "title": "Document retry defaults",
+      "updated_at": "2026-06-04T11:00:00Z",
+      "url": "https://linear.app/acme/issue/API-200"
+    }
+  ],
+  "labels": [
+    {"id": "label-bug", "name": "bug"},
+    {"id": "label-p1", "name": "p1"},
+    {"id": "label-enhancement", "name": "enhancement"},
+    {"id": "label-docs", "name": "docs"}
+  ],
+  "links": {},
+  "modules": [],
+  "project": {"archived": false, "id": "proj-api", "key": "API", "name": "API Service"},
+  "relations": {},
+  "states": [
+    {"category": "backlog", "id": "state-backlog", "name": "Backlog"},
+    {"category": "unstarted", "id": "state-todo", "name": "Todo"},
+    {"category": "started", "id": "state-progress", "name": "In Progress"},
+    {"category": "started", "id": "state-review", "name": "In Review"},
+    {"category": "completed", "id": "state-done", "name": "Done"}
+  ],
+  "users": [
+    {"handle": "agent", "id": "user-agent", "name": "Agent User"},
+    {"handle": "alice", "id": "user-alice", "name": "Alice Chen"},
+    {"handle": "bob", "id": "user-bob", "name": "Bob Kumar"},
+    {"handle": "carol", "id": "user-carol", "name": "Carol Zhang"}
+  ],
+  "workspace": "acme"
+}

@@ -1,0 +1,108 @@
+{
+  "attachments": {},
+  "base_url": "https://linear.app/acme",
+  "comments": {
+    "WEB-101": [
+      {
+        "author": {"handle": "alice", "id": "user-alice", "name": "Alice Chen"},
+        "body": "Reproduced against the partner gateway. Their endpoints use uppercase schemes (HTTP://, HTTPS://). Diagnosis and the agreed implementation approach are in the #eng channel.",
+        "created_at": "2026-06-06T11:25:00Z",
+        "id": "cmt-web-101-1",
+        "issue": "WEB-101",
+        "updated_at": "2026-06-06T11:25:00Z"
+      }
+    ],
+    "WEB-100": [],
+    "WEB-099": []
+  },
+  "cycles": [
+    {"ends_at": "2026-06-14", "id": "cycle-2026-06a", "name": "Sprint 2026-06-A", "starts_at": "2026-06-01"}
+  ],
+  "history": {},
+  "issues": [
+    {
+      "assignees": [{"handle": "agent", "id": "user-agent", "name": "Agent User"}],
+      "attachments_count": 0,
+      "comments_count": 1,
+      "created_at": "2026-06-06T10:55:00Z",
+      "cycle": {"ends_at": "2026-06-14", "id": "cycle-2026-06a", "name": "Sprint 2026-06-A", "starts_at": "2026-06-01"},
+      "description": "Requests to URLs with uppercase schemes (e.g. HTTP://gw.partner.example, HTTPS://gw.partner.example) fail with 'No connection adapters were found'. RFC 2396 says schemes are case-insensitive, so these should work. The exact code locations and the agreed implementation approach are documented in the #eng Slack channel. Fix must ship as a PR against main; the existing tests in tests/test_basic.py must keep passing. Repo: acme/webapp.",
+      "id": "issue-web-101",
+      "identifier": "WEB-101",
+      "labels": [{"id": "label-bug", "name": "bug"}, {"id": "label-p1", "name": "p1"}],
+      "links": [],
+      "module": null,
+      "priority": 1,
+      "project": {"archived": false, "id": "proj-web", "key": "WEB", "name": "Webapp"},
+      "relations": [],
+      "state": {"category": "started", "id": "state-progress", "name": "In Progress"},
+      "title": "Uppercase URL schemes fail adapter selection",
+      "updated_at": "2026-06-06T11:00:00Z",
+      "url": "https://linear.app/acme/issue/WEB-101"
+    },
+    {
+      "assignees": [{"handle": "carol", "id": "user-carol", "name": "Carol Zhang"}],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-05T09:00:00Z",
+      "cycle": null,
+      "description": "Add structured logging to the request retry path.",
+      "id": "issue-web-100",
+      "identifier": "WEB-100",
+      "labels": [{"id": "label-enhancement", "name": "enhancement"}],
+      "links": [],
+      "module": null,
+      "priority": 3,
+      "project": {"archived": false, "id": "proj-web", "key": "WEB", "name": "Webapp"},
+      "relations": [],
+      "state": {"category": "unstarted", "id": "state-todo", "name": "Todo"},
+      "title": "Structured logging for retries",
+      "updated_at": "2026-06-05T09:00:00Z",
+      "url": "https://linear.app/acme/issue/WEB-100"
+    },
+    {
+      "assignees": [{"handle": "bob", "id": "user-bob", "name": "Bob Kumar"}],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-03T08:00:00Z",
+      "cycle": null,
+      "description": "Bump vendored urllib3 to the latest patch release.",
+      "id": "issue-web-099",
+      "identifier": "WEB-099",
+      "labels": [{"id": "label-chore", "name": "chore"}],
+      "links": [],
+      "module": null,
+      "priority": 3,
+      "project": {"archived": false, "id": "proj-web", "key": "WEB", "name": "Webapp"},
+      "relations": [],
+      "state": {"category": "completed", "id": "state-done", "name": "Done"},
+      "title": "Bump vendored urllib3",
+      "updated_at": "2026-06-04T11:00:00Z",
+      "url": "https://linear.app/acme/issue/WEB-099"
+    }
+  ],
+  "labels": [
+    {"id": "label-bug", "name": "bug"},
+    {"id": "label-p1", "name": "p1"},
+    {"id": "label-enhancement", "name": "enhancement"},
+    {"id": "label-chore", "name": "chore"}
+  ],
+  "links": {},
+  "modules": [],
+  "project": {"archived": false, "id": "proj-web", "key": "WEB", "name": "Webapp"},
+  "relations": {},
+  "states": [
+    {"category": "backlog", "id": "state-backlog", "name": "Backlog"},
+    {"category": "unstarted", "id": "state-todo", "name": "Todo"},
+    {"category": "started", "id": "state-progress", "name": "In Progress"},
+    {"category": "started", "id": "state-review", "name": "In Review"},
+    {"category": "completed", "id": "state-done", "name": "Done"}
+  ],
+  "users": [
+    {"handle": "agent", "id": "user-agent", "name": "Agent User"},
+    {"handle": "alice", "id": "user-alice", "name": "Alice Chen"},
+    {"handle": "bob", "id": "user-bob", "name": "Bob Kumar"},
+    {"handle": "carol", "id": "user-carol", "name": "Carol Zhang"}
+  ],
+  "workspace": "acme"
+}

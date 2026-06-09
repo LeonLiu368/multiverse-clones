@@ -3,7 +3,7 @@ source = "psf/requests PR #1385 — case-insensitive URL scheme matching"
 
 [task]
 name = "oss-pr-fix/requests-url-case"
-description = "The vendored requests library in acme/webapp fails when URLs use uppercase schemes (HTTP:// or HTTPS://). RFC 2396 §3.1 requires scheme names to be treated case-insensitively, but cert_verify() and get_adapter() compare against lowercase-only literals. A patch is already open as a pull request. Inspect the diff, verify .lower() is applied before every scheme-sensitive startswith() call, then approve and merge the PR. nop=0, oracle=1."
+description = "The requests library vendored into acme/webapp matches URL schemes case-sensitively, so uppercase-scheme URLs (HTTP://, HTTPS://) raise 'No connection adapters were found' and bypass cert verification. The fix requires correlating three surfaces: Linear ticket WEB-101 names the symptom and repo; the #eng Slack thread holds the exact implementation contract (apply .lower() at the scheme comparison in BOTH Session.get_adapter and HTTPAdapter.cert_verify); the code lives in acme/webapp. The agent must clone the repo, implement the fix, and open a PR against main. Graded by checking out the PR branch and running F2P + P2P unit tests. nop=0, oracle=1."
 custom_docker_compose = true
 
 [metadata]
@@ -12,13 +12,13 @@ author_email = "tasks@abundant.ai"
 author_organization = "Abundant"
 category = "swe"
 source_repo = "acme/webapp"
-difficulty_explanation = "Single-surface GitHub task: read an open PR diff across two Python files, verify the fix adds .lower() in all relevant locations, approve and merge."
-tags = ["gh", "pr-review", "python", "requests", "oss"]
-expert_time_estimate_hours = 0.1
-relevant_experience = "GitHub PR review and merge, Python library internals"
+difficulty_explanation = "Multi-surface SWE task: the symptom is in Linear, the precise fix contract (which two functions, .lower() at comparison sites) is only in Slack, and the code is in GitHub. The agent must write the fix and open a PR whose head passes both the existing tests (P2P) and hidden mixed-case tests (F2P)."
+tags = ["gh", "linear", "slack", "multi-surface", "pr", "unit-tests", "python", "requests", "oss"]
+expert_time_estimate_hours = 0.4
+relevant_experience = "Reading issue trackers and chat for requirements, Python library internals, GitHub PR workflow, writing code to pass a test suite"
 
 [agent]
-timeout_sec = 1200
+timeout_sec = 1800
 user = "agent"
 
 [verifier]
@@ -33,3 +33,8 @@ memory_mb = 4096
 storage_mb = 20480
 gpus = 0
 workdir = "/app"
+
+[[environment.mcp_servers]]
+name = "slack"
+transport = "stdio"
+command = "slack-mcp"
