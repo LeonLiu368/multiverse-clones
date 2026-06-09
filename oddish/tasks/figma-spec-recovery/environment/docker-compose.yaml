@@ -10,7 +10,7 @@
 # `docker compose build` (which builds every service with a build section) then `up`; the
 # build tags the image with the `image:` name, so `up` uses the local build and never pulls
 # from a registry — no GHCR auth needed. The `image:` name still matches the published
-# ghcr.io/leonliu368/figma-service for anyone who prefers to pull it.
+# ghcr.io/abundant-ai/figma-service for anyone who prefers to pull it.
 #
 # This task's design data is provided PER TASK by mounting fixture.json into the `figma`
 # service container ONLY — never into `main` — so the agent reaches the seeded spec solely
@@ -26,7 +26,7 @@ services:
         condition: service_healthy
 
   figma:
-    image: ghcr.io/leonliu368/figma-service:latest
+    image: ghcr.io/abundant-ai/figma-service:latest
     build:
       context: .
       dockerfile: figma.Dockerfile

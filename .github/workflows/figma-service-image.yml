@@ -18,7 +18,7 @@ on:
 
 env:
   # Match the image name task composes reference. Change in lockstep with the tasks.
-  IMAGE: ghcr.io/leonliu368/figma-service
+  IMAGE: ghcr.io/abundant-ai/figma-service
 
 jobs:
   build-push:
