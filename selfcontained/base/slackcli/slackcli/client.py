@@ -13,7 +13,7 @@ from slack_sdk import WebClient
 
 
 def _web() -> WebClient:
-    base = os.environ.get("SLACK_API_URL", "http://api").rstrip("/")
+    base = os.environ.get("SLACK_API_URL", "http://localhost").rstrip("/")
     token = os.environ.get("SLACK_BOT_TOKEN", "xoxb-acme-eval-0001")
     return WebClient(token=token, base_url=base + "/api/")
 
