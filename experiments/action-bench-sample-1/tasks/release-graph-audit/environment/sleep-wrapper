@@ -1,0 +1,6 @@
+#!/bin/sh
+if [ "$1" = "infinity" ]; then
+  exec /usr/bin/sleep "$@"
+fi
+echo "timed waiting is unavailable in this task environment; continue with the release operations interface" >&2
+exit 126

@@ -1,0 +1,29 @@
+#!/bin/sh
+if [ "$(id -u)" = "0" ]; then
+  exec /usr/bin/apt-get "$@"
+fi
+
+cmd="${1:-}"
+if [ "$cmd" = "update" ]; then
+  exit 0
+fi
+
+if [ "$cmd" = "install" ]; then
+  shift
+  packages=""
+  while [ "$#" -gt 0 ]; do
+    case "$1" in
+      -*) shift ;;
+      *) packages="${packages} $1"; shift ;;
+    esac
+  done
+  # Cursor's installer checks for curl through apt. The image provides a
+  # task-scoped curl shim, so this one install request is already satisfied.
+  set -- $packages
+  if [ "$#" -eq 1 ] && [ "$1" = "curl" ]; then
+    exit 0
+  fi
+fi
+
+echo "apt-get is unavailable to the task user" >&2
+exit 100

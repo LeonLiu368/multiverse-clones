@@ -1,0 +1,40 @@
+schema_version = "1.3"
+source = "psf/requests PR #5810 — reject NaN/Infinity in JSON serialization"
+
+[task]
+name = "oss-pr-fix/requests-json-nan"
+description = "The requests library vendored into acme/api-service silently serializes float('nan')/float('inf') into request bodies, producing invalid JSON the upstream gateway rejects with 400. The fix requires correlating three surfaces: Linear ticket API-202 names the symptom and repo; the #eng Slack thread holds the exact contract (add InvalidJSONError subclassing RequestException; pass allow_nan=False to json.dumps and re-raise ValueError as InvalidJSONError); the code lives in acme/api-service. The agent must clone the repo, implement the fix, and open a PR against main. Graded by checking out the PR branch and running F2P + P2P unit tests. nop=0, oracle=1."
+custom_docker_compose = true
+
+[metadata]
+author_name = "Abundant AI"
+author_email = "tasks@abundant.ai"
+author_organization = "Abundant"
+category = "swe"
+source_repo = "acme/api-service"
+difficulty_explanation = "Multi-surface SWE task: the symptom is in Linear, the precise contract (exact exception name, its base class, allow_nan=False) is only in Slack, and the code is in GitHub. The agent must write the fix and open a PR whose head passes both the existing tests (P2P) and hidden NaN/Infinity tests (F2P)."
+tags = ["gh", "linear", "slack", "multi-surface", "pr", "unit-tests", "python", "requests", "oss", "json"]
+expert_time_estimate_hours = 0.4
+relevant_experience = "Reading issue trackers and chat for requirements, Python JSON serialization, exception design, GitHub PR workflow, writing code to pass a test suite"
+
+[agent]
+timeout_sec = 1800
+user = "agent"
+
+[verifier]
+timeout_sec = 300
+user = "root"
+
+[environment]
+allow_internet = true
+build_timeout_sec = 2400
+cpus = 2
+memory_mb = 4096
+storage_mb = 20480
+gpus = 0
+workdir = "/app"
+
+[[environment.mcp_servers]]
+name = "slack"
+transport = "stdio"
+command = "slack-mcp"

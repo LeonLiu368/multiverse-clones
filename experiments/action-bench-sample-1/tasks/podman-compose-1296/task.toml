@@ -1,0 +1,33 @@
+schema_version = "1.3"
+artifacts = ["/app/repo", "/var/lib/ticketvector/state.json"]
+authors = []
+
+[task]
+name = "action-bench/podman-compose-1296"
+description = "Fix podman-compose #1296: when a service extends a service defined in a compose file in another directory, relative build contexts and volume paths are resolved against the wrong directory, breaking multi-file stacks. The fix lands in the checkout at /app/repo, and the agent must find the corresponding ticket in the local linear/jira tracker and work it to completion. Verified by hidden upstream tests and tracker-state checks."
+
+[metadata]
+difficulty_explanation = "The bug only shows up when a service extends another service defined in a compose file in a different directory, so reproducing it means understanding how podman-compose merges multiple compose files before normalizing paths. The fix itself is subtle: build contexts and relative volume paths have to be rewritten against the directory of the file that declared them, exactly once, without disturbing absolute paths, named volumes, or single-file projects. Most failed attempts patch one path family and miss the other, or apply the prefix twice. On top of the code work, the agent has to pick the right ticket out of a queue of plausible distractors and complete the whole tracker workflow through the CLI. The repository and hidden tests are real OSS data; the tracker world is synthetic."
+solution_explanation = "The fix threads the defining compose file's directory (sub_dir) through extends resolution so paths resolve relative to the file that declared them, not the root file. In normalize_service the build context is joined with sub_dir exactly once, preventing double-prefixed contexts like subdir/subdir/Containerfile, and relative volume sources, identified by an is_relative_ref check, gain the sub_dir prefix while absolute paths, named volumes, and the single-file case stay untouched. solve.sh starts the ticket through the tracker, copies the post-fix podman_compose.py, commits, then records the investigation comment, commit link, and dry-run PR receipt on the ticket and moves it to In Review."
+verification_explanation = "Two checks, both required. The verifier copies the hidden path-normalization unittest into the checkout and runs it against the agent's code. It then replays the tracker state: the primary ticket must be In Review and assigned to the agent, must have been worked in order (assigned and In Progress before the move to In Review), and must carry an agent investigation comment, a commit link that resolves to a real commit in the repo rather than the starting snapshot, and a dry-run PR receipt, while the distractor tickets remain untouched."
+category = "debugging"
+tags = ["python", "podman", "compose", "path-normalization", "ticketvector"]
+expert_time_estimate_hours = 2.0
+relevant_experience = ""
+
+[agent]
+timeout_sec = 2700
+user = "agent"
+
+[verifier]
+timeout_sec = 2700
+user = "root"
+environment_mode = "separate"
+
+[environment]
+allow_internet = true
+build_timeout_sec = 1800
+cpus = 4
+memory_mb = 8192
+storage_mb = 40960
+gpus = 0

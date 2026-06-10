@@ -1,0 +1,460 @@
+{
+  "attachments": {
+    "OPS-501": [
+      {
+        "content_type": "text/plain",
+        "id": "att-1",
+        "name": "incident-context.txt",
+        "size": 120
+      }
+    ],
+    "OPS-819": [],
+    "OPS-822": [],
+    "OPS-823": []
+  },
+  "base_url": "https://linear.local/acme",
+  "comments": {
+    "OPS-501": [
+      {
+        "author": {
+          "handle": "owen",
+          "id": "user-owen",
+          "name": "Owen Zeng"
+        },
+        "body": "Maya: active context is in Slack around payment-retry-policy and bank gateway brownouts. There are older proposed values in the thread; use the final correction from Leon, including the cap-hit reporting requirement and the replay artifact handoff.",
+        "created_at": "2026-06-07T12:05:00Z",
+        "id": "comment-1"
+      },
+      {
+        "author": {
+          "handle": "leon",
+          "id": "user-leon",
+          "name": "Leon Park"
+        },
+        "body": "Ava: please include commit/PR evidence on this ticket when done and mention how /app/artifacts/payment_retry_replay.json proves scheduled_retries, capped_retries, unsafe_retries, and terminal_failures.",
+        "created_at": "2026-06-07T12:05:00Z",
+        "id": "comment-2"
+      },
+      {
+        "author": {
+          "handle": "maya",
+          "id": "user-maya",
+          "name": "Maya Chen"
+        },
+        "body": "GitHub repo acme/payment-retry-policy has the application snapshot for this incident. Please ship the fix through a real local GitHub PR, link that PR on this ticket, and use /app/artifacts/payment_retry_replay.json in Slack plus Linear handoff evidence.",
+        "created_at": "2026-06-07T12:07:00Z",
+        "id": "comment-github-1"
+      },
+      {
+        "author": {
+          "handle": "maya",
+          "id": "user-maya",
+          "name": "Maya Chen"
+        },
+        "body": "Use the normal on-call workflow: start the active issue before coding if it is still Todo, open a local GitHub PR, wait for its CI to pass, merge it, include the actual merged PR URL in the Slack and ticket handoff, and then move the issue to In Review. Per team convention, name the incident branch and the PR title or body after the issue id (for example ops-501-...) so support can trace the change from the GitHub side.",
+        "created_at": "2026-06-07T12:08:00Z",
+        "id": "comment-workflow-v5"
+      }
+    ],
+    "OPS-819": [
+      {
+        "author": {
+          "handle": "owen",
+          "id": "user-owen",
+          "name": "Owen Zeng"
+        },
+        "body": "This is a non-blocking follow-up. Do not move it while handling the active incident.",
+        "created_at": "2026-06-07T12:10:00Z",
+        "id": "comment-ops-819-seed"
+      }
+    ],
+    "OPS-822": [
+      {
+        "author": {
+          "handle": "owen",
+          "id": "user-owen",
+          "name": "Owen Zeng"
+        },
+        "body": "This is a non-blocking follow-up. Do not move it while handling the active incident.",
+        "created_at": "2026-06-07T12:10:00Z",
+        "id": "comment-ops-822-seed"
+      }
+    ],
+    "OPS-823": [
+      {
+        "author": {
+          "handle": "owen",
+          "id": "user-owen",
+          "name": "Owen Zeng"
+        },
+        "body": "This is a non-blocking follow-up. Do not move it while handling the active incident.",
+        "created_at": "2026-06-07T12:10:00Z",
+        "id": "comment-ops-823-seed"
+      }
+    ]
+  },
+  "cycles": [
+    {
+      "ends_at": "2026-06-14",
+      "id": "cycle-2026-06",
+      "name": "June On-call Followups",
+      "starts_at": "2026-06-01"
+    }
+  ],
+  "history": {
+    "OPS-501": [],
+    "OPS-819": [],
+    "OPS-822": [],
+    "OPS-823": []
+  },
+  "issues": [
+    {
+      "assignees": [
+        {
+          "handle": "agent",
+          "id": "user-agent",
+          "name": "Agent User"
+        }
+      ],
+      "attachments_count": 1,
+      "comments_count": 4,
+      "created_at": "2026-06-07T12:00:00Z",
+      "cycle": {
+        "ends_at": "2026-06-14",
+        "id": "cycle-2026-06",
+        "name": "June On-call Followups",
+        "starts_at": "2026-06-01"
+      },
+      "description": "Production webhooks are dropping during transient bank gateway brownouts. Use the active Slack incident context to recover the final retry contract, update /app/src, expose cap-hit evidence in the retry plan, run the local payment replay artifact, post a completion note to Slack, and move this issue to In Review.",
+      "id": "issue-ops-501",
+      "identifier": "OPS-501",
+      "labels": [
+        {
+          "id": "label-incident",
+          "name": "incident"
+        },
+        {
+          "id": "label-backend",
+          "name": "backend"
+        },
+        {
+          "id": "label-real-slack",
+          "name": "real-slack-context"
+        },
+        {
+          "id": "label-oncall",
+          "name": "on-call"
+        }
+      ],
+      "links": [
+        {
+          "id": "link-slack",
+          "title": "Slack incident context",
+          "url": "slack://search/incident"
+        },
+        {
+          "id": "link-github",
+          "title": "Local GitHub repository",
+          "url": "https://github.local/acme/payment-retry-policy"
+        }
+      ],
+      "module": {
+        "id": "module-payment-retry-policy",
+        "name": "Payment reliability"
+      },
+      "priority": "high",
+      "project": {
+        "archived": false,
+        "id": "proj-ops",
+        "key": "OPS",
+        "name": "GitHub + Slack + Linear Incident Ops"
+      },
+      "relations": [],
+      "state": {
+        "category": "unstarted",
+        "id": "state-todo",
+        "name": "Todo"
+      },
+      "title": "Payment webhook retries exhaust too quickly during bank gateway brownouts",
+      "updated_at": "2026-06-07T12:00:00Z",
+      "url": "https://linear.local/acme/issue/OPS-501"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "agent",
+          "id": "user-agent",
+          "name": "Agent User"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 1,
+      "created_at": "2026-06-07T12:00:00Z",
+      "cycle": {
+        "ends_at": "2026-06-14",
+        "id": "cycle-2026-06",
+        "name": "June On-call Followups",
+        "starts_at": "2026-06-01"
+      },
+      "description": "Distractor issue for triage realism. It is not the active production incident for this task.",
+      "id": "issue-ops-501-followup",
+      "identifier": "OPS-819",
+      "labels": [
+        {
+          "id": "label-incident",
+          "name": "incident"
+        },
+        {
+          "id": "label-backend",
+          "name": "backend"
+        },
+        {
+          "id": "label-real-slack",
+          "name": "real-slack-context"
+        },
+        {
+          "id": "label-oncall",
+          "name": "on-call"
+        }
+      ],
+      "links": [],
+      "module": {
+        "id": "module-payment-retry-policy",
+        "name": "Payment reliability"
+      },
+      "priority": "medium",
+      "project": {
+        "archived": false,
+        "id": "proj-ops",
+        "key": "OPS",
+        "name": "GitHub + Slack + Linear Incident Ops"
+      },
+      "relations": [],
+      "state": {
+        "category": "backlog",
+        "id": "state-backlog",
+        "name": "Backlog"
+      },
+      "title": "Follow-up: tune dashboard labels after incident",
+      "updated_at": "2026-06-07T12:00:00Z",
+      "url": "https://linear.local/acme/issue/OPS-819"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "agent",
+          "id": "user-agent",
+          "name": "Agent User"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 1,
+      "created_at": "2026-06-07T12:00:00Z",
+      "cycle": {
+        "ends_at": "2026-06-14",
+        "id": "cycle-2026-06",
+        "name": "June On-call Followups",
+        "starts_at": "2026-06-01"
+      },
+      "description": "Distractor issue for triage realism. It is not the active production incident for this task.",
+      "id": "issue-ops-822",
+      "identifier": "OPS-822",
+      "labels": [
+        {
+          "id": "label-incident",
+          "name": "incident"
+        },
+        {
+          "id": "label-backend",
+          "name": "backend"
+        },
+        {
+          "id": "label-real-slack",
+          "name": "real-slack-context"
+        },
+        {
+          "id": "label-oncall",
+          "name": "on-call"
+        }
+      ],
+      "links": [],
+      "module": {
+        "id": "module-payment-retry-policy",
+        "name": "Payment reliability"
+      },
+      "priority": "medium",
+      "project": {
+        "archived": false,
+        "id": "proj-ops",
+        "key": "OPS",
+        "name": "GitHub + Slack + Linear Incident Ops"
+      },
+      "relations": [],
+      "state": {
+        "category": "unstarted",
+        "id": "state-todo",
+        "name": "Todo"
+      },
+      "title": "Stale: payment dashboard timeout annotation is noisy",
+      "updated_at": "2026-06-07T12:00:00Z",
+      "url": "https://linear.local/acme/issue/OPS-822"
+    },
+    {
+      "assignees": [],
+      "attachments_count": 0,
+      "comments_count": 1,
+      "created_at": "2026-06-07T12:00:00Z",
+      "cycle": {
+        "ends_at": "2026-06-14",
+        "id": "cycle-2026-06",
+        "name": "June On-call Followups",
+        "starts_at": "2026-06-01"
+      },
+      "description": "Distractor issue for triage realism. It is not the active production incident for this task.",
+      "id": "issue-ops-823",
+      "identifier": "OPS-823",
+      "labels": [
+        {
+          "id": "label-incident",
+          "name": "incident"
+        },
+        {
+          "id": "label-backend",
+          "name": "backend"
+        },
+        {
+          "id": "label-real-slack",
+          "name": "real-slack-context"
+        },
+        {
+          "id": "label-oncall",
+          "name": "on-call"
+        }
+      ],
+      "links": [],
+      "module": {
+        "id": "module-payment-retry-policy",
+        "name": "Payment reliability"
+      },
+      "priority": "low",
+      "project": {
+        "archived": false,
+        "id": "proj-ops",
+        "key": "OPS",
+        "name": "GitHub + Slack + Linear Incident Ops"
+      },
+      "relations": [],
+      "state": {
+        "category": "backlog",
+        "id": "state-backlog",
+        "name": "Backlog"
+      },
+      "title": "Backlog: copy cleanup for terminal decline emails",
+      "updated_at": "2026-06-07T12:00:00Z",
+      "url": "https://linear.local/acme/issue/OPS-823"
+    }
+  ],
+  "labels": [
+    {
+      "id": "label-incident",
+      "name": "incident"
+    },
+    {
+      "id": "label-backend",
+      "name": "backend"
+    },
+    {
+      "id": "label-real-slack",
+      "name": "real-slack-context"
+    },
+    {
+      "id": "label-oncall",
+      "name": "on-call"
+    }
+  ],
+  "links": {
+    "OPS-501": [
+      {
+        "id": "link-slack",
+        "title": "Slack incident context",
+        "url": "slack://search/incident"
+      },
+      {
+        "id": "link-github",
+        "title": "Local GitHub repository",
+        "url": "https://github.local/acme/payment-retry-policy"
+      }
+    ],
+    "OPS-819": [],
+    "OPS-822": [],
+    "OPS-823": []
+  },
+  "modules": [
+    {
+      "id": "module-payment-retry-policy",
+      "name": "Payment reliability"
+    }
+  ],
+  "project": {
+    "archived": false,
+    "id": "proj-ops",
+    "key": "OPS",
+    "name": "GitHub + Slack + Linear Incident Ops"
+  },
+  "relations": {},
+  "states": [
+    {
+      "category": "backlog",
+      "id": "state-backlog",
+      "name": "Backlog"
+    },
+    {
+      "category": "unstarted",
+      "id": "state-todo",
+      "name": "Todo"
+    },
+    {
+      "category": "started",
+      "id": "state-progress",
+      "name": "In Progress"
+    },
+    {
+      "category": "started",
+      "id": "state-review",
+      "name": "In Review"
+    },
+    {
+      "category": "completed",
+      "id": "state-done",
+      "name": "Done"
+    }
+  ],
+  "users": [
+    {
+      "handle": "agent",
+      "id": "user-agent",
+      "name": "Agent User"
+    },
+    {
+      "handle": "maya",
+      "id": "user-maya",
+      "name": "Maya Patel"
+    },
+    {
+      "handle": "owen",
+      "id": "user-owen",
+      "name": "Owen Zeng"
+    },
+    {
+      "handle": "leon",
+      "id": "user-leon",
+      "name": "Leon Park"
+    },
+    {
+      "handle": "ava",
+      "id": "user-ava",
+      "name": "Ava Chen"
+    }
+  ],
+  "workspace": "acme"
+}

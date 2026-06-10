@@ -1,0 +1,8 @@
+#!/bin/sh
+if [ "${TASK_CURSOR_AGENT_ACTIVE:-}" = "1" ]; then
+  echo "cursor-agent is unavailable from inside this task environment" >&2
+  exit 126
+fi
+export TASK_CURSOR_AGENT_ACTIVE=1
+export PATH="/usr/local/bin:$PATH"
+exec /home/agent/.local/bin/cursor-agent --trust --force "$@"

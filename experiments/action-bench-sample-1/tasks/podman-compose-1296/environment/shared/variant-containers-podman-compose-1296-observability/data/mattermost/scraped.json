@@ -1,0 +1,34 @@
+{
+  "messages": [
+    {
+      "ts": "2026-06-03T09:14:02Z",
+      "channel": "worlds-oncall",
+      "user": "sre-ava",
+      "text": "MVS-EXT-73B is the active incident. Customer-facing recovery depends on fixing the repo behavior, not suppressing alerts."
+    },
+    {
+      "ts": "2026-06-03T09:18:11Z",
+      "channel": "worlds-oncall",
+      "user": "runtime-mika",
+      "text": "builds fail only when the base service is imported from a sibling directory"
+    },
+    {
+      "ts": "2026-06-03T09:22:11Z",
+      "channel": "worlds-oncall",
+      "user": "oncall-jules",
+      "text": "Containerfile exists but generated build args point at a doubled path"
+    },
+    {
+      "ts": "2026-06-03T09:26:11Z",
+      "channel": "worlds-oncall",
+      "user": "infra-nora",
+      "text": "bind mounts from extended service resolve relative to the root file instead of the source compose file"
+    },
+    {
+      "ts": "2026-06-03T09:43:39Z",
+      "channel": "worlds-oncall",
+      "user": "sre-ava",
+      "text": "Please verify by running the narrow upstream regression locally after changing /app/repo."
+    }
+  ]
+}

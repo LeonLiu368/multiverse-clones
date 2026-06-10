@@ -1,0 +1,38 @@
+metadata:
+  name: action-bench-sample-1
+  description: |
+    First sample sweep of Action Bench tasks. A mix of multi-surface SWE tasks
+    (issue tracker + chat + code host), real upstream bug reproductions, and
+    tool-driven operational tasks. 
+  task_path: experiments/action-bench-sample-1/tasks
+  n_trials: 1
+  skip_trajectory_analysis: false
+
+tasks:
+  - git-bug-1541
+  - oauth-qa-matrix
+  - paperless-ngx-12789
+  - payment-retry-policy
+  - podman-compose-1296
+  - release-graph-audit
+  - requests-json-nan
+  - requests-url-case
+  - thermal-array-calibration
+
+agents:
+  - name: oracle
+    n_trials: 1
+  - name: nop
+    n_trials: 1
+  - name: gemini-cli
+    model_name: gemini/gemini-3.1-pro-preview
+    n_trials: 3
+  - name: cursor-cli
+    model_name: cursor/composer
+    n_trials: 3
+  - name: codex
+    model_name: openai/gpt-5.5
+    n_trials: 3
+  - name: claude-code
+    model_name: anthropic/claude-opus-4-8
+    n_trials: 3

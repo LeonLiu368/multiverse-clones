@@ -1,0 +1,53 @@
+{
+  "task": "oauth-qa-matrix",
+  "binary_reward_policy": {
+    "reward_1_requires_all_mandatory_criteria": true,
+    "mandatory_threshold": 0.9,
+    "pass_threshold": 0.85,
+    "notes": "mandatory_threshold is the per-criterion score every MANDATORY criterion must reach; any mandatory criterion below it floors the reward to 0 in BOTH reward modes. pass_threshold applies only when REWARD_MODE=binary, as the overall weighted-score cutoff for reward 1; it is unused in the default continuous mode."
+  },
+  "criteria": [
+    {
+      "id": "code_behavior",
+      "label": "Correct incident-specific code behavior",
+      "mandatory": true,
+      "weight": 0.3,
+      "passing_definition": "Full marks only if all 10 required flows use the exact canonical ids from docs/qa_flow_checklist.md and every flag matches the truth of the rollout discussion rather than the checklist's actively wrong flags: the update-mode set is exactly {counterparty_relink_update, liability_relink_update, microdeposit_verify_update} (liability_bill_link is NOT update-mode despite the checklist), oauth_app_to_app_chase_device is the only device-required flow (despite the checklist flagging the superseded row), and deprecated ids (oauth_app_to_app_chase, oauth_app_to_app_chase_device_validation, linked_accounts_bulk_import) are absent. Grade the implemented OUTCOME in code and artifact evidence; do not require separate proof of which Slack messages were read. The deterministic hidden tests and source evidence should support this behavior."
+    },
+    {
+      "id": "artifact_evidence",
+      "label": "Replay/audit artifact evidence",
+      "mandatory": true,
+      "weight": 0.15,
+      "passing_definition": "Full marks only if /app/artifacts/oauth_linking_qa.json shows total_flows=10, missing_flows=[], update_mode_flows=3, device_required_flows=[oauth_app_to_app_chase_device], and a 10-row covered matrix. Any deviation caps at 0.5."
+    },
+    {
+      "id": "github_pr",
+      "label": "GitHub PR mechanics",
+      "mandatory": true,
+      "weight": 0.15,
+      "passing_definition": "Full marks only if ALL hold: a merged PR against acme/oauth-qa-matrix identified by OPS-503 in its title, body, or branch name (the convention is stated on the ticket); successful CI on the PR head branch/SHA before merge; the diff touches the intended production source and tests only; and the PR does not include solution, Slack seed, TicketVector seed, GitHub seed, verifier, or other forbidden task-data edits. Any missing element caps this criterion at 0.5; an unmerged or CI-failing PR scores 0."
+    },
+    {
+      "id": "pr_quality",
+      "label": "PR communication quality",
+      "mandatory": false,
+      "weight": 0.1,
+      "passing_definition": "Full marks only if the PR title and body would let a reviewer act without reading Slack: the body states the recovered final policy decision (the actual values/semantics, not just 'fix'), why the change is correct (citing the incident context or replay/audit evidence), and what was validated. A generic title/body that merely names OPS-503 scores at most 0.4; restating the diff without the decision rationale scores at most 0.6."
+    },
+    {
+      "id": "ticket_hygiene",
+      "label": "Tracker workflow hygiene",
+      "mandatory": false,
+      "weight": 0.15,
+      "passing_definition": "Full marks only if ALL hold on OPS-503: the issue was started/assigned and ends In Review (not Done, not Todo); an investigation or completion comment articulates the recovered final policy and cites where it came from (the Slack thread), with artifact-backed numbers; commit and merged-PR evidence is recorded on the ticket (a formal link entry or a comment containing the merged PR URL both count); and every distractor issue remains untouched (state and comments). Missing the policy articulation caps at 0.6; a bare 'done, see PR' comment caps at 0.4; any distractor touched scores 0."
+    },
+    {
+      "id": "slack_handoff",
+      "label": "Slack completion handoff",
+      "mandatory": false,
+      "weight": 0.15,
+      "passing_definition": "Full marks only if a message in #incident-updates contains ALL of: the merged PR URL, a reference to the oauth linking QA artifact (path or unambiguous description), the headline artifact numbers, and a one-line statement of the final policy/result so on-call can verify without opening anything. Natural wording is fine; missing the numbers caps at 0.6; missing the PR URL caps at 0.4; no qualifying message in #incident-updates scores 0."
+    }
+  ]
+}

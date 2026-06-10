@@ -1,0 +1,3 @@
+Users are reporting broken behavior in the application whose source lives at `/app/repo`. Triage starts in the local issue tracker; the `linear` and `jira` CLIs are installed and self-documenting via `--help`.
+
+Locate the active high-priority report, diagnose the failure from the details and discussion on the ticket, and land a fix in the repo. Start the ticket through the tracker while you work so it is assigned to you and in progress. When you are done, record the outcome on it: an investigation comment, a link to your commit, a PR receipt, and a move to review. Only that ticket should change, and only through the CLIs; do not read or modify the tracker's backing files directly.

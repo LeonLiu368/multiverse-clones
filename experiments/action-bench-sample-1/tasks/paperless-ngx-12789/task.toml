@@ -1,0 +1,33 @@
+schema_version = "1.3"
+artifacts = ["/app/repo", "/var/lib/ticketvector/state.json"]
+authors = []
+
+[task]
+name = "action-bench/paperless-ngx-12789"
+description = "Fix paperless-ngx #12789: bare dash/plus characters in user search queries are parsed as Tantivy NOT/MUST operators, so natural-language searches and result highlighting silently break. The fix lands in the checkout at /app/repo, and the agent must find the corresponding ticket in the local linear/jira tracker and work it to completion. Verified by hidden upstream tests and tracker-state checks."
+
+[metadata]
+difficulty_explanation = "Difficult on two axes. Tracker side: the instruction names no bug, so the agent must drive the linear/jira CLIs to find the one active high-priority incident among four distractors, extract the reproduction from ticket comments, and later record the comment, commit link, PR receipt, and In Review transition. Code side: bare dash/plus are Tantivy NOT/MUST operators, and the search module tokenizes user input at multiple stages (normalize_query, parse_user_query, parse_simple_text_highlight_query), so the sanitization must land at every stage that sees raw input and distinguish natural-language separators (spaced or trailing operators) from legitimate -term/+term syntax without regressing normal queries; agents that patch only one stage still fail the hidden highlight tests. In the real world this is a search engineer debugging a production query-parser regression. Source and hidden tests are real OSS data; ticket context is generated."
+solution_explanation = "The fix sanitizes operator characters at both pipeline stages that see raw user input. normalize_query strips trailing dangling operators (_TRAILING_OPERATOR_RE) and rewrites spaced ' - ' / ' + ' to a single space (_SPACED_OPERATOR_RE): Tantivy operators must touch their operand, so spaces on both sides mean a natural-language separator, while valid -term/+term syntax is preserved. parse_simple_text_highlight_query separately strips [-+] from its raw query before tokenizing, because the highlight parser never passes through normalize_query and builds a plain term query where +/- are just separators. solve.sh starts the ticket through the tracker, copies the post-fix _query.py, commits, then records the investigation comment, commit link, and dry-run PR receipt on the ticket and moves it to In Review."
+verification_explanation = "Two checks, both required. The verifier copies the hidden search-query pytest module into the checkout and runs it against the agent's code. It then replays the tracker state: the primary ticket must be In Review and assigned to the agent, must have been worked in order (assigned and In Progress before the move to In Review), and must carry an agent investigation comment, a commit link that resolves to a real commit in the repo rather than the starting snapshot, and a dry-run PR receipt, while the distractor tickets remain untouched."
+category = "debugging"
+tags = ["python", "django", "paperless", "search", "sanitization", "ticketvector"]
+expert_time_estimate_hours = 2.0
+relevant_experience = ""
+
+[agent]
+timeout_sec = 2700
+user = "agent"
+
+[verifier]
+timeout_sec = 2700
+user = "root"
+environment_mode = "separate"
+
+[environment]
+allow_internet = true
+build_timeout_sec = 1800
+cpus = 4
+memory_mb = 8192
+storage_mb = 40960
+gpus = 0

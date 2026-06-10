@@ -1,0 +1,82 @@
+services:
+  main:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${MAIN_IMAGE_NAME}
+    entrypoint: ["/bin/bash", "-lc"]
+    command:
+      - "rm -f /tmp/git-sync-ready /app/src/.git/index.lock; for i in $(seq 1 60); do if git fetch origin main >/tmp/git-sync-origin.log 2>&1 && git reset --hard origin/main >>/tmp/git-sync-origin.log 2>&1; then touch /tmp/git-sync-ready; break; fi; sleep 1; done; test -f /tmp/git-sync-ready || { cat /tmp/git-sync-origin.log >&2; exit 1; }; sleep infinity"
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /tmp/git-sync-ready"]
+      interval: 2s
+      timeout: 2s
+      retries: 60
+      start_period: 2s
+    working_dir: /app/src
+    environment:
+      GH_HOST: http://github
+      GH_TOKEN_FILE: /run/secrets/token
+      WORLD_ISSUES_AGENT_MODE: "1"
+      WORLD_ISSUES_BACKEND: remote
+      WORLD_ISSUES_OUTPUT: json
+      WORLD_ISSUES_ACTOR: agent
+      PLANE_BASE_URL: http://127.0.0.1:8765
+      PYTHONPATH: /opt:/opt/ticketvector:/opt/slackcli
+      SLACK_API_URL: http://slack
+      SLACK_BOT_TOKEN: test-token-acme-eval
+    volumes:
+      - ghc-shared:/run/secrets:ro
+    depends_on:
+      github:
+        condition: service_healthy
+      slack:
+        condition: service_healthy
+
+  github:
+    image: ghcr.io/abundant-ai/ghc-service:latest@sha256:d4e88d7fa4af0ae84213d54f4b884b3a8954ebad9fe88b6f6fb97cea1443b3cf
+    hostname: github
+    platform: linux/amd64
+    volumes:
+      - ghc-shared:/shared
+      - ./data/github/seed.sh:/usr/local/bin/task-seed.sh:ro
+      - ./shared/oauth-qa-matrix/app-src:/seed/app-src:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost/api/healthz >/dev/null || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 60
+      start_period: 45s
+
+  ticketvector:
+    image: ghcr.io/abundant-ai/ticketvector-service:main@sha256:9a3feabe3d493adec7c678d6e89b92fd3b65ac05cc788fae97b4fcf674fb4f42
+    depends_on:
+      main:
+        condition: service_healthy
+    network_mode: service:main
+    platform: linux/amd64
+    environment:
+      WORLD_ISSUES_STATE_FILE: /var/lib/ticketvector/state.json
+      WORLD_ISSUES_BIND_HOST: 0.0.0.0
+      WORLD_ISSUES_PORT: "8765"
+      WORLD_ISSUES_ACTOR: agent
+    volumes:
+      - ./data/ticketvector/state.json:/var/lib/ticketvector/state.json
+
+  slack:
+    image: ghcr.io/abundant-ai/slack-service:latest@sha256:64479855b91ec9bf3af9bccda92e76764ba71f27c6f64a98caeec57379a4afd7
+    platform: linux/amd64
+    environment:
+      SLACK_BOT_TOKEN: test-token-acme-eval
+    volumes:
+      - ./data/slack:/data/mattermost:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:80/api/auth.test >/dev/null || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 24
+      start_period: 30s
+
+volumes:
+  ghc-shared:

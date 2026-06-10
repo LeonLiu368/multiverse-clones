@@ -1,0 +1,37 @@
+name: task-ci
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Prepare repository workspace
+        run: |
+          set -euo pipefail
+          if [ ! -f checks/visible_checks.py ]; then
+            rm -rf /tmp/task-ci-work
+            git clone "http://localhost/acme/payment-retry-policy.git" /tmp/task-ci-work
+            cd /tmp/task-ci-work
+            REF="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME:-}}"
+            if [ -z "$REF" ] && [ -n "${GITHUB_REF:-}" ]; then
+              REF="${GITHUB_REF#refs/heads/}"
+            fi
+            if [ -n "$REF" ]; then
+              git checkout "$REF" || true
+            fi
+          fi
+          python3 --version
+      - name: Run visible tests and replay artifact
+        run: |
+          set -euo pipefail
+          if [ -f checks/visible_checks.py ]; then
+            WORK="$PWD"
+          else
+            WORK=/tmp/task-ci-work
+          fi
+          cd "$WORK"
+          PYTHONPATH=. python3 checks/visible_checks.py
+          PYTHONPATH=. python3 tools/replay_payment_incident.py

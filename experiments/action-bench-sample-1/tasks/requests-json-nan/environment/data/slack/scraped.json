@@ -1,0 +1,2914 @@
+{
+  "messages": [
+    {
+      "channel": "general",
+      "author": "alice",
+      "content": "Morning team. The gateway 400 issue is now ticketed as API-202.",
+      "timestamp": "2026-06-06T09:00:00Z"
+    },
+    {
+      "channel": "general",
+      "author": "dave",
+      "content": "thanks alice. busy sprint, lets try to keep #eng focused on the API-202 fix today.",
+      "timestamp": "2026-06-06T09:04:00Z"
+    },
+    {
+      "channel": "general",
+      "author": "carol",
+      "content": "fyi all-hands moved to thurdsay 2pm, calender invite updated.",
+      "timestamp": "2026-06-06T09:20:00Z"
+    },
+    {
+      "channel": "random",
+      "author": "carol",
+      "content": "Lunch truck is back today 🌮",
+      "timestamp": "2026-06-06T11:30:00Z"
+    },
+    {
+      "channel": "random",
+      "author": "erin",
+      "content": "my json keeps breaking in postman lol, prob my own fault",
+      "timestamp": "2026-06-06T11:40:00Z"
+    },
+    {
+      "channel": "random",
+      "author": "dave",
+      "content": "anyone else gettin wierd nan values in the fantasy league spreadsheet? 😂",
+      "timestamp": "2026-06-06T12:05:00Z"
+    },
+    {
+      "channel": "data-platform",
+      "author": "frank",
+      "content": "heads up: the nightly etl is dropping rows where the sensor column is NaN. we fillna(0) in the spark job before writing parquet.",
+      "timestamp": "2026-06-05T15:00:00Z"
+    },
+    {
+      "channel": "data-platform",
+      "author": "grace",
+      "content": "shoudnt we keep NaN as null in the warehouse instead of 0? 0 skews the averages.",
+      "timestamp": "2026-06-05T15:06:00Z"
+    },
+    {
+      "channel": "data-platform",
+      "author": "frank",
+      "content": "yeah null is cleaner. pandas reads NaN, we cast to None on export. this is seperate from the api stuff btw, pure data pipeline.",
+      "timestamp": "2026-06-05T15:11:00Z"
+    },
+    {
+      "channel": "data-platform",
+      "author": "grace",
+      "content": "agreed. the warehouse NaN handling has nothing to do with the requests json serializer, differnt codebase entirely.",
+      "timestamp": "2026-06-05T15:18:00Z"
+    },
+    {
+      "channel": "data-platform",
+      "author": "frank",
+      "content": "right. for us NaN -> null on write. for the api team thats their call in #eng.",
+      "timestamp": "2026-06-05T15:25:00Z"
+    },
+    {
+      "channel": "frontend",
+      "author": "heidi",
+      "content": "the dashboard is rendering 'NaN' in the totals widget again when a metric is missing.",
+      "timestamp": "2026-06-05T16:00:00Z"
+    },
+    {
+      "channel": "frontend",
+      "author": "ivan",
+      "content": "thats a JS thing, isNaN() guard before the render. JSON.parse is fine, its the division that yields NaN client side.",
+      "timestamp": "2026-06-05T16:05:00Z"
+    },
+    {
+      "channel": "frontend",
+      "author": "heidi",
+      "content": "k added a Number.isFinite() check in the component. unrelated to the backend serializer afaik.",
+      "timestamp": "2026-06-05T16:12:00Z"
+    },
+    {
+      "channel": "frontend",
+      "author": "ivan",
+      "content": "correct, pure presentation layer. JSON.stringify in the browser actually throws on circular refs not on NaN, it emits null. anyway not our bug.",
+      "timestamp": "2026-06-05T16:20:00Z"
+    },
+    {
+      "channel": "billing",
+      "author": "judy",
+      "content": "billing-service started 400ing on some stripe webhooks last week. body was malformed json.",
+      "timestamp": "2026-06-04T10:00:00Z"
+    },
+    {
+      "channel": "billing",
+      "author": "mallory",
+      "content": "we fixed it by adding a BadRequestError in billing/errors.py and validating the webhook body up front. differnt service though, not api-service.",
+      "timestamp": "2026-06-04T10:08:00Z"
+    },
+    {
+      "channel": "billing",
+      "author": "judy",
+      "content": "right, BadRequestError is billing-only. dont copy that name into the api-service fix, the api team has their own convention.",
+      "timestamp": "2026-06-04T10:15:00Z"
+    },
+    {
+      "channel": "billing",
+      "author": "mallory",
+      "content": "yep. ours subclasses our own BillingError base, totally seperate hierarchy.",
+      "timestamp": "2026-06-04T10:21:00Z"
+    },
+    {
+      "channel": "observability",
+      "author": "nate",
+      "content": "grafana panel shows Infinity for the p99 when the denominator is 0. divide by zero in the promql.",
+      "timestamp": "2026-06-05T13:00:00Z"
+    },
+    {
+      "channel": "observability",
+      "author": "olivia",
+      "content": "wrap it in clamp_min or use a recording rule. thats a metrics math issue, not a serialization bug.",
+      "timestamp": "2026-06-05T13:07:00Z"
+    },
+    {
+      "channel": "observability",
+      "author": "nate",
+      "content": "ya. Infinity in the dashboard != Infinity in a request body. the api-service json thing is a diff problem over in #eng.",
+      "timestamp": "2026-06-05T13:14:00Z"
+    },
+    {
+      "channel": "api-platform",
+      "author": "peter",
+      "content": "fyi im refactoring the gateway-service error types. adding ValidationError(RequestException) for bad query params.",
+      "timestamp": "2026-06-05T11:00:00Z"
+    },
+    {
+      "channel": "api-platform",
+      "author": "quinn",
+      "content": "nice. note thats gateway-service/exceptions, not the requests lib in api-service. ValidationError is for query param validation only.",
+      "timestamp": "2026-06-05T11:09:00Z"
+    },
+    {
+      "channel": "api-platform",
+      "author": "peter",
+      "content": "correct. dont confuse it with whatever the api-service team lands for the json body issue, that one is about NaN serialization specificaly.",
+      "timestamp": "2026-06-05T11:16:00Z"
+    },
+    {
+      "channel": "api-platform",
+      "author": "quinn",
+      "content": "agreed, two different exception classes in two different repos. ours = ValidationError, theirs = TBD in #eng.",
+      "timestamp": "2026-06-05T11:22:00Z"
+    },
+    {
+      "channel": "backend",
+      "author": "dave",
+      "content": "for the API-202 NaN thing, cant we just pre-process the payload and replace NaN with null before json.dumps? quick and done.",
+      "timestamp": "2026-06-06T09:35:00Z"
+    },
+    {
+      "channel": "backend",
+      "author": "bob",
+      "content": "no — silently rewriting the data hides the bug from the caller. product wants a hard failure, not a coerce. lets not do the null-replace hack.",
+      "timestamp": "2026-06-06T09:39:00Z"
+    },
+    {
+      "channel": "backend",
+      "author": "dave",
+      "content": "ok fair. what about json.dumps(payload, default=str)? then NaN becomes 'nan' string.",
+      "timestamp": "2026-06-06T09:42:00Z"
+    },
+    {
+      "channel": "backend",
+      "author": "bob",
+      "content": "still a silent coerce, and 'nan' as a string is worse. the agreed direction is in #eng — raise on invalid floats, dont mutate. take it there.",
+      "timestamp": "2026-06-06T09:46:00Z"
+    },
+    {
+      "channel": "backend",
+      "author": "dave",
+      "content": "got it, moving to #eng for the real contract.",
+      "timestamp": "2026-06-06T09:48:00Z"
+    },
+    {
+      "channel": "oncall",
+      "author": "rachel",
+      "content": "page: gateway returning 400s for ~2% of POSTs since 09:00.",
+      "timestamp": "2026-06-06T09:05:00Z"
+    },
+    {
+      "channel": "oncall",
+      "author": "sam",
+      "content": "some of these are auth token expiry (401 wrapped as 400 upstream), some are the NaN payload thing. the NaN ones are API-202, being handled in #eng.",
+      "timestamp": "2026-06-06T09:12:00Z"
+    },
+    {
+      "channel": "oncall",
+      "author": "rachel",
+      "content": "ack. ill mute the auth ones, theyre a seperate rotation. the json body 400s go to the api-service team.",
+      "timestamp": "2026-06-06T09:19:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "erin",
+      "content": "great work on the release everyone, smooth one.",
+      "timestamp": "2026-06-06T09:20:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "rachel",
+      "content": "the staging db got reset, re-seed if you were using it.",
+      "timestamp": "2026-06-08T09:27:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "rachel",
+      "content": "moving the 1:1 to thursday, calender updated.",
+      "timestamp": "2026-05-25T19:41:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "peter",
+      "content": "is the vpn slow for anyone else today?",
+      "timestamp": "2026-06-03T17:02:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "heidi",
+      "content": "great work on teh release everyone, smooth one.",
+      "timestamp": "2026-06-03T14:32:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "frank",
+      "content": "can someone review my PR when you get a sec? not urgent.",
+      "timestamp": "2026-05-25T16:22:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "victor",
+      "content": "teh flaky integration test is failing again on CI, retrying.",
+      "timestamp": "2026-06-07T19:35:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "ivan",
+      "content": "thinking we just replace NaN with null before sending, quick and dirty.",
+      "timestamp": "2026-05-30T14:20:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "ivan",
+      "content": "we serialize decimals as strings in edge-proxy to avoid float drift.",
+      "timestamp": "2026-06-06T15:24:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "olivia",
+      "content": "ticket triage at 3pm, bring your queues.",
+      "timestamp": "2026-05-28T09:35:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "bob",
+      "content": "who is on call this weekend? want to swap a shift.",
+      "timestamp": "2026-05-26T14:03:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "victor",
+      "content": "thanks for the quick turnaround on that hotfix.",
+      "timestamp": "2026-06-01T15:49:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "grace",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-05-30T08:33:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "alice",
+      "content": "thinking we just replace NaN with null before sending, quick and dirty.",
+      "timestamp": "2026-06-03T12:31:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "nate",
+      "content": "the flaky integration test is failing again on CI, retrying.",
+      "timestamp": "2026-05-30T17:49:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "frank",
+      "content": "can someone review my PR when you get a sec? not urgent.",
+      "timestamp": "2026-05-30T19:22:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "rachel",
+      "content": "reminder: sprint demo friday, add your items to the doc.",
+      "timestamp": "2026-06-07T16:47:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "rachel",
+      "content": "the dashboard shows NaN in the totals widget when a metric is missing, frontend fix.",
+      "timestamp": "2026-05-29T14:44:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "mallory",
+      "content": "teh design review went well, shipping the new nav.",
+      "timestamp": "2026-05-26T16:14:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "victor",
+      "content": "we got a nice bump in signups this week 🎉",
+      "timestamp": "2026-05-28T08:24:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "trent",
+      "content": "coffee machine on 2 is broken again lol",
+      "timestamp": "2026-06-07T16:14:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "trent",
+      "content": "can someone review my PR when you get a sec? not urgent.",
+      "timestamp": "2026-05-29T08:09:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "sam",
+      "content": "our webhook handler throws BadJSON when the payload is empty, added a guard.",
+      "timestamp": "2026-05-28T19:50:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "grace",
+      "content": "great work on the release everyone, smooth one.",
+      "timestamp": "2026-05-30T11:30:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "sam",
+      "content": "moving the 1:1 to thursday, calender updated.",
+      "timestamp": "2026-06-06T08:41:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "dave",
+      "content": "the flaky integration test is failing again on CI, retrying.",
+      "timestamp": "2026-05-25T18:09:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "mallory",
+      "content": "rotating the staging api keys today, heads up.",
+      "timestamp": "2026-06-06T12:02:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "frank",
+      "content": "JSON.stringify in the browser emits null for NaN, that's a client thing.",
+      "timestamp": "2026-06-08T10:47:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "peter",
+      "content": "the staging db got reset, re-seed if you were using it.",
+      "timestamp": "2026-06-06T09:54:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "quinn",
+      "content": "rotating the staging api keys today, heads up.",
+      "timestamp": "2026-05-30T11:39:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "quinn",
+      "content": "the load test results are in, p50 looks healthy.",
+      "timestamp": "2026-06-04T17:21:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "sam",
+      "content": "can we bump the timeout on teh nightly job? it keeps getting killed.",
+      "timestamp": "2026-05-30T18:09:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "quinn",
+      "content": "the design review went well, shipping the new nav.",
+      "timestamp": "2026-05-25T12:38:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "grace",
+      "content": "standup in 5, drop your updates in the thread.",
+      "timestamp": "2026-05-27T17:18:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "uma",
+      "content": "anyone seen the partner integration creds? need them for testing.",
+      "timestamp": "2026-05-25T18:07:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "grace",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-05-27T19:29:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "dave",
+      "content": "the metrics pipeline backfilled overnight, numbers should be right now.",
+      "timestamp": "2026-06-06T11:01:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "ivan",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-06-05T13:06:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "olivia",
+      "content": "thanks for the quick turnaround on that hotfix.",
+      "timestamp": "2026-06-02T19:01:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "alice",
+      "content": "new hire starts monday, be nice 🙂",
+      "timestamp": "2026-05-29T15:56:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "olivia",
+      "content": "standup in 5, drop your updates in the thread.",
+      "timestamp": "2026-05-25T16:36:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "heidi",
+      "content": "teh analytics sdk should drop non-finite floats before batching, seperate ticket.",
+      "timestamp": "2026-05-26T12:21:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "heidi",
+      "content": "deploy to staging is green, promoting to prod after lunch.",
+      "timestamp": "2026-05-26T13:08:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "ivan",
+      "content": "the metrics pipeline backfilled overnight, numbers should be right now.",
+      "timestamp": "2026-06-07T14:20:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "alice",
+      "content": "thinking we just replace NaN with null before sending, quick and dirty.",
+      "timestamp": "2026-06-01T17:20:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "uma",
+      "content": "moving the 1:1 to thursday, calendar updated.",
+      "timestamp": "2026-05-29T16:30:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "mallory",
+      "content": "the load test results are in, p50 looks healthy.",
+      "timestamp": "2026-06-03T10:52:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "ivan",
+      "content": "good morning team, light day today.",
+      "timestamp": "2026-05-29T17:10:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "mallory",
+      "content": "allow_nan defaults to True in stdlib json, til.",
+      "timestamp": "2026-06-02T08:36:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "victor",
+      "content": "ticket triage at 3pm, bring your queues.",
+      "timestamp": "2026-06-07T16:21:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "mallory",
+      "content": "our webhook handler throws BadJSON when the payload is empty, added a guard.",
+      "timestamp": "2026-06-07T13:51:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "carol",
+      "content": "reminder: sprint demo friday, add your items to the doc.",
+      "timestamp": "2026-06-02T18:20:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "uma",
+      "content": "rotating the staging api keys today, heads up.",
+      "timestamp": "2026-05-26T11:06:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "grace",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-05-27T10:39:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "ivan",
+      "content": "we serialize decimals as strings in resolver to avoid float drift.",
+      "timestamp": "2026-05-27T19:12:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "judy",
+      "content": "reminder: sprint demo friday, add your items to the doc.",
+      "timestamp": "2026-05-29T15:21:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "rachel",
+      "content": "we serialize decimals as strings in auth-gateway to avoid float drift.",
+      "timestamp": "2026-05-29T18:46:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "trent",
+      "content": "deploy to staging is green, promoting to prod after lunch.",
+      "timestamp": "2026-05-30T18:39:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "dave",
+      "content": "we got a nice bump in signups this week 🎉",
+      "timestamp": "2026-05-29T12:47:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "victor",
+      "content": "great work on the release everyone, smooth one.",
+      "timestamp": "2026-05-30T16:03:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "rachel",
+      "content": "new hire starts monday, be nice 🙂",
+      "timestamp": "2026-05-28T08:31:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "judy",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-06-05T09:40:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "judy",
+      "content": "coffee machine on 2 is broken again lol",
+      "timestamp": "2026-06-01T12:59:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "alice",
+      "content": "json.dumps with default=str works for our datetime serialization, fyi.",
+      "timestamp": "2026-05-28T15:51:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "dave",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-05-25T10:17:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "alice",
+      "content": "great work on the release everyone, smooth one.",
+      "timestamp": "2026-06-02T10:54:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "alice",
+      "content": "deploy to staging is green, promoting to prod after lunch.",
+      "timestamp": "2026-06-06T09:51:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "mallory",
+      "content": "anyone know who owns the billing dashboard now?",
+      "timestamp": "2026-05-26T18:54:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "uma",
+      "content": "saw a 400 from the gateway again, turned out to be an expired token not the body.",
+      "timestamp": "2026-06-07T09:45:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "frank",
+      "content": "anyone know who owns the billing dashboard now?",
+      "timestamp": "2026-06-06T17:16:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "ivan",
+      "content": "the flaky integration test is failing again on CI, retrying.",
+      "timestamp": "2026-06-07T14:27:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "olivia",
+      "content": "the analytics sdk should drop non-finite floats before batching, separate ticket.",
+      "timestamp": "2026-05-27T14:58:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "victor",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-06-07T11:42:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "frank",
+      "content": "deploy to staging is green, promoting to prod after lunch.",
+      "timestamp": "2026-05-30T13:42:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "heidi",
+      "content": "teh flaky integration test is failing again on CI, retrying.",
+      "timestamp": "2026-06-02T15:46:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "victor",
+      "content": "can we bump the timeout on the nightly job? it keeps getting killed.",
+      "timestamp": "2026-05-28T08:52:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "ivan",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-05-26T11:09:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "erin",
+      "content": "the 400s on /upload were a content-length mismatch, nothing to do with json.",
+      "timestamp": "2026-05-26T11:39:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "sam",
+      "content": "new hire starts monday, be nice 🙂",
+      "timestamp": "2026-06-05T16:38:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "nate",
+      "content": "thanks for teh quick turnaround on that hotfix.",
+      "timestamp": "2026-05-27T08:58:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "rachel",
+      "content": "the 400s on /upload were a content-length mismatch, nothing to do with json.",
+      "timestamp": "2026-05-26T14:17:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "frank",
+      "content": "lunch order going out in 10, reply if you want in.",
+      "timestamp": "2026-06-01T09:34:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "victor",
+      "content": "moving the 1:1 to thursday, calendar updated.",
+      "timestamp": "2026-05-28T11:19:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "carol",
+      "content": "thinking we just replace NaN wiht null before sending, quick and dirty.",
+      "timestamp": "2026-05-27T10:27:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "bob",
+      "content": "anyone seen the partner integration creds? need them for testing.",
+      "timestamp": "2026-05-28T17:58:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "dave",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-06-03T09:54:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "dave",
+      "content": "anyone seen teh partner integration creds? need them for testing.",
+      "timestamp": "2026-05-29T12:26:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "quinn",
+      "content": "our InvalidJsonException in etl-jobs subclasses ServiceError, different hierarchy.",
+      "timestamp": "2026-05-25T19:12:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "sam",
+      "content": "can we bump the timeout on the nightly job? it keeps getting killed.",
+      "timestamp": "2026-06-07T14:01:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "uma",
+      "content": "the dashboard shows NaN in the totals widget when a metric is missing, frontend fix.",
+      "timestamp": "2026-06-02T09:35:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "dave",
+      "content": "coffee machine on 2 is broken again lol",
+      "timestamp": "2026-05-27T09:31:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "ivan",
+      "content": "new hire starts monday, be nice 🙂",
+      "timestamp": "2026-05-27T11:02:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "trent",
+      "content": "the flaky integration test is failing again on CI, retrying.",
+      "timestamp": "2026-06-04T10:11:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "nate",
+      "content": "is the vpn slow for anyone else today?",
+      "timestamp": "2026-05-26T12:01:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "sam",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-05-27T16:32:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "judy",
+      "content": "teh 400s on /upload were a content-length mismatch, nothing to do wiht json.",
+      "timestamp": "2026-06-06T15:19:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "sam",
+      "content": "the load test results are in, p50 looks healthy.",
+      "timestamp": "2026-06-05T10:08:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "grace",
+      "content": "deploy to staging is green, promoting to prod after lunch.",
+      "timestamp": "2026-06-07T15:32:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "peter",
+      "content": "the dashboard shows NaN in the totals widget when a metric is missing, frontend fix.",
+      "timestamp": "2026-05-27T13:04:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "rachel",
+      "content": "thanks for the quick turnaround on that hotfix.",
+      "timestamp": "2026-06-01T10:48:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "dave",
+      "content": "new hire starts monday, be nice 🙂",
+      "timestamp": "2026-05-29T12:33:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "nate",
+      "content": "who is on call this weekend? want to swap a shift.",
+      "timestamp": "2026-06-05T11:42:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "quinn",
+      "content": "the staging db got reset, re-seed if you were using it.",
+      "timestamp": "2026-06-08T19:18:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "carol",
+      "content": "the auth-gateway keeps logging a JSONDecodeError on startup, prob a bad config file.",
+      "timestamp": "2026-05-30T18:18:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "quinn",
+      "content": "pandas is reading NaN in the metrics-exporter export, we fillna before writing parquet.",
+      "timestamp": "2026-05-29T08:47:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "carol",
+      "content": "deploy to staging is green, promoting to prod after lunch.",
+      "timestamp": "2026-06-01T14:20:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "sam",
+      "content": "who is on call this weekend? want to swap a shift.",
+      "timestamp": "2026-06-05T18:27:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "olivia",
+      "content": "json.dumps with default=str works for our datetime serialization, fyi.",
+      "timestamp": "2026-05-25T17:51:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "victor",
+      "content": "ticket triage at 3pm, bring your queues.",
+      "timestamp": "2026-05-25T08:03:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "peter",
+      "content": "ticket triage at 3pm, bring your queues.",
+      "timestamp": "2026-05-29T14:46:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "alice",
+      "content": "reminder: sprint demo friday, add your items to teh doc.",
+      "timestamp": "2026-05-30T16:04:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "uma",
+      "content": "the metrics pipeline backfilled overnight, numbers should be right now.",
+      "timestamp": "2026-06-04T14:45:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "frank",
+      "content": "allow_nan defaults to True in stdlib json, til.",
+      "timestamp": "2026-05-25T14:08:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "nate",
+      "content": "the edge-proxy keeps logging a JSONDecodeError on startup, prob a bad config file.",
+      "timestamp": "2026-05-26T18:58:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "dave",
+      "content": "saw a 400 from the gateway again, turned out to be an expired token not the body.",
+      "timestamp": "2026-05-27T17:25:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "erin",
+      "content": "deploy to staging is green, promoting to prod after lunch.",
+      "timestamp": "2026-06-03T16:14:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "sam",
+      "content": "ticket triage at 3pm, bring your queues.",
+      "timestamp": "2026-05-27T14:47:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "uma",
+      "content": "moving the 1:1 to thursday, calendar updated.",
+      "timestamp": "2026-06-03T19:34:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "nate",
+      "content": "good morning team, light day today.",
+      "timestamp": "2026-06-07T19:15:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "grace",
+      "content": "can someone review my PR when you get a sec? not urgent.",
+      "timestamp": "2026-05-28T13:18:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "bob",
+      "content": "lunch order going out in 10, reply if you want in.",
+      "timestamp": "2026-06-07T18:12:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "alice",
+      "content": "json.dumps with default=str works for our datetime serialization, fyi.",
+      "timestamp": "2026-06-06T10:55:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "alice",
+      "content": "deploy to staging is green, promoting to prod after lunch.",
+      "timestamp": "2026-06-05T18:56:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "rachel",
+      "content": "added a ValidationError for query params in billing-service, not body validation.",
+      "timestamp": "2026-05-26T14:02:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "grace",
+      "content": "anyone seen the partner integration creds? need them for testing.",
+      "timestamp": "2026-05-26T08:10:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "trent",
+      "content": "grafana panel hit Infinity on a divide-by-zero in the promql, clamped it.",
+      "timestamp": "2026-05-30T14:08:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "rachel",
+      "content": "reminder: sprint demo friday, add your items to teh doc.",
+      "timestamp": "2026-05-28T14:44:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "quinn",
+      "content": "can someone review my PR when you get a sec? not urgent.",
+      "timestamp": "2026-06-04T18:33:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "bob",
+      "content": "our InvalidJsonException in report-service subclasses ServiceError, different hierarchy.",
+      "timestamp": "2026-05-30T08:32:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "mallory",
+      "content": "the dashboard shows NaN in teh totals widget when a metric is missing, frontend fix.",
+      "timestamp": "2026-06-06T19:15:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "olivia",
+      "content": "is the vpn slow for anyone else today?",
+      "timestamp": "2026-05-26T10:30:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "peter",
+      "content": "json.dumps with default=str works for our datetime serialization, fyi.",
+      "timestamp": "2026-06-05T18:54:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "rachel",
+      "content": "ticket triage at 3pm, bring your queues.",
+      "timestamp": "2026-06-01T15:58:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "carol",
+      "content": "lunch order going out in 10, reply if you want in.",
+      "timestamp": "2026-05-28T15:10:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "judy",
+      "content": "can we bump teh timeout on teh nightly job? it keeps getting killed.",
+      "timestamp": "2026-06-04T08:57:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "judy",
+      "content": "can someone review my PR when you get a sec? not urgent.",
+      "timestamp": "2026-05-27T13:09:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "frank",
+      "content": "the flaky integration test is failing again on CI, retrying.",
+      "timestamp": "2026-06-08T11:47:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "uma",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-06-06T15:46:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "rachel",
+      "content": "who is on call this weekend? want to swap a shift.",
+      "timestamp": "2026-06-02T17:12:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "victor",
+      "content": "the staging db got reset, re-seed if you were using it.",
+      "timestamp": "2026-05-25T18:11:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "mallory",
+      "content": "the load test results are in, p50 looks healthy.",
+      "timestamp": "2026-06-03T17:23:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "rachel",
+      "content": "anyone know who owns the billing dashboard now?",
+      "timestamp": "2026-06-06T15:21:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "grace",
+      "content": "we serialize decimals as strings in analytics-sdk to avoid float drift.",
+      "timestamp": "2026-05-28T08:58:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "trent",
+      "content": "lunch order going out in 10, reply if you want in.",
+      "timestamp": "2026-06-05T11:25:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "erin",
+      "content": "anyone seen the partner integration creds? need them for testing.",
+      "timestamp": "2026-06-02T08:49:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "trent",
+      "content": "the load test results are in, p50 looks healthy.",
+      "timestamp": "2026-06-05T12:52:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "nate",
+      "content": "allow_nan defaults to True in stdlib json, til.",
+      "timestamp": "2026-06-01T10:12:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "heidi",
+      "content": "thanks for teh quick turnaround on that hotfix.",
+      "timestamp": "2026-05-27T12:29:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "heidi",
+      "content": "the load test results are in, p50 looks healthy.",
+      "timestamp": "2026-05-28T12:33:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "victor",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-06-07T19:18:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "rachel",
+      "content": "can we bump the timeout on the nightly job? it keeps getting killed.",
+      "timestamp": "2026-06-02T15:26:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "grace",
+      "content": "the 400s on /upload were a content-length mismatch, nothing to do with json.",
+      "timestamp": "2026-05-30T12:25:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "quinn",
+      "content": "teh design review went well, shipping teh new nav.",
+      "timestamp": "2026-06-01T12:38:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "carol",
+      "content": "good morning team, light day today.",
+      "timestamp": "2026-05-28T13:44:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "judy",
+      "content": "is teh vpn slow for anyone else today?",
+      "timestamp": "2026-06-03T13:15:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "nate",
+      "content": "coffee machine on 2 is broken again lol",
+      "timestamp": "2026-06-01T17:08:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "erin",
+      "content": "allow_nan defaults to True in stdlib json, til.",
+      "timestamp": "2026-06-01T08:38:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "ivan",
+      "content": "the staging db got reset, re-seed if you were using it.",
+      "timestamp": "2026-06-02T16:22:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "olivia",
+      "content": "saw a 400 from teh gateway again, turned out to be an expired token not teh body.",
+      "timestamp": "2026-05-25T17:16:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "victor",
+      "content": "the staging db got reset, re-seed if you were using it.",
+      "timestamp": "2026-05-29T13:22:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "bob",
+      "content": "who is on call this weekend? want to swap a shift.",
+      "timestamp": "2026-05-28T14:56:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "frank",
+      "content": "anyone seen the partner integration creds? need them for testing.",
+      "timestamp": "2026-06-05T12:05:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "judy",
+      "content": "our InvalidJsonException in auth-gateway subclasses ServiceError, different hierarchy.",
+      "timestamp": "2026-05-29T12:30:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "bob",
+      "content": "json.dumps with default=str works for our datetime serialization, fyi.",
+      "timestamp": "2026-05-28T13:02:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "nate",
+      "content": "lunch order going out in 10, reply if you want in.",
+      "timestamp": "2026-06-08T18:34:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "grace",
+      "content": "json.dumps with default=str works for our datetime serialization, fyi.",
+      "timestamp": "2026-05-27T19:39:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "sam",
+      "content": "the analytics sdk should drop non-finite floats before batching, separate ticket.",
+      "timestamp": "2026-05-29T16:48:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "erin",
+      "content": "anyone know who owns teh billing dashboard now?",
+      "timestamp": "2026-06-05T18:57:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "rachel",
+      "content": "standup in 5, drop your updates in the thread.",
+      "timestamp": "2026-05-27T19:43:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "nate",
+      "content": "who is on call this weekend? want to swap a shift.",
+      "timestamp": "2026-06-06T19:15:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "rachel",
+      "content": "saw a 400 from the gateway again, turned out to be an expired token not the body.",
+      "timestamp": "2026-05-25T13:49:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "uma",
+      "content": "the analytics sdk should drop non-finite floats before batching, separate ticket.",
+      "timestamp": "2026-06-02T12:09:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "olivia",
+      "content": "deploy to staging is green, promoting to prod after lunch.",
+      "timestamp": "2026-06-07T17:07:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "quinn",
+      "content": "can someone review my PR when you get a sec? not urgent.",
+      "timestamp": "2026-05-29T08:01:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "mallory",
+      "content": "the load test results are in, p50 looks healthy.",
+      "timestamp": "2026-05-25T18:45:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "sam",
+      "content": "we serialize decimals as strings in metrics-exporter to avoid float drift.",
+      "timestamp": "2026-06-01T08:02:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "carol",
+      "content": "new hire starts monday, be nice 🙂",
+      "timestamp": "2026-05-26T15:54:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "mallory",
+      "content": "we serialize decimals as strings in report-service to avoid float drift.",
+      "timestamp": "2026-06-02T15:14:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "alice",
+      "content": "pandas is reading NaN in the analytics-sdk export, we fillna before writing parquet.",
+      "timestamp": "2026-06-04T14:27:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "sam",
+      "content": "deploy to staging is green, promoting to prod after lunch.",
+      "timestamp": "2026-05-27T17:20:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "grace",
+      "content": "moving the 1:1 to thursday, calendar updated.",
+      "timestamp": "2026-06-02T10:54:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "grace",
+      "content": "the design review went well, shipping the new nav.",
+      "timestamp": "2026-06-07T12:25:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "victor",
+      "content": "our webhook handler throws BadJSON when the payload is empty, added a guard.",
+      "timestamp": "2026-06-06T16:00:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "victor",
+      "content": "allow_nan defaults to True in stdlib json, til.",
+      "timestamp": "2026-06-03T19:50:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "sam",
+      "content": "json.dumps with default=str works for our datetime serialization, fyi.",
+      "timestamp": "2026-05-28T12:20:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "judy",
+      "content": "thinking we just replace NaN with null before sending, quick and dirty.",
+      "timestamp": "2026-05-28T09:21:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "ivan",
+      "content": "the flaky integration test is failing again on CI, retrying.",
+      "timestamp": "2026-05-30T11:50:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "trent",
+      "content": "the parquet writer chokes on Infinity, we coerce to null in teh etl.",
+      "timestamp": "2026-06-08T09:06:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "olivia",
+      "content": "great work on the release everyone, smooth one.",
+      "timestamp": "2026-06-04T10:37:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "judy",
+      "content": "deploy to staging is green, promoting to prod after lunch.",
+      "timestamp": "2026-05-28T08:45:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "heidi",
+      "content": "the design review went well, shipping the new nav.",
+      "timestamp": "2026-06-06T13:14:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "alice",
+      "content": "the dashboard shows NaN in the totals widget when a metric is missing, frontend fix.",
+      "timestamp": "2026-05-26T11:58:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "peter",
+      "content": "the staging db got reset, re-seed if you were using it.",
+      "timestamp": "2026-06-01T13:12:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "mallory",
+      "content": "json.dumps with default=str works for our datetime serialization, fyi.",
+      "timestamp": "2026-05-26T17:44:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "peter",
+      "content": "the dashboard shows NaN in the totals widget when a metric is missing, frontend fix.",
+      "timestamp": "2026-05-30T09:16:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "erin",
+      "content": "lunch order going out in 10, reply if you want in.",
+      "timestamp": "2026-06-06T11:28:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "mallory",
+      "content": "teh metrics pipeline backfilled overnight, numbers shoud be right now.",
+      "timestamp": "2026-06-02T19:01:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "judy",
+      "content": "can someone review my PR when you get a sec? not urgent.",
+      "timestamp": "2026-06-03T08:14:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "sam",
+      "content": "the flaky integration test is failing again on CI, retrying.",
+      "timestamp": "2026-06-05T17:30:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "peter",
+      "content": "our InvalidJsonException in billing-service subclasses ServiceError, different hierarchy.",
+      "timestamp": "2026-05-30T16:10:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "nate",
+      "content": "lunch order going out in 10, reply if you want in.",
+      "timestamp": "2026-05-29T13:30:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "nate",
+      "content": "anyone know who owns the billing dashboard now?",
+      "timestamp": "2026-05-28T17:30:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "quinn",
+      "content": "good morning team, light day today.",
+      "timestamp": "2026-05-25T09:18:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "bob",
+      "content": "the staging db got reset, re-seed if you were using it.",
+      "timestamp": "2026-06-08T19:55:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "nate",
+      "content": "saw a 400 from teh gateway again, turned out to be an expired token not teh body.",
+      "timestamp": "2026-06-05T14:18:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "heidi",
+      "content": "JSON.stringify in the browser emits null for NaN, that's a client thing.",
+      "timestamp": "2026-05-25T13:43:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "grace",
+      "content": "great work on the release everyone, smooth one.",
+      "timestamp": "2026-05-25T10:18:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "judy",
+      "content": "can someone review my PR when you get a sec? not urgent.",
+      "timestamp": "2026-06-05T18:41:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "rachel",
+      "content": "coffee machine on 2 is broken again lol",
+      "timestamp": "2026-05-25T17:59:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "dave",
+      "content": "deploy to staging is green, promoting to prod after lunch.",
+      "timestamp": "2026-06-08T19:31:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "grace",
+      "content": "grafana panel hit Infinity on a divide-by-zero in the promql, clamped it.",
+      "timestamp": "2026-06-08T18:00:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "trent",
+      "content": "json.dumps with default=str works for our datetime serialization, fyi.",
+      "timestamp": "2026-05-28T12:06:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "mallory",
+      "content": "deploy to staging is green, promoting to prod after lunch.",
+      "timestamp": "2026-06-01T11:57:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "nate",
+      "content": "deploy to staging is green, promoting to prod after lunch.",
+      "timestamp": "2026-06-07T12:01:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "nate",
+      "content": "anyone seen the partner integration creds? need them for testing.",
+      "timestamp": "2026-05-27T17:23:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "olivia",
+      "content": "moving the 1:1 to thursday, calendar updated.",
+      "timestamp": "2026-06-06T09:53:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "ivan",
+      "content": "is the vpn slow for anyone else today?",
+      "timestamp": "2026-05-29T18:54:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "quinn",
+      "content": "thanks for the quick turnaround on that hotfix.",
+      "timestamp": "2026-05-29T18:08:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "bob",
+      "content": "new hire starts monday, be nice 🙂",
+      "timestamp": "2026-05-27T18:12:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "quinn",
+      "content": "the analytics sdk should drop non-finite floats before batching, separate ticket.",
+      "timestamp": "2026-06-02T19:02:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "alice",
+      "content": "good morning team, light day today.",
+      "timestamp": "2026-05-27T11:14:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "victor",
+      "content": "great work on the release everyone, smooth one.",
+      "timestamp": "2026-05-28T15:15:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "dave",
+      "content": "JSON.stringify in the browser emits null for NaN, that's a client thing.",
+      "timestamp": "2026-05-28T15:19:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "victor",
+      "content": "allow_nan defaults to True in stdlib json, til.",
+      "timestamp": "2026-06-02T08:01:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "grace",
+      "content": "who is on call this weekend? want to swap a shift.",
+      "timestamp": "2026-05-26T13:22:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "dave",
+      "content": "added a ValidationError for query params in auth-gateway, not body validation.",
+      "timestamp": "2026-05-25T19:37:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "rachel",
+      "content": "pandas is reading NaN in the billing-service export, we fillna before writing parquet.",
+      "timestamp": "2026-05-29T17:37:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "dave",
+      "content": "coffee machine on 2 is broken again lol",
+      "timestamp": "2026-06-01T10:24:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "alice",
+      "content": "the flaky integration test is failing again on CI, retrying.",
+      "timestamp": "2026-05-26T14:55:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "ivan",
+      "content": "the flaky integration test is failing again on CI, retrying.",
+      "timestamp": "2026-06-08T16:09:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "bob",
+      "content": "can we bump the timeout on the nightly job? it keeps getting killed.",
+      "timestamp": "2026-05-28T09:06:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "trent",
+      "content": "anyone know who owns the billing dashboard now?",
+      "timestamp": "2026-05-25T08:13:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "grace",
+      "content": "reminder: sprint demo friday, add your items to the doc.",
+      "timestamp": "2026-05-26T10:36:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "sam",
+      "content": "the flaky integration test is failing again on CI, retrying.",
+      "timestamp": "2026-06-01T13:07:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "trent",
+      "content": "thanks for the quick turnaround on that hotfix.",
+      "timestamp": "2026-06-02T08:16:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "heidi",
+      "content": "good morning team, light day today.",
+      "timestamp": "2026-06-01T18:52:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "mallory",
+      "content": "JSON.stringify in the browser emits null for NaN, that's a client thing.",
+      "timestamp": "2026-05-30T13:56:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "dave",
+      "content": "the metrics-exporter keeps logging a JSONDecodeError on startup, prob a bad config file.",
+      "timestamp": "2026-05-28T19:05:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "quinn",
+      "content": "good morning team, light day today.",
+      "timestamp": "2026-05-29T09:09:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "bob",
+      "content": "standup in 5, drop your updates in the thread.",
+      "timestamp": "2026-06-07T14:41:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "quinn",
+      "content": "reminder: sprint demo friday, add your items to the doc.",
+      "timestamp": "2026-05-27T12:39:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "dave",
+      "content": "teh staging db got reset, re-seed if you were using it.",
+      "timestamp": "2026-06-05T15:52:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "judy",
+      "content": "anyone know who owns the billing dashboard now?",
+      "timestamp": "2026-05-28T10:38:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "quinn",
+      "content": "ticket triage at 3pm, bring your queues.",
+      "timestamp": "2026-05-27T16:49:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "peter",
+      "content": "the metrics pipeline backfilled overnight, numbers should be right now.",
+      "timestamp": "2026-06-05T10:37:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "victor",
+      "content": "coffee machine on 2 is broken again lol",
+      "timestamp": "2026-05-28T15:25:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "alice",
+      "content": "thanks for the quick turnaround on that hotfix.",
+      "timestamp": "2026-06-03T14:34:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "dave",
+      "content": "the etl-jobs keeps logging a JSONDecodeError on startup, prob a bad config file.",
+      "timestamp": "2026-06-08T11:18:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "sam",
+      "content": "lunch order going out in 10, reply if you wnat in.",
+      "timestamp": "2026-06-08T11:47:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "rachel",
+      "content": "thanks for the quick turnaround on that hotfix.",
+      "timestamp": "2026-05-30T16:22:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "nate",
+      "content": "who is on call this weekend? want to swap a shift.",
+      "timestamp": "2026-05-26T13:46:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "rachel",
+      "content": "the staging db got reset, re-seed if you were using it.",
+      "timestamp": "2026-06-01T13:25:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "bob",
+      "content": "the dashboard shows NaN in the totals widget when a metric is missing, frontend fix.",
+      "timestamp": "2026-06-02T09:34:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "olivia",
+      "content": "anyone know who owns the billing dashboard now?",
+      "timestamp": "2026-06-05T16:05:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "dave",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-06-03T13:37:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "bob",
+      "content": "reminder: sprint demo friday, add your items to the doc.",
+      "timestamp": "2026-06-02T14:51:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "nate",
+      "content": "saw a 400 from the gateway again, turned out to be an expired token not the body.",
+      "timestamp": "2026-06-08T16:52:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "uma",
+      "content": "reminder: sprint demo friday, add your items to the doc.",
+      "timestamp": "2026-05-28T08:41:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "erin",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-06-07T09:27:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "grace",
+      "content": "anyone know who owns the billing dashboard now?",
+      "timestamp": "2026-05-26T08:40:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "olivia",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-06-08T13:31:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "trent",
+      "content": "lunch order going out in 10, reply if you want in.",
+      "timestamp": "2026-05-25T15:15:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "quinn",
+      "content": "the auth-gateway keeps logging a JSONDecodeError on startup, prob a bad config file.",
+      "timestamp": "2026-05-28T08:06:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "dave",
+      "content": "can someone review my PR when you get a sec? not urgent.",
+      "timestamp": "2026-06-07T15:31:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "quinn",
+      "content": "grafana panel hit Infinity on a divide-by-zero in the promql, clamped it.",
+      "timestamp": "2026-06-07T10:53:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "quinn",
+      "content": "the staging db got reset, re-seed if you were using it.",
+      "timestamp": "2026-05-26T08:01:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "quinn",
+      "content": "good morning team, light day today.",
+      "timestamp": "2026-05-30T11:03:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "sam",
+      "content": "saw a 400 from the gateway again, turned out to be an expired token not the body.",
+      "timestamp": "2026-06-04T09:51:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "peter",
+      "content": "deploy to staging is green, promoting to prod after lunch.",
+      "timestamp": "2026-05-29T11:59:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "victor",
+      "content": "the analytics sdk should drop non-finite floats before batching, separate ticket.",
+      "timestamp": "2026-06-04T10:24:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "grace",
+      "content": "our webhook handler throws BadJSON when the payload is empty, added a guard.",
+      "timestamp": "2026-06-05T19:43:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "rachel",
+      "content": "allow_nan defaults to True in stdlib json, til.",
+      "timestamp": "2026-05-25T10:20:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "ivan",
+      "content": "good morning team, light day today.",
+      "timestamp": "2026-06-02T17:38:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "frank",
+      "content": "the flaky integration test is failing again on CI, retrying.",
+      "timestamp": "2026-05-26T10:33:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "peter",
+      "content": "allow_nan defaults to True in stdlib json, til.",
+      "timestamp": "2026-05-27T08:55:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "dave",
+      "content": "can someone review my PR when you get a sec? not urgent.",
+      "timestamp": "2026-06-07T11:24:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "trent",
+      "content": "standup in 5, drop your updates in the thread.",
+      "timestamp": "2026-05-29T16:43:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "sam",
+      "content": "anyone know who owns the billing dashboard now?",
+      "timestamp": "2026-05-28T14:17:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "trent",
+      "content": "new hire starts monday, be nice 🙂",
+      "timestamp": "2026-06-04T13:56:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "quinn",
+      "content": "thanks for the quick turnaround on taht hotfix.",
+      "timestamp": "2026-06-04T10:31:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "olivia",
+      "content": "great work on the release everyone, smooth one.",
+      "timestamp": "2026-05-27T12:33:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "bob",
+      "content": "anyone know who owns the billing dashboard now?",
+      "timestamp": "2026-06-07T08:55:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "olivia",
+      "content": "we got a nice bump in signups this week 🎉",
+      "timestamp": "2026-05-25T16:06:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "dave",
+      "content": "coffee machine on 2 is broken again lol",
+      "timestamp": "2026-05-28T13:25:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "victor",
+      "content": "reminder: sprint demo friday, add your items to the doc.",
+      "timestamp": "2026-05-25T16:43:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "sam",
+      "content": "the analytics sdk should drop non-finite floats before batching, separate ticket.",
+      "timestamp": "2026-06-06T10:41:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "heidi",
+      "content": "the design review went well, shipping teh new nav.",
+      "timestamp": "2026-06-06T19:25:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "victor",
+      "content": "coffee machine on 2 is broken again lol",
+      "timestamp": "2026-06-03T19:59:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "heidi",
+      "content": "the metrics pipeline backfilled overnight, numbers should be right now.",
+      "timestamp": "2026-05-29T19:15:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "judy",
+      "content": "the dashboard shows NaN in the totals widget when a metric is missing, frontend fix.",
+      "timestamp": "2026-05-30T09:00:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "rachel",
+      "content": "is the vpn slow for anyone else today?",
+      "timestamp": "2026-05-25T15:57:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "quinn",
+      "content": "rotating the staging api keys today, heads up.",
+      "timestamp": "2026-06-01T12:10:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "bob",
+      "content": "our webhook handler throws BadJSON when the payload is empty, added a guard.",
+      "timestamp": "2026-05-25T12:04:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "rachel",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-06-03T16:08:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "bob",
+      "content": "is the vpn slow for anyone else today?",
+      "timestamp": "2026-06-06T14:08:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "sam",
+      "content": "can someone review my PR when you get a sec? not urgent.",
+      "timestamp": "2026-06-03T09:40:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "carol",
+      "content": "json.dumps with default=str works for our datetime serialization, fyi.",
+      "timestamp": "2026-06-02T08:28:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "trent",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-05-28T16:51:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "olivia",
+      "content": "ticket triage at 3pm, bring your queues.",
+      "timestamp": "2026-06-03T09:17:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "mallory",
+      "content": "the parquet writer chokes on Infinity, we coerce to null in the etl.",
+      "timestamp": "2026-05-26T19:58:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "judy",
+      "content": "ticket triage at 3pm, bring your queues.",
+      "timestamp": "2026-05-27T19:24:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "victor",
+      "content": "the design review went well, shipping the new nav.",
+      "timestamp": "2026-06-06T17:14:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "peter",
+      "content": "anyone seen teh partner integration creds? need them for testing.",
+      "timestamp": "2026-05-25T08:26:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "frank",
+      "content": "anyone seen the partner integration creds? need them for testing.",
+      "timestamp": "2026-06-04T10:52:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "mallory",
+      "content": "json.dumps with default=str works for our datetime serialization, fyi.",
+      "timestamp": "2026-06-02T14:15:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "rachel",
+      "content": "can we bump the timeout on teh nightly job? it keeps getting killed.",
+      "timestamp": "2026-05-27T08:24:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "bob",
+      "content": "grafana panel hit Infinity on a divide-by-zero in teh promql, clamped it.",
+      "timestamp": "2026-05-30T15:15:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "carol",
+      "content": "can someone review my PR when you get a sec? not urgent.",
+      "timestamp": "2026-05-28T14:28:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "sam",
+      "content": "reminder: sprint demo friday, add your items to teh doc.",
+      "timestamp": "2026-05-30T10:22:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "carol",
+      "content": "the flaky integration test is failing again on CI, retrying.",
+      "timestamp": "2026-06-03T14:16:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "grace",
+      "content": "json.dumps with default=str works for our datetime serialization, fyi.",
+      "timestamp": "2026-05-26T14:28:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "rachel",
+      "content": "we got a nice bump in signups this week 🎉",
+      "timestamp": "2026-06-06T19:31:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "grace",
+      "content": "who is on call this weekend? want to swap a shift.",
+      "timestamp": "2026-05-26T18:39:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "alice",
+      "content": "our InvalidJsonException in resolver subclasses ServiceError, differnt hierarchy.",
+      "timestamp": "2026-05-30T11:15:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "bob",
+      "content": "the flaky integration test is failing again on CI, retrying.",
+      "timestamp": "2026-05-27T10:24:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "grace",
+      "content": "we serialize decimals as strings in metrics-exporter to avoid float drift.",
+      "timestamp": "2026-06-08T19:51:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "heidi",
+      "content": "deploy to staging is green, promoting to prod after lunch.",
+      "timestamp": "2026-05-28T09:09:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "nate",
+      "content": "thinking we just replace NaN with null before sending, quick and dirty.",
+      "timestamp": "2026-06-07T16:38:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "victor",
+      "content": "the 400s on /upload were a content-length mismatch, nothing to do with json.",
+      "timestamp": "2026-05-28T14:31:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "frank",
+      "content": "the metrics pipeline backfilled overnight, numbers should be right now.",
+      "timestamp": "2026-06-01T14:03:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "bob",
+      "content": "can we bump the timeout on the nightly job? it keeps getting killed.",
+      "timestamp": "2026-06-06T12:54:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "olivia",
+      "content": "who is on call this weekend? want to swap a shift.",
+      "timestamp": "2026-05-26T13:59:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "dave",
+      "content": "deploy to staging is green, promoting to prod after lunch.",
+      "timestamp": "2026-05-29T09:54:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "rachel",
+      "content": "we got a nice bump in signups this week 🎉",
+      "timestamp": "2026-05-26T17:47:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "frank",
+      "content": "added a ValidationError for query params in resolver, not body validation.",
+      "timestamp": "2026-06-03T13:10:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "ivan",
+      "content": "teh load test results are in, p50 looks healthy.",
+      "timestamp": "2026-05-25T12:08:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "victor",
+      "content": "new hire starts monday, be nice 🙂",
+      "timestamp": "2026-05-25T14:08:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "bob",
+      "content": "great work on the release everyone, smooth one.",
+      "timestamp": "2026-05-29T13:09:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "olivia",
+      "content": "the load test results are in, p50 looks healthy.",
+      "timestamp": "2026-05-27T17:13:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "peter",
+      "content": "reminder: sprint demo friday, add your items to the doc.",
+      "timestamp": "2026-05-29T12:51:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "grace",
+      "content": "allow_nan defaults to True in stdlib json, til.",
+      "timestamp": "2026-05-26T12:15:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "ivan",
+      "content": "ticket triage at 3pm, bring your queues.",
+      "timestamp": "2026-06-06T11:36:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "victor",
+      "content": "the staging db got reset, re-seed if you were using it.",
+      "timestamp": "2026-06-05T19:34:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "sam",
+      "content": "deploy to staging is green, promoting to prod after lunch.",
+      "timestamp": "2026-05-27T09:56:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "heidi",
+      "content": "thinking we just replace NaN with null before sending, quick and dirty.",
+      "timestamp": "2026-06-08T17:39:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "trent",
+      "content": "the dashboard shows NaN in the totals widget when a metric is missing, frontend fix.",
+      "timestamp": "2026-06-05T14:58:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "frank",
+      "content": "moving the 1:1 to thursday, calender updated.",
+      "timestamp": "2026-05-28T12:46:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "dave",
+      "content": "we got a nice bump in signups this week 🎉",
+      "timestamp": "2026-05-27T08:27:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "mallory",
+      "content": "moving the 1:1 to thursday, calendar updated.",
+      "timestamp": "2026-06-07T12:06:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "alice",
+      "content": "teh metrics pipeline backfilled overnight, numbers shoud be right now.",
+      "timestamp": "2026-05-25T17:12:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "sam",
+      "content": "rotating the staging api keys today, heads up.",
+      "timestamp": "2026-05-25T17:22:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "uma",
+      "content": "anyone seen the partner integration creds? need them for testing.",
+      "timestamp": "2026-05-28T10:42:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "peter",
+      "content": "reminder: sprint demo friday, add your items to the doc.",
+      "timestamp": "2026-05-28T14:33:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "alice",
+      "content": "grafana panel hit Infinity on a divide-by-zero in the promql, clamped it.",
+      "timestamp": "2026-06-05T14:25:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "dave",
+      "content": "the metrics pipeline backfilled overnight, numbers should be right now.",
+      "timestamp": "2026-06-08T11:28:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "bob",
+      "content": "can someone review my PR when you get a sec? not urgent.",
+      "timestamp": "2026-06-05T10:21:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "heidi",
+      "content": "lunch order going out in 10, reply if you want in.",
+      "timestamp": "2026-06-01T17:49:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "sam",
+      "content": "who is on call this weekend? want to swap a shift.",
+      "timestamp": "2026-05-28T19:37:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "trent",
+      "content": "anyone seen the partner integration creds? need them for testing.",
+      "timestamp": "2026-06-04T18:22:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "nate",
+      "content": "rotating teh staging api keys today, heads up.",
+      "timestamp": "2026-05-30T19:48:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "alice",
+      "content": "allow_nan defaults to True in stdlib json, til.",
+      "timestamp": "2026-05-30T19:46:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "trent",
+      "content": "the flaky integration test is failing again on CI, retrying.",
+      "timestamp": "2026-05-29T08:03:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "frank",
+      "content": "lunch order going out in 10, reply if you want in.",
+      "timestamp": "2026-06-03T19:54:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "quinn",
+      "content": "can we bump the timeout on the nightly job? it keeps getting killed.",
+      "timestamp": "2026-06-05T13:17:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "victor",
+      "content": "standup in 5, drop your updates in the thread.",
+      "timestamp": "2026-05-30T16:23:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "frank",
+      "content": "we serialize decimals as strings in etl-jobs to avoid float drift.",
+      "timestamp": "2026-05-28T17:22:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "heidi",
+      "content": "the metrics pipeline backfilled overnight, numbers should be right now.",
+      "timestamp": "2026-06-02T16:02:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "frank",
+      "content": "the metrics pipeline backfilled overnight, numbers should be right now.",
+      "timestamp": "2026-06-02T13:23:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "grace",
+      "content": "anyone seen the partner integration creds? need them for testing.",
+      "timestamp": "2026-05-29T08:57:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "uma",
+      "content": "deploy to staging is green, promoting to prod after lunch.",
+      "timestamp": "2026-06-04T14:34:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "mallory",
+      "content": "our webhook handler throws BadJSON when the payload is empty, added a guard.",
+      "timestamp": "2026-06-07T17:17:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "nate",
+      "content": "who is on call this weekend? want to swap a shift.",
+      "timestamp": "2026-06-07T15:04:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "quinn",
+      "content": "the design review went well, shipping teh new nav.",
+      "timestamp": "2026-06-07T18:21:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "carol",
+      "content": "the analytics-sdk keeps logging a JSONDecodeError on startup, prob a bad config file.",
+      "timestamp": "2026-06-06T18:34:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "sam",
+      "content": "JSON.stringify in the browser emits null for NaN, that's a client thing.",
+      "timestamp": "2026-05-29T14:19:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "sam",
+      "content": "coffee machine on 2 is broken again lol",
+      "timestamp": "2026-05-25T08:51:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "judy",
+      "content": "allow_nan defaults to True in stdlib json, til.",
+      "timestamp": "2026-06-03T16:29:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "rachel",
+      "content": "lunch order going out in 10, reply if you want in.",
+      "timestamp": "2026-06-01T11:37:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "trent",
+      "content": "deploy to staging is green, promoting to prod after lunch.",
+      "timestamp": "2026-06-05T09:48:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "peter",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-05-30T14:01:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "peter",
+      "content": "great work on the release everyone, smooth one.",
+      "timestamp": "2026-06-06T19:09:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "uma",
+      "content": "the load test results are in, p50 looks healthy.",
+      "timestamp": "2026-06-07T17:03:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "dave",
+      "content": "pandas is reading NaN in the analytics-sdk export, we fillna before writing parquet.",
+      "timestamp": "2026-06-06T08:41:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "bob",
+      "content": "allow_nan defaults to True in stdlib json, til.",
+      "timestamp": "2026-05-27T14:12:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "dave",
+      "content": "lunch order going out in 10, reply if you want in.",
+      "timestamp": "2026-06-03T09:20:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "dave",
+      "content": "we got a nice bump in signups this week 🎉",
+      "timestamp": "2026-06-06T08:07:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "nate",
+      "content": "saw a 400 from teh gateway again, turned out to be an expired token not the body.",
+      "timestamp": "2026-06-07T15:29:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "ivan",
+      "content": "moving the 1:1 to thursday, calendar updated.",
+      "timestamp": "2026-06-01T10:33:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "sam",
+      "content": "the edge-proxy keeps logging a JSONDecodeError on startup, prob a bad config file.",
+      "timestamp": "2026-05-26T15:02:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "grace",
+      "content": "moving teh 1:1 to thursday, calender updated.",
+      "timestamp": "2026-05-30T12:32:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "quinn",
+      "content": "pandas is reading NaN in the billing-service export, we fillna before writing parquet.",
+      "timestamp": "2026-06-06T11:27:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "erin",
+      "content": "thinking we just replace NaN with null before sending, quick and dirty.",
+      "timestamp": "2026-05-30T17:53:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "erin",
+      "content": "our webhook handler throws BadJSON when the payload is empty, added a guard.",
+      "timestamp": "2026-06-06T10:19:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "alice",
+      "content": "great work on the release everyone, smooth one.",
+      "timestamp": "2026-05-27T15:31:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "uma",
+      "content": "the analytics-sdk keeps logging a JSONDecodeError on startup, prob a bad config file.",
+      "timestamp": "2026-06-08T09:56:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "trent",
+      "content": "our webhook handler throws BadJSON when the payload is empty, added a guard.",
+      "timestamp": "2026-05-25T12:13:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "heidi",
+      "content": "the analytics sdk should drop non-finite floats before batching, separate ticket.",
+      "timestamp": "2026-06-06T19:21:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "quinn",
+      "content": "the flaky integration test is failing again on CI, retrying.",
+      "timestamp": "2026-06-04T17:31:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "judy",
+      "content": "teh metrics pipeline backfilled overnight, numbers shoud be right now.",
+      "timestamp": "2026-06-08T11:02:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "alice",
+      "content": "great work on the release everyone, smooth one.",
+      "timestamp": "2026-06-07T18:33:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "erin",
+      "content": "deploy to staging is green, promoting to prod after lunch.",
+      "timestamp": "2026-05-26T08:26:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "trent",
+      "content": "great work on the release everyone, smooth one.",
+      "timestamp": "2026-06-05T19:01:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "victor",
+      "content": "we serialize decimals as strings in edge-proxy to avoid float drift.",
+      "timestamp": "2026-05-28T17:30:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "heidi",
+      "content": "the 400s on /upload were a content-length mismatch, nothing to do with json.",
+      "timestamp": "2026-05-26T17:11:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "ivan",
+      "content": "the staging db got reset, re-seed if you were using it.",
+      "timestamp": "2026-05-26T15:54:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "nate",
+      "content": "thanks for teh quick turnaround on that hotfix.",
+      "timestamp": "2026-05-30T13:10:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "heidi",
+      "content": "added a ValidationError for query params in report-service, not body validation.",
+      "timestamp": "2026-05-27T11:46:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "erin",
+      "content": "anyone seen the partner integration creds? need them for testing.",
+      "timestamp": "2026-06-05T19:34:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "quinn",
+      "content": "good morning team, light day today.",
+      "timestamp": "2026-05-30T15:09:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "sam",
+      "content": "can we bump teh timeout on the nightly job? it keeps getting killed.",
+      "timestamp": "2026-05-29T17:01:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "erin",
+      "content": "the analytics sdk should drop non-finite floats before batching, separate ticket.",
+      "timestamp": "2026-06-06T18:23:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "mallory",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-05-25T12:48:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "erin",
+      "content": "is the vpn slow for anyone else today?",
+      "timestamp": "2026-06-07T10:57:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "quinn",
+      "content": "anyone seen teh partner integration creds? need them for testing.",
+      "timestamp": "2026-05-25T17:20:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "olivia",
+      "content": "good morning team, light day today.",
+      "timestamp": "2026-05-28T15:41:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "trent",
+      "content": "good morning team, light day today.",
+      "timestamp": "2026-06-07T16:45:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "alice",
+      "content": "deploy to staging is green, promoting to prod after lunch.",
+      "timestamp": "2026-06-06T14:30:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "trent",
+      "content": "deploy to staging is green, promoting to prod after lunch.",
+      "timestamp": "2026-06-06T09:43:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "uma",
+      "content": "lunch order going out in 10, reply if you want in.",
+      "timestamp": "2026-06-07T14:41:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "mallory",
+      "content": "lunch order going out in 10, reply if you wnat in.",
+      "timestamp": "2026-06-05T08:54:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "grace",
+      "content": "the staging db got reset, re-seed if you were using it.",
+      "timestamp": "2026-05-28T10:48:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "olivia",
+      "content": "anyone know who owns the billing dashboard now?",
+      "timestamp": "2026-06-02T12:15:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "nate",
+      "content": "thanks for the quick turnaround on that hotfix.",
+      "timestamp": "2026-05-27T10:47:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "mallory",
+      "content": "rotating the staging api keys today, heads up.",
+      "timestamp": "2026-06-06T13:32:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "peter",
+      "content": "reminder: sprint demo friday, add your items to the doc.",
+      "timestamp": "2026-05-29T15:25:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "peter",
+      "content": "the flaky integration test is failing again on CI, retrying.",
+      "timestamp": "2026-06-04T10:46:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "carol",
+      "content": "good morning team, light day today.",
+      "timestamp": "2026-06-01T10:31:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "judy",
+      "content": "the dashboard shows NaN in teh totals widget when a metric is missing, frontend fix.",
+      "timestamp": "2026-06-06T17:49:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "carol",
+      "content": "thinking we just replace NaN with null before sending, quick and dirty.",
+      "timestamp": "2026-05-29T09:56:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "judy",
+      "content": "the design review went well, shipping the new nav.",
+      "timestamp": "2026-06-07T17:33:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "grace",
+      "content": "we serialize decimals as strings in auth-gateway to avoid float drift.",
+      "timestamp": "2026-06-07T16:34:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "quinn",
+      "content": "rotating the staging api keys today, heads up.",
+      "timestamp": "2026-06-03T12:27:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "alice",
+      "content": "who is on call this weekend? want to swap a shift.",
+      "timestamp": "2026-06-07T16:55:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "frank",
+      "content": "coffee machine on 2 is broken again lol",
+      "timestamp": "2026-05-30T12:30:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "carol",
+      "content": "standup in 5, drop your updates in the thread.",
+      "timestamp": "2026-05-29T17:04:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "bob",
+      "content": "thanks for the quick turnaround on that hotfix.",
+      "timestamp": "2026-06-05T15:51:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "frank",
+      "content": "rotating the staging api keys today, heads up.",
+      "timestamp": "2026-06-03T19:06:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "sam",
+      "content": "ticket triage at 3pm, bring your queues.",
+      "timestamp": "2026-06-05T15:56:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "grace",
+      "content": "teh design review went well, shipping teh new nav.",
+      "timestamp": "2026-06-04T08:31:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "rachel",
+      "content": "can someone review my PR when you get a sec? not urgent.",
+      "timestamp": "2026-05-29T10:52:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "alice",
+      "content": "Couple of 400s on telemetry ingest last sprint when payloads carry NaN for missing sensor readings. Simplest fix I can think of: in prepare_body, catch `json.JSONDecodeError` around the dumps call and re-raise it so callers get a clean failure.",
+      "timestamp": "2026-05-16T09:00:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "bob",
+      "content": "json.JSONDecodeError is already in the stdlib so there's no new class to maintain. Let's just wrap the complexjson.dumps call and raise JSONDecodeError on bad input.",
+      "timestamp": "2026-05-16T09:05:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "alice",
+      "content": "Agreed, keeps us consistent with the stdlib. Shipping it that way for now.",
+      "timestamp": "2026-05-16T09:08:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "carol",
+      "content": "ok, lgtm as a stopgap. we can revisit if it bites us.",
+      "timestamp": "2026-05-16T09:12:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "alice",
+      "content": "Customers report intermittent 400 Bad Request when they POST telemetry. Payloads sometimes contain float('nan') or float('inf') for missing sensor readings. Tracking as API-202.",
+      "timestamp": "2026-06-06T10:00:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "bob",
+      "content": "Root cause: in requests/models.py, `PreparedRequest.prepare_body` calls `complexjson.dumps(json)` with default settings. Python's json emits bare `NaN`/`Infinity` tokens, which are valid JS but invalid JSON per RFC 4627 §2.4. The gateway rejects them with a 400, far from where the bad value was introduced.",
+      "timestamp": "2026-06-06T10:05:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "alice",
+      "content": "And forget the May JSONDecodeError plan — it was wrong on two counts: complexjson.dumps doesn't raise JSONDecodeError (that's a *decode* error), and it's a stdlib class we don't own. We're doing this properly this time.",
+      "timestamp": "2026-06-06T10:06:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "dave",
+      "content": "before we go deep — could we just swap NaN for null, or name the new error JSONError / BadJSON? trying to keep it simple.",
+      "timestamp": "2026-06-06T10:07:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "carol",
+      "content": "No silent coerce, and no ad-hoc name. So we should fail fast at serialization instead of shipping an invalid body. What's the exact contract?",
+      "timestamp": "2026-06-06T10:08:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "alice",
+      "content": "Agreed contract, please follow exactly so callers can catch it: add a new exception named `InvalidJSONError` in requests/exceptions.py that subclasses `RequestException` — that way existing `except RequestException` handlers keep working. Not JSONError, not BadJSON, not JSONDecodeError — `InvalidJSONError`.",
+      "timestamp": "2026-06-06T10:10:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "alice",
+      "content": "The exact prepare_body changes — what we pass to dumps and what we catch — are written up in #api-team. Follow that spec to the letter; I don't want a partial fix.",
+      "timestamp": "2026-06-06T10:12:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "alice",
+      "content": "Right. Valid finite payloads must serialize exactly as before — the existing tests in tests/test_basic.py must keep passing. Only NaN/Infinity should now raise.",
+      "timestamp": "2026-06-06T10:15:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "carol",
+      "content": "Ship as a PR against main, no direct commits. I'll review. Make sure both float('nan') and float('inf') raise InvalidJSONError.",
+      "timestamp": "2026-06-06T10:18:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "bob",
+      "content": "On it — branch + PR shortly.",
+      "timestamp": "2026-06-06T10:20:00Z"
+    },
+    {
+      "channel": "api-team",
+      "author": "bob",
+      "content": "Lifting the implementation detail for API-202 out of #eng so it doesn't get lost in the chatter. Spec for the NaN serialization fix:",
+      "timestamp": "2026-06-06T10:30:00Z"
+    },
+    {
+      "channel": "api-team",
+      "author": "bob",
+      "content": "In `PreparedRequest.prepare_body` (requests/models.py): pass `allow_nan=False` into the `complexjson.dumps(json, ...)` call. With allow_nan=False, json raises ValueError the moment it hits a NaN/Infinity float.",
+      "timestamp": "2026-06-06T10:31:00Z"
+    },
+    {
+      "channel": "api-team",
+      "author": "bob",
+      "content": "Wrap that dumps call in try/except and catch `ValueError` — NOT JSONDecodeError, dumps never raises that. On the ValueError, `raise InvalidJSONError(ve, request=self)`. Pass the original exception object through, not a bare string.",
+      "timestamp": "2026-06-06T10:32:00Z"
+    },
+    {
+      "channel": "api-team",
+      "author": "carol",
+      "content": "And do not substring-check the serialized body for 'NaN' — a JSON string value of \"NaN\" is perfectly valid and must serialize fine. Only the numeric float tokens should raise, and allow_nan=False handles exactly that for you.",
+      "timestamp": "2026-06-06T10:35:00Z"
+    },
+    {
+      "channel": "api-team",
+      "author": "alice",
+      "content": "Exactly. allow_nan=False is the entire mechanism. Finite payloads serialize byte-for-byte identically to today.",
+      "timestamp": "2026-06-06T10:37:00Z"
+    },
+    {
+      "channel": "api-platform",
+      "author": "peter",
+      "content": "btw the v2 analytics-sdk renamed its `InvalidJSONError` to `RequestJSONError` last release. if you grep and hit InvalidJSONError thats the deprecated name over there, dont reintroduce it.",
+      "timestamp": "2026-06-05T16:40:00Z"
+    },
+    {
+      "channel": "api-platform",
+      "author": "quinn",
+      "content": "thats analytics-sdk only though, totally separate from whatever api-service lands for the json body serialize thing. dont conflate them.",
+      "timestamp": "2026-06-05T16:43:00Z"
+    }
+  ]
+}

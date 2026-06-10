@@ -1,0 +1,2890 @@
+{
+  "messages": [
+    {
+      "channel": "general",
+      "author": "alice",
+      "content": "Morning all. Reminder: client demo for the legacy-gateway integration is Thursday.",
+      "timestamp": "2026-06-06T09:00:00Z"
+    },
+    {
+      "channel": "general",
+      "author": "bob",
+      "content": "Thanks. I'll have the URL-handling fix (WEB-101) in before then.",
+      "timestamp": "2026-06-06T09:02:00Z"
+    },
+    {
+      "channel": "general",
+      "author": "dave",
+      "content": "lets keep the actual fix discussion in #eng so it doesnt get lost accross channels.",
+      "timestamp": "2026-06-06T09:06:00Z"
+    },
+    {
+      "channel": "random",
+      "author": "carol",
+      "content": "Coffee machine on 3 is fixed ☕",
+      "timestamp": "2026-06-06T10:30:00Z"
+    },
+    {
+      "channel": "random",
+      "author": "erin",
+      "content": "why does every url in my bookmarks have a diffrent capitalization lol",
+      "timestamp": "2026-06-06T10:45:00Z"
+    },
+    {
+      "channel": "frontend",
+      "author": "heidi",
+      "content": "reminder: dont lowercase the whole URL on the client. we tried url.toLowerCase() and it broke case-sensitive path segments and query params like ?Token=Ab12.",
+      "timestamp": "2026-06-05T14:00:00Z"
+    },
+    {
+      "channel": "frontend",
+      "author": "ivan",
+      "content": "ya paths and query strings are case-SENSITIVE per rfc. only the scheme and host are case-insensitive. lowercasing everything is a bug.",
+      "timestamp": "2026-06-05T14:07:00Z"
+    },
+    {
+      "channel": "frontend",
+      "author": "heidi",
+      "content": "right. so on the frontend we leave urls untouched. whatever the backend adapter fix is, it shoudnt lowercase the entire url either.",
+      "timestamp": "2026-06-05T14:13:00Z"
+    },
+    {
+      "channel": "frontend",
+      "author": "ivan",
+      "content": "agreed, scope any lowercasing to the part being compared, not the full string.",
+      "timestamp": "2026-06-05T14:19:00Z"
+    },
+    {
+      "channel": "dns-infra",
+      "author": "frank",
+      "content": "we normalize hostnames to lowercase before the dns lookup since DNS is case-insensitive.",
+      "timestamp": "2026-06-04T12:00:00Z"
+    },
+    {
+      "channel": "dns-infra",
+      "author": "grace",
+      "content": "thats host normalization, totally seperate from the requests adapter selection thing in #eng. dont conflate hostname casing with scheme casing.",
+      "timestamp": "2026-06-04T12:08:00Z"
+    },
+    {
+      "channel": "dns-infra",
+      "author": "frank",
+      "content": "correct. our lowercase happens in the resolver, not in the http client. differnt layer.",
+      "timestamp": "2026-06-04T12:15:00Z"
+    },
+    {
+      "channel": "security",
+      "author": "judy",
+      "content": "we should enforce https everywhere — redirect any http:// to https:// at the edge and set HSTS.",
+      "timestamp": "2026-06-05T10:00:00Z"
+    },
+    {
+      "channel": "security",
+      "author": "mallory",
+      "content": "thats an edge/proxy policy, not the client adapter bug. the WEB-101 issue is about UPPERCASE schemes not matching, not about forcing https.",
+      "timestamp": "2026-06-05T10:09:00Z"
+    },
+    {
+      "channel": "security",
+      "author": "judy",
+      "content": "ah right, two diffrent things. enforcing https != recognizing HTTPS:// as https. the latter is the client fix.",
+      "timestamp": "2026-06-05T10:16:00Z"
+    },
+    {
+      "channel": "platform",
+      "author": "peter",
+      "content": "post-mortem note: last quarter proxy-service lowercased the ENTIRE incoming url to 'normalize' it and broke a partner whose path was case-sensitive (/Orders vs /orders). dont repeat that.",
+      "timestamp": "2026-06-03T16:00:00Z"
+    },
+    {
+      "channel": "platform",
+      "author": "quinn",
+      "content": "yikes. lesson: only lowercase the scheme for comparison, never the path. whoever does the api-service/webapp adapter fix shoud keep that in mind.",
+      "timestamp": "2026-06-03T16:09:00Z"
+    },
+    {
+      "channel": "platform",
+      "author": "peter",
+      "content": "exactly. scope it tight. the webapp adapter fix is being speced in #eng.",
+      "timestamp": "2026-06-03T16:15:00Z"
+    },
+    {
+      "channel": "mobile",
+      "author": "nate",
+      "content": "registered the new deep-link scheme myapp:// and MyApp:// both, ios is picky about scheme case in Info.plist.",
+      "timestamp": "2026-06-04T13:00:00Z"
+    },
+    {
+      "channel": "mobile",
+      "author": "olivia",
+      "content": "lol scheme casing everywhere this week. but custom app schemes are a mobile concern, not the http adapter in webapp.",
+      "timestamp": "2026-06-04T13:08:00Z"
+    },
+    {
+      "channel": "mobile",
+      "author": "nate",
+      "content": "true, diffrent codebase. just funny timing.",
+      "timestamp": "2026-06-04T13:12:00Z"
+    },
+    {
+      "channel": "backend",
+      "author": "dave",
+      "content": "for WEB-101, simplest fix: call url.casefold() before the startswith, or just store the adapter prefixes in both cases (http:// and HTTP://). thoughts?",
+      "timestamp": "2026-06-06T09:30:00Z"
+    },
+    {
+      "channel": "backend",
+      "author": "bob",
+      "content": "no on both. casefold() is for unicode caseless matching and is overkill/inconsistent here, and duplicating the prefix map is fragile. the team standard is a plain .lower() at the comparison site. see #eng.",
+      "timestamp": "2026-06-06T09:35:00Z"
+    },
+    {
+      "channel": "backend",
+      "author": "dave",
+      "content": "ok so dont mutate the prefixes and dont use casefold. just .lower() the url where we compare. got it.",
+      "timestamp": "2026-06-06T09:39:00Z"
+    },
+    {
+      "channel": "backend",
+      "author": "bob",
+      "content": "right. exact contract is in #eng, go read the thread there.",
+      "timestamp": "2026-06-06T09:41:00Z"
+    },
+    {
+      "channel": "integrations",
+      "author": "rachel",
+      "content": "the partner gw sends endpoints as HTTP://gw.partner.example sometimes and https://gw.partner.example other times, inconsistent.",
+      "timestamp": "2026-06-05T15:00:00Z"
+    },
+    {
+      "channel": "integrations",
+      "author": "sam",
+      "content": "ya their config is a mess. the client side fix to accept mixed-case schemes is tracked as WEB-101 in #eng. proxy creds are a seperate ticket.",
+      "timestamp": "2026-06-05T15:08:00Z"
+    },
+    {
+      "channel": "integrations",
+      "author": "rachel",
+      "content": "k. ill stop poking the proxy config then and let the adapter fix land.",
+      "timestamp": "2026-06-05T15:14:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "uma",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-06-06T19:29:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "grace",
+      "content": "enforcing https at the edge now, redirect http to https plus HSTS.",
+      "timestamp": "2026-06-03T17:15:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "trent",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-06-06T14:13:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "bob",
+      "content": "is the vpn slow for anyone else today?",
+      "timestamp": "2026-06-08T17:37:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "quinn",
+      "content": "moving the 1:1 to thursday, calendar updated.",
+      "timestamp": "2026-05-25T15:43:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "bob",
+      "content": "the redirect loop was http<->https, fixed the canonical host.",
+      "timestamp": "2026-06-08T19:57:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "trent",
+      "content": "great work on the release everyone, smooth one.",
+      "timestamp": "2026-06-06T13:53:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "nate",
+      "content": "moving the 1:1 to thursday, calendar updated.",
+      "timestamp": "2026-06-08T11:04:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "erin",
+      "content": "the metrics pipeline backfilled overnight, numbers should be right now.",
+      "timestamp": "2026-06-01T11:29:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "uma",
+      "content": "great work on teh release everyone, smooth one.",
+      "timestamp": "2026-06-01T17:41:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "judy",
+      "content": "new hire starts monday, be nice 🙂",
+      "timestamp": "2026-06-07T13:19:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "bob",
+      "content": "we store adapter prefixes in both cases as a workaround, kinda fragile.",
+      "timestamp": "2026-06-02T14:26:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "victor",
+      "content": "we normalize hostnames to lowercase before dns since dns is case-insensitive.",
+      "timestamp": "2026-06-01T11:27:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "mallory",
+      "content": "lunch order going out in 10, reply if you want in.",
+      "timestamp": "2026-05-30T09:52:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "quinn",
+      "content": "should we just lowercase everything in the client? seems risky.",
+      "timestamp": "2026-05-30T09:51:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "olivia",
+      "content": "thinking of using url.casefold() for the match, thoughts?",
+      "timestamp": "2026-06-04T09:05:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "judy",
+      "content": "enforcing https at the edge now, redirect http to https plus HSTS.",
+      "timestamp": "2026-06-07T17:49:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "quinn",
+      "content": "great work on the release everyone, smooth one.",
+      "timestamp": "2026-06-05T09:59:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "uma",
+      "content": "reminder: sprint demo friday, add your items to the doc.",
+      "timestamp": "2026-05-28T11:21:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "trent",
+      "content": "thinking of using url.casefold() for the match, thoughts?",
+      "timestamp": "2026-06-03T12:35:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "mallory",
+      "content": "anyone know who owns the billing dashboard now?",
+      "timestamp": "2026-05-30T11:32:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "heidi",
+      "content": "moving the 1:1 to thursday, calendar updated.",
+      "timestamp": "2026-06-07T13:51:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "ivan",
+      "content": "the metrics pipeline backfilled overnight, numbers should be right now.",
+      "timestamp": "2026-05-29T14:25:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "frank",
+      "content": "the cdn treats Uppercase paths differently, watch out.",
+      "timestamp": "2026-05-28T11:58:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "heidi",
+      "content": "enforcing https at the edge now, redirect http to https plus HSTS.",
+      "timestamp": "2026-05-30T12:43:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "victor",
+      "content": "the staging db got reset, re-seed if you were using it.",
+      "timestamp": "2026-06-01T19:23:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "trent",
+      "content": "registered MyApp:// and myapp:// deep link schemes, ios is picky about case.",
+      "timestamp": "2026-05-28T15:39:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "mallory",
+      "content": "is the vpn slow for anyone else today?",
+      "timestamp": "2026-05-29T16:43:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "nate",
+      "content": "the design review went well, shipping the new nav.",
+      "timestamp": "2026-05-26T15:18:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "dave",
+      "content": "the host header casing tripped up the vhost matching.",
+      "timestamp": "2026-06-05T09:44:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "frank",
+      "content": "teh staging db got reset, re-seed if you were using it.",
+      "timestamp": "2026-06-01T10:57:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "trent",
+      "content": "reminder: sprint demo friday, add your items to the doc.",
+      "timestamp": "2026-06-01T08:43:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "ivan",
+      "content": "anyone seen the partner integration creds? need them for testing.",
+      "timestamp": "2026-05-30T16:50:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "mallory",
+      "content": "anyone seen the partner integration creds? need them for testing.",
+      "timestamp": "2026-05-29T08:35:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "grace",
+      "content": "the load test results are in, p50 looks healthy.",
+      "timestamp": "2026-06-07T08:17:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "sam",
+      "content": "added a toLowerCase on the url in the frontend, broke a signed param, reverted.",
+      "timestamp": "2026-05-30T09:38:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "peter",
+      "content": "moving the 1:1 to thursday, calender updated.",
+      "timestamp": "2026-06-04T08:43:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "peter",
+      "content": "we got a nice bump in signups this week 🎉",
+      "timestamp": "2026-06-05T13:22:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "nate",
+      "content": "thanks for the quick turnaround on that hotfix.",
+      "timestamp": "2026-05-29T18:18:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "uma",
+      "content": "rotating the staging api keys today, heads up.",
+      "timestamp": "2026-06-07T18:27:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "carol",
+      "content": "registered MyApp:// and myapp:// deep link schemes, ios is picky about case.",
+      "timestamp": "2026-06-06T11:33:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "bob",
+      "content": "can someone review my PR when you get a sec? not urgent.",
+      "timestamp": "2026-06-04T10:41:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "peter",
+      "content": "we store adapter prefixes in both cases as a workaround, kinda fragile.",
+      "timestamp": "2026-06-01T14:59:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "bob",
+      "content": "is the vpn slow for anyone else today?",
+      "timestamp": "2026-05-30T11:12:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "dave",
+      "content": "thanks for the quick turnaround on that hotfix.",
+      "timestamp": "2026-05-30T16:13:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "carol",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-06-05T12:52:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "trent",
+      "content": "the flaky integration test is failing again on CI, retrying.",
+      "timestamp": "2026-06-06T16:55:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "peter",
+      "content": "we normalize hostnames to lowercase before dns since dns is case-insensitive.",
+      "timestamp": "2026-06-04T10:40:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "grace",
+      "content": "we store adapter prefixes in both cases as a workaround, kinda fragile.",
+      "timestamp": "2026-05-27T14:29:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "olivia",
+      "content": "ticket triage at 3pm, bring your queues.",
+      "timestamp": "2026-06-03T13:38:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "olivia",
+      "content": "the flaky integration test is failing again on CI, retrying.",
+      "timestamp": "2026-06-05T08:21:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "victor",
+      "content": "we store adapter prefixes in both cases as a workaround, kinda fragile.",
+      "timestamp": "2026-06-04T16:17:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "frank",
+      "content": "added a toLowerCase on the url in the frontend, broke a signed param, reverted.",
+      "timestamp": "2026-06-02T13:59:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "carol",
+      "content": "thanks for the quick turnaround on taht hotfix.",
+      "timestamp": "2026-06-05T12:58:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "dave",
+      "content": "we got a nice bump in signups this week 🎉",
+      "timestamp": "2026-06-03T14:03:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "bob",
+      "content": "our integration config has mixed-case schemes, messy.",
+      "timestamp": "2026-06-05T08:35:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "victor",
+      "content": "reminder: sprint demo friday, add your items to the doc.",
+      "timestamp": "2026-06-01T17:31:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "quinn",
+      "content": "should we just lowercase everything in the client? seems risky.",
+      "timestamp": "2026-05-30T18:06:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "dave",
+      "content": "someone lowercased the entire URL including the path and it broke routing.",
+      "timestamp": "2026-05-28T12:18:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "judy",
+      "content": "can we bump the timeout on the nightly job? it keeps getting killed.",
+      "timestamp": "2026-05-26T09:47:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "sam",
+      "content": "coffee machine on 2 is broken again lol",
+      "timestamp": "2026-06-07T08:00:00Z"
+    },
+    {
+      "channel": "deploys",
+      "author": "grace",
+      "content": "standup in 5, drop your updates in the thread.",
+      "timestamp": "2026-05-29T18:53:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "trent",
+      "content": "new hire starts monday, be nice 🙂",
+      "timestamp": "2026-05-26T11:50:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "carol",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-06-07T15:32:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "nate",
+      "content": "the redirect loop was http<->https, fixed the canonical host.",
+      "timestamp": "2026-06-08T11:43:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "mallory",
+      "content": "thanks for the quick turnaround on that hotfix.",
+      "timestamp": "2026-06-04T14:45:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "quinn",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-06-06T19:35:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "frank",
+      "content": "good morning team, light day today.",
+      "timestamp": "2026-05-27T08:28:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "alice",
+      "content": "the metrics pipeline backfilled overnight, numbers should be right now.",
+      "timestamp": "2026-06-08T14:45:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "rachel",
+      "content": "our integration config has mixed-case schemes, messy.",
+      "timestamp": "2026-05-25T17:10:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "bob",
+      "content": "who is on call this weekend? want to swap a shift.",
+      "timestamp": "2026-05-26T14:45:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "sam",
+      "content": "anyone know who owns the billing dashboard now?",
+      "timestamp": "2026-06-01T13:28:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "heidi",
+      "content": "anyone seen the partner integration creds? need them for testing.",
+      "timestamp": "2026-06-01T16:26:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "rachel",
+      "content": "is the vpn slow for anyone else today?",
+      "timestamp": "2026-06-01T17:58:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "sam",
+      "content": "our integration config has mixed-case schemes, messy.",
+      "timestamp": "2026-06-04T16:39:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "quinn",
+      "content": "enforcing https at the edge now, redirect http to https plus HSTS.",
+      "timestamp": "2026-06-01T11:03:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "victor",
+      "content": "moving teh 1:1 to thursday, calender updated.",
+      "timestamp": "2026-05-25T19:51:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "carol",
+      "content": "our integration config has mixed-case schemes, messy.",
+      "timestamp": "2026-05-30T14:58:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "quinn",
+      "content": "can we bump the timeout on the nightly job? it keeps getting killed.",
+      "timestamp": "2026-06-08T09:29:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "erin",
+      "content": "scheme and host are case-insensitive per rfc, path and query are not.",
+      "timestamp": "2026-06-02T17:35:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "grace",
+      "content": "we got a nice bump in signups this week 🎉",
+      "timestamp": "2026-05-27T18:32:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "heidi",
+      "content": "the staging db got reset, re-seed if you were using it.",
+      "timestamp": "2026-05-27T09:02:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "alice",
+      "content": "teh design review went well, shipping the new nav.",
+      "timestamp": "2026-05-29T17:47:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "alice",
+      "content": "can someone review my PR when you get a sec? not urgent.",
+      "timestamp": "2026-05-29T08:43:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "nate",
+      "content": "we got a nice bump in signups this week 🎉",
+      "timestamp": "2026-05-28T19:13:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "quinn",
+      "content": "we got a nice bump in signups this week 🎉",
+      "timestamp": "2026-06-02T08:12:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "erin",
+      "content": "lunch order going out in 10, reply if you want in.",
+      "timestamp": "2026-05-29T13:57:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "quinn",
+      "content": "the staging db got reset, re-seed if you were using it.",
+      "timestamp": "2026-05-30T12:09:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "victor",
+      "content": "standup in 5, drop your updates in the thread.",
+      "timestamp": "2026-05-27T14:36:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "quinn",
+      "content": "enforcing https at the edge now, redirect http to https plus HSTS.",
+      "timestamp": "2026-06-08T13:38:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "dave",
+      "content": "deploy to staging is green, promoting to prod after lunch.",
+      "timestamp": "2026-05-25T08:00:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "erin",
+      "content": "the load test results are in, p50 looks healthy.",
+      "timestamp": "2026-06-02T12:57:00Z"
+    },
+    {
+      "channel": "incidents",
+      "author": "nate",
+      "content": "lunch order going out in 10, reply if you wnat in.",
+      "timestamp": "2026-05-28T18:38:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "dave",
+      "content": "the load test results are in, p50 looks healthy.",
+      "timestamp": "2026-06-05T13:21:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "heidi",
+      "content": "teh cdn treats Uppercase paths differently, watch out.",
+      "timestamp": "2026-06-07T10:12:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "grace",
+      "content": "we normalize hostnames to lowercase before dns since dns is case-insensitive.",
+      "timestamp": "2026-05-29T16:46:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "carol",
+      "content": "coffee machine on 2 is broken again lol",
+      "timestamp": "2026-06-08T13:41:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "olivia",
+      "content": "moving teh 1:1 to thursday, calendar updated.",
+      "timestamp": "2026-05-25T17:39:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "dave",
+      "content": "lunch order going out in 10, reply if you want in.",
+      "timestamp": "2026-06-06T17:56:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "erin",
+      "content": "someone lowercased the entire URL including the path and it broke routing.",
+      "timestamp": "2026-05-30T09:44:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "judy",
+      "content": "added a toLowerCase on the url in the frontend, broke a signed param, reverted.",
+      "timestamp": "2026-06-01T10:07:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "bob",
+      "content": "can we bump the timeout on the nightly job? it keeps getting killed.",
+      "timestamp": "2026-06-04T17:28:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "peter",
+      "content": "rotating the staging api keys today, heads up.",
+      "timestamp": "2026-06-02T18:56:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "sam",
+      "content": "anyone know who owns the billing dashboard now?",
+      "timestamp": "2026-05-25T10:11:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "victor",
+      "content": "the design review went well, shipping the new nav.",
+      "timestamp": "2026-06-04T18:29:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "carol",
+      "content": "can we bump the timeout on the nightly job? it keeps getting killed.",
+      "timestamp": "2026-06-01T15:10:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "sam",
+      "content": "the host header casing tripped up the vhost matching.",
+      "timestamp": "2026-06-02T09:29:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "nate",
+      "content": "anyone know who owns the billing dashboard now?",
+      "timestamp": "2026-05-28T15:35:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "frank",
+      "content": "thanks for the quick turnaround on that hotfix.",
+      "timestamp": "2026-05-27T11:02:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "alice",
+      "content": "should we just lowercase everything in the client? seems risky.",
+      "timestamp": "2026-05-29T12:22:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "mallory",
+      "content": "coffee machine on 2 is broken again lol",
+      "timestamp": "2026-05-26T18:59:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "mallory",
+      "content": "good morning team, light day today.",
+      "timestamp": "2026-06-02T14:14:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "grace",
+      "content": "anyone know who owns the billing dashboard now?",
+      "timestamp": "2026-06-06T19:53:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "peter",
+      "content": "we normalize hostnames to lowercase before dns since dns is case-insensitive.",
+      "timestamp": "2026-05-28T16:23:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "bob",
+      "content": "teh design review went well, shipping teh new nav.",
+      "timestamp": "2026-05-29T08:41:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "frank",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-05-28T18:23:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "uma",
+      "content": "deploy to staging is green, promoting to prod after lunch.",
+      "timestamp": "2026-06-06T19:18:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "victor",
+      "content": "the partner sends HTTP://gw sometimes and https://gw other times, inconsistent.",
+      "timestamp": "2026-05-25T19:02:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "quinn",
+      "content": "ticket triage at 3pm, bring your queues.",
+      "timestamp": "2026-06-06T19:14:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "olivia",
+      "content": "who is on call this weekend? wnat to swap a shift.",
+      "timestamp": "2026-05-26T10:08:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "erin",
+      "content": "the staging db got reset, re-seed if you were using it.",
+      "timestamp": "2026-06-03T13:42:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "victor",
+      "content": "we normalize hostnames to lowercase before dns since dns is case-insensitive.",
+      "timestamp": "2026-05-29T19:25:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "victor",
+      "content": "someone lowercased the entire URL including the path and it broke routing.",
+      "timestamp": "2026-06-04T15:54:00Z"
+    },
+    {
+      "channel": "support",
+      "author": "sam",
+      "content": "deploy to staging is green, promoting to prod after lunch.",
+      "timestamp": "2026-06-02T19:38:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "quinn",
+      "content": "the staging db got reset, re-seed if you were using it.",
+      "timestamp": "2026-05-25T18:02:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "alice",
+      "content": "someone lowercased the entire URL including teh path and it broke routing.",
+      "timestamp": "2026-05-28T10:09:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "mallory",
+      "content": "moving the 1:1 to thursday, calendar updated.",
+      "timestamp": "2026-06-06T08:57:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "judy",
+      "content": "new hire starts monday, be nice 🙂",
+      "timestamp": "2026-06-03T15:32:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "quinn",
+      "content": "the design review went well, shipping the new nav.",
+      "timestamp": "2026-05-27T09:32:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "trent",
+      "content": "new hire starts monday, be nice 🙂",
+      "timestamp": "2026-05-26T16:16:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "heidi",
+      "content": "good morning team, light day today.",
+      "timestamp": "2026-06-08T14:50:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "uma",
+      "content": "anyone know who owns teh billing dashboard now?",
+      "timestamp": "2026-06-06T19:54:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "ivan",
+      "content": "standup in 5, drop your updates in the thread.",
+      "timestamp": "2026-05-30T11:08:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "olivia",
+      "content": "can someone review my PR when you get a sec? not urgent.",
+      "timestamp": "2026-06-04T13:19:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "olivia",
+      "content": "ticket triage at 3pm, bring your queues.",
+      "timestamp": "2026-05-27T17:20:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "ivan",
+      "content": "coffee machine on 2 is broken again lol",
+      "timestamp": "2026-06-07T09:41:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "mallory",
+      "content": "moving the 1:1 to thursday, calendar updated.",
+      "timestamp": "2026-06-05T11:35:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "nate",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-05-27T09:52:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "uma",
+      "content": "can we bump the timeout on the nightly job? it keeps getting killed.",
+      "timestamp": "2026-06-07T17:13:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "peter",
+      "content": "thinking of using url.casefold() for the match, thoughts?",
+      "timestamp": "2026-05-30T09:41:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "erin",
+      "content": "can someone review my PR when you get a sec? not urgent.",
+      "timestamp": "2026-05-30T19:37:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "olivia",
+      "content": "scheme and host are case-insensitive per rfc, path and query are not.",
+      "timestamp": "2026-06-05T17:03:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "olivia",
+      "content": "anyone seen the partner integration creds? need them for testing.",
+      "timestamp": "2026-06-02T11:53:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "victor",
+      "content": "the load test results are in, p50 looks healthy.",
+      "timestamp": "2026-05-29T17:07:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "ivan",
+      "content": "the flaky integration test is failing again on CI, retrying.",
+      "timestamp": "2026-06-04T14:50:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "frank",
+      "content": "rotating the staging api keys today, heads up.",
+      "timestamp": "2026-06-05T15:18:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "heidi",
+      "content": "anyone seen the partner integration creds? need them for testing.",
+      "timestamp": "2026-06-08T16:41:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "uma",
+      "content": "scheme and host are case-insensitive per rfc, path and query are not.",
+      "timestamp": "2026-05-28T16:06:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "dave",
+      "content": "the redirect loop was http<->https, fixed the canonical host.",
+      "timestamp": "2026-05-29T12:04:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "victor",
+      "content": "anyone seen the partner integration creds? need them for testing.",
+      "timestamp": "2026-06-05T15:38:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "rachel",
+      "content": "rotating the staging api keys today, heads up.",
+      "timestamp": "2026-05-30T11:23:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "bob",
+      "content": "the partner sends HTTP://gw sometimes and https://gw other times, inconsistent.",
+      "timestamp": "2026-05-28T12:51:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "olivia",
+      "content": "the design review went well, shipping the new nav.",
+      "timestamp": "2026-05-27T12:43:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "victor",
+      "content": "anyone seen teh partner integration creds? need them for testing.",
+      "timestamp": "2026-06-04T14:38:00Z"
+    },
+    {
+      "channel": "qa",
+      "author": "judy",
+      "content": "the load test results are in, p50 looks healthy.",
+      "timestamp": "2026-05-30T17:05:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "dave",
+      "content": "our integration config has mixed-case schemes, messy.",
+      "timestamp": "2026-05-27T16:19:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "uma",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-06-08T18:38:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "carol",
+      "content": "added a toLowerCase on teh url in the frontend, broke a signed param, reverted.",
+      "timestamp": "2026-05-26T13:06:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "rachel",
+      "content": "moving the 1:1 to thursday, calendar updated.",
+      "timestamp": "2026-05-28T14:10:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "ivan",
+      "content": "registered MyApp:// and myapp:// deep link schemes, ios is picky about case.",
+      "timestamp": "2026-06-08T12:57:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "nate",
+      "content": "deploy to staging is green, promoting to prod after lunch.",
+      "timestamp": "2026-06-05T19:12:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "victor",
+      "content": "standup in 5, drop your updates in the thread.",
+      "timestamp": "2026-06-03T09:51:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "carol",
+      "content": "added a toLowerCase on the url in the frontend, broke a signed param, reverted.",
+      "timestamp": "2026-06-01T15:45:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "rachel",
+      "content": "someone lowercased the entire URL including the path and it broke routing.",
+      "timestamp": "2026-05-27T19:54:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "bob",
+      "content": "the design review went well, shipping the new nav.",
+      "timestamp": "2026-05-29T14:53:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "ivan",
+      "content": "the load test results are in, p50 looks healthy.",
+      "timestamp": "2026-06-03T08:02:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "olivia",
+      "content": "new hire starts monday, be nice 🙂",
+      "timestamp": "2026-06-08T10:48:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "victor",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-05-30T08:11:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "quinn",
+      "content": "the load test results are in, p50 looks healthy.",
+      "timestamp": "2026-06-08T15:21:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "olivia",
+      "content": "the metrics pipeline backfilled overnight, numbers should be right now.",
+      "timestamp": "2026-05-26T10:14:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "erin",
+      "content": "anyone know who owns the billing dashboard now?",
+      "timestamp": "2026-06-06T18:21:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "trent",
+      "content": "the cdn treats Uppercase paths differently, watch out.",
+      "timestamp": "2026-05-26T15:20:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "rachel",
+      "content": "lunch order going out in 10, reply if you want in.",
+      "timestamp": "2026-05-26T08:52:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "nate",
+      "content": "is the vpn slow for anyone else today?",
+      "timestamp": "2026-05-27T11:57:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "frank",
+      "content": "reminder: sprint demo friday, add your items to the doc.",
+      "timestamp": "2026-06-01T08:02:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "heidi",
+      "content": "lunch order going out in 10, reply if you want in.",
+      "timestamp": "2026-05-27T10:48:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "victor",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-05-25T16:30:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "trent",
+      "content": "ticket triage at 3pm, bring your queues.",
+      "timestamp": "2026-06-05T08:38:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "victor",
+      "content": "we normalize hostnames to lowercase before dns since dns is case-insensitive.",
+      "timestamp": "2026-05-28T19:50:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "heidi",
+      "content": "lunch order going out in 10, reply if you want in.",
+      "timestamp": "2026-05-26T18:02:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "alice",
+      "content": "the redirect loop was http<->https, fixed the canonical host.",
+      "timestamp": "2026-06-02T13:24:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "peter",
+      "content": "the redirect loop was http<->https, fixed teh canonical host.",
+      "timestamp": "2026-05-27T09:55:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "erin",
+      "content": "who is on call this weekend? want to swap a shift.",
+      "timestamp": "2026-06-08T10:07:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "nate",
+      "content": "deploy to staging is green, promoting to prod after lunch.",
+      "timestamp": "2026-05-29T12:35:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "sam",
+      "content": "rotating teh staging api keys today, heads up.",
+      "timestamp": "2026-06-03T10:41:00Z"
+    },
+    {
+      "channel": "product",
+      "author": "mallory",
+      "content": "the flaky integration test is failing again on CI, retrying.",
+      "timestamp": "2026-05-28T09:29:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "alice",
+      "content": "anyone know who owns the billing dashboard now?",
+      "timestamp": "2026-06-07T14:17:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "dave",
+      "content": "the partner sends HTTP://gw sometimes and https://gw other times, inconsistent.",
+      "timestamp": "2026-06-02T19:33:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "sam",
+      "content": "standup in 5, drop your updates in the thread.",
+      "timestamp": "2026-05-29T19:06:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "victor",
+      "content": "can someone review my PR when you get a sec? not urgent.",
+      "timestamp": "2026-06-04T16:25:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "nate",
+      "content": "ticket triage at 3pm, bring your queues.",
+      "timestamp": "2026-06-03T15:16:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "bob",
+      "content": "the host header casing tripped up the vhost matching.",
+      "timestamp": "2026-06-04T14:05:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "victor",
+      "content": "lunch order going out in 10, reply if you want in.",
+      "timestamp": "2026-05-30T09:50:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "peter",
+      "content": "new hire starts monday, be nice 🙂",
+      "timestamp": "2026-05-27T19:42:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "alice",
+      "content": "scheme and host are case-insensitive per rfc, path and query are not.",
+      "timestamp": "2026-06-07T12:12:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "alice",
+      "content": "good morning team, light day today.",
+      "timestamp": "2026-06-01T17:48:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "uma",
+      "content": "can we bump teh timeout on the nightly job? it keeps getting killed.",
+      "timestamp": "2026-05-25T09:16:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "dave",
+      "content": "we normalize hostnames to lowercase before dns since dns is case-insensitive.",
+      "timestamp": "2026-06-04T16:25:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "grace",
+      "content": "teh metrics pipeline backfilled overnight, numbers should be right now.",
+      "timestamp": "2026-05-26T12:53:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "carol",
+      "content": "can someone review my PR when you get a sec? not urgent.",
+      "timestamp": "2026-05-29T13:55:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "carol",
+      "content": "coffee machine on 2 is broken again lol",
+      "timestamp": "2026-06-08T16:34:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "dave",
+      "content": "our integration config has mixed-case schemes, messy.",
+      "timestamp": "2026-05-29T13:36:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "rachel",
+      "content": "rotating the staging api keys today, heads up.",
+      "timestamp": "2026-06-03T19:14:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "ivan",
+      "content": "thinking of using url.casefold() for the match, thoughts?",
+      "timestamp": "2026-06-08T09:35:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "nate",
+      "content": "anyone know who owns teh billing dashboard now?",
+      "timestamp": "2026-05-28T10:29:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "trent",
+      "content": "we store adapter prefixes in both cases as a workaround, kinda fragile.",
+      "timestamp": "2026-06-02T17:06:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "erin",
+      "content": "thinking of using url.casefold() for the match, thoughts?",
+      "timestamp": "2026-06-08T08:05:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "olivia",
+      "content": "coffee machine on 2 is broken again lol",
+      "timestamp": "2026-06-08T17:57:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "victor",
+      "content": "teh design review went well, shipping teh new nav.",
+      "timestamp": "2026-05-27T19:51:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "peter",
+      "content": "someone lowercased the entire URL including the path and it broke routing.",
+      "timestamp": "2026-05-30T14:44:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "trent",
+      "content": "can we bump the timeout on the nightly job? it keeps getting killed.",
+      "timestamp": "2026-06-02T12:18:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "trent",
+      "content": "lunch order going out in 10, reply if you wnat in.",
+      "timestamp": "2026-05-25T17:15:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "bob",
+      "content": "registered MyApp:// and myapp:// deep link schemes, ios is picky about case.",
+      "timestamp": "2026-05-26T08:00:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "ivan",
+      "content": "the staging db got reset, re-seed if you were using it.",
+      "timestamp": "2026-06-01T12:24:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "trent",
+      "content": "who is on call this weekend? want to swap a shift.",
+      "timestamp": "2026-05-29T10:01:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "alice",
+      "content": "who is on call this weekend? want to swap a shift.",
+      "timestamp": "2026-05-26T15:34:00Z"
+    },
+    {
+      "channel": "design",
+      "author": "trent",
+      "content": "standup in 5, drop your updates in the thread.",
+      "timestamp": "2026-06-01T18:14:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "mallory",
+      "content": "who is on call this weekend? want to swap a shift.",
+      "timestamp": "2026-05-29T15:50:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "uma",
+      "content": "the load test results are in, p50 looks healthy.",
+      "timestamp": "2026-06-03T10:57:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "judy",
+      "content": "the load test results are in, p50 looks healthy.",
+      "timestamp": "2026-05-25T13:09:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "heidi",
+      "content": "good morning team, light day today.",
+      "timestamp": "2026-06-08T17:44:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "grace",
+      "content": "coffee machine on 2 is broken again lol",
+      "timestamp": "2026-06-03T18:55:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "uma",
+      "content": "the partner sends HTTP://gw sometimes and https://gw other times, inconsistent.",
+      "timestamp": "2026-05-30T10:33:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "carol",
+      "content": "scheme and host are case-insensitive per rfc, path and query are not.",
+      "timestamp": "2026-05-26T15:14:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "sam",
+      "content": "lunch order going out in 10, reply if you want in.",
+      "timestamp": "2026-06-01T18:47:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "olivia",
+      "content": "we store adapter prefixes in both cases as a workaround, kinda fragile.",
+      "timestamp": "2026-06-01T15:09:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "victor",
+      "content": "good morning team, light day today.",
+      "timestamp": "2026-06-05T10:15:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "rachel",
+      "content": "we normalize hostnames to lowercase before dns since dns is case-insensitive.",
+      "timestamp": "2026-05-26T17:24:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "ivan",
+      "content": "standup in 5, drop your updates in the thread.",
+      "timestamp": "2026-06-07T12:50:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "heidi",
+      "content": "deploy to staging is green, promoting to prod after lunch.",
+      "timestamp": "2026-05-29T12:05:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "frank",
+      "content": "the partner sends HTTP://gw sometimes and https://gw other times, inconsistent.",
+      "timestamp": "2026-05-29T09:39:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "victor",
+      "content": "anyone know who owns the billing dashboard now?",
+      "timestamp": "2026-06-02T10:07:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "erin",
+      "content": "can we bump the timeout on the nightly job? it keeps getting killed.",
+      "timestamp": "2026-05-26T13:35:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "olivia",
+      "content": "thinking of using url.casefold() for the match, thoughts?",
+      "timestamp": "2026-06-07T11:32:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "carol",
+      "content": "can we bump the timeout on teh nightly job? it keeps getting killed.",
+      "timestamp": "2026-06-05T18:11:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "frank",
+      "content": "we store adapter prefixes in both cases as a workaround, kinda fragile.",
+      "timestamp": "2026-05-26T13:17:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "peter",
+      "content": "we normalize hostnames to lowercase before dns since dns is case-insensitive.",
+      "timestamp": "2026-05-26T13:46:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "nate",
+      "content": "who is on call this weekend? want to swap a shift.",
+      "timestamp": "2026-06-04T15:43:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "erin",
+      "content": "deploy to staging is green, promoting to prod after lunch.",
+      "timestamp": "2026-05-30T12:16:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "rachel",
+      "content": "the metrics pipeline backfilled overnight, numbers should be right now.",
+      "timestamp": "2026-06-06T16:50:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "bob",
+      "content": "the redirect loop was http<->https, fixed the canonical host.",
+      "timestamp": "2026-06-07T15:06:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "heidi",
+      "content": "query params like ?Token=Ab12 are case-sensitive, don't lowercase them.",
+      "timestamp": "2026-06-07T19:32:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "bob",
+      "content": "moving the 1:1 to thursday, calender updated.",
+      "timestamp": "2026-05-30T12:53:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "erin",
+      "content": "ticket triage at 3pm, bring your queues.",
+      "timestamp": "2026-05-30T19:46:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "alice",
+      "content": "can we bump the timeout on the nightly job? it keeps getting killed.",
+      "timestamp": "2026-05-26T19:20:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "mallory",
+      "content": "new hire starts monday, be nice 🙂",
+      "timestamp": "2026-05-28T19:11:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "heidi",
+      "content": "lunch order going out in 10, reply if you want in.",
+      "timestamp": "2026-05-28T19:51:00Z"
+    },
+    {
+      "channel": "releases",
+      "author": "nate",
+      "content": "anyone know who owns the billing dashboard now?",
+      "timestamp": "2026-05-28T12:48:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "peter",
+      "content": "added a toLowerCase on the url in the frontend, broke a signed param, reverted.",
+      "timestamp": "2026-05-29T12:23:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "alice",
+      "content": "who is on call this weekend? want to swap a shift.",
+      "timestamp": "2026-06-07T18:22:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "trent",
+      "content": "who is on call this weekend? want to swap a shift.",
+      "timestamp": "2026-06-08T12:20:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "quinn",
+      "content": "should we just lowercase everything in the client? seems risky.",
+      "timestamp": "2026-05-26T13:27:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "bob",
+      "content": "the partner sends HTTP://gw sometimes and https://gw other times, inconsistent.",
+      "timestamp": "2026-06-04T09:46:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "rachel",
+      "content": "standup in 5, drop your updates in the thread.",
+      "timestamp": "2026-06-08T14:48:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "heidi",
+      "content": "the load test results are in, p50 looks healthy.",
+      "timestamp": "2026-06-05T19:00:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "sam",
+      "content": "coffee machine on 2 is broken again lol",
+      "timestamp": "2026-06-07T09:52:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "quinn",
+      "content": "standup in 5, drop your updates in the thread.",
+      "timestamp": "2026-06-01T14:37:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "bob",
+      "content": "new hire starts monday, be nice 🙂",
+      "timestamp": "2026-06-08T11:37:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "dave",
+      "content": "standup in 5, drop your updates in teh thread.",
+      "timestamp": "2026-05-25T12:57:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "peter",
+      "content": "we store adapter prefixes in both cases as a workaround, kinda fragile.",
+      "timestamp": "2026-06-05T16:45:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "nate",
+      "content": "ticket triage at 3pm, bring your queues.",
+      "timestamp": "2026-06-02T09:27:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "ivan",
+      "content": "query params like ?Token=Ab12 are case-sensitive, don't lowercase them.",
+      "timestamp": "2026-06-04T08:16:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "heidi",
+      "content": "teh metrics pipeline backfilled overnight, numbers should be right now.",
+      "timestamp": "2026-06-07T16:43:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "sam",
+      "content": "deploy to staging is green, promoting to prod after lunch.",
+      "timestamp": "2026-06-08T08:20:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "mallory",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-06-05T11:12:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "dave",
+      "content": "enforcing https at the edge now, redirect http to https plus HSTS.",
+      "timestamp": "2026-06-07T17:13:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "ivan",
+      "content": "the load test results are in, p50 looks healthy.",
+      "timestamp": "2026-05-27T16:33:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "trent",
+      "content": "the design review went well, shipping the new nav.",
+      "timestamp": "2026-06-08T12:41:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "mallory",
+      "content": "should we just lowercase everything in teh client? seems risky.",
+      "timestamp": "2026-06-07T10:46:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "uma",
+      "content": "the cdn treats Uppercase paths differently, watch out.",
+      "timestamp": "2026-06-02T18:29:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "alice",
+      "content": "rotating the staging api keys today, heads up.",
+      "timestamp": "2026-05-25T16:54:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "carol",
+      "content": "who is on call this weekend? want to swap a shift.",
+      "timestamp": "2026-05-29T19:02:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "peter",
+      "content": "great work on the release everyone, smooth one.",
+      "timestamp": "2026-06-02T09:43:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "dave",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-05-27T08:34:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "ivan",
+      "content": "ticket triage at 3pm, bring your queues.",
+      "timestamp": "2026-06-05T14:49:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "ivan",
+      "content": "should we just lowercase everything in the client? seems risky.",
+      "timestamp": "2026-06-08T13:06:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "nate",
+      "content": "is the vpn slow for anyone else today?",
+      "timestamp": "2026-06-02T11:49:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "bob",
+      "content": "ticket triage at 3pm, bring your queues.",
+      "timestamp": "2026-06-05T14:38:00Z"
+    },
+    {
+      "channel": "database",
+      "author": "peter",
+      "content": "rotating the staging api keys today, heads up.",
+      "timestamp": "2026-06-08T09:47:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "ivan",
+      "content": "reminder: sprint demo friday, add your items to the doc.",
+      "timestamp": "2026-05-29T11:48:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "judy",
+      "content": "thanks for the quick turnaround on that hotfix.",
+      "timestamp": "2026-06-05T09:39:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "erin",
+      "content": "moving the 1:1 to thursday, calendar updated.",
+      "timestamp": "2026-06-04T19:56:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "carol",
+      "content": "the load test results are in, p50 looks healthy.",
+      "timestamp": "2026-05-28T10:25:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "grace",
+      "content": "we store adapter prefixes in both cases as a workaround, kinda fragile.",
+      "timestamp": "2026-05-30T09:50:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "ivan",
+      "content": "lunch order going out in 10, reply if you want in.",
+      "timestamp": "2026-06-07T15:10:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "uma",
+      "content": "lunch order going out in 10, reply if you want in.",
+      "timestamp": "2026-06-02T10:23:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "judy",
+      "content": "the staging db got reset, re-seed if you were using it.",
+      "timestamp": "2026-05-25T12:38:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "quinn",
+      "content": "coffee machine on 2 is broken again lol",
+      "timestamp": "2026-05-27T14:19:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "judy",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-05-28T19:02:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "rachel",
+      "content": "the redirect loop was http<->https, fixed the canonical host.",
+      "timestamp": "2026-06-04T13:42:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "nate",
+      "content": "the design review went well, shipping the new nav.",
+      "timestamp": "2026-05-26T10:38:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "nate",
+      "content": "someone lowercased the entire URL including the path and it broke routing.",
+      "timestamp": "2026-06-07T19:07:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "alice",
+      "content": "the flaky integration test is failing again on CI, retrying.",
+      "timestamp": "2026-06-06T15:13:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "victor",
+      "content": "the flaky integration test is failing again on CI, retrying.",
+      "timestamp": "2026-06-04T15:48:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "quinn",
+      "content": "anyone know who owns the billing dashboard now?",
+      "timestamp": "2026-06-02T19:24:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "peter",
+      "content": "anyone seen the partner integration creds? need them for testing.",
+      "timestamp": "2026-06-04T14:14:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "nate",
+      "content": "we got a nice bump in signups this week 🎉",
+      "timestamp": "2026-05-28T15:19:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "sam",
+      "content": "teh design review went well, shipping the new nav.",
+      "timestamp": "2026-06-05T19:41:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "dave",
+      "content": "reminder: sprint demo friday, add your items to teh doc.",
+      "timestamp": "2026-05-29T11:20:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "peter",
+      "content": "the partner sends HTTP://gw sometimes and https://gw other times, inconsistent.",
+      "timestamp": "2026-05-27T13:18:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "grace",
+      "content": "we store adapter prefixes in both cases as a workaround, kinda fragile.",
+      "timestamp": "2026-06-02T13:09:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "rachel",
+      "content": "new hire starts monday, be nice 🙂",
+      "timestamp": "2026-06-03T19:24:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "frank",
+      "content": "we got a nice bump in signups this week 🎉",
+      "timestamp": "2026-05-25T18:15:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "nate",
+      "content": "the staging db got reset, re-seed if you were using it.",
+      "timestamp": "2026-05-27T11:51:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "trent",
+      "content": "moving the 1:1 to thursday, calendar updated.",
+      "timestamp": "2026-05-30T10:35:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "trent",
+      "content": "anyone seen the partner integration creds? need them for testing.",
+      "timestamp": "2026-06-02T16:59:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "victor",
+      "content": "can someone review my PR when you get a sec? not urgent.",
+      "timestamp": "2026-06-02T09:15:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "bob",
+      "content": "reminder: sprint demo friday, add your items to the doc.",
+      "timestamp": "2026-05-29T09:43:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "olivia",
+      "content": "anyone seen the partner integration creds? need them for testing.",
+      "timestamp": "2026-05-25T15:10:00Z"
+    },
+    {
+      "channel": "perf",
+      "author": "judy",
+      "content": "the partner sends HTTP://gw sometimes and https://gw other times, inconsistent.",
+      "timestamp": "2026-06-04T16:57:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "nate",
+      "content": "ticket triage at 3pm, bring your queues.",
+      "timestamp": "2026-06-03T15:03:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "rachel",
+      "content": "we store adapter prefixes in both cases as a workaround, kinda fragile.",
+      "timestamp": "2026-06-06T16:10:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "nate",
+      "content": "anyone know who owns the billing dashboard now?",
+      "timestamp": "2026-05-26T19:21:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "carol",
+      "content": "we got a nice bump in signups this week 🎉",
+      "timestamp": "2026-05-27T14:05:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "quinn",
+      "content": "enforcing https at the edge now, redirect http to https plus HSTS.",
+      "timestamp": "2026-06-01T09:21:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "ivan",
+      "content": "moving the 1:1 to thursday, calendar updated.",
+      "timestamp": "2026-06-06T09:33:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "victor",
+      "content": "we store adapter prefixes in both cases as a workaround, kinda fragile.",
+      "timestamp": "2026-05-28T14:41:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "olivia",
+      "content": "rotating the staging api keys today, heads up.",
+      "timestamp": "2026-05-25T19:58:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "erin",
+      "content": "the proxy lowercased the whole url and broke a case-sensitive path /Orders, reverted.",
+      "timestamp": "2026-05-26T10:16:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "judy",
+      "content": "reminder: sprint demo friday, add your items to the doc.",
+      "timestamp": "2026-06-02T08:11:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "quinn",
+      "content": "teh metrics pipeline backfilled overnight, numbers should be right now.",
+      "timestamp": "2026-05-29T10:11:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "grace",
+      "content": "added a toLowerCase on the url in the frontend, broke a signed param, reverted.",
+      "timestamp": "2026-05-27T11:32:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "bob",
+      "content": "we store adapter prefixes in both cases as a workaround, kinda fragile.",
+      "timestamp": "2026-05-28T13:35:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "olivia",
+      "content": "is the vpn slow for anyone else today?",
+      "timestamp": "2026-06-07T17:02:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "ivan",
+      "content": "rotating teh staging api keys today, heads up.",
+      "timestamp": "2026-06-04T16:59:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "ivan",
+      "content": "new hire starts monday, be nice 🙂",
+      "timestamp": "2026-05-26T12:30:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "mallory",
+      "content": "we got a nice bump in signups this week 🎉",
+      "timestamp": "2026-06-04T11:46:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "victor",
+      "content": "can someone review my PR when you get a sec? not urgent.",
+      "timestamp": "2026-06-07T16:20:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "olivia",
+      "content": "the design review went well, shipping the new nav.",
+      "timestamp": "2026-05-27T13:44:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "peter",
+      "content": "the cdn treats Uppercase paths differently, watch out.",
+      "timestamp": "2026-05-30T11:54:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "heidi",
+      "content": "new hire starts monday, be nice 🙂",
+      "timestamp": "2026-06-01T13:03:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "peter",
+      "content": "the cdn treats Uppercase paths differently, watch out.",
+      "timestamp": "2026-06-08T14:45:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "judy",
+      "content": "should we just lowercase everything in the client? seems risky.",
+      "timestamp": "2026-05-30T08:30:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "frank",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-06-05T15:42:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "nate",
+      "content": "who is on call this weekend? want to swap a shift.",
+      "timestamp": "2026-06-02T14:13:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "bob",
+      "content": "the design review went well, shipping the new nav.",
+      "timestamp": "2026-06-04T10:58:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "heidi",
+      "content": "the flaky integration test is failing again on CI, retrying.",
+      "timestamp": "2026-06-02T13:45:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "mallory",
+      "content": "thanks for the quick turnaround on that hotfix.",
+      "timestamp": "2026-06-07T15:18:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "sam",
+      "content": "ticket triage at 3pm, bring your queues.",
+      "timestamp": "2026-05-30T12:07:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "bob",
+      "content": "lunch order going out in 10, reply if you want in.",
+      "timestamp": "2026-06-01T12:47:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "erin",
+      "content": "new hire starts monday, be nice 🙂",
+      "timestamp": "2026-05-30T08:23:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "dave",
+      "content": "who is on call this weekend? want to swap a shift.",
+      "timestamp": "2026-06-03T15:37:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "alice",
+      "content": "great work on teh release everyone, smooth one.",
+      "timestamp": "2026-06-05T18:43:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "heidi",
+      "content": "we got a nice bump in signups this week 🎉",
+      "timestamp": "2026-06-03T10:29:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "erin",
+      "content": "enforcing https at teh edge now, redirect http to https plus HSTS.",
+      "timestamp": "2026-05-29T15:45:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "carol",
+      "content": "moving the 1:1 to thursday, calendar updated.",
+      "timestamp": "2026-06-08T16:38:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "sam",
+      "content": "teh metrics pipeline backfilled overnight, numbers shoud be right now.",
+      "timestamp": "2026-06-05T13:39:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "rachel",
+      "content": "moving the 1:1 to thursday, calendar updated.",
+      "timestamp": "2026-05-29T11:39:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "rachel",
+      "content": "reminder: sprint demo friday, add your items to the doc.",
+      "timestamp": "2026-05-30T08:58:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "mallory",
+      "content": "ticket triage at 3pm, bring your queues.",
+      "timestamp": "2026-06-02T08:00:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "nate",
+      "content": "we store adapter prefixes in both cases as a workaround, kinda fragile.",
+      "timestamp": "2026-05-27T19:08:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "mallory",
+      "content": "can someone review my PR when you get a sec? not urgent.",
+      "timestamp": "2026-05-29T08:37:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "heidi",
+      "content": "the load test results are in, p50 looks healthy.",
+      "timestamp": "2026-05-26T13:44:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "victor",
+      "content": "can we bump the timeout on the nightly job? it keeps getting killed.",
+      "timestamp": "2026-06-07T15:37:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "bob",
+      "content": "we normalize hostnames to lowercase before dns since dns is case-insensitive.",
+      "timestamp": "2026-06-04T15:25:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "erin",
+      "content": "scheme and host are case-insensitive per rfc, path and query are not.",
+      "timestamp": "2026-06-01T09:39:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "olivia",
+      "content": "coffee machine on 2 is broken again lol",
+      "timestamp": "2026-06-07T19:57:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "erin",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-06-08T14:25:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "carol",
+      "content": "standup in 5, drop your updates in the thread.",
+      "timestamp": "2026-06-05T14:28:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "sam",
+      "content": "our integration config has mixed-case schemes, messy.",
+      "timestamp": "2026-06-08T17:03:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "nate",
+      "content": "scheme and host are case-insensitive per rfc, path and query are not.",
+      "timestamp": "2026-06-03T12:55:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "nate",
+      "content": "great work on the release everyone, smooth one.",
+      "timestamp": "2026-06-02T15:37:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "ivan",
+      "content": "thanks for the quick turnaround on that hotfix.",
+      "timestamp": "2026-06-05T12:23:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "judy",
+      "content": "who is on call this weekend? want to swap a shift.",
+      "timestamp": "2026-06-05T11:27:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "quinn",
+      "content": "is the vpn slow for anyone else today?",
+      "timestamp": "2026-05-25T10:14:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "nate",
+      "content": "can someone review my PR when you get a sec? not urgent.",
+      "timestamp": "2026-05-27T12:10:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "sam",
+      "content": "who is on call this weekend? want to swap a shift.",
+      "timestamp": "2026-06-02T14:08:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "sam",
+      "content": "query params like ?Token=Ab12 are case-sensitive, don't lowercase them.",
+      "timestamp": "2026-06-07T08:13:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "sam",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-06-02T18:54:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "nate",
+      "content": "ticket triage at 3pm, bring your queues.",
+      "timestamp": "2026-05-28T15:24:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "heidi",
+      "content": "the flaky integration test is failing again on CI, retrying.",
+      "timestamp": "2026-06-02T15:58:00Z"
+    },
+    {
+      "channel": "partners",
+      "author": "uma",
+      "content": "the load test results are in, p50 looks healthy.",
+      "timestamp": "2026-06-02T18:22:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "dave",
+      "content": "teh staging db got reset, re-seed if you were using it.",
+      "timestamp": "2026-05-29T14:35:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "victor",
+      "content": "standup in 5, drop your updates in the thread.",
+      "timestamp": "2026-05-28T13:53:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "alice",
+      "content": "scheme and host are case-insensitive per rfc, path and query are not.",
+      "timestamp": "2026-05-28T11:57:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "heidi",
+      "content": "registered MyApp:// and myapp:// deep link schemes, ios is picky about case.",
+      "timestamp": "2026-06-01T12:24:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "heidi",
+      "content": "standup in 5, drop your updates in the thread.",
+      "timestamp": "2026-06-01T16:50:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "bob",
+      "content": "new hire starts monday, be nice 🙂",
+      "timestamp": "2026-06-04T08:54:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "peter",
+      "content": "registered MyApp:// and myapp:// deep link schemes, ios is picky about case.",
+      "timestamp": "2026-05-26T15:30:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "ivan",
+      "content": "thanks for the quick turnaround on that hotfix.",
+      "timestamp": "2026-06-03T10:20:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "alice",
+      "content": "the metrics pipeline backfilled overnight, numbers should be right now.",
+      "timestamp": "2026-05-28T12:03:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "carol",
+      "content": "teh load test results are in, p50 looks healthy.",
+      "timestamp": "2026-06-06T16:39:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "frank",
+      "content": "the proxy lowercased the whole url and broke a case-sensitive path /Orders, reverted.",
+      "timestamp": "2026-05-27T14:57:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "mallory",
+      "content": "the metrics pipeline backfilled overnight, numbers should be right now.",
+      "timestamp": "2026-05-25T09:52:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "dave",
+      "content": "ticket triage at 3pm, bring your queues.",
+      "timestamp": "2026-06-02T16:08:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "peter",
+      "content": "great work on the release everyone, smooth one.",
+      "timestamp": "2026-06-04T17:31:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "sam",
+      "content": "coffee machine on 2 is broken again lol",
+      "timestamp": "2026-06-03T10:42:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "carol",
+      "content": "the staging db got reset, re-seed if you were using it.",
+      "timestamp": "2026-06-03T11:10:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "peter",
+      "content": "we store adapter prefixes in both cases as a workaround, kinda fragile.",
+      "timestamp": "2026-06-02T16:35:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "frank",
+      "content": "coffee machine on 2 is broken again lol",
+      "timestamp": "2026-06-02T15:16:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "peter",
+      "content": "deploy to staging is green, promoting to prod after lunch.",
+      "timestamp": "2026-05-27T08:52:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "ivan",
+      "content": "anyone know who owns the billing dashboard now?",
+      "timestamp": "2026-05-27T14:08:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "trent",
+      "content": "lunch order going out in 10, reply if you want in.",
+      "timestamp": "2026-05-29T11:50:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "trent",
+      "content": "coffee machine on 2 is broken again lol",
+      "timestamp": "2026-05-25T14:59:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "victor",
+      "content": "who is on call this weekend? want to swap a shift.",
+      "timestamp": "2026-06-06T17:20:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "trent",
+      "content": "thanks for the quick turnaround on taht hotfix.",
+      "timestamp": "2026-05-25T12:42:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "peter",
+      "content": "our integration config has mixed-case schemes, messy.",
+      "timestamp": "2026-06-06T10:05:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "uma",
+      "content": "anyone seen the partner integration creds? need them for testing.",
+      "timestamp": "2026-06-03T13:56:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "heidi",
+      "content": "the design review went well, shipping the new nav.",
+      "timestamp": "2026-05-27T10:08:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "heidi",
+      "content": "the staging db got reset, re-seed if you were using it.",
+      "timestamp": "2026-06-06T10:17:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "ivan",
+      "content": "can we bump the timeout on the nightly job? it keeps getting killed.",
+      "timestamp": "2026-05-29T11:59:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "frank",
+      "content": "can someone review my PR when you get a sec? not urgent.",
+      "timestamp": "2026-05-29T17:46:00Z"
+    },
+    {
+      "channel": "marketing",
+      "author": "uma",
+      "content": "standup in 5, drop your updates in the thread.",
+      "timestamp": "2026-05-28T12:03:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "olivia",
+      "content": "teh load test results are in, p50 looks healthy.",
+      "timestamp": "2026-06-05T14:53:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "quinn",
+      "content": "we got a nice bump in signups this week 🎉",
+      "timestamp": "2026-05-27T08:32:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "victor",
+      "content": "registered MyApp:// and myapp:// deep link schemes, ios is picky about case.",
+      "timestamp": "2026-05-25T14:08:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "dave",
+      "content": "our integration config has mixed-case schemes, messy.",
+      "timestamp": "2026-06-06T09:36:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "bob",
+      "content": "we got a nice bump in signups this week 🎉",
+      "timestamp": "2026-05-28T14:10:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "uma",
+      "content": "anyone know who owns the billing dashboard now?",
+      "timestamp": "2026-05-30T10:51:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "quinn",
+      "content": "someone lowercased the entire URL including the path and it broke routing.",
+      "timestamp": "2026-06-07T14:42:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "bob",
+      "content": "the cdn treats Uppercase paths differently, watch out.",
+      "timestamp": "2026-06-05T08:25:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "sam",
+      "content": "new hire starts monday, be nice 🙂",
+      "timestamp": "2026-05-27T08:48:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "peter",
+      "content": "teh cdn treats Uppercase paths differently, watch out.",
+      "timestamp": "2026-05-28T09:45:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "nate",
+      "content": "new hire starts monday, be nice 🙂",
+      "timestamp": "2026-06-07T16:31:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "uma",
+      "content": "anyone know who owns the billing dashboard now?",
+      "timestamp": "2026-05-27T09:04:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "mallory",
+      "content": "docs site is down, looking into it.",
+      "timestamp": "2026-05-28T17:59:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "peter",
+      "content": "can someone review my PR when you get a sec? not urgent.",
+      "timestamp": "2026-05-30T15:12:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "grace",
+      "content": "we store adapter prefixes in both cases as a workaround, kinda fragile.",
+      "timestamp": "2026-05-30T17:44:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "bob",
+      "content": "the staging db got reset, re-seed if you were using it.",
+      "timestamp": "2026-06-01T08:25:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "grace",
+      "content": "the flaky integration test is failing again on CI, retrying.",
+      "timestamp": "2026-05-28T14:50:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "dave",
+      "content": "teh redirect loop was http<->https, fixed the canonical host.",
+      "timestamp": "2026-05-30T17:24:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "uma",
+      "content": "moving the 1:1 to thursday, calendar updated.",
+      "timestamp": "2026-05-26T18:16:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "mallory",
+      "content": "the flaky integration test is failing again on CI, retrying.",
+      "timestamp": "2026-05-30T08:25:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "frank",
+      "content": "moving the 1:1 to thursday, calendar updated.",
+      "timestamp": "2026-05-25T09:01:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "peter",
+      "content": "great work on the release everyone, smooth one.",
+      "timestamp": "2026-06-07T13:53:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "ivan",
+      "content": "anyone seen the partner integration creds? need them for testing.",
+      "timestamp": "2026-06-07T17:26:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "heidi",
+      "content": "standup in 5, drop your updates in the thread.",
+      "timestamp": "2026-06-08T19:39:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "uma",
+      "content": "coffee machine on 2 is broken again lol",
+      "timestamp": "2026-06-03T11:01:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "trent",
+      "content": "the partner sends HTTP://gw sometimes and https://gw other times, inconsistent.",
+      "timestamp": "2026-06-05T15:45:00Z"
+    },
+    {
+      "channel": "sales-eng",
+      "author": "judy",
+      "content": "anyone seen the partner integration creds? need them for testing.",
+      "timestamp": "2026-06-08T14:31:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "alice",
+      "content": "Partner gateway advertises uppercase schemes like HTTP://gw.partner.example and our client can't match them. Quick fix: just url.casefold() the whole URL up front in get_adapter — casefold covers all the unicode edge cases too.",
+      "timestamp": "2026-05-16T09:00:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "bob",
+      "content": "casefold() is stricter than lower() for unicode, makes sense. Let's casefold the url before the startswith checks.",
+      "timestamp": "2026-05-16T09:05:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "alice",
+      "content": "Good. Ship the casefold approach.",
+      "timestamp": "2026-05-16T09:08:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "carol",
+      "content": "fine as a first cut.",
+      "timestamp": "2026-05-16T09:12:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "alice",
+      "content": "We're seeing reports that requests to the legacy partner gateway fail. Their endpoints advertise uppercase schemes like HTTP://gw.partner.example and HTTPS://gw.partner.example. Our client throws 'No connection adapters were found'. Tracking as WEB-101.",
+      "timestamp": "2026-06-06T11:00:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "bob",
+      "content": "Confirmed. RFC 2396 §3.1 says scheme names are case-insensitive, so HTTP:// and http:// are the same scheme. Our code compares the raw URL against lowercase prefixes, so uppercase schemes never match.",
+      "timestamp": "2026-06-06T11:05:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "carol",
+      "content": "Heads up before anyone reuses the May thread: the casefold plan got reverted. Style guide mandates a plain `.lower()` for URL scheme comparisons, NOT casefold(), and we do NOT lowercase the whole URL — that broke case-sensitive paths last time.",
+      "timestamp": "2026-06-06T11:06:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "dave",
+      "content": "quick idea before we dig in: could we just url.casefold() the whole thing, or lowercase the entire url up front?",
+      "timestamp": "2026-06-06T11:07:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "carol",
+      "content": "no — re-read what I just said. lowercasing the whole url breaks case-sensitive paths, and casefold is off the table. scope it to the scheme comparison only.",
+      "timestamp": "2026-06-06T11:08:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "alice",
+      "content": "Approach is agreed. The exact call sites and the `.lower()` pattern are written up in #web-platform — follow it exactly; a partial fix that misses one site will fail review.",
+      "timestamp": "2026-06-06T11:13:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "alice",
+      "content": "Ship it as a PR against main — no direct pushes. The existing tests in tests/test_basic.py must keep passing.",
+      "timestamp": "2026-06-06T11:17:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "carol",
+      "content": "I'll review when the PR is up. Make sure HTTPS:// and mixed-case like HtTpS:// both resolve to the https adapter.",
+      "timestamp": "2026-06-06T11:20:00Z"
+    },
+    {
+      "channel": "eng",
+      "author": "bob",
+      "content": "Will do. Branch + PR incoming.",
+      "timestamp": "2026-06-06T11:22:00Z"
+    },
+    {
+      "channel": "web-platform",
+      "author": "bob",
+      "content": "Lifting the implementation spec for WEB-101 out of #eng so it doesn't drown in the chatter. Two call sites, and BOTH must change or the partner flow still breaks:",
+      "timestamp": "2026-06-06T11:30:00Z"
+    },
+    {
+      "channel": "web-platform",
+      "author": "bob",
+      "content": "(1) `Session.get_adapter` in requests/sessions.py: change `url.startswith(prefix)` → `url.lower().startswith(prefix)`.",
+      "timestamp": "2026-06-06T11:31:00Z"
+    },
+    {
+      "channel": "web-platform",
+      "author": "bob",
+      "content": "(2) `HTTPAdapter.cert_verify` in requests/adapters.py: change `url.startswith('https')` → `url.lower().startswith('https')`.",
+      "timestamp": "2026-06-06T11:32:00Z"
+    },
+    {
+      "channel": "web-platform",
+      "author": "carol",
+      "content": "Normalize at the comparison site only. Do NOT mutate the stored adapter prefixes or re-key self.adapters — the keys stay lowercase ('https://', 'http://'). And plain `.lower()`, not casefold().",
+      "timestamp": "2026-06-06T11:35:00Z"
+    },
+    {
+      "channel": "web-platform",
+      "author": "alice",
+      "content": "Existing lowercase behavior must stay identical, unknown schemes still raise ValueError, and both HTTPS:// and HtTpS:// resolve to the https adapter.",
+      "timestamp": "2026-06-06T11:37:00Z"
+    },
+    {
+      "channel": "platform",
+      "author": "peter",
+      "content": "for the edge-proxy rewrite we dropped the old `url.lower().startswith(...)` scheme checks entirely — its a compiled regex in proxy/scheme.py now. dont copy that startswith pattern into proxy code.",
+      "timestamp": "2026-06-05T16:40:00Z"
+    },
+    {
+      "channel": "platform",
+      "author": "quinn",
+      "content": "thats edge-proxy specific tho. the webapp adapter is a different codebase, dont mix the two up.",
+      "timestamp": "2026-06-05T16:43:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "sam",
+      "content": "yesterday: finished the certifi bump review. today: on my open ticket, no blockers.",
+      "timestamp": "2026-06-08T09:16:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "sam",
+      "content": "ramen at 12:30? who's in 🍜",
+      "timestamp": "2026-06-08T11:51:00Z"
+    },
+    {
+      "channel": "random",
+      "author": "sam",
+      "content": "TIL my keyboard has a backlight. four years in.",
+      "timestamp": "2026-06-08T15:05:00Z"
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "messages": [
+    {
+      "channel": "bots-production",
+      "author": "prod-bot",
+      "content": "[production] WARNING: No Homepage analytics data has been recorded in the last 72 hours 2022-05-07 10:04:41 UTC",
+      "timestamp": "2026-06-04T08:02:00+00:00"
+    },
+    {
+      "channel": "bots-production",
+      "author": "prod-bot",
+      "content": "[production] ERROR: Merging Failed for Merger Job REDACTED-JOB-ID 10:47:31 UTC",
+      "timestamp": "2026-06-04T08:04:00+00:00"
+    },
+    {
+      "channel": "banking-bots-preprod",
+      "author": "archive-bot",
+      "content": "archived a stale preprod test channel after migration validation finished",
+      "timestamp": "2026-06-04T08:07:00+00:00"
+    },
+    {
+      "channel": "ops-random",
+      "author": "carol",
+      "content": "does anyone remember who owns the dashboard label cleanup? unrelated to the incident",
+      "timestamp": "2026-06-04T08:11:00+00:00"
+    },
+    {
+      "channel": "payments-incidents",
+      "author": "maya",
+      "content": "Payment retry policy draft from load test: attempts=4, base_delay_ms=100, max_delay_ms=8000, jitter_ratio=0.10, retry 429/500/502/503/504 only. HOLD until Leon verifies gateway 425s.",
+      "timestamp": "2026-06-07T12:14:00+00:00"
+    },
+    {
+      "channel": "payments-incidents",
+      "author": "leon",
+      "content": "Correction for payment-retry-policy after bank gateway replay: final retryable statuses are 409 lock conflicts, idempotent 425s, 429, 500, 502, 503, and 504. Final attempts=5, base_delay_ms=250, max_delay_ms=4000, jitter_ratio=0.20. Because the fifth delay reaches the cap, retry_plan must expose capped=true for retryable statuses so on-call can confirm the cap in dashboards. Do not use the earlier 100ms/8s draft.",
+      "timestamp": "2026-06-07T12:26:00+00:00"
+    },
+    {
+      "channel": "payments-incidents",
+      "author": "maya",
+      "content": "Scribe TODO for OPS-501: before handoff, run the local replay tool and write /app/artifacts/payment_retry_replay.json. The Slack update should summarize replayed events, scheduled retries, capped retries, unsafe retries, and terminal failures from that artifact. Include the actual local GitHub PR URL in the Slack handoff so the on-call trail lines up with Linear.",
+      "timestamp": "2026-06-07T12:29:00+00:00"
+    },
+    {
+      "channel": "payments-incidents",
+      "author": "owen",
+      "content": "Please update OPS-501 after code lands and post a short note here with payment retry policy ready, the attempts/cap, whether the plan is capped, and the replay artifact summary so on-call can close the loop.",
+      "timestamp": "2026-06-07T12:31:00+00:00"
+    },
+    {
+      "channel": "incident-updates",
+      "author": "maya",
+      "content": "Reminder: #incident-updates is where completion summaries go once the payment retry fix is ready.",
+      "timestamp": "2026-06-07T12:35:00+00:00"
+    }
+  ]
+}

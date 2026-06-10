@@ -1,0 +1,53 @@
+{
+  "task": "payment-retry-policy",
+  "binary_reward_policy": {
+    "reward_1_requires_all_mandatory_criteria": true,
+    "mandatory_threshold": 0.9,
+    "pass_threshold": 0.85,
+    "notes": "mandatory_threshold is the per-criterion score every MANDATORY criterion must reach; any mandatory criterion below it floors the reward to 0 in BOTH reward modes. pass_threshold applies only when REWARD_MODE=binary, as the overall weighted-score cutoff for reward 1; it is unused in the default continuous mode."
+  },
+  "criteria": [
+    {
+      "id": "code_behavior",
+      "label": "Correct incident-specific code behavior",
+      "mandatory": true,
+      "weight": 0.3,
+      "passing_definition": "Full marks only if the final retry contract from the Slack thread is implemented everywhere it lives in the repo, not just in one module: retryable statuses are 409 lock conflicts only, idempotent 425s only, plus 429/500/502/503/504; attempts=5, base 250ms doubling to a 4000ms cap, jitter 0.20; retry_plan exposes capped=true when the cap is reached; Retry-After floors the delay but never exceeds the cap; and any other module that schedules retries (e.g. webhook scheduling) agrees with the policy module; leaving a stale duplicated policy anywhere scores at most 0.5. The deterministic hidden tests and source evidence should support this. The superseded 100ms/8s/4-attempt draft must not be used. The stale in-repo docs/payment_retry_runbook.md states the superseded draft (4 attempts/100ms/8s, no 409/425, ignore Retry-After) and must not be trusted; adopting its values fails this criterion."
+    },
+    {
+      "id": "artifact_evidence",
+      "label": "Replay/audit artifact evidence",
+      "mandatory": true,
+      "weight": 0.15,
+      "passing_definition": "Full marks only if /app/artifacts/payment_retry_replay.json exists with replay evidence consistent with the implemented policy: scheduled_retries, capped_retries, unsafe_retries=0, terminal_failures, and per-event decisions including the Retry-After-capped case. Wrong counts or missing decisions cap at 0.5."
+    },
+    {
+      "id": "github_pr",
+      "label": "GitHub PR mechanics",
+      "mandatory": true,
+      "weight": 0.15,
+      "passing_definition": "Full marks only if ALL hold: a merged PR against acme/payment-retry-policy identified by OPS-501 in its title, body, or branch name (the convention is stated on the ticket); successful CI on the PR head branch/SHA before merge; the diff touches the intended production source and tests only; and the PR does not include solution, Slack seed, TicketVector seed, GitHub seed, verifier, or other forbidden task-data edits. Any missing element caps this criterion at 0.5; an unmerged or CI-failing PR scores 0."
+    },
+    {
+      "id": "pr_quality",
+      "label": "PR communication quality",
+      "mandatory": false,
+      "weight": 0.1,
+      "passing_definition": "Full marks only if the PR title and body would let a reviewer act without reading Slack: the body states the recovered final policy decision (the actual values/semantics, not just 'fix'), why the change is correct (citing the incident context or replay/audit evidence), and what was validated. A generic title/body that merely names OPS-501 scores at most 0.4; restating the diff without the decision rationale scores at most 0.6."
+    },
+    {
+      "id": "ticket_hygiene",
+      "label": "Tracker workflow hygiene",
+      "mandatory": false,
+      "weight": 0.15,
+      "passing_definition": "Full marks only if ALL hold on OPS-501: the issue was started/assigned and ends In Review (not Done, not Todo); an investigation or completion comment articulates the recovered final policy and cites where it came from (the Slack thread), with artifact-backed numbers; commit and merged-PR evidence is recorded on the ticket (a formal link entry or a comment containing the merged PR URL both count); and every distractor issue remains untouched (state and comments). Missing the policy articulation caps at 0.6; a bare 'done, see PR' comment caps at 0.4; any distractor touched scores 0."
+    },
+    {
+      "id": "slack_handoff",
+      "label": "Slack completion handoff",
+      "mandatory": false,
+      "weight": 0.15,
+      "passing_definition": "Full marks only if a message in #incident-updates contains ALL of: the merged PR URL, a reference to the payment retry replay artifact (path or unambiguous description), the headline artifact numbers, and a one-line statement of the final policy/result so on-call can verify without opening anything. Natural wording is fine; missing the numbers caps at 0.6; missing the PR URL caps at 0.4; no qualifying message in #incident-updates scores 0."
+    }
+  ]
+}

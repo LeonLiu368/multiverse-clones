@@ -1,0 +1,17 @@
+{
+  "task_id": "variant-containers-podman-compose-1296-observability",
+  "source_repo": "containers/podman-compose",
+  "source_pr_url": "https://github.com/containers/podman-compose/pull/1296",
+  "base_sha": "1a86aeba3ea94c6a723c7deae2fa146b9c5f8b7d",
+  "merge_sha": "9aa3a53867a442a41566142f5a1d2731c108611c",
+  "hidden_test_command": "python -m unittest tests.unit.test_container_to_build_args.TestContainerToBuildArgs.test_containerfile_in_context tests.unit.test_normalize_service.TestNormalizeService.test_normalize_service_with_sub_dir_6 tests.unit.test_normalize_service.TestNormalizeService.test_normalize_service_with_sub_dir_7",
+  "changed_files": [
+    "podman_compose.py",
+    "tests/unit/test_container_to_build_args.py",
+    "tests/unit/test_normalize_service.py"
+  ],
+  "ticketvector": {
+    "primary_issue": "TV-1296",
+    "workflow": "linear/jira ticket state must be In Review with completion evidence"
+  }
+}

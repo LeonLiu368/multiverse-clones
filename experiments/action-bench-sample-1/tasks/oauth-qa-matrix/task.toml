@@ -1,0 +1,46 @@
+schema_version = "1.3"
+source = "real-company Slack export excerpt from general/2022-05-09 plus task-specific incident context"
+[task]
+name = "actionbench/oauth-qa-matrix"
+description = "Plaid OAuth linking QA matrix misses update-mode and app-to-app paths"
+
+[metadata]
+authors = []
+difficulty = "hard"
+difficulty_explanation = "This is the job of a product engineer who owns QA coverage and is reconciling documentation drift after a rollout. The authoritative context is two genuine redacted Slack messages from a real company export, the 05-09 rollout note and the 05-11 on-device confirmation, embedded among real social-noise messages; the ticket and repo context are task-specific. The trust order is inverted from the usual: docs/qa_flow_checklist.md is authoritative for flow ids but its statuses and flags are planted misinformation, and its own header says to verify against the channel. The truth is split across the two messages two days apart; the rollout note enumerates the ten flows in prose (for example 're-link in update mode for counterparties' maps to counterparty_relink_update) and the follow-up confirms app-to-app worked on device. The planted traps are specific: liability_bill_link is flagged update-mode in the checklist but is not, the device flag sits on the superseded oauth_app_to_app_chase row instead of oauth_app_to_app_chase_device, and three deprecated ids invite inclusion. A human reads the channel once and absorbs it. Agents that keyword-search instead of pulling the channel history reliably miss the warning message, ship the checklist's wrong flags, and then propagate them confidently into the PR and the handoffs."
+solution_explanation = "A passing solution takes the ten canonical flow ids from docs/qa_flow_checklist.md and every status and flag from the rollout conversation; the checklist header itself warns that its flags predate the rollout. The reconstruction is exact. Update-mode is counterparty_relink_update, liability_relink_update, and microdeposit_verify_update; liability_bill_link is bill creation, not update-mode, despite the checklist. oauth_app_to_app_chase_device is the only device-required flow, and the 05-11 follow-up confirms it shipped without changing that property. The deprecated ids oauth_app_to_app_chase, oauth_app_to_app_chase_device_validation, and linked_accounts_bulk_import must stay out of the required set. Regenerating /app/artifacts/oauth_linking_qa.json with the repo tooling then yields total_flows=10, update_mode_flows=3, and device_required_flows containing only the chase device flow, and those numbers go into the PR, the ticket, and the Slack handoff."
+verification_explanation = "The reward comes from an LLM judge working over collected evidence, with deterministic checks as anchors. test.sh first runs every check in tests/deterministic/: hidden behavior tests that import and execute the agent's code against holdout fixtures, plus artifact, GitHub, ticket-state, and Slack checks. It then snapshots PR diffs, the artifact JSON, full Slack channel histories, and ticket comment bodies into evidence.json. agent_judge.py has cursor/composer score the six weighted criteria in rubric.json: code_behavior 0.30, artifact_evidence 0.15, and github_pr 0.15 are mandatory; pr_quality 0.10, ticket_hygiene 0.15, and slack_handoff 0.15 are not. The reward is the code-derived weighted score, so partial credit is continuous. Any mandatory criterion scoring under 0.9, or any anti-cheat violation backed by contradicting evidence, zeroes the reward in both modes; the 0.85 pass threshold only matters in binary mode. The judge exists because the deterministic checks fully decide code and artifact correctness but cannot grade the communication surface: Slack handoffs, ticket comments explaining the recovered policy, and PR rationale have no single correct string, and exact-match scoring of them fails correct work. Those checks therefore feed the judge as evidence instead of setting the reward. If credentials are missing, the judge output is malformed, or the judge model is wrong, the verifier fails closed to reward 0. It runs on the system-wide Python 3 interpreter with the standard library only. The judge CLI is a verifier-only dependency installed by test.sh at verification time from a version-pinned, sha256-verified tarball; the agent image contains no verifier tooling."
+category = "incident-response"
+tags = ["slack", "linear", "jira", "ticketvector", "incident", "backend", "tool-use", "github", "real-company-data"]
+expert_time_estimate_hours = 2.5
+relevant_experience = "On-call debugging, Slack incident review, issue tracker workflow, Python service fixes"
+custom_docker_compose = true
+
+[agent]
+timeout_sec = 1200
+user = "agent"
+
+[verifier]
+type = "shell"
+timeout_sec = 900
+user = "root"
+
+[verifier.env]
+CURSOR_API_KEY = "${CURSOR_API_KEY}"
+JUDGE_MODEL = "cursor/composer"
+REWARD_MODE = "continuous"
+JUDGE_TIMEOUT_SEC = "240"
+
+[environment]
+allow_internet = true
+build_timeout_sec = 900
+cpus = 2
+memory_mb = 4096
+storage_mb = 20480
+gpus = 0
+workdir = "/app/src"
+
+[[environment.mcp_servers]]
+name = "slack"
+transport = "stdio"
+command = "slack-mcp"

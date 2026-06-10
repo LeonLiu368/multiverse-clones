@@ -1,0 +1,64 @@
+{
+  "messages": [
+    {
+      "author": "prod-bot",
+      "channel": "bots-production",
+      "content": "[production] deploy succeeded for unrelated profile copy update",
+      "timestamp": "2026-06-04T08:02:00+00:00"
+    },
+    {
+      "author": "real-export",
+      "channel": "general",
+      "content": "Real Slack excerpt from #general 2022-05-09: Morning all - I am going to be out today. I've been pretty sick since Saturday evening, not sure what it is. Starting to feel like the worst might be over but will need today to recover",
+      "timestamp": "2026-06-07T13:00:00+00:00"
+    },
+    {
+      "author": "real-export",
+      "channel": "general",
+      "content": "Real Slack excerpt from #general 2022-05-09: good morning from my brand new office! ... Love that chair and rug!",
+      "timestamp": "2026-06-07T13:01:00+00:00"
+    },
+    {
+      "author": "real-export",
+      "channel": "general",
+      "content": "Real Slack excerpt from #general 2022-05-09: little bit of a late start for me ... [partner] came back from her company all hands event and got sick... tested negative for covid thankfully",
+      "timestamp": "2026-06-07T13:01:30+00:00"
+    },
+    {
+      "author": "real-export",
+      "channel": "general",
+      "content": "Real Slack excerpt from #general 2022-05-09: gonna go eat, then continue to headbang my way through Plaid work",
+      "timestamp": "2026-06-07T13:02:00+00:00"
+    },
+    {
+      "author": "real-export",
+      "channel": "oauth-rollout",
+      "content": "Real Slack excerpt from #general 2022-05-09: well, i have some great news, and some bleh news. The bleh news is i have a low key headache from staring at all this plaid implementation code. The great news is this new plaid implementation code is working _great_. I’ve got implemented: FundAccount flow add account for default onetime flows, control flows and recurring flow in the test; From LinkedAccounts you can link new accounts; You can link Accounts for liabilities to create bills; You can re-link accounts from the appropriate spots in update mode for counterparties; You can re-link accounts from the appropriate spots for liabilities in update mode; You can verify your microdeposit amounts from the appropriate spots in update mode; OAuth normal flows are functioning correctly; OAuth App-to-App (the chase case) looks like it might work, but i need to get it all on device to actually test it; tomorrow make sure you accounted for everything and write all these flows down and how to get to them so it can be QA’d hard.",
+      "timestamp": "2026-06-07T14:05:00+00:00"
+    },
+    {
+      "author": "real-export",
+      "channel": "oauth-rollout",
+      "content": "Real Slack excerpt from #general 2022-05-11: :success: So the new plaid work is ready to roll on iOS and android. It's tested extremely clean, and even is working in production with app-to-app authorization! Also [PERSON_NAME_0041] & [PERSON_NAME_0222] will be delighted in that I could track down the source of the Android webview issue, and thats now wiped from our issues list so we should have no issues on android with that in particular. Will be a nice clean release in the morning and I'm thrilled [PERSON_NAME_0944] can finally link her Chase accounts without fighting too much (prolly will have to a little cuz Chase and Plaid).",
+      "timestamp": "2026-06-07T14:10:00+00:00"
+    },
+    {
+      "author": "maya",
+      "channel": "oauth-rollout",
+      "content": "For OPS-503, the ticket is about the Plaid/OAuth QA checklist drifting from the real rollout note above. The canonical flow ids live in the repo's docs/qa_flow_checklist.md and are stable, but do not trust that file's statuses or flags -- they predate the rollout. Reconstruct the true coverage, update-mode set, and device requirement from the rollout discussion and prove the repo covers it.",
+      "timestamp": "2026-06-07T14:16:00+00:00"
+    },
+    {
+      "author": "leon",
+      "channel": "oauth-rollout",
+      "content": "Scribe TODO for OPS-503: after the code change, run the repo-local validation that demonstrates coverage, then use that evidence in #incident-updates. Include the merged local GitHub PR URL so QA can trace the review.",
+      "timestamp": "2026-06-07T14:20:00+00:00"
+    },
+    {
+      "author": "ops",
+      "channel": "incident-updates",
+      "content": "Completion notes go here once incident work is ready.",
+      "timestamp": "2026-06-07T14:25:00+00:00"
+    }
+  ]
+}

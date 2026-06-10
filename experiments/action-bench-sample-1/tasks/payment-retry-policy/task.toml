@@ -1,0 +1,46 @@
+schema_version = "1.3"
+source = "task-specific synthetic incident context"
+[task]
+name = "actionbench/payment-retry-policy"
+description = "Incident workflow task requiring Linear issue discovery, Slack context recovery, GitHub PR workflow, code fix, and completion communication."
+
+[metadata]
+authors = []
+difficulty = "hard"
+difficulty_explanation = "This is the job of an on-call payments engineer closing out a production incident. The Slack and ticket threads are synthetic but modeled on real on-call traffic. Four things make it hard. The incident channel holds three versions of the retry contract: an early draft, the final correction that supersedes it, and a stale runbook in the repo (docs/payment_retry_runbook.md) that restates the draft with confidence; only the correction is right. The contract is conditional rather than numeric: 409 is retryable only for lock conflicts and 425 only when idempotent, so copying values without the guards creates double-charge risk that still passes the visible checks. The policy is duplicated in payments/webhooks.py, so fixing retry_policy.py alone fails the hidden consistency tests. And closing out requires a merged pull request with green CI plus artifact-backed ticket and Slack handoffs. A human leans on team memory of the decision; an agent has to reconstruct it from the channel, reject the authoritative-looking runbook, and carry the semantics, not just the constants, into both modules. The characteristic failure is syncing the scheduler's numbers while dropping the idempotency guard."
+solution_explanation = "A passing solution gets four things right. Trust order: Leon's correction in the channel supersedes both the earlier draft and docs/payment_retry_runbook.md, which restates the draft; the thread explicitly retires the 100ms/8s numbers. Conditional semantics: retryable means 429, 500, 502, 503, and 504, plus 409 only on lock_conflict and 425 only when idempotent; Retry-After floors a delay but never exceeds the 4000ms cap, and capped=true is exposed because the fifth delay, 250ms doubled four times, reaches the cap exactly. Propagation: payments/webhooks.py schedules retries from its own inlined copy of the draft, so the reference solution makes it delegate to retry_plan; re-implementing the guards in place passes equally. Derived evidence: the replay artifact's counts for scheduled, capped, unsafe, and terminal events come from actually running the repo tooling and are quoted in the PR body, the ticket comment, and the Slack handoff so reviewers can verify without re-running anything."
+verification_explanation = "The reward comes from an LLM judge working over collected evidence, with deterministic checks as anchors. test.sh first runs every check in tests/deterministic/: hidden behavior tests that import and execute the agent's code against holdout fixtures, plus artifact, GitHub, ticket-state, and Slack checks. It then snapshots PR diffs, the artifact JSON, full Slack channel histories, and ticket comment bodies into evidence.json. agent_judge.py has cursor/composer score the six weighted criteria in rubric.json: code_behavior 0.30, artifact_evidence 0.15, and github_pr 0.15 are mandatory; pr_quality 0.10, ticket_hygiene 0.15, and slack_handoff 0.15 are not. The reward is the code-derived weighted score, so partial credit is continuous. Any mandatory criterion scoring under 0.9, or any anti-cheat violation backed by contradicting evidence, zeroes the reward in both modes; the 0.85 pass threshold only matters in binary mode. The judge exists because the deterministic checks fully decide code and artifact correctness but cannot grade the communication surface: Slack handoffs, ticket comments explaining the recovered policy, and PR rationale have no single correct string, and exact-match scoring of them fails correct work. Those checks therefore feed the judge as evidence instead of setting the reward. If credentials are missing, the judge output is malformed, or the judge model is wrong, the verifier fails closed to reward 0. It runs on the system-wide Python 3 interpreter with the standard library only. The judge CLI is a verifier-only dependency installed by test.sh at verification time from a version-pinned, sha256-verified tarball; the agent image contains no verifier tooling."
+category = "incident-response"
+tags = ["slack", "linear", "jira", "ticketvector", "incident", "backend", "tool-use", "github"]
+expert_time_estimate_hours = 2.0
+relevant_experience = "On-call debugging, Slack incident review, issue tracker workflow, Python service fixes"
+custom_docker_compose = true
+
+[agent]
+timeout_sec = 1200
+user = "agent"
+
+[verifier]
+type = "shell"
+timeout_sec = 900
+user = "root"
+
+[verifier.env]
+CURSOR_API_KEY = "${CURSOR_API_KEY}"
+JUDGE_MODEL = "cursor/composer"
+REWARD_MODE = "continuous"
+JUDGE_TIMEOUT_SEC = "240"
+
+[environment]
+allow_internet = true
+build_timeout_sec = 900
+cpus = 2
+memory_mb = 4096
+storage_mb = 20480
+gpus = 0
+workdir = "/app/src"
+
+[[environment.mcp_servers]]
+name = "slack"
+transport = "stdio"
+command = "slack-mcp"

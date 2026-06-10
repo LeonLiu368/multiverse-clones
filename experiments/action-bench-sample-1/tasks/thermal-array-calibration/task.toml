@@ -1,0 +1,40 @@
+schema_version = "1.3"
+
+artifacts = [
+  "/app/calibration.json",
+]
+
+[metadata]
+category = "debugging"
+tags = ["resourcefulness", "experiment-design", "calibration", "deterministic"]
+expert_time_estimate_hours = 0.35
+difficulty_explanation = """
+This is a bench-calibration task. The domain skill is planning a small cross-temperature measurement pass, correcting for readout-bridge baseline drift, and fitting probe-specific scale and offset errors against a certified dry-well reference.
+
+Difficulty comes from sparse measurements: the agent must discover the current inventory, stale maintenance context, trim criteria, bridge baseline, and submission schema through `arrayctl`, then distinguish true faults from near-threshold healthy probes without exhausting the bench.
+"""
+solution_explanation = """
+Use `arrayctl --help`, `arrayctl manual`, `arrayctl history`, `arrayctl inventory`, `arrayctl criteria`, and `arrayctl schema` to discover the instrument surface, maintenance context, current slot map, trim thresholds, and calibration record shape. Read both the certified dry-well reference and bridge baseline for the setpoints being used, subtract the baseline before fitting probe-specific trims, measure all probes at ambient, then spend the remaining measurements on mid/hot follow-up for the probes implicated by the corrected residuals and both reference-class candidates. P3 has a multiplicative scale fault near 0.956, P5 has an additive offset near 1.34 C after baseline correction, and P4 is the safest reference once reported stability and low residual error are compared against P2 across the span. Submit a calibration JSON through `arrayctl submit` with technician-facing measurement rationale.
+"""
+verification_explanation = """
+The verifier checks the submitted calibration record, the trusted `arrayctl` activity log, and the runtime permission boundary. Scoring rewards schema correctness, identifying the P3 scale fault and observed scale, identifying the P5 offset fault and observed Celsius offset, choosing P4 as the stable reference probe, reading the certified dry-well reference and bridge baseline for every measured setpoint, consulting the maintenance history, inventory, and criteria, running a focused but sufficient three-setpoint measurement pass through the tool, comparing both reference-class candidates, and including technician-facing rationale in the submitted notes. Scale receives full credit within 0.008 and tapers to zero by 0.04 around the expected 0.956 value; offset receives full credit within 0.12 C and tapers to zero by 0.65 C around the expected 1.34 C value. Those bands cover deterministic measurement noise and normal rounding while rejecting single-setpoint guesses, two-point shortcuts, baseline-unadjusted fits, below-threshold decoys, and swapped scale/offset interpretations. The score is capped for missing or repeated submit calls, missing reference or baseline reads, missing history, inventory, or criteria lookup, skipping the broad all-probe pass, missing three-setpoint confirmation for either fault probe or either reference candidate, unsupported submitted values, unsafe reference selection, exhaustive probing, or if the tool boundary becomes readable or loses its setuid root installation.
+"""
+
+[verifier]
+timeout_sec = 300.0
+
+[agent]
+user = "agent"
+timeout_sec = 1200.0
+
+[environment]
+build_timeout_sec = 1800.0
+cpus = 1
+memory_mb = 2048
+storage_mb = 4096
+gpus = 0
+allow_internet = true
+
+[verifier.env]
+
+[solution.env]
