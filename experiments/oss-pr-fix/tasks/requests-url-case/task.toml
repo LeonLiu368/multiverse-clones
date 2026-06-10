@@ -7,9 +7,9 @@ description = "The requests library vendored into acme/webapp matches URL scheme
 custom_docker_compose = true
 
 [metadata]
-author_name = "Abundant AI"
-author_email = "tasks@abundant.ai"
-author_organization = "Abundant"
+author_name = ""
+author_email = ""
+author_organization = ""
 category = "swe"
 source_repo = "acme/webapp"
 difficulty_explanation = "Multi-surface SWE task: the symptom is in Linear, the precise fix contract (which two functions, .lower() at comparison sites) is only in Slack, and the code is in GitHub. The agent must write the fix and open a PR whose head passes both the existing tests (P2P) and hidden mixed-case tests (F2P)."

@@ -7,9 +7,9 @@ description = "The requests library vendored into acme/api-service silently seri
 custom_docker_compose = true
 
 [metadata]
-author_name = "Abundant AI"
-author_email = "tasks@abundant.ai"
-author_organization = "Abundant"
+author_name = ""
+author_email = ""
+author_organization = ""
 category = "swe"
 source_repo = "acme/api-service"
 difficulty_explanation = "Multi-surface SWE task: the symptom is in Linear, the precise contract (exact exception name, its base class, allow_nan=False) is only in Slack, and the code is in GitHub. The agent must write the fix and open a PR whose head passes both the existing tests (P2P) and hidden NaN/Infinity tests (F2P)."
