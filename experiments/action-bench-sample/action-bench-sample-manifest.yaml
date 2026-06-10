@@ -3,8 +3,8 @@ metadata:
   description: |
     Action Bench tasks. A mix of multi-surface SWE tasks
     (issue tracker + chat + code host), real upstream bug reproductions, and
-    tool-driven operational tasks. 
-  task_path: experiments/action-bench-sample-1/tasks
+    tool-driven operational tasks.
+  task_path: experiments/action-bench-sample/tasks
   n_trials: 1
   skip_trajectory_analysis: false
 
