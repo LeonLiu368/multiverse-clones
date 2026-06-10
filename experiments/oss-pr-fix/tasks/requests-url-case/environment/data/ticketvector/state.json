@@ -1,6 +1,6 @@
 {
   "attachments": {},
-  "base_url": "https://linear.app/acme",
+  "base_url": "https://linear.app/meridian",
   "comments": {
     "WEB-101": [
       {
@@ -23,7 +23,7 @@
           "id": "user-alice",
           "name": "Alice Chen"
         },
-        "body": "The casefold/whole-url idea from May was reverted — see WEB-104, it corrupts case-sensitive paths. The agreed approach was settled in the eng channel; read that thread to the latest decision, then ship against acme/webapp. Note it's more than one call site.",
+        "body": "The casefold/whole-url idea from May was reverted — see WEB-104, it corrupts case-sensitive paths. The agreed approach was settled in the eng channel; read that thread to the latest decision, then ship against meridian/webapp. Note it's more than one call site.",
         "created_at": "2026-06-06T11:25:00Z",
         "updated_at": "2026-06-06T11:25:00Z"
       }
@@ -114,7 +114,7 @@
       },
       "title": "Uppercase URL schemes fail adapter selection",
       "updated_at": "2026-06-06T11:00:00Z",
-      "url": "https://linear.app/acme/issue/WEB-101"
+      "url": "https://linear.app/meridian/issue/WEB-101"
     },
     {
       "assignees": [
@@ -133,7 +133,7 @@
         "name": "Sprint 2026-06-A",
         "starts_at": "2026-06-01"
       },
-      "description": "Add an edge redirect from http:// to https:// plus HSTS. This is an edge/proxy policy, not the client adapter scheme-matching bug. Repo: acme/edge-proxy.",
+      "description": "Add an edge redirect from http:// to https:// plus HSTS. This is an edge/proxy policy, not the client adapter scheme-matching bug. Repo: meridian/edge-proxy.",
       "id": "issue-web-103",
       "identifier": "WEB-103",
       "labels": [
@@ -163,7 +163,7 @@
       },
       "title": "Enforce HTTPS at the edge (redirect http->https)",
       "updated_at": "2026-06-05T10:30:00Z",
-      "url": "https://linear.app/acme/issue/WEB-103"
+      "url": "https://linear.app/meridian/issue/WEB-103"
     },
     {
       "assignees": [
@@ -212,7 +212,7 @@
       },
       "title": "Query params lost when url is lowercased",
       "updated_at": "2026-06-05T09:00:00Z",
-      "url": "https://linear.app/acme/issue/WEB-104"
+      "url": "https://linear.app/meridian/issue/WEB-104"
     },
     {
       "assignees": [
@@ -252,7 +252,7 @@
       },
       "title": "Add retry on connection reset",
       "updated_at": "2026-06-04T09:00:00Z",
-      "url": "https://linear.app/acme/issue/WEB-105"
+      "url": "https://linear.app/meridian/issue/WEB-105"
     },
     {
       "assignees": [
@@ -292,7 +292,7 @@
       },
       "title": "Trailing-slash normalization for adapter prefixes",
       "updated_at": "2026-06-03T12:00:00Z",
-      "url": "https://linear.app/acme/issue/WEB-106"
+      "url": "https://linear.app/meridian/issue/WEB-106"
     },
     {
       "assignees": [
@@ -332,7 +332,7 @@
       },
       "title": "Structured logging for the retry path",
       "updated_at": "2026-06-05T09:00:00Z",
-      "url": "https://linear.app/acme/issue/WEB-100"
+      "url": "https://linear.app/meridian/issue/WEB-100"
     },
     {
       "assignees": [
@@ -372,7 +372,7 @@
       },
       "title": "Bump vendored urllib3",
       "updated_at": "2026-06-04T11:00:00Z",
-      "url": "https://linear.app/acme/issue/WEB-099"
+      "url": "https://linear.app/meridian/issue/WEB-099"
     },
     {
       "assignees": [
@@ -416,7 +416,7 @@
       },
       "title": "Adapter selection fails for uppercase/mixed-case schemes",
       "updated_at": "2026-06-06T08:30:00Z",
-      "url": "https://linear.app/acme/issue/WEB-108"
+      "url": "https://linear.app/meridian/issue/WEB-108"
     },
     {
       "assignees": [
@@ -460,7 +460,7 @@
       },
       "title": "Flaky test in tests/test_basic on CI",
       "updated_at": "2026-06-05T08:00:00Z",
-      "url": "https://linear.app/acme/issue/WEB-109"
+      "url": "https://linear.app/meridian/issue/WEB-109"
     },
     {
       "assignees": [
@@ -474,7 +474,7 @@
       "comments_count": 0,
       "created_at": "2026-06-04T12:00:00Z",
       "cycle": null,
-      "description": "Resolver should normalize hostnames to lowercase since DNS is case-insensitive. Host normalization in the resolver, seperate from the http client scheme fix. Repo: acme/resolver.",
+      "description": "Resolver should normalize hostnames to lowercase since DNS is case-insensitive. Host normalization in the resolver, seperate from the http client scheme fix. Repo: meridian/resolver.",
       "id": "issue-infra-51",
       "identifier": "INFRA-51",
       "labels": [
@@ -500,7 +500,7 @@
       },
       "title": "Lowercase hostnames before DNS lookup",
       "updated_at": "2026-06-04T12:00:00Z",
-      "url": "https://linear.app/acme/issue/INFRA-51"
+      "url": "https://linear.app/meridian/issue/INFRA-51"
     },
     {
       "assignees": [
@@ -540,7 +540,7 @@
       },
       "title": "Register MyApp:// deep-link scheme (case sensitivity)",
       "updated_at": "2026-06-04T13:00:00Z",
-      "url": "https://linear.app/acme/issue/MOB-90"
+      "url": "https://linear.app/meridian/issue/MOB-90"
     },
     {
       "assignees": [
@@ -580,7 +580,7 @@
       },
       "title": "Follow redirects across http/https hops",
       "updated_at": "2026-06-05T09:00:00Z",
-      "url": "https://linear.app/acme/issue/WEB-110"
+      "url": "https://linear.app/meridian/issue/WEB-110"
     },
     {
       "assignees": [
@@ -629,7 +629,7 @@
       },
       "title": "Proxy env var parsing is case-sensitive",
       "updated_at": "2026-06-06T09:00:00Z",
-      "url": "https://linear.app/acme/issue/WEB-111"
+      "url": "https://linear.app/meridian/issue/WEB-111"
     },
     {
       "assignees": [
@@ -669,7 +669,7 @@
       },
       "title": "Percent-encode unicode in query strings",
       "updated_at": "2026-06-04T11:00:00Z",
-      "url": "https://linear.app/acme/issue/WEB-112"
+      "url": "https://linear.app/meridian/issue/WEB-112"
     },
     {
       "assignees": [
@@ -709,7 +709,7 @@
       },
       "title": "Connection pool not reused for HTTPS",
       "updated_at": "2026-06-03T09:00:00Z",
-      "url": "https://linear.app/acme/issue/WEB-113"
+      "url": "https://linear.app/meridian/issue/WEB-113"
     },
     {
       "assignees": [
@@ -749,7 +749,7 @@
       },
       "title": "Add HSTS preload to the edge proxy",
       "updated_at": "2026-06-02T09:00:00Z",
-      "url": "https://linear.app/acme/issue/WEB-114"
+      "url": "https://linear.app/meridian/issue/WEB-114"
     },
     {
       "assignees": [
@@ -789,7 +789,7 @@
       },
       "title": "Resolver: lowercase hostnames before lookup",
       "updated_at": "2026-06-05T12:30:00Z",
-      "url": "https://linear.app/acme/issue/WEB-115"
+      "url": "https://linear.app/meridian/issue/WEB-115"
     },
     {
       "assignees": [
@@ -829,7 +829,7 @@
       },
       "title": "Mobile deep links drop the path on cold start",
       "updated_at": "2026-06-04T13:00:00Z",
-      "url": "https://linear.app/acme/issue/WEB-116"
+      "url": "https://linear.app/meridian/issue/WEB-116"
     },
     {
       "assignees": [
@@ -873,7 +873,7 @@
       },
       "title": "Flaky: test_unknown_scheme_raises on CI",
       "updated_at": "2026-06-05T08:00:00Z",
-      "url": "https://linear.app/acme/issue/WEB-117"
+      "url": "https://linear.app/meridian/issue/WEB-117"
     },
     {
       "assignees": [
@@ -913,7 +913,7 @@
       },
       "title": "Document supported URL schemes",
       "updated_at": "2026-06-02T10:00:00Z",
-      "url": "https://linear.app/acme/issue/WEB-118"
+      "url": "https://linear.app/meridian/issue/WEB-118"
     },
     {
       "assignees": [
@@ -953,7 +953,7 @@
       },
       "title": "Trailing slash redirects loop on some routes",
       "updated_at": "2026-06-03T10:00:00Z",
-      "url": "https://linear.app/acme/issue/WEB-119"
+      "url": "https://linear.app/meridian/issue/WEB-119"
     },
     {
       "assignees": [
@@ -993,7 +993,7 @@
       },
       "title": "Upgrade vendored certifi bundle",
       "updated_at": "2026-06-03T09:00:00Z",
-      "url": "https://linear.app/acme/issue/WEB-120"
+      "url": "https://linear.app/meridian/issue/WEB-120"
     },
     {
       "assignees": [
@@ -1033,7 +1033,7 @@
       },
       "title": "Support IPv6 literals in the host parser",
       "updated_at": "2026-06-02T09:00:00Z",
-      "url": "https://linear.app/acme/issue/WEB-121"
+      "url": "https://linear.app/meridian/issue/WEB-121"
     }
   ],
   "labels": [
@@ -1166,5 +1166,5 @@
       "name": "Ivan Petrov"
     }
   ],
-  "workspace": "acme"
+  "workspace": "meridian"
 }

@@ -26,7 +26,7 @@ write_reward() {
 }
 write_reward 0
 
-R=acme/api-service
+R=meridian/api-service
 REPO=api-service
 TOK="$(cat /run/secrets/token 2>/dev/null || echo "${GH_TOKEN:-}")"
 export GH_TOKEN="$TOK"
@@ -93,7 +93,7 @@ fi
 
 # ── 2. check out the code under test ─────────────────────────────────────────
 work="$(mktemp -d)"
-git clone -q "http://acme:${TOK}@github/acme/${REPO}.git" "$work/repo" 2>/dev/null || {
+git clone -q "http://acme:${TOK}@github/meridian/${REPO}.git" "$work/repo" 2>/dev/null || {
   echo "clone failed -> reward 0"; write_reward 0; exit 0; }
 cd "$work/repo"
 
