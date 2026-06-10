@@ -2,13 +2,13 @@
 # Oracle: implement the case-insensitive scheme fix and open a PR against main.
 set -euo pipefail
 
-R=acme/webapp
+R=meridian/webapp
 REPO=webapp
 BRANCH=fix/uppercase-url-scheme
 TOK="$(cat /run/secrets/token 2>/dev/null || echo "$GH_TOKEN")"
 
 work="$(mktemp -d)"
-git clone "http://acme:${TOK}@github/acme/${REPO}.git" "$work/repo" >/dev/null 2>&1
+git clone "http://acme:${TOK}@github/meridian/${REPO}.git" "$work/repo" >/dev/null 2>&1
 cd "$work/repo"
 git config user.email agent@example.local
 git config user.name "Agent User"

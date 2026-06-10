@@ -2867,6 +2867,24 @@
       "author": "quinn",
       "content": "thats edge-proxy specific tho. the webapp adapter is a different codebase, dont mix the two up.",
       "timestamp": "2026-06-05T16:43:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "sam",
+      "content": "yesterday: finished the certifi bump review. today: on my open ticket, no blockers.",
+      "timestamp": "2026-06-08T09:16:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "sam",
+      "content": "ramen at 12:30? who's in 🍜",
+      "timestamp": "2026-06-08T11:51:00Z"
+    },
+    {
+      "channel": "random",
+      "author": "sam",
+      "content": "TIL my keyboard has a backlight. four years in.",
+      "timestamp": "2026-06-08T15:05:00Z"
     }
   ]
 }

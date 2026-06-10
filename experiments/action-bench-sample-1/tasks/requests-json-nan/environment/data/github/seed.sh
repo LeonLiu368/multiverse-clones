@@ -1,20 +1,24 @@
 #!/usr/bin/env bash
-# Seed: acme/api-service on main with a requests-library snapshot whose JSON
+# Seed: meridian/api-service on main with a requests-library snapshot whose JSON
 # body serialization silently allows NaN/Infinity (the bug). NO fix branch and
 # NO PR are created — the agent must write the fix and open the PR. The repo
 # ships P2P tests (tests/test_basic.py) that pass on the buggy snapshot; the
 # hidden F2P tests live only in the verifier. Based on psf/requests PR #5810.
 set -euo pipefail
 
+ORG=meridian
 REPO=api-service
-AUTH_REMOTE="http://acme:${GH_TOKEN}@localhost/acme/${REPO}.git"
+AUTH_REMOTE="http://acme:${GH_TOKEN}@localhost/${ORG}/${REPO}.git"
 
-gh repo create "$REPO" --description "acme API service" >/dev/null 2>&1 || true
+# The forge admin account is "acme" (baked into the image); repos live under an
+# organization it owns, so the agent only ever sees the "${ORG}" owner.
+gh api --method POST /orgs -f username="$ORG" -f visibility=public >/dev/null 2>&1 || true
+gh api --method POST "/orgs/${ORG}/repos" -f name="$REPO" -f description="meridian API service" >/dev/null 2>&1 || true
 
 work="$(mktemp -d)"
 git clone "$AUTH_REMOTE" "$work/repo" >/dev/null 2>&1
 cd "$work/repo"
-git config user.email seed@acme.internal
+git config user.email seed@meridian.internal
 git config user.name "Dev"
 
 git checkout --orphan task-main >/dev/null 2>&1 || true
@@ -135,7 +139,7 @@ PYEOF
 cat > README.md << 'EOF'
 # api-service
 
-The acme REST API service.
+The meridian REST API service.
 
 ## Key modules
 
@@ -174,16 +178,16 @@ git push --force origin task-main:main >/dev/null 2>&1
 # Plausible-but-wrong "where NaN is handled" repos. They exist so a misdirected
 # agent that clones the wrong repo finds editable, on-topic code (instead of a
 # fast clone failure) and wastes its PR there. The verifier ONLY ever queries
-# acme/api-service, so a PR against any decoy scores 0. Seeded defensively in a
-# subshell so any hiccup can never abort the primary seed above.
+# meridian/api-service, so a PR against any decoy scores 0. Seeded defensively in
+# a subshell so any hiccup can never abort the primary seed above.
 seed_decoy() {  # $1=repo  $2=description  $3=relpath ; file content on stdin
   local name="$1" desc="$2" rel="$3" body; body="$(cat)"
   ( set +e
-    gh repo create "$name" --description "$desc" >/dev/null 2>&1 || true
+    gh api --method POST "/orgs/${ORG}/repos" -f name="$name" -f description="$desc" >/dev/null 2>&1 || true
     local d; d="$(mktemp -d)"
-    git clone "http://acme:${GH_TOKEN}@localhost/acme/${name}.git" "$d/r" >/dev/null 2>&1 || exit 0
+    git clone "http://acme:${GH_TOKEN}@localhost/${ORG}/${name}.git" "$d/r" >/dev/null 2>&1 || exit 0
     cd "$d/r" || exit 0
-    git config user.email seed@acme.internal; git config user.name "Dev"
+    git config user.email seed@meridian.internal; git config user.name "Dev"
     git checkout --orphan task-main >/dev/null 2>&1 || true
     git rm -rf . >/dev/null 2>&1 || true
     mkdir -p "$(dirname "$rel")"
@@ -196,7 +200,7 @@ seed_decoy() {  # $1=repo  $2=description  $3=relpath ; file content on stdin
   ) || true
 }
 
-seed_decoy metrics-exporter "acme metrics exporter" exporter/sanitize.py <<'PY'
+seed_decoy metrics-exporter "meridian metrics exporter" exporter/sanitize.py <<'PY'
 """Metrics export: coerce non-finite values before emitting Prometheus samples."""
 import math
 
@@ -208,7 +212,7 @@ def sanitize_value(v):
     return v
 PY
 
-seed_decoy gateway-service "acme API gateway" gateway/validator.py <<'PY'
+seed_decoy gateway-service "meridian API gateway" gateway/validator.py <<'PY'
 """Request ingress validation for the API gateway."""
 import json
 

@@ -2909,6 +2909,24 @@
       "author": "quinn",
       "content": "thats analytics-sdk only though, totally separate from whatever api-service lands for the json body serialize thing. dont conflate them.",
       "timestamp": "2026-06-05T16:43:00Z"
+    },
+    {
+      "channel": "standup",
+      "author": "sam",
+      "content": "yesterday: cleared my PR review backlog. today: back on my assigned ticket, no blockers.",
+      "timestamp": "2026-06-08T09:15:00Z"
+    },
+    {
+      "channel": "watercooler",
+      "author": "sam",
+      "content": "anyone up for the new ramen place at 12:30? 🍜",
+      "timestamp": "2026-06-08T11:50:00Z"
+    },
+    {
+      "channel": "random",
+      "author": "sam",
+      "content": "ugh the 3rd floor coffee machine is down again",
+      "timestamp": "2026-06-08T15:02:00Z"
     }
   ]
 }
