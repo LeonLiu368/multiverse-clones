@@ -1,8 +1,5 @@
 # requests-url-case
 
-A multi-surface software-engineering task. Reviewer notes — the agent never
-sees this file.
-
 ## a) Summary
 
 A partner integration is failing because a vendored HTTP client matches URL
@@ -26,7 +23,7 @@ through the tools.
 - **Team chat** — `slack` CLI + `slack-mcp` MCP server. ~470 messages across 24
   channels. Holds the *exact* fix contract, split across `#eng` and
   `#web-platform`.
-- **Code host** — `git` + `gh` against a self-hosted GitHub forge (Forgejo).
+- **Code host** — `git` + `gh` against a GitHub clone.
   Repos live under the `meridian` org. The agent clones the buggy repo, writes
   the fix, pushes a branch, and opens a PR against `main`.
 
@@ -66,5 +63,3 @@ through the tools.
 - **Contract-strict tests:** fixing only one of the two sites, or mutating the
   adapter prefix map, passes a naive reading but fails the hidden tests.
 
-Baselines: `nop` opens no PR → 0; `oracle` (`solution/solve.sh`) applies exactly
-the fix above → 1.

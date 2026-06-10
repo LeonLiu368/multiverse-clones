@@ -1,8 +1,5 @@
 # requests-json-nan
 
-A multi-surface software-engineering task. Reviewer notes — the agent never
-sees this file.
-
 ## a) Summary
 
 Production is throwing 400s because a vendored HTTP client serializes
@@ -25,7 +22,7 @@ through the tools.
   identity). Used to find the work item and its comments.
 - **Team chat** — `slack` CLI + `slack-mcp` MCP server. ~470 messages across 24
   channels. Holds the *exact* fix contract, split across `#eng` and `#api-team`.
-- **Code host** — `git` + `gh` against a self-hosted GitHub forge (Forgejo).
+- **Code host** — `git` + `gh` against a GitHub clone.
   Repos live under the `meridian` org. The agent clones the buggy repo, writes
   the fix, pushes a branch, and opens a PR against `main`.
 
@@ -62,6 +59,3 @@ through the tools.
 - **Typos and ~470 messages** of unrelated chatter throughout.
 - **Contract-strict tests:** a substring NaN check, or dropping `request=self`,
   passes a naive reading but fails the hidden tests.
-
-Baselines: `nop` opens no PR → 0; `oracle` (`solution/solve.sh`) applies exactly
-the fix above → 1.
