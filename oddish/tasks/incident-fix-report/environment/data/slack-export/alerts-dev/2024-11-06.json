@@ -1,0 +1,66 @@
+[
+  {
+    "user": "U2A4B17B116",
+    "type": "message",
+    "ts": "1730888880.000000",
+    "client_msg_id": "3581c34b43a9a2b1ac",
+    "text": "working on deduplication logic",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "erin",
+      "real_name": "Erin",
+      "display_name": "erin",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U2A4B17B116",
+    "type": "message",
+    "ts": "1730888940.000000",
+    "client_msg_id": "c695590354849ab9d9",
+    "text": "silenced noisy disk alert for now",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "erin",
+      "real_name": "Erin",
+      "display_name": "erin",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U88FA846E5F",
+    "type": "message",
+    "ts": "1730896860.000000",
+    "client_msg_id": "76a0ba0d42c92e7e2d",
+    "text": "working on deduplication logic",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "victor",
+      "real_name": "Victor",
+      "display_name": "victor",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U5CC9DC7FA7",
+    "type": "message",
+    "ts": "1730899260.000000",
+    "client_msg_id": "bac5ce87874373885f",
+    "text": "false positive rate too high on disk alerts",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "olivia",
+      "real_name": "Olivia",
+      "display_name": "olivia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

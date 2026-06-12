@@ -1,0 +1,50 @@
+[
+  {
+    "user": "U5CC9DC7FA7",
+    "type": "message",
+    "ts": "1730975520.000000",
+    "client_msg_id": "67800deee9f379b0d1",
+    "text": "User research sessions scheduled for Thursday.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "olivia",
+      "real_name": "Olivia",
+      "display_name": "olivia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U88FA846E5F",
+    "type": "message",
+    "ts": "1730984700.000000",
+    "client_msg_id": "607bdc10f79513b89b",
+    "text": "Customer asked about bulk export \u2014 adding to backlog.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "victor",
+      "real_name": "Victor",
+      "display_name": "victor",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U1BEEF78000",
+    "type": "message",
+    "ts": "1730989860.000000",
+    "client_msg_id": "1b02cdbafda686bb56",
+    "text": "Roadmap review next Tuesday.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "mallory",
+      "real_name": "Mallory",
+      "display_name": "mallory",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

@@ -1,0 +1,82 @@
+[
+  {
+    "user": "U88FA846E5F",
+    "type": "message",
+    "ts": "1731043020.000000",
+    "client_msg_id": "bdd85ad34fbfe43d7f",
+    "text": "is the user field user_id or something else in v2? can't find it in this channel",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "victor",
+      "real_name": "Victor",
+      "display_name": "victor",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1731065700.000000",
+    "client_msg_id": "ff4f76572ec2098a3d",
+    "text": "check #data-platform for the authoritative spec, this channel only has partial info",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UB5382301BB",
+    "type": "message",
+    "ts": "1731081120.000000",
+    "client_msg_id": "a9c82f870f95e88ae5",
+    "text": "Who owns the rollback plan for M-44?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "peggy",
+      "real_name": "Peggy",
+      "display_name": "peggy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1731085260.000000",
+    "client_msg_id": "875c6c74519832eebf",
+    "text": "M-47 schema adds columns: event_name, actor_id, attributes, recorded_at, schema_version",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1731107460.000000",
+    "client_msg_id": "bec47d3a3e8d0d1b41",
+    "text": "don't use author_id \u2014 that was a draft name that got corrected, see #data-platform",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

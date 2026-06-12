@@ -1,0 +1,66 @@
+[
+  {
+    "user": "U0FEBC363B6",
+    "type": "message",
+    "ts": "1731838200.000000",
+    "client_msg_id": "529a8cbfd6f861afbe",
+    "text": "the pipeline validator rejects string schema_version \u2014 must be integer",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "heidi",
+      "real_name": "Heidi",
+      "display_name": "heidi",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U0FEBC363B6",
+    "type": "message",
+    "ts": "1731843000.000000",
+    "client_msg_id": "a5ab75eb5c065dd6cd",
+    "text": "draft migration script is in the analytics-eng wiki",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "heidi",
+      "real_name": "Heidi",
+      "display_name": "heidi",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U5CC9DC7FA7",
+    "type": "message",
+    "ts": "1731844740.000000",
+    "client_msg_id": "ffd17011b216f65021",
+    "text": "v1 to v2 migration effort tracked in JIRA-3310",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "olivia",
+      "real_name": "Olivia",
+      "display_name": "olivia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1731864960.000000",
+    "client_msg_id": "6b27156b1ee60a9f7a",
+    "text": "migrating the login event first since it's highest volume",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

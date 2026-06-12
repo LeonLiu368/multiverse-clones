@@ -1,0 +1,82 @@
+[
+  {
+    "user": "U3ECA10F300",
+    "type": "message",
+    "ts": "1747990920.000000",
+    "client_msg_id": "aa9e01c6ab8f2a8e38",
+    "text": "heads up: product demo with investors tomorrow 2pm. please no deploys during the window",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "henry",
+      "real_name": "Henry",
+      "display_name": "henry",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1747992060.000000",
+    "client_msg_id": "65da7191fb1537587d",
+    "text": "noted, freezing deploys 1:30-4pm tomorrow",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1747992060.000001",
+    "client_msg_id": "88d21af9a9157067a8",
+    "text": "ack",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U5CC9DC7FA7",
+    "type": "message",
+    "ts": "1747992180.000000",
+    "client_msg_id": "9653a0a9ba3ac7c1e2",
+    "text": "ack",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "olivia",
+      "real_name": "Olivia",
+      "display_name": "olivia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U4B8373D016",
+    "type": "message",
+    "ts": "1748020320.000000",
+    "client_msg_id": "981cff22269c77be2b",
+    "text": "thanks everyone, big one tomorrow",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "peter",
+      "real_name": "Peter",
+      "display_name": "peter",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

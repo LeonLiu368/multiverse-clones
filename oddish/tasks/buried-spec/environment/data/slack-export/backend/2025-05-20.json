@@ -1,0 +1,50 @@
+[
+  {
+    "user": "U3C5E7EAB99",
+    "type": "message",
+    "ts": "1747735260.000000",
+    "client_msg_id": "1735a79a83d0d77072",
+    "text": "question: should TokenBucket be a singleton or instantiated per client?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "liam",
+      "real_name": "Liam",
+      "display_name": "liam",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U3C5E7EAB99",
+    "type": "message",
+    "ts": "1747736520.000000",
+    "client_msg_id": "5b5d1684cb48c6154e",
+    "text": "makes sense, thanks",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "liam",
+      "real_name": "Liam",
+      "display_name": "liam",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1747736700.000000",
+    "client_msg_id": "b2926d16d976926461",
+    "text": "per-client for now. global singleton gets complicated with multi-tenant",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

@@ -1,0 +1,98 @@
+[
+  {
+    "user": "UA15F8B81A1",
+    "type": "message",
+    "ts": "1731128400.000000",
+    "client_msg_id": "e5d9ecb363f38fabcb",
+    "text": "confirmed with niaj: actor_id is correct, not author_id",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "ivan",
+      "real_name": "Ivan",
+      "display_name": "ivan",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U0AA1C221CA",
+    "type": "message",
+    "ts": "1731146940.000000",
+    "client_msg_id": "7aaf54c31babb8b0a9",
+    "text": "Backfill for historical events is 72% done.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "trent",
+      "real_name": "Trent",
+      "display_name": "trent",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UA15F8B81A1",
+    "type": "message",
+    "ts": "1731148500.000000",
+    "client_msg_id": "b31ca70111ea8cb76d",
+    "text": "Moving secrets to Vault this sprint.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "ivan",
+      "real_name": "Ivan",
+      "display_name": "ivan",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U2A4B17B116",
+    "type": "message",
+    "ts": "1731154140.000000",
+    "client_msg_id": "260483c02899f8cce6",
+    "text": "Who owns the rollback plan for M-44?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "erin",
+      "real_name": "Erin",
+      "display_name": "erin",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U1BEEF78000",
+    "type": "message",
+    "ts": "1731170520.000000",
+    "client_msg_id": "7b2e3b01bfae71c7bd",
+    "text": "Postgres connection pool maxed during the spike \u2014 bumped max_conn.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "mallory",
+      "real_name": "Mallory",
+      "display_name": "mallory",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1731173820.000000",
+    "client_msg_id": "b6ab4d6c5d11adbc6b",
+    "text": "Who owns the rollback plan for M-44?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

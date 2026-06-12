@@ -1,0 +1,162 @@
+[
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1731834180.000000",
+    "client_msg_id": "71c0e57119550ca55c",
+    "text": "Backfill for historical events is 72% done.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U5CC9DC7FA7",
+    "type": "message",
+    "ts": "1731835620.000000",
+    "client_msg_id": "bc0686e0254a4f0c8d",
+    "text": "Added an index on events(recorded_at) \u2014 3x query speedup.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "olivia",
+      "real_name": "Olivia",
+      "display_name": "olivia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U38FC8CAEA6",
+    "type": "message",
+    "ts": "1731839340.000000",
+    "client_msg_id": "bb4dda7c92d7ea1b68",
+    "text": "Deprecating old /v1 endpoints after the 15th \u2014 send reminders.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "judy",
+      "real_name": "Judy",
+      "display_name": "judy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UFD1CF5E271",
+    "type": "message",
+    "ts": "1731840360.000000",
+    "client_msg_id": "eddc9f8fdbc2f201cd",
+    "text": "Backfill for historical events is 72% done.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "grace",
+      "real_name": "Grace",
+      "display_name": "grace",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U5CC9DC7FA7",
+    "type": "message",
+    "ts": "1731846120.000000",
+    "client_msg_id": "cbf3529298593ca0fe",
+    "text": "Deprecating old /v1 endpoints after the 15th \u2014 send reminders.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "olivia",
+      "real_name": "Olivia",
+      "display_name": "olivia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UFD1CF5E271",
+    "type": "message",
+    "ts": "1731848220.000000",
+    "client_msg_id": "7195a075a2217258c2",
+    "text": "Migration M-44 (jobs queue) runs Tuesday night.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "grace",
+      "real_name": "Grace",
+      "display_name": "grace",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1731851580.000000",
+    "client_msg_id": "c6b3ffc58bb95c8800",
+    "text": "Rollback window closes at midnight.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UA15F8B81A1",
+    "type": "message",
+    "ts": "1731857760.000000",
+    "client_msg_id": "317ec6ebdca6eb8929",
+    "text": "Green light from niaj \u2014 M-47 is a go for next Tuesday.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "ivan",
+      "real_name": "Ivan",
+      "display_name": "ivan",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1731861840.000000",
+    "client_msg_id": "54f9438ecc7796c447",
+    "text": "Added an index on events(recorded_at) \u2014 3x query speedup.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1731864480.000000",
+    "client_msg_id": "1e8fcd113dde4c589b",
+    "text": "Migration M-44 (jobs queue) runs Tuesday night.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

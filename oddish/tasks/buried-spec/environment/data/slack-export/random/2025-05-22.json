@@ -1,0 +1,66 @@
+[
+  {
+    "user": "U596727C8A0",
+    "type": "message",
+    "ts": "1747933680.000000",
+    "client_msg_id": "7db59799435d30389f",
+    "text": "anyone watching the match tonight?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "jack",
+      "real_name": "Jack",
+      "display_name": "jack",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U1DB01D43E0",
+    "type": "message",
+    "ts": "1747933920.000000",
+    "client_msg_id": "2460643ec219f2c20b",
+    "text": "not a sports person but let me know who wins lol",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "noah",
+      "real_name": "Noah",
+      "display_name": "noah",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U21AAB516D6",
+    "type": "message",
+    "ts": "1747933980.000000",
+    "client_msg_id": "d478251879674be670",
+    "text": "yes! can't wait",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "mia",
+      "real_name": "Mia",
+      "display_name": "mia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U596727C8A0",
+    "type": "message",
+    "ts": "1747934160.000000",
+    "client_msg_id": "318d0da9e6cd9b6928",
+    "text": "haha",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "jack",
+      "real_name": "Jack",
+      "display_name": "jack",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "user": "UFD1CF5E271",
+    "type": "message",
+    "ts": "1730556900.000000",
+    "client_msg_id": "822449e39286384d0f",
+    "text": "testing the new prometheus alert rules",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "grace",
+      "real_name": "Grace",
+      "display_name": "grace",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U1BEEF78000",
+    "type": "message",
+    "ts": "1730566080.000000",
+    "client_msg_id": "265eb8aed25149db5c",
+    "text": "testing the new prometheus alert rules",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "mallory",
+      "real_name": "Mallory",
+      "display_name": "mallory",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

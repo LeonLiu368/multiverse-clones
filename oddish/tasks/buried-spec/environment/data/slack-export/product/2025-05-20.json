@@ -1,0 +1,82 @@
+[
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1747732200.000000",
+    "client_msg_id": "dc5a2216b5ac3b6a59",
+    "text": "we're on it, running load tests this week",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UDCA6211FB8",
+    "type": "message",
+    "ts": "1747732740.000000",
+    "client_msg_id": "c936fb4628d954c5c7",
+    "text": "partner A goes live in 3 weeks, we need the limiter sorted",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "quinn",
+      "real_name": "Quinn",
+      "display_name": "quinn",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U3ECA10F300",
+    "type": "message",
+    "ts": "1747733160.000000",
+    "client_msg_id": "47a291c3bd120e0da0",
+    "text": "what's the expected throughput for partner A?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "henry",
+      "real_name": "Henry",
+      "display_name": "henry",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1747733460.000001",
+    "client_msg_id": "c804f518d85af9b679",
+    "text": "about 80-100 req/s at peak. current limiter caps at 50 which will cause issues",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U3ECA10F300",
+    "type": "message",
+    "ts": "1747733760.000000",
+    "client_msg_id": "e7ff7c5aff6f1ceaff",
+    "text": "we definitely need to fix that before launch",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "henry",
+      "real_name": "Henry",
+      "display_name": "henry",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

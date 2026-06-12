@@ -41,7 +41,7 @@ def _recover_env() -> None:
 def _web() -> WebClient:
     _recover_env()
     base = os.environ.get("SLACK_API_URL", "http://localhost").rstrip("/")
-    token = os.environ.get("SLACK_BOT_TOKEN", "xoxb-acme-eval-0001")
+    token = os.environ.get("SLACK_BOT_TOKEN", "xoxp-acme-eval-0001")
     return WebClient(token=token, base_url=base + "/api/")
 
 

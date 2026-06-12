@@ -1,0 +1,82 @@
+[
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1730886840.000000",
+    "client_msg_id": "8dd41ec322a717fed5",
+    "text": "All-hands moved to Thursday \u2014 see calendar invite.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U2A4B17B116",
+    "type": "message",
+    "ts": "1730900340.000000",
+    "client_msg_id": "1cd4bd57852575781e",
+    "text": "Anyone going to the ML meetup tonight?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "erin",
+      "real_name": "Erin",
+      "display_name": "erin",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1730901480.000000",
+    "client_msg_id": "539ab4824bacf39bee",
+    "text": "Lunch order by noon please.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1730908440.000000",
+    "client_msg_id": "9c3950cdd4d3920986",
+    "text": "Welcome to the new folks joining this week! \ud83d\udc4b",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U0AA1C221CA",
+    "type": "message",
+    "ts": "1730908500.000000",
+    "client_msg_id": "6e522066eea012ef63",
+    "text": "Kudos to support for clearing the backlog \ud83d\ude4c",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "trent",
+      "real_name": "Trent",
+      "display_name": "trent",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

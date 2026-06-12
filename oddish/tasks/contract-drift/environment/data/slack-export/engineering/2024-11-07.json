@@ -1,0 +1,82 @@
+[
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1730970120.000000",
+    "client_msg_id": "37cc94b2a655ee10ef",
+    "text": "Added tracing to the ingestion gateway.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U2A4B17B116",
+    "type": "message",
+    "ts": "1730986260.000000",
+    "client_msg_id": "cf6c7a551cd88ee962",
+    "text": "Bumped the HTTP client dep to 2.1.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "erin",
+      "real_name": "Erin",
+      "display_name": "erin",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1730992140.000000",
+    "client_msg_id": "18052d10b056b13795",
+    "text": "Deployed hotfix 1.3.7 to prod \u2014 all good.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1730992260.000000",
+    "client_msg_id": "f3d1b5970eac2309ad",
+    "text": "Nightly batch ran long, still investigating.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1730995080.000000",
+    "client_msg_id": "4b71c42e523e377eb5",
+    "text": "Bumped the HTTP client dep to 2.1.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

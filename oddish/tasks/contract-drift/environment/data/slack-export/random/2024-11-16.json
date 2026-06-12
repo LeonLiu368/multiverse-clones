@@ -1,0 +1,82 @@
+[
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1731755400.000000",
+    "client_msg_id": "f7ffda4a885644b483",
+    "text": "Free snacks in the kitchen (thanks carol!)",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1731766800.000000",
+    "client_msg_id": "43bbd42d5cbd141cb8",
+    "text": "Thunderstorm outside, cozy day \u26c8\ufe0f",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U5CC9DC7FA7",
+    "type": "message",
+    "ts": "1731775560.000000",
+    "client_msg_id": "7bc169013701a747a0",
+    "text": "Who took my mug? \ud83d\ude21",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "olivia",
+      "real_name": "Olivia",
+      "display_name": "olivia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U6525ABCCE7",
+    "type": "message",
+    "ts": "1731776400.000000",
+    "client_msg_id": "363bcb02ce97cc4675",
+    "text": "TIL you can pin messages in channels",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "niaj",
+      "real_name": "Niaj",
+      "display_name": "niaj",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U5CC9DC7FA7",
+    "type": "message",
+    "ts": "1731779100.000000",
+    "client_msg_id": "ba15849792a2505b0a",
+    "text": "\ud83d\udc36 Dog of the day pic incoming",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "olivia",
+      "real_name": "Olivia",
+      "display_name": "olivia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

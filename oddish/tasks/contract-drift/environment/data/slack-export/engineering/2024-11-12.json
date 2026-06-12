@@ -1,0 +1,18 @@
+[
+  {
+    "user": "UA15F8B81A1",
+    "type": "message",
+    "ts": "1731423600.000000",
+    "client_msg_id": "b01c24f14fb4221396",
+    "text": "Who owns the refund worker now?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "ivan",
+      "real_name": "Ivan",
+      "display_name": "ivan",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

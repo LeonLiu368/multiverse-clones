@@ -1,16 +1,14 @@
 [project]
 name = "slackcli"
-version = "0.1.0"
-description = "Agent Slack tools: a `slack` CLI and a `slack-mcp` MCP server over the Slack Web API gateway"
+version = "0.2.0"
+description = "Agent Slack CLI (`slack`) — a thin client of the Slack Web API gateway"
 requires-python = ">=3.10"
 dependencies = [
     "slack_sdk>=3.27",
-    "mcp>=1.2",
 ]
 
 [project.scripts]
 slack = "slackcli.cli:main"
-slack-mcp = "slackcli.mcp_server:main"
 
 [build-system]
 requires = ["setuptools>=68"]

@@ -1,0 +1,114 @@
+[
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1747646280.000000",
+    "client_msg_id": "3a614baa0edb10dd1f",
+    "text": "lol not again. did anyone restart it?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1747646340.000000",
+    "client_msg_id": "1483cf7da7738d76fc",
+    "text": "good morning everyone",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1747646520.000000",
+    "client_msg_id": "d5f59b00e897abd6e7",
+    "text": "morning! coffee machine is broken again btw",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U3E9AFE235A",
+    "type": "message",
+    "ts": "1747648800.000000",
+    "client_msg_id": "1b24e987b8fceecf07",
+    "text": "standup in 5?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "iris",
+      "real_name": "Iris",
+      "display_name": "iris",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1747649220.000000",
+    "client_msg_id": "210a6054d3d7efc8d6",
+    "text": "yep, joining now",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UFD1CF5E271",
+    "type": "message",
+    "ts": "1747649880.000000",
+    "client_msg_id": "b94adb4ed6e33f7ab0",
+    "text": "deployed the new dashboard to staging, let me know if you see anything weird",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "grace",
+      "real_name": "Grace",
+      "display_name": "grace",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U3ECA10F300",
+    "type": "message",
+    "ts": "1747650060.000000",
+    "client_msg_id": "9d9738417be51405ed",
+    "text": "nice! will check it after standup",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "henry",
+      "real_name": "Henry",
+      "display_name": "henry",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

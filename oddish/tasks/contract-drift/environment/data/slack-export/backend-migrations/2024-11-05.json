@@ -1,0 +1,114 @@
+[
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1730797320.000000",
+    "client_msg_id": "6a27409e3277e3d4bf",
+    "text": "Backfill for historical events is 72% done.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U2A4B17B116",
+    "type": "message",
+    "ts": "1730803620.000000",
+    "client_msg_id": "cecf3f05beac817cae",
+    "text": "Deprecating old /v1 endpoints after the 15th \u2014 send reminders.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "erin",
+      "real_name": "Erin",
+      "display_name": "erin",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U5CC9DC7FA7",
+    "type": "message",
+    "ts": "1730811540.000000",
+    "client_msg_id": "d8d978cceb9048c878",
+    "text": "Migration took 40 min, no downtime. \u2705",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "olivia",
+      "real_name": "Olivia",
+      "display_name": "olivia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U2A4B17B116",
+    "type": "message",
+    "ts": "1730813580.000000",
+    "client_msg_id": "70f39fa3987e67b4af",
+    "text": "Rollback window closes at midnight.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "erin",
+      "real_name": "Erin",
+      "display_name": "erin",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U1BEEF78000",
+    "type": "message",
+    "ts": "1730819220.000000",
+    "client_msg_id": "4abce4a6706c29f8d5",
+    "text": "Deprecating old /v1 endpoints after the 15th \u2014 send reminders.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "mallory",
+      "real_name": "Mallory",
+      "display_name": "mallory",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U5CC9DC7FA7",
+    "type": "message",
+    "ts": "1730824440.000000",
+    "client_msg_id": "12021ffc5616a65161",
+    "text": "Who owns the rollback plan for M-44?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "olivia",
+      "real_name": "Olivia",
+      "display_name": "olivia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UB5382301BB",
+    "type": "message",
+    "ts": "1730826000.000000",
+    "client_msg_id": "ff5de0e536aa76c2c7",
+    "text": "Schema migration for the new analytics tables landed in staging.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "peggy",
+      "real_name": "Peggy",
+      "display_name": "peggy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

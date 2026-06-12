@@ -1,6 +1,0 @@
-{ "messages": [
-  {"channel":"general","author":"alice","content":"morning all","timestamp":"2024-09-02T09:05:00+00:00"},
-  {"channel":"incidents","author":"bob","content":"checkout latency spiked, investigating","timestamp":"2024-09-02T10:00:00+00:00"},
-  {"channel":"incidents","author":"carol","content":"root cause looks like connection pool exhaustion","timestamp":"2024-09-02T10:12:00+00:00"},
-  {"channel":"engineering","author":"dave","content":"PR up for the pool fix","timestamp":"2024-09-02T11:00:00+00:00"}
-] }

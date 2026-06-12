@@ -27,8 +27,9 @@ slack whoami                               # who am I
 # add --json to any command for raw JSON
 ```
 
-- the **`slack` MCP server** - the same operations as MCP tools: `slack_list_channels`,
-  `slack_history`, `slack_search`, `slack_list_users`, `slack_post_message`, `slack_whoami`.
+- the **`slack` MCP server** — the same workspace as MCP tools: `channels_list`,
+  `conversations_history`, `conversations_replies`, `conversations_search_messages`,
+  `conversations_add_message`.
 
 Several thresholds were proposed and revised during the SLO review — use the **final agreed
 values**, not earlier proposals. The paging condition also involves latency.

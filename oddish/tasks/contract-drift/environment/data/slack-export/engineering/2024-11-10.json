@@ -1,0 +1,66 @@
+[
+  {
+    "user": "U0FEBC363B6",
+    "type": "message",
+    "ts": "1731229860.000000",
+    "client_msg_id": "00e9c7f5396f01017c",
+    "text": "The rate limiter needs tuning on the /v2 endpoints.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "heidi",
+      "real_name": "Heidi",
+      "display_name": "heidi",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U2A4B17B116",
+    "type": "message",
+    "ts": "1731239700.000000",
+    "client_msg_id": "ebd653513dfa96fdfe",
+    "text": "Deployed hotfix 1.3.7 to prod \u2014 all good.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "erin",
+      "real_name": "Erin",
+      "display_name": "erin",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1731249120.000000",
+    "client_msg_id": "c9e06d065859112507",
+    "text": "Who owns the refund worker now?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UB5382301BB",
+    "type": "message",
+    "ts": "1731254460.000000",
+    "client_msg_id": "fb48f8b5877e9cc13b",
+    "text": "The rate limiter needs tuning on the /v2 endpoints.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "peggy",
+      "real_name": "Peggy",
+      "display_name": "peggy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

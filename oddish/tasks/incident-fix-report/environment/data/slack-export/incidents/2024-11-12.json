@@ -1,0 +1,82 @@
+[
+  {
+    "user": "U2A4B17B116",
+    "type": "message",
+    "ts": "1731414240.000000",
+    "client_msg_id": "5d58d22b11581c6750",
+    "text": "memory leak patched and deployed",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "erin",
+      "real_name": "Erin",
+      "display_name": "erin",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U9FE84ADC4E",
+    "type": "message",
+    "ts": "1731414240.000001",
+    "client_msg_id": "de8eacda1c70eae291",
+    "text": "upstream payment gateway timeout resolved",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alertmanager",
+      "real_name": "Alertmanager",
+      "display_name": "alertmanager",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UB5382301BB",
+    "type": "message",
+    "ts": "1731417300.000000",
+    "client_msg_id": "01c1c87df1a32d1efe",
+    "text": "[resolved] elevated 5xx 14:02-14:18 UTC",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "peggy",
+      "real_name": "Peggy",
+      "display_name": "peggy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1731428460.000000",
+    "client_msg_id": "5944149e7ef1479541",
+    "text": "[auto] heartbeat check passed",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U1BEEF78000",
+    "type": "message",
+    "ts": "1731433620.000000",
+    "client_msg_id": "7be5c5421d79227ae7",
+    "text": "disk alert resolved: expanded volume",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "mallory",
+      "real_name": "Mallory",
+      "display_name": "mallory",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

@@ -1,6 +1,7 @@
-# Single-container task compose. The `main` service contains both the Mattermost backend +
-# Slack gateway AND the agent tools — simpler than the two-container setup (no api sidecar).
-# Harbor force-builds `main` from environment/Dockerfile (FROM slack-service + slackcli + codebase).
+# Single-container task compose. The `main` service contains the SQLite-backed Slack gateway, the
+# importer, and the agent tools (our `slack` CLI + the korotovsky `slack-mcp` server). Harbor
+# force-builds `main` from environment/Dockerfile (FROM slack-service + codebase). The real Slack
+# export under ./data/slack-export is mounted in and imported into SQLite at boot.
 #
 # NO `networks:` block (Harbor injects network_mode, which conflicts). platform pinned amd64.
 # The healthcheck gates agent start: harbor/oddish waits for `main` healthy before running the agent.
@@ -12,7 +13,7 @@ services:
     image: ${APEX_TASK_DOCKER_CLIENT_IMAGE_NAME:-contract-drift-main:local}
     platform: linux/amd64
     volumes:
-      - ./data/mattermost:/data/mattermost:ro
+      - ./data/slack-export:/data/slack-export:ro
     healthcheck:
       test: ["CMD-SHELL", "curl -sf http://localhost:80/api/auth.test >/dev/null || exit 1"]
       interval: 5s

@@ -1,0 +1,194 @@
+[
+  {
+    "user": "U0FEBC363B6",
+    "type": "message",
+    "ts": "1731203460.000000",
+    "client_msg_id": "2a15e968adf7b3c4b9",
+    "text": "And `schema_version` \u2014 is it the integer 2 or the string \"2\"?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "heidi",
+      "real_name": "Heidi",
+      "display_name": "heidi",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U6525ABCCE7",
+    "type": "message",
+    "ts": "1731210240.000000",
+    "client_msg_id": "f03e23378dabadf3b8",
+    "text": "Integer 2. **Not** the string \"2\". The validator does a strict type check: `isinstance(schema_version, int)` must be True.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "niaj",
+      "real_name": "Niaj",
+      "display_name": "niaj",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U2A4B17B116",
+    "type": "message",
+    "ts": "1731225960.000000",
+    "client_msg_id": "98849495ced5a0f89f",
+    "text": "Are any other fields changing? Is there a new required `source` field I saw somewhere?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "erin",
+      "real_name": "Erin",
+      "display_name": "erin",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U6525ABCCE7",
+    "type": "message",
+    "ts": "1731230100.000000",
+    "client_msg_id": "b67e18e1284e8516d0",
+    "text": "No `source` field. That was proposed and rejected. The v2 spec has exactly these 5 fields: `event_name`, `actor_id`, `attributes`, `recorded_at`, `schema_version`. Nothing more, nothing less.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "niaj",
+      "real_name": "Niaj",
+      "display_name": "niaj",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U88FA846E5F",
+    "type": "message",
+    "ts": "1731232260.000000",
+    "client_msg_id": "f935e750246ddcb971",
+    "text": "Reminder: Q4 planning docs due Friday.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "victor",
+      "real_name": "Victor",
+      "display_name": "victor",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U0AA1C221CA",
+    "type": "message",
+    "ts": "1731235620.000000",
+    "client_msg_id": "16fb0ee7ac6b1378c3",
+    "text": "Lunch order by noon please.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "trent",
+      "real_name": "Trent",
+      "display_name": "trent",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U88FA846E5F",
+    "type": "message",
+    "ts": "1731240240.000000",
+    "client_msg_id": "9646f18d5193b6808c",
+    "text": "Morning everyone \u2615",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "victor",
+      "real_name": "Victor",
+      "display_name": "victor",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U6525ABCCE7",
+    "type": "message",
+    "ts": "1731241380.000000",
+    "client_msg_id": "66d9fb0bb55d94d46a",
+    "text": "**FINAL v2 analytics event spec (canonical, use this):**\n```python\n{\n    \"event_name\":     str,   # was 'name'\n    \"actor_id\":       str,   # was 'user_id'  \u2014 NOTE: NOT 'author_id'\n    \"attributes\":     dict,  # was 'data'\n    \"recorded_at\":    int,   # milliseconds since epoch (int, NOT float)\n    \"schema_version\": 2,     # integer 2, NOT string '2'\n}\n```\nDeadline: all publishers migrated by EOD on the 22nd. The v1 pipeline endpoint will return 410 Gone after that date.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "niaj",
+      "real_name": "Niaj",
+      "display_name": "niaj",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UA15F8B81A1",
+    "type": "message",
+    "ts": "1731251160.000000",
+    "client_msg_id": "4c851a78904f3b73cf",
+    "text": "\ud83d\udc4d migrating our publisher now. ETA: tomorrow morning.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "ivan",
+      "real_name": "Ivan",
+      "display_name": "ivan",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1731257520.000000",
+    "client_msg_id": "fd9f4e6f595138a09e",
+    "text": "Welcome to the new folks joining this week! \ud83d\udc4b",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U1BEEF78000",
+    "type": "message",
+    "ts": "1731265260.000000",
+    "client_msg_id": "0e9813fdc31054c9db",
+    "text": "Updated 4 publishers in the checkout service. Tests passing with the new spec.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "mallory",
+      "real_name": "Mallory",
+      "display_name": "mallory",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U0AA1C221CA",
+    "type": "message",
+    "ts": "1731279060.000000",
+    "client_msg_id": "14ba19b4e20a41749f",
+    "text": "Migration guide is great, niaj. PR for the events service is up: #1189.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "trent",
+      "real_name": "Trent",
+      "display_name": "trent",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1730656800.000000",
+    "client_msg_id": "070d28eb9b742c07bc",
+    "text": "reminder: weekly oncall sync at 3pm",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1730671200.000000",
+    "client_msg_id": "bbfcd75520287bb9bd",
+    "text": "handoff notes: nothing active, staging is clean",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

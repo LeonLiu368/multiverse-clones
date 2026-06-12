@@ -1,0 +1,34 @@
+[
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1731578400.000000",
+    "client_msg_id": "7847c5d67db73b23c8",
+    "text": "User research sessions scheduled for Thursday.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U0FEBC363B6",
+    "type": "message",
+    "ts": "1731579300.000000",
+    "client_msg_id": "16dafd5791e94e899a",
+    "text": "Draft PRD for the analytics dashboard is in the Drive.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "heidi",
+      "real_name": "Heidi",
+      "display_name": "heidi",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

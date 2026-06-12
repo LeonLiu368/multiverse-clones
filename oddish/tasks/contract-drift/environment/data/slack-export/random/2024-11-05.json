@@ -1,0 +1,66 @@
+[
+  {
+    "user": "U88FA846E5F",
+    "type": "message",
+    "ts": "1730800440.000000",
+    "client_msg_id": "fb696a9769b3968393",
+    "text": "Coffee machine broken AGAIN",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "victor",
+      "real_name": "Victor",
+      "display_name": "victor",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UA15F8B81A1",
+    "type": "message",
+    "ts": "1730808960.000000",
+    "client_msg_id": "1d885f935d268a7674",
+    "text": "Free snacks in the kitchen (thanks carol!)",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "ivan",
+      "real_name": "Ivan",
+      "display_name": "ivan",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U1BEEF78000",
+    "type": "message",
+    "ts": "1730809140.000000",
+    "client_msg_id": "36a5cd02eb22e7220e",
+    "text": "Highly recommend the lunch special today",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "mallory",
+      "real_name": "Mallory",
+      "display_name": "mallory",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U0AA1C221CA",
+    "type": "message",
+    "ts": "1730818020.000000",
+    "client_msg_id": "ed5b38cceec7847c21",
+    "text": "Who took my mug? \ud83d\ude21",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "trent",
+      "real_name": "Trent",
+      "display_name": "trent",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

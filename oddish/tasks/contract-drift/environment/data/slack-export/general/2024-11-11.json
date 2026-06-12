@@ -1,0 +1,50 @@
+[
+  {
+    "user": "U38FC8CAEA6",
+    "type": "message",
+    "ts": "1731317820.000000",
+    "client_msg_id": "9b7b1ef3c0bde21eb0",
+    "text": "PSA: rotate your API tokens this sprint.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "judy",
+      "real_name": "Judy",
+      "display_name": "judy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1731335220.000000",
+    "client_msg_id": "7e453cbecac49a1bfe",
+    "text": "Reminder: Q4 planning docs due Friday.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1731346560.000000",
+    "client_msg_id": "71cc597efdeea8c25b",
+    "text": "Office closed on the 28th \u2014 public holiday.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]
