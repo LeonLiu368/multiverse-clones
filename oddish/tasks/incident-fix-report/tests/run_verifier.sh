@@ -16,7 +16,7 @@ if ( cd "$GRADE" && python3 -m pytest -q -p no:cacheprovider ) >/logs/verifier/p
 fi
 rm -rf "$GRADE"
 
-BASE="${SLACK_API_URL:-http://api}"; TOK="${SLACK_BOT_TOKEN:-xoxb-acme-eval-0001}"
+BASE="${SLACK_API_URL:-http://localhost}"; TOK="${SLACK_BOT_TOKEN:-xoxp-acme-eval-0001}"
 comm_ok=0
 hits="$(curl -sS "$BASE/api/conversations.history?channel=error-budget-reports&limit=200" \
   -H "Authorization: Bearer $TOK" \

@@ -47,6 +47,7 @@ SKIP_SUBTYPES = {
 }
 SLACK_CID = re.compile(r"^C[A-Z0-9]{6,}$")
 SLACK_UID = re.compile(r"^[UWB][A-Z0-9]{6,}$")
+DAY_FILE = re.compile(r"\d{4}-\d{2}-\d{2}\.json$")
 
 
 class IdMap:
@@ -146,11 +147,15 @@ def import_export(store: Store, export_dir: str, channels: list[str] | None,
         )
 
         for fpath in sorted(glob.glob(os.path.join(cdir, "*.json"))):
+            if not DAY_FILE.search(os.path.basename(fpath)):
+                continue  # only YYYY-MM-DD.json are day files (skip stray json)
             if not _date_in_range(fpath, start, end):
                 continue
             try:
                 day = _load_json(fpath)
             except Exception:
+                continue
+            if not isinstance(day, list):
                 continue
             for m in day:
                 if m.get("type") not in (None, "message"):
@@ -221,15 +226,20 @@ def import_scraped(store: Store, path: str) -> dict:
 
 
 def _normalize_ts_to_slack(raw) -> str:
-    """Accept a Slack ts string, a Unix float, or ISO 8601; return a Slack `ts` string."""
+    """Accept a Slack ts string, a Unix float, or ISO 8601; return a Slack `ts` string.
+    Falls back to 'now' on anything unparseable rather than crashing the whole import."""
     if raw is None:
         return f"{datetime.now(timezone.utc).timestamp():.6f}"
     s = str(raw)
     try:
         return f"{float(s):.6f}"
     except ValueError:
+        pass
+    try:
         dt = datetime.fromisoformat(s.replace("Z", "+00:00"))
         return f"{dt.timestamp():.6f}"
+    except ValueError:
+        return f"{datetime.now(timezone.utc).timestamp():.6f}"
 
 
 def main() -> None:

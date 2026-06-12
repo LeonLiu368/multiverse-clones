@@ -25,9 +25,6 @@ else
   python3 -c "import sys; sys.path.insert(0,'/opt'); from slackgw.store import Store; Store('$SLACK_DB')"
 fi
 
-# Optional per-task hook (e.g. inject extra planted messages via the gateway after it's up).
-[ -x /usr/local/bin/task-seed.sh ] && cp /usr/local/bin/task-seed.sh /tmp/task-seed.sh || true
-
 echo "[boot] starting Slack gateway on :80"
 cd /opt
 uvicorn slackgw.app:app --host 0.0.0.0 --port 80 --log-level warning --no-server-header &
@@ -38,8 +35,9 @@ for _ in $(seq 1 30); do
   sleep 1
 done
 
-# Run the optional task hook now that the gateway is reachable.
-[ -f /tmp/task-seed.sh ] && bash /tmp/task-seed.sh || true
+# Optional per-task hooks, run once the gateway is reachable (e.g. inject extra planted messages):
+# the baked task-seed.sh (no-op by default) and an optional script a task drops in its data dir.
+[ -x /usr/local/bin/task-seed.sh ] && bash /usr/local/bin/task-seed.sh || true
 [ -f /data/seed/seed.sh ] && bash /data/seed/seed.sh || true
 
 echo "[boot] gateway ready"

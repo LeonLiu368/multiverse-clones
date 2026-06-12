@@ -19,7 +19,8 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from slackgw.store import Store
 
-# The xoxb- token the agent/tools present; validated against this single value.
+# The bearer token the agent/tools present; validated against this single value. An xoxp- (user)
+# token by default so the korotovsky MCP enables its search tool (it disables search for xoxb bots).
 SLACK_BOT_TOKEN = os.environ.get("SLACK_BOT_TOKEN", "xoxp-acme-eval-0001")
 BOT_USER_ID = os.environ.get("SLACK_BOT_USER_ID", "U0BOTACME0")
 BOT_ID = os.environ.get("SLACK_BOT_ID", "B0BOTACME0")
@@ -217,7 +218,8 @@ async def _dispatch(method: str, request: Request) -> JSONResponse:
         if not c:
             return err("channel_not_found")
         text = str(p.get("text", ""))
-        m = store.post_message(c["id"], BOT_USER_ID, text)
+        thread_ts = str(p.get("thread_ts", "") or "")
+        m = store.post_message(c["id"], BOT_USER_ID, text, thread_ts)
         return ok(channel=c["id"], ts=m["ts"], message=_msg(m))
 
     return err("unknown_method")

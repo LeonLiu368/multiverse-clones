@@ -1,8 +1,8 @@
 """SQLite-backed store for the Slack Web API gateway.
 
-Replaces the old Mattermost backend. The gateway (`app.py`) reads/writes this store and serializes
-rows into Slack shapes. The store is populated by `import_export.py` (a real Slack export directory)
-or the legacy `seed.py` (our `scraped.json`). Stdlib only — no external deps.
+The gateway (`app.py`) reads/writes this store and serializes rows into Slack shapes. The store is
+populated by `import_export.py` — from a real Slack export directory, or a legacy `scraped.json`
+(`--scraped`). Stdlib only — no external deps.
 
 Schema preserves real-export fidelity: channel topic/purpose, user display names, message threads
 (`thread_ts`), reactions, and subtypes. IDs are Slack-shaped (`C…`/`U…`); the importer normalizes
@@ -40,6 +40,10 @@ CREATE INDEX IF NOT EXISTS idx_msg_thread ON messages (thread_ts);
 
 
 def connect(path: str | None = None) -> sqlite3.Connection:
+    # check_same_thread=False because the Store is built at import time (a different thread than the
+    # request handlers). This is safe ONLY because every gateway endpoint is `async def` and runs on
+    # the single event-loop thread, so store calls are serialized. Do NOT convert a handler to sync
+    # `def` (FastAPI would run it in a threadpool → concurrent use of this shared connection).
     conn = sqlite3.connect(path or DB_PATH, check_same_thread=False)
     conn.row_factory = sqlite3.Row
     return conn
@@ -148,9 +152,20 @@ class Store:
         ).fetchall()
         return [dict(r) for r in rows]
 
-    def post_message(self, channel_id: str, user_id: str, text: str) -> dict:
-        ts = f"{time.time():.6f}"
-        self.insert_message(ts=ts, channel_id=channel_id, user=user_id, text=text)
+    def post_message(self, channel_id: str, user_id: str, text: str,
+                     thread_ts: str = "") -> dict:
+        # Nudge by a microsecond on the (channel_id, ts) PK so two posts in the same microsecond
+        # don't overwrite each other (INSERT OR REPLACE would clobber).
+        e = time.time()
+        while True:
+            ts = f"{e:.6f}"
+            if not self.conn.execute(
+                "SELECT 1 FROM messages WHERE channel_id = ? AND ts = ?", (channel_id, ts)
+            ).fetchone():
+                break
+            e += 0.000001
+        self.insert_message(ts=ts, channel_id=channel_id, user=user_id, text=text,
+                            thread_ts=thread_ts)
         self.commit()
         return {"ts": ts, "channel_id": channel_id, "user": user_id, "text": text,
-                "subtype": "", "thread_ts": "", "reactions": ""}
+                "subtype": "", "thread_ts": thread_ts, "reactions": ""}
