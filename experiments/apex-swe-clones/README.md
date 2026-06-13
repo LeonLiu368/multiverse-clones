@@ -65,6 +65,23 @@ Source = an `apex-swe-variants` task (repo+patches already extracted) or the raw
    `instruction.md`, `solution/solve.sh` (`git apply golden.patch`), and the verifier
    scripts (`run_verifier.sh` runs the repo's own test command from `test_metadata.json`).
 
+## Brittle hidden tests → discoverable spec (`--spec`)
+
+Some APEX F2P tests import **exact private symbols** from the fix (e.g. paperless's
+`test_lock_backoff.py` does `from documents.search._backend import _LOCK_BACKOFF_CAP, ...`).
+A semantically-correct fix with different names fails at import → the task grades a correct
+solution as 0 ("BAD_FAILURE – Underspecified Instruction"; only the oracle passes). The
+test is hidden, so the agent cannot infer those names.
+
+Fix without touching the test/oracle: make the contract **discoverable through the
+investigation** the task is already about. `apex_to_clones.py --spec <overlay.json>` merges
+a realistic on-call handoff (a tech-lead **ticket comment** naming the file, the new
+exception, the constant names, and the reschedule behavior, plus a corroborating slack
+line) into the seeds. The agent finds it via `linear issue view <ISSUE> --comments`. See
+`tasks/paperless-ngx-12856/spec.json`. Only add a spec when a task's `test.patch` imports
+new private symbols a fix can't infer (`grep -E "import .*_[A-Z]" test.patch`); behavior-based
+tests (e.g. bor's) need none.
+
 ## Per-task local gate (before Oddish)
 
 - Converter fidelity: every diagnostic fact present in the generated seeds.

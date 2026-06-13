@@ -27,6 +27,11 @@
       "id": "user-carol",
       "handle": "carol",
       "name": "Carol"
+    },
+    {
+      "id": "user-maya",
+      "handle": "maya",
+      "name": "Maya"
     }
   ],
   "states": [
@@ -123,8 +128,21 @@
       "priority": "high",
       "created_at": "2026-05-23T03:20:00Z",
       "updated_at": "2026-05-23T03:20:00Z",
-      "comments_count": 0
+      "comments_count": 1
     }
   ],
-  "comments": {}
+  "comments": {
+    "OPS-1": [
+      {
+        "id": "comment-ops-1-1",
+        "author": {
+          "id": "user-maya",
+          "handle": "maya",
+          "name": "Maya"
+        },
+        "body": "Triage done \u2014 picked up by the on-call (you). We agreed the fix + the regression test names on the call, writing it down so the follow-up test lands cleanly:\n\n- All the locking lives in `src/documents/search/_backend.py` on `TantivyBackend`. Add module-level constants there: `_LOCK_TIMEOUT_SECONDS = 10.0` (per-attempt acquire timeout), `_LOCK_RETRY_ATTEMPTS = 4` (1 initial + 3 retries), `_LOCK_BACKOFF_BASE = 1.0`, `_LOCK_BACKOFF_CAP = 10.0`.\n- New exception `class SearchIndexLockError` in `_backend.py`. `batch_update(lock_timeout=...)` should retry acquiring the writer lock up to `_LOCK_RETRY_ATTEMPTS`, sleeping `min(_LOCK_BACKOFF_CAP, _LOCK_BACKOFF_BASE * 2**attempt)` with jitter between attempts, and raise `SearchIndexLockError` once attempts are exhausted (don't drop the doc).\n- In `src/documents/tasks.py`, `index_document` and `remove_document_from_index` must catch `SearchIndexLockError` and reschedule via `apply_async(countdown=60)` instead of failing, and must NOT swallow the error otherwise.\n\nLogs + the #sre-oncall thread have the symptom (thundering-herd retries, silent drops). Repro is the bulk import.",
+        "created_at": "2026-05-23T04:10:00Z"
+      }
+    ]
+  }
 }

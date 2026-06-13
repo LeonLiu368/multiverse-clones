@@ -176,6 +176,45 @@ def convert_loki(loki, *, workspace, datasource_uid, service_hint):
     }
 
 
+def apply_spec(tv, slack, spec, *, now):
+    """Merge a per-task overlay onto the converted seeds. Used to make an
+    implementation contract discoverable when the hidden F2P test imports exact
+    private symbols a fix cannot otherwise infer (a realistic on-call handoff note).
+
+    spec = {
+      "ticket_comments": [{"identifier"?: "OPS-1", "author": "maya", "body": "..."}],
+      "slack_messages":  [{"channel": "...", "author": "...", "content": "...", "timestamp": "..."}]
+    }
+    """
+    default_id = tv["issues"][0]["identifier"] if tv.get("issues") else None
+    handles = {u["handle"] for u in tv["users"]}
+    issue_by_id = {i["identifier"]: i for i in tv["issues"]}
+
+    for n, c in enumerate(spec.get("ticket_comments", []), 1):
+        ident = c.get("identifier", default_id)
+        author = c.get("author", "agent")
+        if author not in handles:
+            tv["users"].append({"id": f"user-{_slug(author)}", "handle": author,
+                                "name": author.capitalize()})
+            handles.add(author)
+        tv["comments"].setdefault(ident, []).append({
+            "id": f"comment-{_slug(ident)}-{n}",
+            "author": {"id": f"user-{_slug(author)}", "handle": author, "name": author.capitalize()},
+            "body": c["body"],
+            "created_at": c.get("created_at", now),
+        })
+        if ident in issue_by_id:
+            issue_by_id[ident]["comments_count"] = len(tv["comments"][ident])
+
+    for m in spec.get("slack_messages", []):
+        slack["messages"].append({
+            "channel": m.get("channel", "sre-oncall"),
+            "author": _author_username(m.get("author", "unknown")),
+            "content": m.get("content", ""),
+            "timestamp": m.get("timestamp", ""),
+        })
+
+
 def _load(path):
     return json.loads(Path(path).read_text(encoding="utf-8"))
 
@@ -191,6 +230,7 @@ def main():
     ap.add_argument("--project-key", default="OPS")
     ap.add_argument("--project-name", default="On-call Incidents")
     ap.add_argument("--service", default="service", help="service hint for gauge labels/dashboard")
+    ap.add_argument("--spec", default=None, help="optional overlay JSON (ticket_comments / slack_messages)")
     ap.add_argument("--now", default=None)
     args = ap.parse_args()
 
@@ -211,6 +251,9 @@ def main():
     slack = convert_mattermost(mm)
     gauge = convert_loki(loki, workspace=args.workspace, datasource_uid="loki",
                          service_hint=args.service)
+
+    if args.spec:
+        apply_spec(tv, slack, _load(args.spec), now=now)
 
     out = Path(args.out)
     for sub, data in [("ticketvector/state.json", tv), ("slack/scraped.json", slack),

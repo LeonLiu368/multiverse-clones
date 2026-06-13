@@ -23,6 +23,12 @@
       "author": "bob",
       "content": "we need jittered backoff + defer-and-reschedule when the writer lock is busy",
       "timestamp": "2026-05-23T03:23:00+00:00"
+    },
+    {
+      "channel": "sre-oncall",
+      "author": "maya",
+      "content": "wrote the agreed fix contract on OPS-1 (constant names, SearchIndexLockError, the countdown=60 reschedule) so the regression test matches \u2014 see the ticket comment",
+      "timestamp": "2026-05-23T04:11:00+00:00"
     }
   ]
 }

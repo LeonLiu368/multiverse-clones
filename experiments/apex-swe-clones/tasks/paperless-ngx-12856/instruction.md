@@ -6,7 +6,8 @@ active. The application source code is checked out at `/app/repo`.
 Investigate using the tools available to you, then fix the root cause in `/app/repo`:
 
 - **Issue tracker** — use the `linear` (or `jira`) CLI to read the active incident
-  ticket(s) assigned to you for the report and impact.
+  ticket(s) assigned to you. Read the ticket **comments** too
+  (`linear issue view <ISSUE> --comments`) — the team records the agreed approach there.
 - **Team chat** — use the `slack` tools to read the on-call channel for what responders
   have observed.
 - **Logs / dashboards** — use the `gcx` CLI / Grafana tools to query the service logs and
