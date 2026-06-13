@@ -1,0 +1,28 @@
+{
+  "messages": [
+    {
+      "channel": "sre-oncall",
+      "author": "bob",
+      "content": "bulk import of 5k docs and search index is throwing lock errors in waves",
+      "timestamp": "2026-05-23T03:20:00+00:00"
+    },
+    {
+      "channel": "sre-oncall",
+      "author": "alice",
+      "content": "they all retry at the same instant \u2014 classic thundering herd, no backoff",
+      "timestamp": "2026-05-23T03:21:00+00:00"
+    },
+    {
+      "channel": "sre-oncall",
+      "author": "carol",
+      "content": "worse: the ones that lose the lock just raise and the doc never gets indexed. silent data loss",
+      "timestamp": "2026-05-23T03:22:00+00:00"
+    },
+    {
+      "channel": "sre-oncall",
+      "author": "bob",
+      "content": "we need jittered backoff + defer-and-reschedule when the writer lock is busy",
+      "timestamp": "2026-05-23T03:23:00+00:00"
+    }
+  ]
+}

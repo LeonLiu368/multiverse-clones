@@ -1,0 +1,13 @@
+{
+  "test_command": "python -m pytest src/documents/tests/search/test_lock_backoff.py -o addopts='' -p no:cacheprovider -q",
+  "test_framework": "pytest",
+  "language": "Python",
+  "test_files": [
+    "src/documents/tests/search/test_lock_backoff.py"
+  ],
+  "FAIL_TO_PASS": [
+    "src/documents/tests/search/test_lock_backoff.py"
+  ],
+  "PASS_TO_PASS": [],
+  "base_commit": "4ce5f2022c82cf244a08ca797236abbe5dee0390"
+}

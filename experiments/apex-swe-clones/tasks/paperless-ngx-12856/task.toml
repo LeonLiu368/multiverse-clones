@@ -1,0 +1,39 @@
+schema_version = "1.2"
+name = "apex-swe-clones/paperless-ngx-12856"
+description = "Multi-service observability incident on a clone stack. paperless-ngx's bulk index path contends on the Tantivy writer lock with no backoff: losers raise immediately (thundering-herd retries) and silently drop documents. The agent diagnoses across a ticketvector issue, a slack on-call thread, and gauge logs, then fixes the root cause in /app/repo (bounded jittered backoff + defer-and-reschedule, surfacing SearchIndexLockError). Graded by the PR's own regression test. nop=0, oracle=1."
+
+[metadata]
+category = "observability"
+source_repo = "paperless-ngx/paperless-ngx"
+source_pr_url = "https://github.com/paperless-ngx/paperless-ngx/pull/12856"
+base_commit = "4ce5f2022c82cf244a08ca797236abbe5dee0390"
+failure_mode = "lock-contention-no-backoff"
+apex_origin = "Observability/paperless-ngx (re-platformed onto abundant clones)"
+tags = ["apex-swe", "observability", "clones", "multi-service", "sre", "ticketvector", "slack", "gauge", "python"]
+
+[agent]
+timeout_sec = 2400
+
+[verifier]
+timeout_sec = 1200
+
+[environment]
+allow_internet = true
+build_timeout_sec = 1800
+cpus = 2
+memory_mb = 4096
+storage_mb = 20480
+gpus = 0
+workdir = "/app/repo"
+
+# Team chat (Slack/Mattermost stand-in) and observability (Grafana/Loki stand-in) are
+# exposed as MCP servers. The issue tracker is the linear/jira CLI (no MCP server).
+[[environment.mcp_servers]]
+name = "slack"
+transport = "stdio"
+command = "slack-mcp"
+
+[[environment.mcp_servers]]
+name = "grafana"
+transport = "stdio"
+command = "mcp-grafana"

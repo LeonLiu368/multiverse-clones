@@ -1,0 +1,130 @@
+{
+  "workspace": "meridian",
+  "base_url": "https://linear.local/meridian",
+  "project": {
+    "id": "proj-ops",
+    "key": "OPS",
+    "name": "Paperless On-call",
+    "archived": false
+  },
+  "users": [
+    {
+      "id": "user-agent",
+      "handle": "agent",
+      "name": "Agent User"
+    },
+    {
+      "id": "user-alice",
+      "handle": "alice",
+      "name": "Alice"
+    },
+    {
+      "id": "user-bob",
+      "handle": "bob",
+      "name": "Bob"
+    },
+    {
+      "id": "user-carol",
+      "handle": "carol",
+      "name": "Carol"
+    }
+  ],
+  "states": [
+    {
+      "id": "state-backlog",
+      "name": "Backlog",
+      "category": "unstarted"
+    },
+    {
+      "id": "state-todo",
+      "name": "Todo",
+      "category": "unstarted"
+    },
+    {
+      "id": "state-progress",
+      "name": "In Progress",
+      "category": "started"
+    },
+    {
+      "id": "state-review",
+      "name": "In Review",
+      "category": "started"
+    },
+    {
+      "id": "state-done",
+      "name": "Done",
+      "category": "completed"
+    },
+    {
+      "id": "state-canceled",
+      "name": "Canceled",
+      "category": "cancelled"
+    }
+  ],
+  "labels": [
+    {
+      "id": "label-bug",
+      "name": "bug"
+    },
+    {
+      "id": "label-incident",
+      "name": "incident"
+    },
+    {
+      "id": "label-reliability",
+      "name": "reliability"
+    },
+    {
+      "id": "label-search",
+      "name": "search"
+    }
+  ],
+  "modules": [],
+  "cycles": [],
+  "relations": {},
+  "links": {},
+  "history": [],
+  "attachments": {},
+  "issues": [
+    {
+      "id": "issue-ops-1",
+      "identifier": "OPS-1",
+      "title": "Indexing failures under load \u2014 lock contention with no retry/backoff",
+      "description": "Under bulk import, multiple workers try to open the Tantivy index writer at once. Instead of waiting/backing off and retrying, the first contender wins and the others immediately raise and drop the document on the floor. We see bursts of lock errors that all retry instantly (thundering herd) and a chunk of documents silently never get indexed. We want bounded retry with jittered backoff, and when the lock truly can't be acquired the work should be deferred (rescheduled) rather than lost, surfacing a clear SearchIndexLockError.",
+      "state": {
+        "id": "state-todo",
+        "name": "Todo"
+      },
+      "assignees": [
+        {
+          "id": "user-agent",
+          "handle": "agent",
+          "name": "Agent User"
+        }
+      ],
+      "labels": [
+        {
+          "id": "label-bug",
+          "name": "bug"
+        },
+        {
+          "id": "label-incident",
+          "name": "incident"
+        },
+        {
+          "id": "label-search",
+          "name": "search"
+        },
+        {
+          "id": "label-reliability",
+          "name": "reliability"
+        }
+      ],
+      "priority": "high",
+      "created_at": "2026-05-23T03:20:00Z",
+      "updated_at": "2026-05-23T03:20:00Z",
+      "comments_count": 0
+    }
+  ],
+  "comments": {}
+}
