@@ -1,0 +1,125 @@
+{
+  "meta": {
+    "workspace": "meridian",
+    "now": "2025-05-23T11:34:25Z"
+  },
+  "users": [
+    {
+      "id": "u-agent",
+      "login": "agent",
+      "name": "Agent User"
+    }
+  ],
+  "datasources": [
+    {
+      "uid": "loki",
+      "name": "bor-node Loki",
+      "type": "loki",
+      "mode": "embedded",
+      "health": "ok"
+    },
+    {
+      "uid": "prom-default",
+      "name": "bor-node Prometheus",
+      "type": "prometheus",
+      "mode": "embedded",
+      "health": "ok"
+    }
+  ],
+  "dashboards": [
+    {
+      "uid": "dash-bor-node",
+      "title": "bor-node incident",
+      "folder": "Incidents",
+      "tags": [
+        "incident",
+        "bor-node"
+      ],
+      "variables": [],
+      "panels": [
+        {
+          "id": 1,
+          "title": "bor-node logs",
+          "type": "logs",
+          "datasource_uid": "loki",
+          "targets": [
+            {
+              "datasource_uid": "loki",
+              "expr": "{service=\"bor-node\"}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "alerts": [],
+  "metrics": {
+    "queries": {}
+  },
+  "logs": {
+    "queries": {
+      "{service=\"bor-node\",env=\"production\",level=\"mixed\"}": {
+        "entries": [
+          {
+            "ts": "2025-05-23T11:33:20Z",
+            "labels": {
+              "service": "bor-node",
+              "env": "production",
+              "level": "mixed"
+            },
+            "line": "level=INFO component=eth.witness msg=\"dispatching witness request id=7741 to peer 0x9f..21\""
+          },
+          {
+            "ts": "2025-05-23T11:33:21Z",
+            "labels": {
+              "service": "bor-node",
+              "env": "production",
+              "level": "mixed"
+            },
+            "line": "level=WARNING component=p2p.peer msg=\"peer 0x9f..21 disconnected mid witness request id=7741\""
+          },
+          {
+            "ts": "2025-05-23T11:33:22Z",
+            "labels": {
+              "service": "bor-node",
+              "env": "production",
+              "level": "mixed"
+            },
+            "line": "level=WARNING component=runtime.metrics msg=\"go_goroutines=51234 (rising; +1.2k/min)\""
+          },
+          {
+            "ts": "2025-05-23T11:33:23Z",
+            "labels": {
+              "service": "bor-node",
+              "env": "production",
+              "level": "mixed"
+            },
+            "line": "level=ERROR component=eth.witness msg=\"witness request id=7741 goroutine still parked 120s after peer disconnect\""
+          },
+          {
+            "ts": "2025-05-23T11:33:24Z",
+            "labels": {
+              "service": "bor-node",
+              "env": "production",
+              "level": "mixed"
+            },
+            "line": "level=WARNING component=runtime.metrics msg=\"process_resident_memory_bytes climbing; suspected goroutine/channel leak in witness path\""
+          },
+          {
+            "ts": "2025-05-23T11:33:25Z",
+            "labels": {
+              "service": "bor-node",
+              "env": "production",
+              "level": "mixed"
+            },
+            "line": "level=WARNING component=runtime.metrics msg=\"go_goroutines=80911 (rising)\""
+          }
+        ]
+      }
+    }
+  },
+  "alert_instances": [],
+  "alert_state_history": [],
+  "annotations": [],
+  "mutation_log": []
+}

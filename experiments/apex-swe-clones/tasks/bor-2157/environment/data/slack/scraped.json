@@ -1,0 +1,28 @@
+{
+  "messages": [
+    {
+      "channel": "sre-oncall",
+      "author": "frank",
+      "content": "goroutine count on the validators is a staircase up and to the right since the peer churn",
+      "timestamp": "2026-05-23T03:20:00+00:00"
+    },
+    {
+      "channel": "sre-oncall",
+      "author": "grace",
+      "content": "pprof: ~80k goroutines blocked in eth witness request path, parked on per-request channels",
+      "timestamp": "2026-05-23T03:21:00+00:00"
+    },
+    {
+      "channel": "sre-oncall",
+      "author": "frank",
+      "content": "looks like doWitnessRequest never returns when the peer disconnects, and Cancel is never closed on the peer==nil path",
+      "timestamp": "2026-05-23T03:22:00+00:00"
+    },
+    {
+      "channel": "sre-oncall",
+      "author": "grace",
+      "content": "the drainer `go func(){<-doneCh}()` never gets a close either \u2014 unconditional leak. need proper cancel/close on teardown",
+      "timestamp": "2026-05-23T03:23:00+00:00"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+metadata:
+  name: apex-swe-clones
+  description: |
+    APEX-SWE Observability tasks re-platformed onto abundant-ai's service clones.
+    Each task reconstructs a real upstream repo at its pre-fix base commit; the agent
+    discovers a production incident across three lightweight, deterministic clone
+    services — ticketvector (issue tracker), slack-service (team chat), and gauge
+    (Grafana/Loki/Prometheus observability) — then fixes the root cause in /app/repo.
+    The upstream PR's own regression test is the hidden fail->pass verifier
+    (clone-independent grading). This collapses APEX's six-container Plane+Postgres+
+    Redis+Loki+Grafana+Mattermost stack into three published images. See README.md
+    for the conversion recipe and tools/apex_to_clones.py for the converter.
+  task_path: experiments/apex-swe-clones/tasks
+  n_trials: 1
+  skip_trajectory_analysis: false
+
+tasks:
+  - paperless-ngx-12856
+  - bor-2157
+
+agents:
+  - name: oracle
+  - name: nop
+  - name: claude-code
+    model_name: anthropic/claude-opus-4-8

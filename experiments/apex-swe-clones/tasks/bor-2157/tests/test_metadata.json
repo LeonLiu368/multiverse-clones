@@ -1,0 +1,13 @@
+{
+  "test_command": "go test ./eth/ -run 'TestRequestClose|TestDoWitnessRequest_CancelPaths|TestRequestWitnesses_LeakFixes' -count=1 -timeout 180s",
+  "test_framework": "go",
+  "language": "Go",
+  "test_files": [
+    "eth/peer_test.go"
+  ],
+  "FAIL_TO_PASS": [
+    "eth/peer_test.go"
+  ],
+  "PASS_TO_PASS": [],
+  "base_commit": "2a0bfe7f3db8333ca27e9269f27b0e86b49a3913"
+}

@@ -1,0 +1,125 @@
+{
+  "workspace": "meridian",
+  "base_url": "https://linear.local/meridian",
+  "project": {
+    "id": "proj-ops",
+    "key": "BOR",
+    "name": "Bor On-call",
+    "archived": false
+  },
+  "users": [
+    {
+      "id": "user-agent",
+      "handle": "agent",
+      "name": "Agent User"
+    },
+    {
+      "id": "user-frank",
+      "handle": "frank",
+      "name": "Frank"
+    },
+    {
+      "id": "user-grace",
+      "handle": "grace",
+      "name": "Grace"
+    }
+  ],
+  "states": [
+    {
+      "id": "state-backlog",
+      "name": "Backlog",
+      "category": "unstarted"
+    },
+    {
+      "id": "state-todo",
+      "name": "Todo",
+      "category": "unstarted"
+    },
+    {
+      "id": "state-progress",
+      "name": "In Progress",
+      "category": "started"
+    },
+    {
+      "id": "state-review",
+      "name": "In Review",
+      "category": "started"
+    },
+    {
+      "id": "state-done",
+      "name": "Done",
+      "category": "completed"
+    },
+    {
+      "id": "state-canceled",
+      "name": "Canceled",
+      "category": "cancelled"
+    }
+  ],
+  "labels": [
+    {
+      "id": "label-bug",
+      "name": "bug"
+    },
+    {
+      "id": "label-incident",
+      "name": "incident"
+    },
+    {
+      "id": "label-leak",
+      "name": "leak"
+    },
+    {
+      "id": "label-p2p",
+      "name": "p2p"
+    }
+  ],
+  "modules": [],
+  "cycles": [],
+  "relations": {},
+  "links": {},
+  "history": [],
+  "attachments": {},
+  "issues": [
+    {
+      "id": "issue-bor-1",
+      "identifier": "BOR-1",
+      "title": "Witness sync leaking goroutines \u2014 goroutine count and memory climb after peer churn",
+      "description": "After every wave of peer connects/disconnects the bor node's goroutine count ratchets up and never comes back down; memory follows. pprof shows thousands of goroutines parked in the witness request path \u2014 blocked on per-request channels with no cancellation, plus fire-and-forget drainer goroutines that never receive a close. When a peer drops mid-request the request goroutine never returns and its Cancel channel is never closed (peer==nil path), so downstream waiters leak too. We need the witness request path to always cancel/close on disconnect so goroutines and channels are released.",
+      "state": {
+        "id": "state-todo",
+        "name": "Todo"
+      },
+      "assignees": [
+        {
+          "id": "user-agent",
+          "handle": "agent",
+          "name": "Agent User"
+        }
+      ],
+      "labels": [
+        {
+          "id": "label-bug",
+          "name": "bug"
+        },
+        {
+          "id": "label-incident",
+          "name": "incident"
+        },
+        {
+          "id": "label-p2p",
+          "name": "p2p"
+        },
+        {
+          "id": "label-leak",
+          "name": "leak"
+        }
+      ],
+      "priority": "urgent",
+      "created_at": "2026-05-23T03:20:00Z",
+      "updated_at": "2026-05-23T03:20:00Z",
+      "comments_count": 0
+    }
+  ],
+  "comments": {}
+}
