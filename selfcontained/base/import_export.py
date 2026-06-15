@@ -242,6 +242,115 @@ def _normalize_ts_to_slack(raw) -> str:
         return f"{datetime.now(timezone.utc).timestamp():.6f}"
 
 
+# --------------------------------------------------------------------------- metadata materializer
+def _iter_messages(export_dir: str):
+    """Yield (channel_name, message) for every message file in the export."""
+    for cname in sorted(os.listdir(export_dir)):
+        cdir = os.path.join(export_dir, cname)
+        if not os.path.isdir(cdir):
+            continue
+        for fpath in sorted(glob.glob(os.path.join(cdir, "*.json"))):
+            if not DAY_FILE.search(os.path.basename(fpath)):
+                continue
+            try:
+                day = _load_json(fpath)
+            except Exception:
+                continue
+            if not isinstance(day, list):
+                continue
+            for m in day:
+                yield cname, m
+
+
+def _user_record(raw: str, prof: dict, team_id: str, is_bot: bool = False) -> dict:
+    """A users.json entry keyed by the RAW source id (so it matches the message `user` field —
+    a real export's users.json id == the id used in messages). Profile filled from `user_profile`
+    where present; unrecoverable admin metadata (email, tz, flags) is left blank/false."""
+    prof = prof or {}
+    name = prof.get("name") or raw
+    real = prof.get("real_name") or name
+    disp = prof.get("display_name") or name
+    return {
+        "id": raw, "team_id": team_id, "name": name, "deleted": False, "real_name": real,
+        "is_bot": is_bot, "is_app_user": False,
+        "profile": {
+            "real_name": real, "display_name": disp,
+            "real_name_normalized": real, "display_name_normalized": disp,
+            "first_name": prof.get("first_name") or "", "last_name": prof.get("last_name") or "",
+            "avatar_hash": prof.get("avatar_hash") or "", "image_72": prof.get("image_72") or "",
+            "email": "", "team": team_id,
+        },
+    }
+
+
+def write_metadata(export_dir: str, *, force: bool = False) -> dict:
+    """Materialize the two top-level files a complete Slack export has — `channels.json` and
+    `users.json` — for an ANONYMIZED export that had them stripped. Everything is derived from the
+    message stream (already present): users from each message's `user` + embedded `user_profile`
+    (plus users seen only in reactions/replies), channels from the directory names + a scan for
+    members/created/creator. Channel ids are synthesized (no channel id exists in the data); user
+    ids are kept as-is so users.json stays consistent with the message `user` fields.
+    """
+    cj, uj = os.path.join(export_dir, "channels.json"), os.path.join(export_dir, "users.json")
+    if not force:
+        for p in (cj, uj):
+            if os.path.exists(p):
+                raise SystemExit(f"{p} already exists (use --force to overwrite)")
+
+    users: dict[str, dict] = {}                       # raw id -> users.json record
+    chans: dict[str, dict] = {}                       # name -> {created, creator, members:set}
+    team_id = ""
+    seen = 0
+    for cname, m in _iter_messages(export_dir):
+        if m.get("type") not in (None, "message"):
+            continue
+        team_id = team_id or m.get("team") or m.get("source_team") or ""
+        ts = _ts_to_epoch(m.get("ts"))
+        author = m.get("user") or m.get("bot_id")
+
+        c = chans.setdefault(cname, {"created": None, "creator": None, "members": set()})
+        if author:
+            c["members"].add(author)
+            if c["created"] is None or (ts and ts < c["created"]):
+                c["created"], c["creator"] = ts, author
+            if author not in users:
+                users[author] = _user_record(author, m.get("user_profile"), team_id,
+                                              is_bot=bool(m.get("bot_id")))
+        # users that appear ONLY in reactions / thread replies (no message of their own)
+        for r in (m.get("reactions") or []):
+            for ru in (r.get("users") or []):
+                users.setdefault(ru, _user_record(ru, {}, team_id))
+        for ru in (m.get("reply_users") or []):
+            users.setdefault(ru, _user_record(ru, {}, team_id))
+        if m.get("parent_user_id"):
+            users.setdefault(m["parent_user_id"], _user_record(m["parent_user_id"], {}, team_id))
+        seen += 1
+
+    team_id = team_id or "T0000000000"
+    for u in users.values():                          # backfill team on records built pre-discovery
+        u["team_id"] = team_id
+        u["profile"]["team"] = team_id
+
+    channels_out = []
+    for name in sorted(chans):
+        c = chans[name]
+        channels_out.append({
+            "id": "C" + hashlib.sha1(name.encode()).hexdigest()[:10].upper(),
+            "name": name, "created": int(c["created"] or 0),
+            "creator": c["creator"] or "", "is_archived": False, "is_general": name == "general",
+            "members": sorted(c["members"]),
+            "topic": {"value": "", "creator": "", "last_set": 0},
+            "purpose": {"value": "", "creator": "", "last_set": 0},
+        })
+
+    with open(cj, "w", encoding="utf-8") as fh:
+        json.dump(channels_out, fh, indent=2, ensure_ascii=False)
+    with open(uj, "w", encoding="utf-8") as fh:
+        json.dump(list(users.values()), fh, indent=2, ensure_ascii=False)
+    return {"channels": len(channels_out), "users": len(users), "messages_scanned": seen,
+            "team_id": team_id}
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="Import a Slack export (or legacy scraped.json) into SQLite.")
     ap.add_argument("--export-dir", help="path to a Slack export directory")
@@ -250,7 +359,19 @@ def main() -> None:
     ap.add_argument("--start", help="earliest day YYYY-MM-DD (inclusive)")
     ap.add_argument("--end", help="latest day YYYY-MM-DD (inclusive)")
     ap.add_argument("--db", help="SQLite path (default $SLACK_DB or /tmp/slack.db)")
+    ap.add_argument("--write-metadata", action="store_true",
+                    help="derive + write channels.json and users.json into --export-dir "
+                         "(completes an anonymized export that had them stripped), then exit")
+    ap.add_argument("--force", action="store_true", help="overwrite existing metadata files")
     args = ap.parse_args()
+
+    if args.write_metadata:
+        if not args.export_dir:
+            ap.error("--write-metadata requires --export-dir")
+        stats = write_metadata(args.export_dir, force=args.force)
+        print(f"WROTE_METADATA channels={stats['channels']} users={stats['users']} "
+              f"messages_scanned={stats['messages_scanned']} team_id={stats['team_id']}")
+        return
 
     store = Store(args.db)
     if args.export_dir:
