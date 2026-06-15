@@ -5,13 +5,19 @@
 set -uo pipefail
 
 export SLACK_DB="${SLACK_DB:-/tmp/slack.db}"
+PREBUILT="${SLACK_PREBUILT_DB:-/opt/slack.prebuilt.db}"
 rm -f "$SLACK_DB"
 
-# Seed source, in priority order:
-#   1. a real Slack export directory mounted at /data/slack-export (channels.json + users.json +
-#      <channel>/<date>.json), or the anonymized variant (just channel dirs)
+# Fast path: a task image may PRE-BUILD the SQLite DB at docker-build time (running the importer in
+# the Dockerfile) and bake it at $PREBUILT. If present, just copy it into place — boot is instant,
+# regardless of dataset size, and the import cost is paid once at build instead of every container.
+if [ -f "$PREBUILT" ]; then
+  echo "[boot] using pre-built SQLite DB ($PREBUILT) — skipping import"
+  cp "$PREBUILT" "$SLACK_DB"
+# Otherwise import the seed at boot. Priority order:
+#   1. a real Slack export directory at /data/slack-export (complete or anonymized variant)
 #   2. a legacy scraped.json at /data/seed/scraped.json or /data/mattermost/scraped.json
-if [ -d /data/slack-export ] && [ -n "$(ls -A /data/slack-export 2>/dev/null)" ]; then
+elif [ -d /data/slack-export ] && [ -n "$(ls -A /data/slack-export 2>/dev/null)" ]; then
   echo "[boot] importing Slack export from /data/slack-export"
   python3 /opt/import_export.py --export-dir /data/slack-export --db "$SLACK_DB" || echo "[boot] import error (non-fatal)"
 elif [ -f /data/seed/scraped.json ]; then
