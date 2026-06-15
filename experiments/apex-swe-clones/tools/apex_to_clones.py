@@ -53,18 +53,27 @@ def _author_username(author) -> str:
     return str(author)
 
 
-def convert_plane(issues, *, workspace, key, name, now, chat_authors):
-    """Plane issues[] -> ticketvector state.json. Issues are assigned to `agent` so
-    `linear issue mine` surfaces them."""
+def convert_plane(issues, *, workspace, key, name, now, chat_authors, assign_agent=True):
+    """Plane issues[] -> ticketvector state.json.
+
+    `issues` is the canonical shape from normalize_issues: each has number, title,
+    body, labels (list[str]), priority, state, createdAt, and optional assignee_login.
+    When assign_agent is True (variant model) every issue is assigned to `agent` so
+    `linear issue mine` surfaces it. When False (exact-APEX model, a realistic full
+    tracker the agent must SEARCH) real assignees are preserved and `mine` stays empty."""
     label_names = sorted({lbl for iss in issues for lbl in iss.get("labels", [])})
     labels = [{"id": f"label-{_slug(n)}", "name": n} for n in label_names]
     label_by_name = {l["name"]: l for l in labels}
 
-    users = [{"id": "user-agent", "handle": "agent", "name": "Agent User"}]
+    users = {"agent": {"id": "user-agent", "handle": "agent", "name": "Agent User"}}
+
+    def _user(handle):
+        h = _slug(handle) or "unknown"
+        users.setdefault(h, {"id": f"user-{h}", "handle": h, "name": handle})
+        return users[h]
+
     for handle in sorted(chat_authors):
-        if handle != "agent":
-            users.append({"id": f"user-{_slug(handle)}", "handle": handle,
-                          "name": handle.capitalize()})
+        _user(handle)
 
     out_issues = []
     for iss in issues:
@@ -73,13 +82,19 @@ def convert_plane(issues, *, workspace, key, name, now, chat_authors):
         state_name = PLANE_STATE_MAP.get(str(iss.get("state", "open")).lower(), "Todo")
         state = next(s for s in STATES if s[1] == state_name)
         created = iss.get("createdAt") or iss.get("created_at") or now
+        if assign_agent:
+            assignees = [dict(users["agent"])]
+        elif iss.get("assignee_login"):
+            assignees = [dict(_user(iss["assignee_login"]))]
+        else:
+            assignees = []
         out_issues.append({
             "id": f"issue-{_slug(key)}-{num}",
             "identifier": identifier,
             "title": iss.get("title", ""),
             "description": iss.get("body", iss.get("description", "")),
             "state": {"id": state[0], "name": state[1]},
-            "assignees": [{"id": "user-agent", "handle": "agent", "name": "Agent User"}],
+            "assignees": assignees,
             "labels": [label_by_name[n] for n in iss.get("labels", []) if n in label_by_name],
             "priority": PRIORITY_MAP.get(str(iss.get("priority", "")).lower(), "none"),
             "created_at": created,
@@ -91,7 +106,7 @@ def convert_plane(issues, *, workspace, key, name, now, chat_authors):
         "workspace": workspace,
         "base_url": f"https://linear.local/{workspace}",
         "project": {"id": "proj-ops", "key": key, "name": name, "archived": False},
-        "users": users,
+        "users": list(users.values()),
         "states": [{"id": i, "name": n, "category": c} for i, n, c in STATES],
         "labels": labels,
         "modules": [],
@@ -119,11 +134,10 @@ def convert_mattermost(payload):
 
 
 def convert_loki(loki, *, workspace, datasource_uid, service_hint):
-    """Loki streams -> gauge state.json. Each stream becomes a fixture keyed by its
-    selector; gauge's filter engine then serves any {labels}|="substr" query over all
-    entries. Timestamps are kept deterministic (no wall-clock rewrite)."""
+    """Loki streams (variant logs.json) -> gauge state.json. Each stream becomes a
+    fixture keyed by its selector; gauge's filter engine then serves any {labels}|="substr"
+    query over all entries. Timestamps are kept deterministic (no wall-clock rewrite)."""
     fixtures = {}
-    all_entries = []
     last_ts = None
     for stream in loki.get("streams", []):
         s_labels = {str(k): str(v) for k, v in stream.get("stream", {}).items()}
@@ -132,11 +146,48 @@ def convert_loki(loki, *, workspace, datasource_uid, service_hint):
         for ts_ns, line in stream.get("values", []):
             ts = _ns_to_iso(ts_ns)
             last_ts = ts if last_ts is None or ts > last_ts else last_ts
-            entry = {"ts": ts, "labels": s_labels, "line": line}
-            entries.append(entry)
-            all_entries.append(entry)
+            entries.append({"ts": ts, "labels": s_labels, "line": line})
         fixtures.setdefault(selector, {"entries": []})["entries"].extend(entries)
+    return _assemble_gauge(fixtures, last_ts, workspace=workspace,
+                           datasource_uid=datasource_uid, service_hint=service_hint)
 
+
+# Raw-log level token (first ~40 chars). Handles "[INFO]", "INFO ", "level=ERROR".
+_LEVEL_RE = re.compile(r"\b(TRACE|DEBUG|INFO|WARNING|WARN|ERROR|CRIT|CRITICAL|FATAL)\b", re.I)
+# Absolute "YYYY-MM-DD HH:MM:SS" timestamp (Django-style); other formats fall back to synth.
+_ABS_TS_RE = re.compile(r"(\d{4}-\d{2}-\d{2})[ T](\d{2}:\d{2}:\d{2})")
+
+
+def convert_loki_log(text, *, workspace, datasource_uid, service_hint):
+    """Raw APEX data/loki/*.log (one log line per row) -> gauge state.json. Synthesizes
+    {service,level} labels per line so gauge's filter engine serves {service="x"} |= "..."
+    queries. Absolute timestamps are parsed when present (e.g. Django logs); otherwise
+    lines get a deterministic sequential ts so the default time window includes them."""
+    lines = [ln.rstrip("\n") for ln in text.splitlines() if ln.strip()]
+    base = datetime(2026, 1, 1, 12, 0, 0, tzinfo=timezone.utc)
+    entries = []
+    last_ts = None
+    for i, line in enumerate(lines):
+        head = line[:48]
+        lvl = _LEVEL_RE.search(head)
+        level = (lvl.group(1).upper() if lvl else "INFO")
+        level = {"WARN": "WARNING", "CRIT": "CRITICAL"}.get(level, level)
+        m = _ABS_TS_RE.search(head)
+        if m:
+            ts = f"{m.group(1)}T{m.group(2)}Z"
+        else:
+            ts = (base + timedelta(seconds=i)).strftime("%Y-%m-%dT%H:%M:%SZ")
+        if last_ts is None or ts > last_ts:
+            last_ts = ts
+        entries.append({"ts": ts, "labels": {"service": service_hint, "level": level.lower()},
+                        "line": line})
+    selector = "{" + f'service="{service_hint}"' + "}"
+    fixtures = {selector: {"entries": entries}}
+    return _assemble_gauge(fixtures, last_ts, workspace=workspace,
+                           datasource_uid=datasource_uid, service_hint=service_hint)
+
+
+def _assemble_gauge(fixtures, last_ts, *, workspace, datasource_uid, service_hint):
     now = (datetime.strptime(last_ts, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
            + timedelta(minutes=1)).strftime("%Y-%m-%dT%H:%M:%SZ") if last_ts else \
         datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -215,6 +266,83 @@ def apply_spec(tv, slack, spec, *, now):
         })
 
 
+def _clean_matrix_user(s):
+    """@killefiz:matrix.org -> killefiz ; falls back to the raw string."""
+    s = str(s or "unknown")
+    return s.lstrip("@").split(":")[0] or "unknown"
+
+
+def normalize_issues(raw):
+    """Detect the issue format and return (canonical_issues, assign_agent).
+
+    - Variant format: small list of {number,title,body,labels:[str],priority,state:"open"}.
+      -> assign_agent True (the single ticket IS the spec; `linear issue mine` finds it).
+    - Exact-APEX (real GitHub dump): list with author{login}, state OPEN/CLOSED,
+      labels:[{name}]. -> assign_agent False (a realistic full tracker to SEARCH; the task
+      spec lives in the instruction). Authors/assignees preserved as real handles."""
+    if not raw:
+        return [], True
+    sample = raw[0]
+    sample_labels = sample.get("labels") or []
+    # Real GitHub dump: author is an object and/or labels are objects. The variant
+    # format has no author and string labels (its lowercase state="open" must NOT match).
+    is_github = isinstance(sample.get("author"), dict) or (
+        bool(sample_labels) and isinstance(sample_labels[0], dict))
+    if not is_github:
+        return raw, True
+    out = []
+    for iss in raw:
+        labels = [l.get("name") if isinstance(l, dict) else str(l) for l in iss.get("labels", [])]
+        assignees = iss.get("assignees") or []
+        a0 = assignees[0] if assignees else None
+        assignee_login = (a0.get("login") if isinstance(a0, dict) else a0) if a0 else None
+        out.append({
+            "number": iss.get("number"),
+            "title": iss.get("title", ""),
+            "body": iss.get("body", "") or "",
+            "labels": [l for l in labels if l],
+            "priority": "none",
+            "state": "closed" if str(iss.get("state", "")).upper() == "CLOSED" else "open",
+            "createdAt": iss.get("createdAt") or iss.get("created_at"),
+            "assignee_login": _slug(assignee_login) if assignee_login else None,
+        })
+    return out, False
+
+
+def normalize_mattermost(raw):
+    """Detect chat format and return canonical {messages:[{channel,author,content,timestamp}]}.
+
+    - Variant: already {messages:[{channel,author,content,timestamp}]}.
+    - Exact-APEX (Matrix export): {messages:[{type,sender,room_id,content{body,msgtype},
+      origin_server_ts}]}. Keep only m.room.message text events; map sender->author,
+      room name->channel, body->content, ms epoch->ISO."""
+    msgs = raw.get("messages", []) if isinstance(raw, dict) else raw
+    if not msgs:
+        return {"messages": []}
+    if "sender" not in msgs[0] and "room_id" not in msgs[0]:
+        return convert_mattermost(raw)  # variant path (also flattens author objects)
+    # resolve room_id -> channel name from any m.room.name event
+    room_names = {m.get("room_id"): (m.get("content") or {}).get("name")
+                  for m in msgs if m.get("type") == "m.room.name"}
+    out = []
+    for m in msgs:
+        if m.get("type") != "m.room.message":
+            continue
+        c = m.get("content") or {}
+        if c.get("msgtype") not in (None, "m.text", "m.notice"):
+            continue
+        body = c.get("body")
+        if not body:
+            continue
+        channel = room_names.get(m.get("room_id")) or _slug(str(m.get("room_id", "chat")))
+        ts_ms = m.get("origin_server_ts")
+        ts = (datetime.fromtimestamp(ts_ms / 1000, tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S+00:00")
+              if isinstance(ts_ms, (int, float)) else "")
+        out.append({"channel": _slug(channel) or "chat", "author": _clean_matrix_user(m.get("sender")),
+                    "content": body, "timestamp": ts})
+    return {"messages": out}
+
+
 def _load(path):
     return json.loads(Path(path).read_text(encoding="utf-8"))
 
@@ -237,20 +365,28 @@ def main():
     base = Path(args.from_variant) if args.from_variant else None
     plane_p = args.plane or (base / "data/plane/issues.json")
     mm_p = args.mattermost or (base / "data/mattermost/scraped.json")
-    loki_p = args.loki or (base / "data/loki/logs.json")
+    loki_p = Path(args.loki) if args.loki else (base / "data/loki/logs.json")
 
-    issues = _load(plane_p)
-    mm = _load(mm_p)
-    loki = _load(loki_p)
+    raw_issues = _load(plane_p)
+    raw_mm = _load(mm_p)
     now = args.now or datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
-    chat_authors = {_author_username(m.get("author", "")) for m in mm.get("messages", [])}
+    issues, assign_agent = normalize_issues(raw_issues)
+    slack = normalize_mattermost(raw_mm)
+    chat_authors = {m["author"] for m in slack["messages"]}
 
     tv = convert_plane(issues, workspace=args.workspace, key=args.project_key,
-                       name=args.project_name, now=now, chat_authors=chat_authors)
-    slack = convert_mattermost(mm)
-    gauge = convert_loki(loki, workspace=args.workspace, datasource_uid="loki",
-                         service_hint=args.service)
+                       name=args.project_name, now=now, chat_authors=chat_authors,
+                       assign_agent=assign_agent)
+
+    # Loki: raw APEX *.log (one line per row) or variant streams JSON.
+    if str(loki_p).endswith(".log"):
+        gauge = convert_loki_log(Path(loki_p).read_text(encoding="utf-8", errors="replace"),
+                                 workspace=args.workspace, datasource_uid="loki",
+                                 service_hint=args.service)
+    else:
+        gauge = convert_loki(_load(loki_p), workspace=args.workspace,
+                             datasource_uid="loki", service_hint=args.service)
 
     if args.spec:
         apply_spec(tv, slack, _load(args.spec), now=now)
