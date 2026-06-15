@@ -31,6 +31,19 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # Tag :latest ONLY on main. On any other branch (workflow_dispatch), push a branch-scoped tag
+      # + the sha — so feature branches can build a runnable image WITHOUT clobbering the shared
+      # :latest that other experiments (e.g. three-surface-ops) depend on.
+      - name: Compute tags
+        id: tags
+        run: |
+          SAFE="$(echo "${{ github.ref_name }}" | tr '/' '-')"
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            echo "tags=${IMAGE}:latest,${IMAGE}:${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tags=${IMAGE}:${SAFE},${IMAGE}:${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Build and push slack-service
         uses: docker/build-push-action@v6
         with:
@@ -38,9 +51,7 @@ jobs:
           file: selfcontained/base/Dockerfile.service
           platforms: linux/amd64
           push: true
-          tags: |
-            ${{ env.IMAGE }}:latest
-            ${{ env.IMAGE }}:${{ github.sha }}
+          tags: ${{ steps.tags.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
