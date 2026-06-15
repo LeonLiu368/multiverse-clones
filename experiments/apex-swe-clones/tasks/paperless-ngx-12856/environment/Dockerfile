@@ -5,7 +5,8 @@ FROM ghcr.io/abundant-ai/ticketvector-service:main AS tv-tools
 FROM ghcr.io/abundant-ai/slack-service:latest AS slack-tools
 FROM ghcr.io/abundant-ai/gauge-service:main AS gauge-tools
 
-FROM python:3.12
+# Docker Hub mirror (mirror.gcr.io) to dodge unauthenticated pull rate limits (429).
+FROM mirror.gcr.io/library/python:3.12
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
         git curl jq patch build-essential libpq-dev libmagic1 ca-certificates \

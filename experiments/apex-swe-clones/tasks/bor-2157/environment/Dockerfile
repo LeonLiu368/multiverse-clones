@@ -5,7 +5,8 @@ FROM ghcr.io/abundant-ai/ticketvector-service:main AS tv-tools
 FROM ghcr.io/abundant-ai/slack-service:latest AS slack-tools
 FROM ghcr.io/abundant-ai/gauge-service:main AS gauge-tools
 
-FROM golang:1.26
+# Docker Hub mirror (mirror.gcr.io) to dodge unauthenticated pull rate limits (429).
+FROM mirror.gcr.io/library/golang:1.26
 ENV GOTOOLCHAIN=auto
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
