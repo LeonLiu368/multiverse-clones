@@ -1,0 +1,36 @@
+schema_version = "1.2"
+name = "apex-swe-clones/bor-1710"
+description = "Exact APEX-SWE Observability task (0xPolygon/bor #1710) re-platformed onto the clone stack. Bor state-sync receipts are not separated from normal transaction receipts in eth/69 handling, storage, and receipt-root calculation, causing receipt errors during snap sync. The agent investigates a realistic incident world — a ticketvector tracker, a slack/Matrix community chat, and gauge (node logs) — and fixes receipt handling in /app/repo (go-ethereum/bor). Graded by the upstream PR's own Go test suite (355 F2P + 82 P2P). nop=0, oracle=1."
+
+[metadata]
+category = "observability"
+source_repo = "0xPolygon/bor"
+apex_task = "Observability/0xpolygon-bor-1710-observability"
+apex_origin = "mercor/APEX-SWE (exact task, re-platformed onto abundant clones)"
+failure_mode = "state-sync-receipt-separation"
+tags = ["apex-swe", "observability", "clones", "multi-service", "sre", "ticketvector", "slack", "gauge", "go", "blockchain"]
+
+[agent]
+timeout_sec = 3600
+
+[verifier]
+timeout_sec = 3000
+
+[environment]
+allow_internet = true
+build_timeout_sec = 3600
+cpus = 4
+memory_mb = 8192
+storage_mb = 51200
+gpus = 0
+workdir = "/app/repo"
+
+[[environment.mcp_servers]]
+name = "slack"
+transport = "stdio"
+command = "slack-mcp"
+
+[[environment.mcp_servers]]
+name = "grafana"
+transport = "stdio"
+command = "mcp-grafana"

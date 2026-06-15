@@ -312,35 +312,56 @@ def normalize_issues(raw):
 def normalize_mattermost(raw):
     """Detect chat format and return canonical {messages:[{channel,author,content,timestamp}]}.
 
+    APEX uses a different chat export per task; we auto-detect:
     - Variant: already {messages:[{channel,author,content,timestamp}]}.
-    - Exact-APEX (Matrix export): {messages:[{type,sender,room_id,content{body,msgtype},
-      origin_server_ts}]}. Keep only m.room.message text events; map sender->author,
-      room name->channel, body->content, ms epoch->ISO."""
+    - Matrix export: events with sender/room_id/content{body,msgtype}/origin_server_ts.
+    - Discord export: list of messages with type(int)/author{username}/channel_name/content/timestamp."""
     msgs = raw.get("messages", []) if isinstance(raw, dict) else raw
     if not msgs:
         return {"messages": []}
-    if "sender" not in msgs[0] and "room_id" not in msgs[0]:
-        return convert_mattermost(raw)  # variant path (also flattens author objects)
-    # resolve room_id -> channel name from any m.room.name event
-    room_names = {m.get("room_id"): (m.get("content") or {}).get("name")
-                  for m in msgs if m.get("type") == "m.room.name"}
-    out = []
-    for m in msgs:
-        if m.get("type") != "m.room.message":
-            continue
-        c = m.get("content") or {}
-        if c.get("msgtype") not in (None, "m.text", "m.notice"):
-            continue
-        body = c.get("body")
-        if not body:
-            continue
-        channel = room_names.get(m.get("room_id")) or _slug(str(m.get("room_id", "chat")))
-        ts_ms = m.get("origin_server_ts")
-        ts = (datetime.fromtimestamp(ts_ms / 1000, tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S+00:00")
-              if isinstance(ts_ms, (int, float)) else "")
-        out.append({"channel": _slug(channel) or "chat", "author": _clean_matrix_user(m.get("sender")),
-                    "content": body, "timestamp": ts})
-    return {"messages": out}
+    s = msgs[0]
+
+    # Matrix export
+    if "sender" in s or "room_id" in s:
+        room_names = {m.get("room_id"): (m.get("content") or {}).get("name")
+                      for m in msgs if m.get("type") == "m.room.name"}
+        out = []
+        for m in msgs:
+            if m.get("type") != "m.room.message":
+                continue
+            c = m.get("content") or {}
+            if c.get("msgtype") not in (None, "m.text", "m.notice"):
+                continue
+            body = c.get("body")
+            if not body:
+                continue
+            channel = room_names.get(m.get("room_id")) or str(m.get("room_id", "chat"))
+            ts_ms = m.get("origin_server_ts")
+            ts = (datetime.fromtimestamp(ts_ms / 1000, tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S+00:00")
+                  if isinstance(ts_ms, (int, float)) else "")
+            out.append({"channel": _slug(channel) or "chat", "author": _clean_matrix_user(m.get("sender")),
+                        "content": body, "timestamp": ts})
+        return {"messages": out}
+
+    # Discord export (type 0=default, 19=reply carry user text; others are system events)
+    if "channel_name" in s or ("type" in s and isinstance(s.get("author"), dict)):
+        out = []
+        for m in msgs:
+            if m.get("type") not in (0, 19):
+                continue
+            body = (m.get("content") or "").strip()
+            if not body:
+                continue
+            a = m.get("author") or {}
+            author = (a.get("username") or a.get("global_name") or a.get("name")) if isinstance(a, dict) else str(a)
+            out.append({"channel": _slug(m.get("channel_name") or "chat") or "chat",
+                        "author": author or "unknown",
+                        "content": m.get("content", ""),
+                        "timestamp": m.get("timestamp", "")})
+        return {"messages": out}
+
+    # Variant format (already canonical; convert_mattermost flattens any author objects)
+    return convert_mattermost({"messages": msgs})
 
 
 def _load(path):
