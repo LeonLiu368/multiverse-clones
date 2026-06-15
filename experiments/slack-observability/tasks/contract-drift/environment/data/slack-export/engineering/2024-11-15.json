@@ -1,0 +1,98 @@
+[
+  {
+    "user": "U1BEEF78000",
+    "type": "message",
+    "ts": "1731669960.000000",
+    "client_msg_id": "25c83b72dfdf217250",
+    "text": "The rate limiter needs tuning on the /v2 endpoints.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "mallory",
+      "real_name": "Mallory",
+      "display_name": "mallory",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UA15F8B81A1",
+    "type": "message",
+    "ts": "1731672360.000000",
+    "client_msg_id": "5dde8a912a1d7cd036",
+    "text": "Bumped the HTTP client dep to 2.1.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "ivan",
+      "real_name": "Ivan",
+      "display_name": "ivan",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U2A4B17B116",
+    "type": "message",
+    "ts": "1731674520.000000",
+    "client_msg_id": "33d9f018accbceab79",
+    "text": "Added retries to the webhook worker.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "erin",
+      "real_name": "Erin",
+      "display_name": "erin",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1731675900.000000",
+    "client_msg_id": "65d975bb5d8dbc5f9d",
+    "text": "Memory leak in the stream consumer, fix incoming.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U2A4B17B116",
+    "type": "message",
+    "ts": "1731684240.000000",
+    "client_msg_id": "b9a7217e7802a01e2b",
+    "text": "Dependency audit done, 3 minors to bump.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "erin",
+      "real_name": "Erin",
+      "display_name": "erin",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UA15F8B81A1",
+    "type": "message",
+    "ts": "1731685980.000000",
+    "client_msg_id": "f4f245b81add56cf4c",
+    "text": "Flaky test in test_scheduler again \ud83d\ude24",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "ivan",
+      "real_name": "Ivan",
+      "display_name": "ivan",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

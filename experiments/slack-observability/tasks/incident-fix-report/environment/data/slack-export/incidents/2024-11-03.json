@@ -1,0 +1,50 @@
+[
+  {
+    "user": "U6525ABCCE7",
+    "type": "message",
+    "ts": "1730624400.000000",
+    "client_msg_id": "634bec1b3fc2b3c691",
+    "text": "cdn cache purge completed",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "niaj",
+      "real_name": "Niaj",
+      "display_name": "niaj",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1730652960.000000",
+    "client_msg_id": "824959a21d2f3f7984",
+    "text": "cdn cache purge completed",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U9FE84ADC4E",
+    "type": "message",
+    "ts": "1730654760.000000",
+    "client_msg_id": "8c93f3672d7dcadbb6",
+    "text": "memory leak patched and deployed",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alertmanager",
+      "real_name": "Alertmanager",
+      "display_name": "alertmanager",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

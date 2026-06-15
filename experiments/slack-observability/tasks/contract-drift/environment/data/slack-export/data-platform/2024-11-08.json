@@ -1,0 +1,66 @@
+[
+  {
+    "user": "U1BEEF78000",
+    "type": "message",
+    "ts": "1731071820.000000",
+    "client_msg_id": "73efc92eb22c11838f",
+    "text": "Welcome to the new folks joining this week! \ud83d\udc4b",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "mallory",
+      "real_name": "Mallory",
+      "display_name": "mallory",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U6525ABCCE7",
+    "type": "message",
+    "ts": "1731078480.000000",
+    "client_msg_id": "29707b84b59bb2093c",
+    "text": "Reminder: Q4 planning docs due Friday.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "niaj",
+      "real_name": "Niaj",
+      "display_name": "niaj",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U6525ABCCE7",
+    "type": "message",
+    "ts": "1731097140.000000",
+    "client_msg_id": "60c89f8255e287eb0e",
+    "text": "\ud83d\udce2 Data Platform Update: the analytics event pipeline is migrating to **schema v2** starting this sprint. All publishers must be updated before the v1 sunset on the 22nd. I'll post the full spec in this thread. Summary of changes incoming.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "niaj",
+      "real_name": "Niaj",
+      "display_name": "niaj",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U6525ABCCE7",
+    "type": "message",
+    "ts": "1731106440.000000",
+    "client_msg_id": "ec77701f506e2cb621",
+    "text": "v2 field changes (from v1 \u2192 v2):\n  \u2022 `name`        \u2192 `event_name`\n  \u2022 `user_id`     \u2192 `actor_id`\n  \u2022 `data`        \u2192 `attributes`\n  \u2022 `timestamp`   \u2192 `recorded_at`  (int milliseconds, NOT float seconds)\n  \u2022 `schema_version`: integer 2 (was string \"1\")\nMigration guide in the wiki under /data-platform/v2-migration.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "niaj",
+      "real_name": "Niaj",
+      "display_name": "niaj",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

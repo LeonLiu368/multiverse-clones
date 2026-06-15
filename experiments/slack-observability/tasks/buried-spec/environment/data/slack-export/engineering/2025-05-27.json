@@ -1,0 +1,66 @@
+[
+  {
+    "user": "UDCA6211FB8",
+    "type": "message",
+    "ts": "1748365980.000000",
+    "client_msg_id": "9145350154bc32c735",
+    "text": "velocity metrics for this sprint look really good, team",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "quinn",
+      "real_name": "Quinn",
+      "display_name": "quinn",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U44844B8AA9",
+    "type": "message",
+    "ts": "1748366100.000000",
+    "client_msg_id": "969c9277ae41381949",
+    "text": "that rate limiter work took forever but it's finally done",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "kate",
+      "real_name": "Kate",
+      "display_name": "kate",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1748366580.000000",
+    "client_msg_id": "8fe7fb71f8416049c3",
+    "text": "carrying over only 2 tickets which is a record",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1748366820.000000",
+    "client_msg_id": "e79ec011f3691ecbbc",
+    "text": "yes! shoutout to everyone who debugged the load test",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "user": "U3E9AFE235A",
+    "type": "message",
+    "ts": "1748250360.000000",
+    "client_msg_id": "82ee539f93705eaef0",
+    "text": "anyone need pet sitting the week of the offsite? I have two cats",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "iris",
+      "real_name": "Iris",
+      "display_name": "iris",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UFD1CF5E271",
+    "type": "message",
+    "ts": "1748251140.000000",
+    "client_msg_id": "cb840c28350671091e",
+    "text": "I can help! DM me",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "grace",
+      "real_name": "Grace",
+      "display_name": "grace",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

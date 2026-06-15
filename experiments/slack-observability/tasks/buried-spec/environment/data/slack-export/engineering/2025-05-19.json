@@ -1,0 +1,82 @@
+[
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1747652520.000000",
+    "client_msg_id": "06fbf3a5eca6a15355",
+    "text": "anyone else think we should move the config store off redis? latency spikes every GC",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1747654200.000000",
+    "client_msg_id": "82f6059c436c797192",
+    "text": "we looked at this last quarter, the issue was write amplification not latency",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U44844B8AA9",
+    "type": "message",
+    "ts": "1747654260.000000",
+    "client_msg_id": "784517e89888666805",
+    "text": "what about tiered storage? hot path stays redis, cold moves to postgres",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "kate",
+      "real_name": "Kate",
+      "display_name": "kate",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1747654740.000000",
+    "client_msg_id": "212ffa0283b6c4ba41",
+    "text": "let's not over-engineer this yet. profile first",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1747654800.000000",
+    "client_msg_id": "6a7a25163e0fb8a6d4",
+    "text": "fair point, will open a perf tracking issue",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

@@ -1,0 +1,82 @@
+[
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1747656960.000000",
+    "client_msg_id": "3c4443adfe41515a50",
+    "text": "Fluent Python is solid. also the asyncio docs are actually pretty good these days",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UFD1CF5E271",
+    "type": "message",
+    "ts": "1747657200.000000",
+    "client_msg_id": "7c61abc49afaa74601",
+    "text": "anyone have a good Python book recommendation? trying to level up on async",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "grace",
+      "real_name": "Grace",
+      "display_name": "grace",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U3C5E7EAB99",
+    "type": "message",
+    "ts": "1747657620.000000",
+    "client_msg_id": "968ba013f6e6e1d6da",
+    "text": "+1 Fluent Python",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "liam",
+      "real_name": "Liam",
+      "display_name": "liam",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U44844B8AA9",
+    "type": "message",
+    "ts": "1747657980.000000",
+    "client_msg_id": "6d638d45c5cdb79195",
+    "text": "also check out Python Concurrency with asyncio by Matthew Fowler",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "kate",
+      "real_name": "Kate",
+      "display_name": "kate",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UFD1CF5E271",
+    "type": "message",
+    "ts": "1747658400.000000",
+    "client_msg_id": "ca81f02d34dd90d4d1",
+    "text": "thanks all!",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "grace",
+      "real_name": "Grace",
+      "display_name": "grace",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

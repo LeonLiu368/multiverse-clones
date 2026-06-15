@@ -1,0 +1,50 @@
+[
+  {
+    "user": "U3C5E7EAB99",
+    "type": "message",
+    "ts": "1748077560.000000",
+    "client_msg_id": "69efc1d5eb309865a3",
+    "text": "should middleware.py have its own config override or always use bucket defaults?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "liam",
+      "real_name": "Liam",
+      "display_name": "liam",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1748077860.000000",
+    "client_msg_id": "243f3d854a6fb169e0",
+    "text": "always bucket defaults for now. keep it simple",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U3C5E7EAB99",
+    "type": "message",
+    "ts": "1748077860.000001",
+    "client_msg_id": "35dadf835c4f203648",
+    "text": "ack",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "liam",
+      "real_name": "Liam",
+      "display_name": "liam",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

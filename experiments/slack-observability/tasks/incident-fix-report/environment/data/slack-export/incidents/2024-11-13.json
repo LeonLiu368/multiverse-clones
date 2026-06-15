@@ -1,0 +1,66 @@
+[
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1731491280.000000",
+    "client_msg_id": "2d5fd483d405c84936",
+    "text": "cdn cache purge completed",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U252C17A453",
+    "type": "message",
+    "ts": "1731491820.000000",
+    "client_msg_id": "d244b587b8384fafae",
+    "text": "[resolved] email provider degraded 2h window",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "ci-bot",
+      "real_name": "Ci-bot",
+      "display_name": "ci-bot",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UB5382301BB",
+    "type": "message",
+    "ts": "1731503520.000000",
+    "client_msg_id": "daf843bd446e5cf815",
+    "text": "[auto] heartbeat check passed",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "peggy",
+      "real_name": "Peggy",
+      "display_name": "peggy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U6525ABCCE7",
+    "type": "message",
+    "ts": "1731504900.000000",
+    "client_msg_id": "79f8ee73653ef5bedf",
+    "text": "cdn cache purge completed",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "niaj",
+      "real_name": "Niaj",
+      "display_name": "niaj",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

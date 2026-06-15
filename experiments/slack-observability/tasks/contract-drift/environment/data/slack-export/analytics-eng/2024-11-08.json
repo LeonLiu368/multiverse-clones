@@ -1,0 +1,130 @@
+[
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1731051720.000000",
+    "client_msg_id": "1b5c9acb3eecad827d",
+    "text": "our v1 snippet: {\"name\": \"signup\", \"user_id\": \"u1\", \"data\": {}, \"timestamp\": 1700000123.4, \"schema_version\": \"1\"}",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1731060180.000000",
+    "client_msg_id": "8ae41b2fcb3d7c17fa",
+    "text": "our publisher still uses `name`/`user_id`/`data` \u2014 need to migrate after the deadline",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U2A4B17B116",
+    "type": "message",
+    "ts": "1731064860.000000",
+    "client_msg_id": "3d1e46dc1d37a28842",
+    "text": "that's v1, dave \u2014 don't send that to the new pipeline",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "erin",
+      "real_name": "Erin",
+      "display_name": "erin",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U6525ABCCE7",
+    "type": "message",
+    "ts": "1731069900.000000",
+    "client_msg_id": "37ef86fa864e575133",
+    "text": "draft migration script is in the analytics-eng wiki",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "niaj",
+      "real_name": "Niaj",
+      "display_name": "niaj",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1731081000.000000",
+    "client_msg_id": "9e6908c7eb2556a10f",
+    "text": "I saw someone use author_id in a PR \u2014 rejected by CI, actor_id is the correct field",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UB5382301BB",
+    "type": "message",
+    "ts": "1731084180.000000",
+    "client_msg_id": "f1a78dbc4901296297",
+    "text": "anyone hit issues with the recorded_at conversion? We were off by 1000x initially",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "peggy",
+      "real_name": "Peggy",
+      "display_name": "peggy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U88FA846E5F",
+    "type": "message",
+    "ts": "1731087000.000000",
+    "client_msg_id": "992a536e5caf3fdfbc",
+    "text": "no `source` field \u2014 checked with niaj. just the 5 fields in the spec.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "victor",
+      "real_name": "Victor",
+      "display_name": "victor",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U5CC9DC7FA7",
+    "type": "message",
+    "ts": "1731087900.000000",
+    "client_msg_id": "4a00a3f34c6871eb50",
+    "text": "anyone hit issues with the recorded_at conversion? We were off by 1000x initially",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "olivia",
+      "real_name": "Olivia",
+      "display_name": "olivia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

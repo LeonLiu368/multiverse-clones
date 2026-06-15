@@ -1,0 +1,114 @@
+[
+  {
+    "user": "UA15F8B81A1",
+    "type": "message",
+    "ts": "1731488520.000000",
+    "client_msg_id": "6a227fdb6d468a0645",
+    "text": "shipping page_view events with the old schema for now \u2014 will update when we have more info",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "ivan",
+      "real_name": "Ivan",
+      "display_name": "ivan",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U88FA846E5F",
+    "type": "message",
+    "ts": "1731490140.000000",
+    "client_msg_id": "a91030b070e82c32ce",
+    "text": "v1 to v2 migration effort tracked in JIRA-3310",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "victor",
+      "real_name": "Victor",
+      "display_name": "victor",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U38FC8CAEA6",
+    "type": "message",
+    "ts": "1731496920.000000",
+    "client_msg_id": "6f17a63caf28292049",
+    "text": "note: schema_version needs to be int 2 not string \u2014 caught that the hard way",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "judy",
+      "real_name": "Judy",
+      "display_name": "judy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1731506880.000000",
+    "client_msg_id": "05955a9d681f4b8e83",
+    "text": "draft migration script is in the analytics-eng wiki",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1731511500.000000",
+    "client_msg_id": "6dfd0251646570b64c",
+    "text": "our publisher still uses `name`/`user_id`/`data` \u2014 need to migrate after the deadline",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1731514680.000000",
+    "client_msg_id": "dfc1a4677a793795bf",
+    "text": "anyone hit issues with the recorded_at conversion? We were off by 1000x initially",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U88FA846E5F",
+    "type": "message",
+    "ts": "1731514860.000000",
+    "client_msg_id": "54e62a6b7057e7c6c8",
+    "text": "draft migration script is in the analytics-eng wiki",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "victor",
+      "real_name": "Victor",
+      "display_name": "victor",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

@@ -1,0 +1,66 @@
+[
+  {
+    "user": "U0AA1C221CA",
+    "type": "message",
+    "ts": "1730806800.000000",
+    "client_msg_id": "70937fc270083b6355",
+    "text": "Rebased on main, CI green.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "trent",
+      "real_name": "Trent",
+      "display_name": "trent",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U0FEBC363B6",
+    "type": "message",
+    "ts": "1730810880.000000",
+    "client_msg_id": "602d13856836709e58",
+    "text": "Dependency audit done, 3 minors to bump.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "heidi",
+      "real_name": "Heidi",
+      "display_name": "heidi",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U88FA846E5F",
+    "type": "message",
+    "ts": "1730823540.000000",
+    "client_msg_id": "8c49e2c553948e09e3",
+    "text": "Added retries to the webhook worker.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "victor",
+      "real_name": "Victor",
+      "display_name": "victor",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U38FC8CAEA6",
+    "type": "message",
+    "ts": "1730824200.000000",
+    "client_msg_id": "cd08fc572228cd74c3",
+    "text": "Memory leak in the stream consumer, fix incoming.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "judy",
+      "real_name": "Judy",
+      "display_name": "judy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

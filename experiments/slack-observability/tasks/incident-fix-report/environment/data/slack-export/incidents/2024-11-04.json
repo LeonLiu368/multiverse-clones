@@ -1,0 +1,178 @@
+[
+  {
+    "user": "UB5382301BB",
+    "type": "message",
+    "ts": "1730714760.000000",
+    "client_msg_id": "dd16dc11635e12525a",
+    "text": "load balancer config rolled back",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "peggy",
+      "real_name": "Peggy",
+      "display_name": "peggy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1730724360.000000",
+    "client_msg_id": "bef97988bb1b15e5c4",
+    "text": "[resolved] elevated 5xx 14:02-14:18 UTC",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U0FEBC363B6",
+    "type": "message",
+    "ts": "1730737740.000000",
+    "client_msg_id": "5921874030f87ed040",
+    "text": "disk alert resolved: expanded volume",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "heidi",
+      "real_name": "Heidi",
+      "display_name": "heidi",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1730746860.000000",
+    "client_msg_id": "b1cf688e1bc9a4e4c3",
+    "text": "[incident-2024-10-15] elevated error rates triggered page at 03:14 UTC",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1730747760.000000",
+    "client_msg_id": "bbe67a07176d023b20",
+    "text": "at the time of the incident, the threshold was error_rate > 0.10 which triggered the alert",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1730748540.000000",
+    "client_msg_id": "408f8a775a9ec0c037",
+    "text": "the 0.10 threshold was too high - we didn't catch the degradation until it was severe",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1730749140.000000",
+    "client_msg_id": "8cb78139b6b3ef8733",
+    "text": "investigation: error rate hit 0.10 at 03:14, paged on-call, resolved by 04:30",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1730749680.000000",
+    "client_msg_id": "a1e6756ef3a94dac9d",
+    "text": "postmortem action: review SLO thresholds (tracked in sre-oncall channel)",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1730750580.000000",
+    "client_msg_id": "c37e582b4134245942",
+    "text": "note: do not use the 0.10 threshold from this incident as reference - it's the OLD wrong threshold",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1730751240.000000",
+    "client_msg_id": "cb1953eaf301bf8448",
+    "text": "right, the new thresholds are being decided in #sre-oncall",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1730752140.000000",
+    "client_msg_id": "84a07e60bc41fa461b",
+    "text": "this incident is what prompted the SLO review",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

@@ -1,0 +1,82 @@
+[
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1731293640.000000",
+    "client_msg_id": "167a7acd7dab9d6901",
+    "text": "Heads up: the backend-migrations team will run M-47 (the DB schema for v2 events) on Tuesday night. No action needed from publishers \u2014 just a heads-up.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1731295320.000000",
+    "client_msg_id": "4adda3e552febe01b3",
+    "text": "Confirmed our publisher is migrated and events are flowing through the v2 pipeline. \u2705",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U6525ABCCE7",
+    "type": "message",
+    "ts": "1731310860.000000",
+    "client_msg_id": "9dcd76a82fd6847152",
+    "text": "Thanks everyone for the quick turnaround. 17 of 20 publishers updated so far. Ping me if you hit issues \u2014 the remaining 3 teams have until the 22nd.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "niaj",
+      "real_name": "Niaj",
+      "display_name": "niaj",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1731334860.000000",
+    "client_msg_id": "d17163e948a86537f4",
+    "text": "OOO today, ping bob for urgent stuff.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U38FC8CAEA6",
+    "type": "message",
+    "ts": "1731335700.000000",
+    "client_msg_id": "0408258d4fc9634916",
+    "text": "OOO today, ping bob for urgent stuff.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "judy",
+      "real_name": "Judy",
+      "display_name": "judy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

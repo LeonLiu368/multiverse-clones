@@ -1,0 +1,66 @@
+[
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1747905000.000000",
+    "client_msg_id": "3709037e9b56be822a",
+    "text": "postmortem published",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UDCA6211FB8",
+    "type": "message",
+    "ts": "1747906260.000000",
+    "client_msg_id": "71ca6571d555bed8aa",
+    "text": "thanks for the fast response everyone. reminder that incident response runbook is at /wiki/incidents",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "quinn",
+      "real_name": "Quinn",
+      "display_name": "quinn",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U1DB01D43E0",
+    "type": "message",
+    "ts": "1747908000.000000",
+    "client_msg_id": "1733143ac794e6a93a",
+    "text": "side note: should we add rate limiter config to our security hardening checklist?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "noah",
+      "real_name": "Noah",
+      "display_name": "noah",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1747909320.000001",
+    "client_msg_id": "0fdf4f0305c3cbb48b",
+    "text": "yes, I'll add it after we finalize the config",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

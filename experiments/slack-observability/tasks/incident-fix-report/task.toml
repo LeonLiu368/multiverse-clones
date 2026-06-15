@@ -1,0 +1,32 @@
+schema_version = "1.2"
+name = "abundant-mattermost/incident-fix-report"
+description = "Observability + SWE task with action beyond coding. A pager-fatigue incident left should_page unimplemented; the agreed paging policy was decided in a heavy, noisy #incidents discussion (with a red-herring DB hypothesis and the old thresholds as traps) and never written into the repo. The agent must use the `slack` tool to dig through the incident, recover the policy, implement it (hidden grading test pins the exact thresholds), AND post a root-cause postmortem to #postmortems. The verifier requires BOTH the code fix and the communication. nop=0, oracle=1."
+
+[metadata]
+category = "software-engineering"
+service = "slack"
+tools = ["slack-cli", "slack-mcp"]
+tags = ["slack", "observability", "swe", "tool-use", "exploration", "isolated", "tests", "communication"]
+
+[agent]
+timeout_sec = 2400
+
+[verifier]
+timeout_sec = 600
+
+[environment]
+cpus = 2
+memory_mb = 4096
+storage_mb = 12288
+gpus = 0
+allow_internet = true
+workdir = "/workspace"
+build_timeout_sec = 1800
+
+# The agent operates Slack through the `slack` CLI and this MCP server (stdio). slack-mcp is
+# installed in the agent image (from the vendored slackcli package) and reaches the gateway via
+# the baked SLACK_API_URL / SLACK_BOT_TOKEN env.
+[[environment.mcp_servers]]
+name = "slack"
+transport = "stdio"
+command = "slack-mcp"

@@ -1,0 +1,66 @@
+[
+  {
+    "user": "U1BEEF78000",
+    "type": "message",
+    "ts": "1730713740.000000",
+    "client_msg_id": "c37e45afdd4128cfbf",
+    "text": "WiFi flaky on floor 3, IT is aware.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "mallory",
+      "real_name": "Mallory",
+      "display_name": "mallory",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1730715600.000000",
+    "client_msg_id": "41c0fb219cb1e1eb97",
+    "text": "Anyone going to the ML meetup tonight?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U2A4B17B116",
+    "type": "message",
+    "ts": "1730732220.000000",
+    "client_msg_id": "c10f865d7e4093e20a",
+    "text": "PSA: rotate your API tokens this sprint.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "erin",
+      "real_name": "Erin",
+      "display_name": "erin",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U0FEBC363B6",
+    "type": "message",
+    "ts": "1730737020.000000",
+    "client_msg_id": "dec3a21f82e3d4acc7",
+    "text": "Happy Friday people, great week \ud83c\udf89",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "heidi",
+      "real_name": "Heidi",
+      "display_name": "heidi",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

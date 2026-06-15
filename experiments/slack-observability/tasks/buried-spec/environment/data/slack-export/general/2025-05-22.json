@@ -1,0 +1,50 @@
+[
+  {
+    "user": "U21AAB516D6",
+    "type": "message",
+    "ts": "1747906080.000000",
+    "client_msg_id": "6781e48959ab21cc65",
+    "text": "anyone have context on why the nightly ETL keeps OOMing?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "mia",
+      "real_name": "Mia",
+      "display_name": "mia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U21AAB516D6",
+    "type": "message",
+    "ts": "1747906440.000000",
+    "client_msg_id": "a1d1a4c99413050676",
+    "text": "appreciate it",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "mia",
+      "real_name": "Mia",
+      "display_name": "mia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1747906800.000000",
+    "client_msg_id": "f3b0d6731bc76a1b3a",
+    "text": "yeah the new aggregation query is rough, I'll open a ticket",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

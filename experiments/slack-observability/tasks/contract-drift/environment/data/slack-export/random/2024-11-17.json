@@ -1,0 +1,18 @@
+[
+  {
+    "user": "U0AA1C221CA",
+    "type": "message",
+    "ts": "1731857400.000000",
+    "client_msg_id": "90075f294c93b6d49d",
+    "text": "\ud83c\udf89 Work anniversary for frank today!",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "trent",
+      "real_name": "Trent",
+      "display_name": "trent",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

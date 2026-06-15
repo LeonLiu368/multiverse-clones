@@ -1,0 +1,274 @@
+[
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1748047380.000000",
+    "client_msg_id": "ec74a3d9758cc5e0fb",
+    "text": "deploy complete. new config is live: CAPACITY=100, REFILL_RATE=10.0, INITIAL_TOKENS=100, OVERDRAFT=0",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1748047500.000000",
+    "client_msg_id": "115e15001acf8a83dc",
+    "text": "rejection rate dropped from 62% to <1%. token exhaustion gone from dashboards",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1748074620.000000",
+    "client_msg_id": "e2c93a0fa962686a20",
+    "text": "excellent! great work everyone",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1748074740.000000",
+    "client_msg_id": "2bbf0b01420e5c9ac7",
+    "text": "glad we caught the simulation error. 15.0 would have been slightly too aggressive",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1748074860.000000",
+    "client_msg_id": "54051e4a684d7b5e70",
+    "text": "the new constants feel much more principled than the old placeholder values",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1748075100.000000",
+    "client_msg_id": "36a17f396966f4a016",
+    "text": "and good call on CAPACITY=100 vs 200. downstream services haven't even noticed",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U5CC9DC7FA7",
+    "type": "message",
+    "ts": "1748077320.000000",
+    "client_msg_id": "28a66a03f7fad2c605",
+    "text": "I'll document the final values in the runbook",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "olivia",
+      "real_name": "Olivia",
+      "display_name": "olivia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1748077620.000000",
+    "client_msg_id": "26a959796b05335785",
+    "text": "thanks olivia. also: please remember bucket.py still has the old placeholder values in the repo \u2014 PR is pending merge",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1748077920.000000",
+    "client_msg_id": "f052f82e99b564eacf",
+    "text": "PR #423 is up, updating the constants to the agreed values",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1748079300.000000",
+    "client_msg_id": "966845a748eaad9673",
+    "text": "linking for reference: CAPACITY=100, REFILL_RATE=10.0, INITIAL_TOKENS=100, OVERDRAFT_ALLOWANCE=0",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U44844B8AA9",
+    "type": "message",
+    "ts": "1748081040.000000",
+    "client_msg_id": "2642aafd2ff9904691",
+    "text": "reviewed PR #423, LGTM",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "kate",
+      "real_name": "Kate",
+      "display_name": "kate",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1748081760.000000",
+    "client_msg_id": "e26a70c0c5014d2592",
+    "text": "LGTM on PR #423 too",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1748081880.000000",
+    "client_msg_id": "568ff1e517e6c45489",
+    "text": "merging PR #423 now",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U3C5E7EAB99",
+    "type": "message",
+    "ts": "1748082420.000000",
+    "client_msg_id": "a7d0470222d68da612",
+    "text": "CI is being slow today, probably the flaky test in test_middleware.py again",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "liam",
+      "real_name": "Liam",
+      "display_name": "liam",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1748082600.000000",
+    "client_msg_id": "d67478063a06011757",
+    "text": "...wait, CI is running. will merge when green",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1748083500.000000",
+    "client_msg_id": "342791dfad3d8714b1",
+    "text": "CI green. merged",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1748083680.000000",
+    "client_msg_id": "5d3fc4aff9fb280a65",
+    "text": "finally the repo matches prod",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

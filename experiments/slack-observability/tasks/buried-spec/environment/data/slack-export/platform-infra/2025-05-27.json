@@ -1,0 +1,82 @@
+[
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1748337120.000000",
+    "client_msg_id": "b8eb5bbb173c9ea9e8",
+    "text": "marking this incident thread closed. great job everyone on the load test and config work",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U4B8373D016",
+    "type": "message",
+    "ts": "1748337480.000000",
+    "client_msg_id": "56d4d1c9b92e30d0e4",
+    "text": "solid engineering process. the right answer took a few iterations but we got there",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "peter",
+      "real_name": "Peter",
+      "display_name": "peter",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1748338260.000000",
+    "client_msg_id": "7cfa6b6824340bbd71",
+    "text": "lesson learned: don't leave placeholder values in prod configs lol",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1748338440.000000",
+    "client_msg_id": "cbb489bf4eff03c5f7",
+    "text": "yes. for future reference: the agreed production constants are CAPACITY=100, REFILL_RATE=10.0, INITIAL_TOKENS=100, OVERDRAFT_ALLOWANCE=0",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1748338620.000000",
+    "client_msg_id": "645be96dbf8cad38b7",
+    "text": "and double-check your load test inputs before proposing values",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]
