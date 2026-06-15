@@ -23,6 +23,12 @@
       "author": "grace",
       "content": "the drainer `go func(){<-doneCh}()` never gets a close either \u2014 unconditional leak. need proper cancel/close on teardown",
       "timestamp": "2026-05-23T03:23:00+00:00"
+    },
+    {
+      "channel": "sre-oncall",
+      "author": "grace",
+      "content": "wrote the agreed fix shape on BOR-1 (thread a `cancel <-chan struct{}` through receiveWitnessPage -> buildWitnessRequests -> doWitnessRequest, reuse it as the request Cancel, select on it on the disconnect path) so the regression test matches \u2014 see the ticket comment",
+      "timestamp": "2026-05-23T04:11:00+00:00"
     }
   ]
 }
