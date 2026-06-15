@@ -89,6 +89,23 @@ Add a spec when a task's `test.patch` pins an interface a behavioral fix can't i
 new private symbols (`grep -E "import .*_[A-Z]" test.patch`) or new required call signatures
 (`grep -E "func \(|\w+\(" test.patch` vs the pre-fix repo). Purely behavioral tests need none.
 
+## Exact APEX tasks (build-time fetch)
+
+The exact mercor/APEX-SWE tasks have **no `base_commit`** — each vendors a full `repo/`
+snapshot plus a 16–20 MB git-LFS Matrix chat scrape and a full GitHub issue dump. To keep
+our git light, these are **fetched from the public dataset at build**, not committed:
+
+- **repo/** — the task `Dockerfile` runs `huggingface_hub.snapshot_download(... allow_patterns=["<task>/repo/**"])` and builds it (no `base_commit` needed).
+- **data → seeds** — a `seed/` init service (compose) fetches `<task>/data/**` from HF and runs
+  `apex_to_clones.py` into named volumes (`tvseed`/`slackseed`/`gaugeseed`) the sidecars mount.
+  The converter auto-detects the real APEX formats: full GitHub `issues.json` (→ a tracker the
+  agent **searches**, not "issue mine"), Matrix `scraped.json`, and raw `data/loki/*.log`.
+- **golden.patch / test.patch / test_metadata.json** are small and committed; grading parses the
+  exact F2P/P2P node ids and runs the upstream test command. golden = product-only, test = tests-only.
+
+Only `solution/`, `tests/`, `environment/` (Dockerfile, compose, seed/) and `task.toml` live in
+git. See `tasks/paperless-ngx-10195-10196/` as the reference.
+
 ## Per-task local gate (before Oddish)
 
 - Converter fidelity: every diagnostic fact present in the generated seeds.

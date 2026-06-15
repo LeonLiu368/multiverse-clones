@@ -1,17 +1,18 @@
-# Agent image for bor-2157 (clone-based observability task).
-# 0xPolygon/bor checked out at the buggy parent of PR #2157 in /app/repo; the
-# ticketvector / slack / gauge agent tools are layered in from the clone images.
+# Agent image for exact APEX paperless-ngx-10195-10196 on the clone stack.
+# The upstream repo snapshot is fetched from the public mercor/APEX-SWE dataset at build
+# (APEX ships no base_commit — repo/ is a vendored snapshot); clone agent tools are layered in.
 FROM ghcr.io/abundant-ai/ticketvector-service:main AS tv-tools
 FROM ghcr.io/abundant-ai/slack-service:latest AS slack-tools
 FROM ghcr.io/abundant-ai/gauge-service:main AS gauge-tools
 
 # Docker Hub mirror (mirror.gcr.io) to dodge unauthenticated pull rate limits (429).
-FROM mirror.gcr.io/library/golang:1.26
-ENV GOTOOLCHAIN=auto
+FROM mirror.gcr.io/library/python:3.11
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        git curl jq patch ca-certificates python3 \
+        git build-essential curl jq ca-certificates \
+        libpoppler-cpp-dev poppler-utils ghostscript imagemagick optipng \
     && rm -rf /var/lib/apt/lists/*
+RUN pip install --no-cache-dir uv "huggingface_hub>=0.25"
 
 # Issue tracker CLI (linear/jira), team chat (slack + slack-mcp), observability (gcx + mcp-grafana).
 COPY --from=tv-tools /usr/local/bin/linear /usr/local/bin/jira /usr/local/bin/
@@ -23,20 +24,26 @@ COPY --from=gauge-tools /opt/gaugecli /opt/gaugecli
 RUN chmod +x /usr/local/bin/linear /usr/local/bin/jira /usr/local/bin/slack \
              /usr/local/bin/slack-mcp /usr/local/bin/gcx /usr/local/bin/mcp-grafana
 
-# Target repo at the buggy base commit; warm the Go module + build cache.
-WORKDIR /app
-RUN git clone --filter=blob:none https://github.com/0xPolygon/bor.git repo \
- && cd repo && git checkout 2a0bfe7f3db8333ca27e9269f27b0e86b49a3913
+# Fetch the upstream repo snapshot from the APEX dataset, then build it.
+ARG APEX_TASK=Observability/paperless-ngx-paperless-ngx-10195-10196-observability
+RUN python - <<PY
+from huggingface_hub import snapshot_download
+snapshot_download(repo_id="mercor/APEX-SWE", repo_type="dataset",
+                  allow_patterns=["${APEX_TASK}/repo/**"], local_dir="/tmp/apex")
+PY
+RUN mkdir -p /app && cp -a "/tmp/apex/${APEX_TASK}/repo" /app/repo && rm -rf /tmp/apex
 WORKDIR /app/repo
-RUN go mod download || true
-RUN go build ./... || true
+ENV UV_PROJECT_ENVIRONMENT=/usr/local
+RUN uv sync --all-groups || uv sync || true
+RUN git init -q && git config user.email agent@example.local && git config user.name "Agent User" \
+ && git add -A && git commit -q -m "snapshot" || true
 
 ENV PYTHONPATH=/opt:/opt/ticketvector:/opt/slackcli:/opt/gaugecli \
     WORLD_ISSUES_BACKEND=remote \
     WORLD_ISSUES_OUTPUT=json \
     WORLD_ISSUES_AGENT_MODE=1 \
     WORLD_ISSUES_ACTOR=agent \
-    WORLD_ISSUES_DEFAULT_PROJECT=BOR \
+    WORLD_ISSUES_DEFAULT_PROJECT=PNGX \
     PLANE_BASE_URL=http://127.0.0.1:8765 \
     SLACK_API_URL=http://slack \
     SLACK_BOT_TOKEN=test-token-meridian-eval \

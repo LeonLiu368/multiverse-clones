@@ -13,7 +13,7 @@ services:
       WORLD_ISSUES_OUTPUT: json
       WORLD_ISSUES_AGENT_MODE: "1"
       WORLD_ISSUES_ACTOR: agent
-      WORLD_ISSUES_DEFAULT_PROJECT: OPS
+      WORLD_ISSUES_DEFAULT_PROJECT: PNGX
       PLANE_BASE_URL: http://127.0.0.1:8765
       SLACK_API_URL: http://slack
       SLACK_BOT_TOKEN: test-token-meridian-eval
@@ -26,8 +26,22 @@ services:
       gauge:
         condition: service_healthy
 
-  # Issue tracker (Plane stand-in). Shares main's network namespace so the linear/jira
-  # CLIs reach it at 127.0.0.1:8765 (PLANE_BASE_URL).
+  # Seed-init: fetch this task's APEX fixtures from HF + convert -> clone seed volumes.
+  apex-seed:
+    build:
+      context: ./seed
+      dockerfile: Dockerfile
+    environment:
+      APEX_TASK: Observability/paperless-ngx-paperless-ngx-10195-10196-observability
+      APEX_SERVICE: paperless-ngx
+      APEX_KEY: PNGX
+      APEX_WORKSPACE: meridian
+    volumes:
+      - tvseed:/out/ticketvector
+      - slackseed:/out/slack
+      - gaugeseed:/out/gauge
+    restart: "no"
+
   ticketvector:
     image: ghcr.io/abundant-ai/ticketvector-service:main
     platform: linux/amd64
@@ -35,41 +49,47 @@ services:
     depends_on:
       main:
         condition: service_started
+      apex-seed:
+        condition: service_completed_successfully
     environment:
       WORLD_ISSUES_STATE_FILE: /var/lib/ticketvector/state.json
       WORLD_ISSUES_BIND_HOST: 0.0.0.0
       WORLD_ISSUES_PORT: "8765"
       WORLD_ISSUES_ACTOR: agent
     volumes:
-      - ./data/ticketvector/state.json:/var/lib/ticketvector/state.json
+      - tvseed:/var/lib/ticketvector
 
-  # Team chat (Mattermost stand-in). Self-seeds from the mounted scraped.json.
   slack:
     image: ghcr.io/abundant-ai/slack-service:latest
     platform: linux/amd64
+    depends_on:
+      apex-seed:
+        condition: service_completed_successfully
     environment:
       SLACK_BOT_TOKEN: test-token-meridian-eval
     volumes:
-      - ./data/slack:/data/mattermost:ro
+      - slackseed:/data/mattermost
     healthcheck:
       test: ["CMD-SHELL", "curl -sf http://localhost:80/api/auth.test >/dev/null || exit 1"]
       interval: 5s
       timeout: 5s
-      retries: 24
-      start_period: 30s
+      retries: 30
+      start_period: 40s
 
-  # Observability (Grafana + Loki + Prometheus stand-in).
   gauge:
     image: ghcr.io/abundant-ai/gauge-service:main
     hostname: gauge
     platform: linux/amd64
+    depends_on:
+      apex-seed:
+        condition: service_completed_successfully
     environment:
       GAUGE_STATE_FILE: /data/gauge/state.json
       GAUGE_RUNTIME_STATE_FILE: /var/lib/gauge/state.json
       GRAFANA_TOKEN: test-token-meridian-eval
       GRAFANA_SERVICE_ACCOUNT_TOKEN: test-token-meridian-eval
     volumes:
-      - ./data/gauge/state.json:/data/gauge/state.json:ro
+      - gaugeseed:/data/gauge
       - gauge-runtime:/var/lib/gauge
     healthcheck:
       test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost/api/healthz', timeout=1).read()\""]
@@ -78,4 +98,7 @@ services:
       retries: 30
 
 volumes:
+  tvseed:
+  slackseed:
+  gaugeseed:
   gauge-runtime:
