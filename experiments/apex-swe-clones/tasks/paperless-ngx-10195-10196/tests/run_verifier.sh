@@ -13,8 +13,10 @@ LOG=/logs/verifier/test-output.txt
 # Run the upstream test command (its node ids are correct by construction), verbosely.
 CMD="$(python3 -c "import json;print(json.load(open('/tests/test_metadata.json'))['test_command'])")"
 echo "test_command: $CMD" | tee -a "$LOG"
+# Override the repo's default addopts (paperless ships --cov + xdist -n auto, whose workers
+# crash here -> "no tests ran"). Disable coverage/xdist/cache so the listed tests run plainly.
 set +e
-eval "$CMD -v -p no:cacheprovider" >>"$LOG" 2>&1
+eval "$CMD -v -o addopts= -p no:cacheprovider -p no:xdist" >>"$LOG" 2>&1
 set -e
 tail -40 "$LOG" || true
 
