@@ -44,26 +44,34 @@ def _fmt_users(users):
 
 
 def main(argv=None) -> int:
+    # --json is accepted in BOTH positions: `slack --json channels` and `slack channels --json`.
+    # `common` carries the post-subcommand form; the main parser carries the pre-subcommand form;
+    # they use distinct dests so neither overrides the other.
+    common = argparse.ArgumentParser(add_help=False)
+    common.add_argument("--json", action="store_true", dest="json_post", help="output raw JSON")
+
     p = argparse.ArgumentParser(prog="slack", description="Slack Web API command-line tool")
-    p.add_argument("--json", action="store_true", help="output raw JSON")
+    p.add_argument("--json", action="store_true", dest="json_pre", help="output raw JSON")
     sub = p.add_subparsers(dest="cmd", required=True)
 
-    sub.add_parser("whoami", help="show the authenticated identity")
-    sub.add_parser("channels", help="list channels")
-    sub.add_parser("users", help="list users")
+    sub.add_parser("whoami", help="show the authenticated identity", parents=[common])
+    sub.add_parser("channels", help="list channels", parents=[common])
+    sub.add_parser("users", help="list users", parents=[common])
 
-    h = sub.add_parser("history", help="read a channel's recent messages")
+    h = sub.add_parser("history", help="read a channel's recent messages", parents=[common])
     h.add_argument("channel", help="channel name (e.g. general) or id (C…)")
     h.add_argument("--limit", type=int, default=50)
 
-    s = sub.add_parser("search", help="full-text message search (noisy — read carefully)")
+    s = sub.add_parser("search", help="full-text message search (noisy — read carefully)",
+                       parents=[common])
     s.add_argument("query")
 
-    po = sub.add_parser("post", help="post a message to a channel")
+    po = sub.add_parser("post", help="post a message to a channel", parents=[common])
     po.add_argument("channel")
     po.add_argument("text")
 
     args = p.parse_args(argv)
+    args.json = args.json_pre or args.json_post
     try:
         if args.cmd == "whoami":
             _emit(client.whoami(), args.json, lambda d: print(d.get("user"), d.get("team")))
