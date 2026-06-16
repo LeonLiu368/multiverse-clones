@@ -1,0 +1,20 @@
+# syntax=docker/dockerfile:1
+# Build a "seed" image that carries a PRE-BUILT SQLite DB for a Slack export. Tasks then pull the
+# ready DB at build time — `COPY --from=<this image> /slack.prebuilt.db /opt/slack.prebuilt.db` —
+# instead of committing the raw export. So a real-world export (any size) lives in ONE versioned
+# image, built once, shared by many tasks; nothing large lands in git.
+#
+# The export directory is passed as a NAMED BUILD CONTEXT so it never has to be in this dir:
+#   docker buildx build --build-context export=/path/to/slack-export \
+#     --build-arg SLACK_SERVICE=ghcr.io/abundant-ai/slack-service:slack-mcp-oss \
+#     -f Dockerfile.seed -t ghcr.io/abundant-ai/slack-seed:<dataset> [--push|--load] .
+# (use selfcontained/base/build-seed.sh as a convenience wrapper)
+ARG SLACK_SERVICE=ghcr.io/abundant-ai/slack-service:slack-mcp-oss
+
+FROM ${SLACK_SERVICE} AS build
+COPY --from=export . /data/slack-export
+RUN python3 /opt/import_export.py --export-dir /data/slack-export --db /slack.prebuilt.db
+
+# Final image is just the DB on `scratch` — tiny, no service layers, nothing but the seed.
+FROM scratch
+COPY --from=build /slack.prebuilt.db /slack.prebuilt.db
