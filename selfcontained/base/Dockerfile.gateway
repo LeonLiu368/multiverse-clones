@@ -9,5 +9,12 @@ ARG SLACK_SERVICE=ghcr.io/abundant-ai/slack-service:slack-mcp-oss
 FROM ${SEED} AS seed
 FROM ${SLACK_SERVICE}
 COPY --from=seed /slack.prebuilt.db /opt/slack.prebuilt.db
+# Carry the latest boot + importer + store so the gateway has the overlay logic (import a mounted
+# /data/slack-overlay on top of the prod DB) without needing a full slack-service rebuild. These
+# overwrite the same paths from the base and are backward-compatible (no-op when no overlay).
+COPY slack-boot.sh /usr/local/bin/slack-boot.sh
+COPY import_export.py /opt/import_export.py
+COPY slackgw/store.py /opt/slackgw/store.py
+RUN chmod +x /usr/local/bin/slack-boot.sh
 # ENTRYPOINT is inherited from slack-service (api-entrypoint.sh): slack-boot.sh copies the pre-built
-# DB into place and runs uvicorn on :80 as PID 1. EXPOSE 80 is already declared.
+# DB into place, imports any /data/slack-overlay, and runs uvicorn on :80 as PID 1.

@@ -1,0 +1,2723 @@
+[
+  {
+    "id": "C6701D4AFFD",
+    "name": "5star-squad",
+    "created": 1646780255,
+    "creator": "PERSON_14350_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_13417_SLACK_ID",
+      "PERSON_14350_SLACK_ID",
+      "PERSON_14557_SLACK_ID",
+      "PERSON_14584_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_6430_SLACK_ID",
+      "PERSON_7542_SLACK_ID",
+      "PERSON_7959_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CFC98988874",
+    "name": "advent-of-code",
+    "created": 1669836076,
+    "creator": "PERSON_14556_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_12023_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14556_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CF380CBCD9A",
+    "name": "architecture",
+    "created": 1673308442,
+    "creator": "PERSON_14558_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14556_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_7542_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C2CCEA9F2A6",
+    "name": "banking",
+    "created": 1572066919,
+    "creator": "PERSON_10167_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "BANON0002",
+      "PERSON_10148_SLACK_ID",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_12023_SLACK_ID",
+      "PERSON_13417_SLACK_ID",
+      "PERSON_14350_SLACK_ID",
+      "PERSON_14533_SLACK_ID",
+      "PERSON_14534_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14539_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14553_SLACK_ID",
+      "PERSON_14556_SLACK_ID",
+      "PERSON_14557_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_14561_SLACK_ID",
+      "PERSON_14576_SLACK_ID",
+      "PERSON_14584_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_6430_SLACK_ID",
+      "PERSON_7542_SLACK_ID",
+      "PERSON_7780_SLACK_ID",
+      "PERSON_7870_SLACK_ID",
+      "PERSON_7959_SLACK_ID",
+      "PERSON_9253_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C4BCCA8A6BF",
+    "name": "banking-bots",
+    "created": 1595264837,
+    "creator": "PERSON_10639_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "BANON0002",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14539_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14556_SLACK_ID",
+      "PERSON_14557_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_14576_SLACK_ID",
+      "PERSON_14584_SLACK_ID",
+      "PERSON_7542_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C77535487EA",
+    "name": "banking-bots-preprod",
+    "created": 1684439057,
+    "creator": "PERSON_10639_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "PERSON_10639_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C2D4FFD5365",
+    "name": "banking-notifs",
+    "created": 1595265232,
+    "creator": "PERSON_10639_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14542_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CB8E4548FA5",
+    "name": "bots-preprod",
+    "created": 1519766610,
+    "creator": "PERSON_10639_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "PERSON_10639_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C0D2BC8DF48",
+    "name": "bots-production",
+    "created": 1510276450,
+    "creator": "PERSON_10639_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14533_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14556_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_14567_SLACK_ID",
+      "PERSON_14576_SLACK_ID",
+      "PERSON_6273_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C4410624C3D",
+    "name": "bots-staging",
+    "created": 1519766603,
+    "creator": "PERSON_10639_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "PERSON_10639_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C769F718F28",
+    "name": "bugs_in_the_mainframe",
+    "created": 1522720383,
+    "creator": "PERSON_6273_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "BANON0002",
+      "BANON0003",
+      "PERSON_10148_SLACK_ID",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_11651_SLACK_ID",
+      "PERSON_12023_SLACK_ID",
+      "PERSON_12029_SLACK_ID",
+      "PERSON_13417_SLACK_ID",
+      "PERSON_14350_SLACK_ID",
+      "PERSON_14534_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14539_SLACK_ID",
+      "PERSON_14541_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14553_SLACK_ID",
+      "PERSON_14556_SLACK_ID",
+      "PERSON_14557_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_14560_SLACK_ID",
+      "PERSON_14561_SLACK_ID",
+      "PERSON_14562_SLACK_ID",
+      "PERSON_14567_SLACK_ID",
+      "PERSON_14570_SLACK_ID",
+      "PERSON_14576_SLACK_ID",
+      "PERSON_14584_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_6430_SLACK_ID",
+      "PERSON_7542_SLACK_ID",
+      "PERSON_7780_SLACK_ID",
+      "PERSON_7870_SLACK_ID",
+      "PERSON_7959_SLACK_ID",
+      "PERSON_9253_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C9E9819BD0A",
+    "name": "catalog-designers-zt",
+    "created": 1629834671,
+    "creator": "PERSON_14545_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10167_SLACK_ID",
+      "PERSON_13417_SLACK_ID",
+      "PERSON_14532_SLACK_ID",
+      "PERSON_14537_SLACK_ID",
+      "PERSON_14538_SLACK_ID",
+      "PERSON_14545_SLACK_ID",
+      "PERSON_14548_SLACK_ID",
+      "PERSON_14549_SLACK_ID",
+      "PERSON_14550_SLACK_ID",
+      "PERSON_14552_SLACK_ID",
+      "PERSON_14579_SLACK_ID",
+      "PERSON_14584_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CF4AFFE21DF",
+    "name": "chatops",
+    "created": 1519338215,
+    "creator": "PERSON_10639_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14567_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C036CB735C6",
+    "name": "compliance",
+    "created": 1630354143,
+    "creator": "PERSON_6273_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_6273_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C040F06FD77",
+    "name": "content",
+    "created": 1596211993,
+    "creator": "PERSON_14534_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_13417_SLACK_ID",
+      "PERSON_14350_SLACK_ID",
+      "PERSON_14533_SLACK_ID",
+      "PERSON_14534_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14539_SLACK_ID",
+      "PERSON_14540_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14553_SLACK_ID",
+      "PERSON_14576_SLACK_ID",
+      "PERSON_14584_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_7542_SLACK_ID",
+      "PERSON_7959_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C8CC7CF6FF1",
+    "name": "content-feed",
+    "created": 1628183907,
+    "creator": "PERSON_14542_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "BANON0002",
+      "BANON0003",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_11651_SLACK_ID",
+      "PERSON_12023_SLACK_ID",
+      "PERSON_13417_SLACK_ID",
+      "PERSON_14350_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14539_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14551_SLACK_ID",
+      "PERSON_14553_SLACK_ID",
+      "PERSON_14557_SLACK_ID",
+      "PERSON_14576_SLACK_ID",
+      "PERSON_14584_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_6430_SLACK_ID",
+      "PERSON_7542_SLACK_ID",
+      "PERSON_7780_SLACK_ID",
+      "PERSON_7959_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CF3909484D7",
+    "name": "crisp-archives",
+    "created": 1550874986,
+    "creator": "PERSON_14567_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14567_SLACK_ID",
+      "PERSON_14570_SLACK_ID",
+      "PERSON_14572_SLACK_ID",
+      "PERSON_6273_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CC638C95263",
+    "name": "crisp-chats",
+    "created": 1550874985,
+    "creator": "PERSON_14567_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14539_SLACK_ID",
+      "PERSON_14567_SLACK_ID",
+      "PERSON_14570_SLACK_ID",
+      "PERSON_14572_SLACK_ID",
+      "PERSON_14576_SLACK_ID",
+      "PERSON_14584_SLACK_ID",
+      "PERSON_6273_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C26E80A8568",
+    "name": "cx-feature_requests",
+    "created": 1661533066,
+    "creator": "PERSON_7542_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_12029_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14541_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14556_SLACK_ID",
+      "PERSON_14557_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_6430_SLACK_ID",
+      "PERSON_7542_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C0DAACDED36",
+    "name": "cx-squad",
+    "created": 1612547942,
+    "creator": "PERSON_14539_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "PERSON_10148_SLACK_ID",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_11651_SLACK_ID",
+      "PERSON_13417_SLACK_ID",
+      "PERSON_14350_SLACK_ID",
+      "PERSON_14534_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14539_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14553_SLACK_ID",
+      "PERSON_14556_SLACK_ID",
+      "PERSON_14557_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_14560_SLACK_ID",
+      "PERSON_14561_SLACK_ID",
+      "PERSON_14576_SLACK_ID",
+      "PERSON_14584_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_6430_SLACK_ID",
+      "PERSON_7542_SLACK_ID",
+      "PERSON_7780_SLACK_ID",
+      "PERSON_7870_SLACK_ID",
+      "PERSON_7959_SLACK_ID",
+      "PERSON_9253_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CA17C9AAA61",
+    "name": "data",
+    "created": 1663948874,
+    "creator": "PERSON_14556_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "PERSON_10148_SLACK_ID",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14556_SLACK_ID",
+      "PERSON_14557_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_14584_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_7542_SLACK_ID",
+      "PERSON_7780_SLACK_ID",
+      "PERSON_7959_SLACK_ID",
+      "PERSON_9253_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C425712C586",
+    "name": "data-science",
+    "created": 1543429273,
+    "creator": "PERSON_10639_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14567_SLACK_ID",
+      "PERSON_14569_SLACK_ID",
+      "PERSON_6273_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CCB067C0BC3",
+    "name": "datasquad",
+    "created": 1619122365,
+    "creator": "PERSON_14350_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10148_SLACK_ID",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_14350_SLACK_ID",
+      "PERSON_14539_SLACK_ID",
+      "PERSON_14556_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_7959_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CC0B86979EF",
+    "name": "defect-and-blocker-thunderdome",
+    "created": 1699042873,
+    "creator": "PERSON_7780_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_14584_SLACK_ID",
+      "PERSON_7780_SLACK_ID",
+      "PERSON_7870_SLACK_ID",
+      "PERSON_9253_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CA12A74D8A6",
+    "name": "deploys",
+    "created": 1531357927,
+    "creator": "PERSON_14567_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "BANON0002",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_13417_SLACK_ID",
+      "PERSON_14350_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14539_SLACK_ID",
+      "PERSON_14556_SLACK_ID",
+      "PERSON_14557_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_14567_SLACK_ID",
+      "PERSON_14576_SLACK_ID",
+      "PERSON_7780_SLACK_ID",
+      "PERSON_7959_SLACK_ID",
+      "PERSON_9253_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C056F118278",
+    "name": "design",
+    "created": 1526867616,
+    "creator": "PERSON_14568_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "BANON0002",
+      "PERSON_10148_SLACK_ID",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_11651_SLACK_ID",
+      "PERSON_12023_SLACK_ID",
+      "PERSON_12029_SLACK_ID",
+      "PERSON_13417_SLACK_ID",
+      "PERSON_14350_SLACK_ID",
+      "PERSON_14533_SLACK_ID",
+      "PERSON_14534_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14539_SLACK_ID",
+      "PERSON_14540_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14553_SLACK_ID",
+      "PERSON_14556_SLACK_ID",
+      "PERSON_14557_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_14561_SLACK_ID",
+      "PERSON_14562_SLACK_ID",
+      "PERSON_14567_SLACK_ID",
+      "PERSON_14568_SLACK_ID",
+      "PERSON_14570_SLACK_ID",
+      "PERSON_14573_SLACK_ID",
+      "PERSON_14576_SLACK_ID",
+      "PERSON_14583_SLACK_ID",
+      "PERSON_14584_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_6430_SLACK_ID",
+      "PERSON_7542_SLACK_ID",
+      "PERSON_7780_SLACK_ID",
+      "PERSON_7870_SLACK_ID",
+      "PERSON_7959_SLACK_ID",
+      "PERSON_9253_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C72917EF6C1",
+    "name": "engineering",
+    "created": 1523283638,
+    "creator": "PERSON_10639_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "BANON0002",
+      "BANON0003",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_11651_SLACK_ID",
+      "PERSON_12023_SLACK_ID",
+      "PERSON_12029_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14539_SLACK_ID",
+      "PERSON_14541_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14543_SLACK_ID",
+      "PERSON_14544_SLACK_ID",
+      "PERSON_14553_SLACK_ID",
+      "PERSON_14554_SLACK_ID",
+      "PERSON_14556_SLACK_ID",
+      "PERSON_14557_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_14562_SLACK_ID",
+      "PERSON_14567_SLACK_ID",
+      "PERSON_14569_SLACK_ID",
+      "PERSON_14576_SLACK_ID",
+      "PERSON_14584_SLACK_ID",
+      "PERSON_7542_SLACK_ID",
+      "PERSON_7780_SLACK_ID",
+      "PERSON_7870_SLACK_ID",
+      "PERSON_9253_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C8A0481AE73",
+    "name": "engineering-bots",
+    "created": 1615831568,
+    "creator": "PERSON_10639_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10639_SLACK_ID",
+      "PERSON_12023_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14543_SLACK_ID",
+      "PERSON_14544_SLACK_ID",
+      "PERSON_14556_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_14576_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C3578702E1E",
+    "name": "engineering-planning",
+    "created": 1675105117,
+    "creator": "PERSON_14558_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10148_SLACK_ID",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14556_SLACK_ID",
+      "PERSON_14557_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_14584_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_7542_SLACK_ID",
+      "PERSON_7780_SLACK_ID",
+      "PERSON_7870_SLACK_ID",
+      "PERSON_9253_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C2A5C9ED6AC",
+    "name": "errors-production",
+    "created": 1519338010,
+    "creator": "PERSON_10639_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "BANON0002",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_14567_SLACK_ID",
+      "PERSON_14576_SLACK_ID",
+      "PERSON_6273_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CEF15F48C96",
+    "name": "feedback",
+    "created": 1454533293,
+    "creator": "PERSON_6273_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_14562_SLACK_ID",
+      "PERSON_14563_SLACK_ID",
+      "PERSON_14564_SLACK_ID",
+      "PERSON_6273_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CDFE2DB7497",
+    "name": "general",
+    "created": 1454532029,
+    "creator": "PERSON_6273_SLACK_ID",
+    "is_archived": false,
+    "is_general": true,
+    "members": [
+      "BANON0001",
+      "BANON0002",
+      "BANON0003",
+      "PERSON_10148_SLACK_ID",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_11651_SLACK_ID",
+      "PERSON_12023_SLACK_ID",
+      "PERSON_12029_SLACK_ID",
+      "PERSON_13417_SLACK_ID",
+      "PERSON_14350_SLACK_ID",
+      "PERSON_14531_SLACK_ID",
+      "PERSON_14533_SLACK_ID",
+      "PERSON_14534_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14539_SLACK_ID",
+      "PERSON_14540_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14546_SLACK_ID",
+      "PERSON_14547_SLACK_ID",
+      "PERSON_14553_SLACK_ID",
+      "PERSON_14554_SLACK_ID",
+      "PERSON_14556_SLACK_ID",
+      "PERSON_14557_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_14559_SLACK_ID",
+      "PERSON_14561_SLACK_ID",
+      "PERSON_14562_SLACK_ID",
+      "PERSON_14563_SLACK_ID",
+      "PERSON_14564_SLACK_ID",
+      "PERSON_14565_SLACK_ID",
+      "PERSON_14566_SLACK_ID",
+      "PERSON_14567_SLACK_ID",
+      "PERSON_14568_SLACK_ID",
+      "PERSON_14569_SLACK_ID",
+      "PERSON_14570_SLACK_ID",
+      "PERSON_14571_SLACK_ID",
+      "PERSON_14574_SLACK_ID",
+      "PERSON_14576_SLACK_ID",
+      "PERSON_14584_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_6430_SLACK_ID",
+      "PERSON_7542_SLACK_ID",
+      "PERSON_7780_SLACK_ID",
+      "PERSON_7870_SLACK_ID",
+      "PERSON_7959_SLACK_ID",
+      "PERSON_9253_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C347E748851",
+    "name": "growthsquad",
+    "created": 1507149130,
+    "creator": "PERSON_6273_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "PERSON_10148_SLACK_ID",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_12029_SLACK_ID",
+      "PERSON_13417_SLACK_ID",
+      "PERSON_14350_SLACK_ID",
+      "PERSON_14531_SLACK_ID",
+      "PERSON_14534_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14539_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14556_SLACK_ID",
+      "PERSON_14557_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_14562_SLACK_ID",
+      "PERSON_14566_SLACK_ID",
+      "PERSON_14567_SLACK_ID",
+      "PERSON_14568_SLACK_ID",
+      "PERSON_14570_SLACK_ID",
+      "PERSON_14575_SLACK_ID",
+      "PERSON_14578_SLACK_ID",
+      "PERSON_14580_SLACK_ID",
+      "PERSON_14581_SLACK_ID",
+      "PERSON_14582_SLACK_ID",
+      "PERSON_14584_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_6430_SLACK_ID",
+      "PERSON_7542_SLACK_ID",
+      "PERSON_7780_SLACK_ID",
+      "PERSON_7870_SLACK_ID",
+      "PERSON_7959_SLACK_ID",
+      "PERSON_9253_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CF477339231",
+    "name": "jirassic-park",
+    "created": 1645130934,
+    "creator": "PERSON_7780_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10148_SLACK_ID",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_11651_SLACK_ID",
+      "PERSON_12023_SLACK_ID",
+      "PERSON_12029_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14556_SLACK_ID",
+      "PERSON_14557_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_14584_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_6430_SLACK_ID",
+      "PERSON_7542_SLACK_ID",
+      "PERSON_7780_SLACK_ID",
+      "PERSON_7870_SLACK_ID",
+      "PERSON_7959_SLACK_ID",
+      "PERSON_9253_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C63884468D4",
+    "name": "marketing-eng",
+    "created": 1629221928,
+    "creator": "PERSON_14350_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_14350_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CE30D8D98EA",
+    "name": "marketing-eng-sync",
+    "created": 1552503815,
+    "creator": "PERSON_6273_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14570_SLACK_ID",
+      "PERSON_6273_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C15C87E102F",
+    "name": "marketing-team",
+    "created": 1629321363,
+    "creator": "PERSON_14350_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_13417_SLACK_ID",
+      "PERSON_14350_SLACK_ID",
+      "PERSON_14584_SLACK_ID",
+      "PERSON_7959_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CAE0C856203",
+    "name": "marketing-tech",
+    "created": 1636563700,
+    "creator": "PERSON_14542_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_11651_SLACK_ID",
+      "PERSON_13417_SLACK_ID",
+      "PERSON_14350_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14556_SLACK_ID",
+      "PERSON_14584_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_7542_SLACK_ID",
+      "PERSON_7780_SLACK_ID",
+      "PERSON_7959_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C8A44B5A7E1",
+    "name": "marketing_inspo",
+    "created": 1623778315,
+    "creator": "PERSON_13417_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10167_SLACK_ID",
+      "PERSON_13417_SLACK_ID",
+      "PERSON_14350_SLACK_ID",
+      "PERSON_14553_SLACK_ID",
+      "PERSON_14562_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_7959_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C27FAD22611",
+    "name": "mktg-seo",
+    "created": 1635283442,
+    "creator": "PERSON_14350_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_13417_SLACK_ID",
+      "PERSON_14350_SLACK_ID",
+      "PERSON_14557_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_7959_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CB86F6BC22B",
+    "name": "mobile-builds",
+    "created": 1652878395,
+    "creator": "PERSON_10639_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_12023_SLACK_ID",
+      "PERSON_12029_SLACK_ID",
+      "PERSON_13417_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14553_SLACK_ID",
+      "PERSON_14557_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_14584_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_6430_SLACK_ID",
+      "PERSON_7542_SLACK_ID",
+      "PERSON_7780_SLACK_ID",
+      "PERSON_9253_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C85463DAEC4",
+    "name": "organization_0451",
+    "created": 1659649346,
+    "creator": "PERSON_10167_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14350_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14556_SLACK_ID",
+      "PERSON_14557_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_6430_SLACK_ID",
+      "PERSON_7542_SLACK_ID",
+      "PERSON_7780_SLACK_ID",
+      "PERSON_7959_SLACK_ID",
+      "PERSON_9253_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C72DF376C0B",
+    "name": "person_name_21143",
+    "created": 1531180420,
+    "creator": "PERSON_10639_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "BANON0002",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14539_SLACK_ID",
+      "PERSON_14540_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14556_SLACK_ID",
+      "PERSON_14557_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_14567_SLACK_ID",
+      "PERSON_14584_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_6430_SLACK_ID",
+      "PERSON_7542_SLACK_ID",
+      "PERSON_7780_SLACK_ID",
+      "PERSON_7870_SLACK_ID",
+      "PERSON_9253_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C1D1F881208",
+    "name": "person_name_24417",
+    "created": 1700145505,
+    "creator": "PERSON_10639_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_7780_SLACK_ID",
+      "PERSON_9253_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C289981DCB4",
+    "name": "person_name_25658",
+    "created": 1595090838,
+    "creator": "PERSON_14535_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14535_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14556_SLACK_ID",
+      "PERSON_14558_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C2308C23B2E",
+    "name": "person_name_28306",
+    "created": 1684977694,
+    "creator": "PERSON_14535_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14535_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14558_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CFDB93D5C9D",
+    "name": "person_name_29601",
+    "created": 1672764647,
+    "creator": "PERSON_10639_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14557_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_14561_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_7542_SLACK_ID",
+      "PERSON_7780_SLACK_ID",
+      "PERSON_7870_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CA4106841CE",
+    "name": "person_name_29944",
+    "created": 1690823279,
+    "creator": "PERSON_14535_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14535_SLACK_ID",
+      "PERSON_14542_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C4ACF85C50E",
+    "name": "person_name_30051",
+    "created": 1685858196,
+    "creator": "PERSON_14535_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14535_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CE2AD820896",
+    "name": "person_name_30054",
+    "created": 1684431895,
+    "creator": "PERSON_10639_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14535_SLACK_ID",
+      "PERSON_14542_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C910C7AECED",
+    "name": "person_name_31065",
+    "created": 1631824215,
+    "creator": "PERSON_14350_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_13417_SLACK_ID",
+      "PERSON_14350_SLACK_ID",
+      "PERSON_7959_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C7480521582",
+    "name": "person_name_32642",
+    "created": 1695070258,
+    "creator": "PERSON_14535_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_14535_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C39BFAD2B05",
+    "name": "person_name_33522",
+    "created": 1645627104,
+    "creator": "PERSON_7959_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10639_SLACK_ID",
+      "PERSON_13417_SLACK_ID",
+      "PERSON_14350_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_7959_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CC096A6ADA2",
+    "name": "person_name_33661",
+    "created": 1684431820,
+    "creator": "PERSON_10639_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14542_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CE99D1AC219",
+    "name": "person_name_35947",
+    "created": 1626805062,
+    "creator": "PERSON_13417_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_13417_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C762C8DD1AB",
+    "name": "person_name_36853",
+    "created": 1553196639,
+    "creator": "PERSON_6273_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_6273_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C43C3EC6C92",
+    "name": "person_name_39559",
+    "created": 1626107480,
+    "creator": "PERSON_14544_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_14544_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CF70E3D860E",
+    "name": "person_name_39576",
+    "created": 1524933151,
+    "creator": "PERSON_14567_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14544_SLACK_ID",
+      "PERSON_14567_SLACK_ID",
+      "PERSON_7780_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CFA2B788794",
+    "name": "person_name_40175",
+    "created": 1689692817,
+    "creator": "PERSON_10167_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10167_SLACK_ID",
+      "PERSON_14558_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C59DFAE3737",
+    "name": "praise",
+    "created": 1538690241,
+    "creator": "PERSON_14567_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "PERSON_10148_SLACK_ID",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_11651_SLACK_ID",
+      "PERSON_12023_SLACK_ID",
+      "PERSON_12029_SLACK_ID",
+      "PERSON_13417_SLACK_ID",
+      "PERSON_14350_SLACK_ID",
+      "PERSON_14533_SLACK_ID",
+      "PERSON_14534_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14539_SLACK_ID",
+      "PERSON_14540_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14553_SLACK_ID",
+      "PERSON_14556_SLACK_ID",
+      "PERSON_14557_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_14561_SLACK_ID",
+      "PERSON_14562_SLACK_ID",
+      "PERSON_14567_SLACK_ID",
+      "PERSON_14570_SLACK_ID",
+      "PERSON_14576_SLACK_ID",
+      "PERSON_14577_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_6430_SLACK_ID",
+      "PERSON_7542_SLACK_ID",
+      "PERSON_7780_SLACK_ID",
+      "PERSON_7870_SLACK_ID",
+      "PERSON_7959_SLACK_ID",
+      "PERSON_9253_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CF14093117A",
+    "name": "prioritization",
+    "created": 1645040436,
+    "creator": "PERSON_6273_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "PERSON_10148_SLACK_ID",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_13417_SLACK_ID",
+      "PERSON_14350_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14556_SLACK_ID",
+      "PERSON_14557_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_14584_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_6430_SLACK_ID",
+      "PERSON_7542_SLACK_ID",
+      "PERSON_7870_SLACK_ID",
+      "PERSON_7959_SLACK_ID",
+      "PERSON_9253_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C38A007151A",
+    "name": "product",
+    "created": 1492534849,
+    "creator": "PERSON_6273_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "BANON0002",
+      "PERSON_10148_SLACK_ID",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_11651_SLACK_ID",
+      "PERSON_12023_SLACK_ID",
+      "PERSON_12029_SLACK_ID",
+      "PERSON_13417_SLACK_ID",
+      "PERSON_14350_SLACK_ID",
+      "PERSON_14533_SLACK_ID",
+      "PERSON_14534_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14539_SLACK_ID",
+      "PERSON_14540_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14553_SLACK_ID",
+      "PERSON_14554_SLACK_ID",
+      "PERSON_14555_SLACK_ID",
+      "PERSON_14556_SLACK_ID",
+      "PERSON_14557_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_14562_SLACK_ID",
+      "PERSON_14563_SLACK_ID",
+      "PERSON_14564_SLACK_ID",
+      "PERSON_14565_SLACK_ID",
+      "PERSON_14566_SLACK_ID",
+      "PERSON_14567_SLACK_ID",
+      "PERSON_14568_SLACK_ID",
+      "PERSON_14569_SLACK_ID",
+      "PERSON_14570_SLACK_ID",
+      "PERSON_14571_SLACK_ID",
+      "PERSON_14576_SLACK_ID",
+      "PERSON_14584_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_6430_SLACK_ID",
+      "PERSON_7542_SLACK_ID",
+      "PERSON_7780_SLACK_ID",
+      "PERSON_7870_SLACK_ID",
+      "PERSON_7959_SLACK_ID",
+      "PERSON_9253_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C92E598C554",
+    "name": "product-eng-sync",
+    "created": 1547838872,
+    "creator": "PERSON_10639_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_11651_SLACK_ID",
+      "PERSON_14533_SLACK_ID",
+      "PERSON_14534_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14539_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14567_SLACK_ID",
+      "PERSON_14576_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_7542_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C1878A1F529",
+    "name": "product-marketing",
+    "created": 1618002492,
+    "creator": "PERSON_14350_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_12023_SLACK_ID",
+      "PERSON_13417_SLACK_ID",
+      "PERSON_14350_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14539_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14553_SLACK_ID",
+      "PERSON_14557_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_14584_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_6430_SLACK_ID",
+      "PERSON_7542_SLACK_ID",
+      "PERSON_7870_SLACK_ID",
+      "PERSON_7959_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CED98689DE3",
+    "name": "progress-updates",
+    "created": 1666363999,
+    "creator": "PERSON_10639_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_12023_SLACK_ID",
+      "PERSON_12029_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14555_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_7542_SLACK_ID",
+      "PERSON_7780_SLACK_ID",
+      "PERSON_7870_SLACK_ID",
+      "PERSON_9253_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CD3C583412A",
+    "name": "qa",
+    "created": 1661444549,
+    "creator": "PERSON_10639_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10639_SLACK_ID",
+      "PERSON_7780_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C60B4E6E68B",
+    "name": "release-status",
+    "created": 1671838050,
+    "creator": "PERSON_12023_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10148_SLACK_ID",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_12023_SLACK_ID",
+      "PERSON_12029_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14556_SLACK_ID",
+      "PERSON_14557_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_14584_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_7542_SLACK_ID",
+      "PERSON_7780_SLACK_ID",
+      "PERSON_7870_SLACK_ID",
+      "PERSON_7959_SLACK_ID",
+      "PERSON_9253_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CC61D34E7F0",
+    "name": "reminders",
+    "created": 1655403182,
+    "creator": "PERSON_14542_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14584_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CDDC8BB10B4",
+    "name": "sentry-bureau-production",
+    "created": 1684432089,
+    "creator": "PERSON_10639_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14535_SLACK_ID",
+      "PERSON_14542_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C0F941A8847",
+    "name": "sentry-hook-production",
+    "created": 1708380305,
+    "creator": "PERSON_14535_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14535_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C2B6EBF49AF",
+    "name": "sentry-next-production",
+    "created": 1684432026,
+    "creator": "PERSON_10639_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14535_SLACK_ID",
+      "PERSON_14542_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CDB1B2E7693",
+    "name": "sentry-px-production",
+    "created": 1684431954,
+    "creator": "PERSON_10639_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14535_SLACK_ID",
+      "PERSON_14542_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C6CBCC13BD8",
+    "name": "sentry-wasabi-preprod",
+    "created": 1594847666,
+    "creator": "PERSON_10639_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14535_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_7780_SLACK_ID",
+      "PERSON_9253_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C7781EBE040",
+    "name": "sentry-wasabi-prod",
+    "created": 1684431684,
+    "creator": "PERSON_10639_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14535_SLACK_ID",
+      "PERSON_14542_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C0DBE529C4D",
+    "name": "social",
+    "created": 1677011159,
+    "creator": "PERSON_14557_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14557_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_7542_SLACK_ID",
+      "PERSON_7959_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CFA20014E00",
+    "name": "social-media-fodder",
+    "created": 1621286927,
+    "creator": "PERSON_13417_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_13417_SLACK_ID",
+      "PERSON_14350_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14556_SLACK_ID",
+      "PERSON_14557_SLACK_ID",
+      "PERSON_7542_SLACK_ID",
+      "PERSON_7959_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CF1AFD92F96",
+    "name": "teamtriage",
+    "created": 1620674926,
+    "creator": "PERSON_14539_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14539_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14556_SLACK_ID",
+      "PERSON_14557_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_14584_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_6430_SLACK_ID",
+      "PERSON_7542_SLACK_ID",
+      "PERSON_7780_SLACK_ID",
+      "PERSON_7870_SLACK_ID",
+      "PERSON_9253_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CFEDFC5C017",
+    "name": "testing-survey-responses",
+    "created": 1651521622,
+    "creator": "PERSON_14542_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14554_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C756F2712F1",
+    "name": "trello-updates",
+    "created": 1521063955,
+    "creator": "PERSON_14566_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_14566_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CC699DF76CC",
+    "name": "user-activity",
+    "created": 1521826816,
+    "creator": "PERSON_6273_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "BANON0002",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_13417_SLACK_ID",
+      "PERSON_14350_SLACK_ID",
+      "PERSON_14533_SLACK_ID",
+      "PERSON_14534_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14539_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14556_SLACK_ID",
+      "PERSON_14562_SLACK_ID",
+      "PERSON_14567_SLACK_ID",
+      "PERSON_14568_SLACK_ID",
+      "PERSON_14570_SLACK_ID",
+      "PERSON_14576_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_7542_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CD2833670D8",
+    "name": "user_research",
+    "created": 1505417536,
+    "creator": "PERSON_6273_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "PERSON_10148_SLACK_ID",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_12029_SLACK_ID",
+      "PERSON_13417_SLACK_ID",
+      "PERSON_14350_SLACK_ID",
+      "PERSON_14533_SLACK_ID",
+      "PERSON_14534_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14539_SLACK_ID",
+      "PERSON_14540_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14556_SLACK_ID",
+      "PERSON_14557_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_14561_SLACK_ID",
+      "PERSON_14562_SLACK_ID",
+      "PERSON_14566_SLACK_ID",
+      "PERSON_14567_SLACK_ID",
+      "PERSON_14568_SLACK_ID",
+      "PERSON_14576_SLACK_ID",
+      "PERSON_14584_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_6430_SLACK_ID",
+      "PERSON_7542_SLACK_ID",
+      "PERSON_7780_SLACK_ID",
+      "PERSON_7870_SLACK_ID",
+      "PERSON_7959_SLACK_ID",
+      "PERSON_9253_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C4F0E56F385",
+    "name": "x-testing-survey-responses",
+    "created": 1651507919,
+    "creator": "PERSON_14542_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "PERSON_14542_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CB355EB9F2C",
+    "name": "zmm-sunset",
+    "created": 1654887501,
+    "creator": "PERSON_10167_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_13417_SLACK_ID",
+      "PERSON_14350_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_6430_SLACK_ID",
+      "PERSON_7542_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C69443F3222",
+    "name": "zms-escalation",
+    "created": 1535050257,
+    "creator": "PERSON_10639_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_13417_SLACK_ID",
+      "PERSON_14350_SLACK_ID",
+      "PERSON_14533_SLACK_ID",
+      "PERSON_14539_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14556_SLACK_ID",
+      "PERSON_14562_SLACK_ID",
+      "PERSON_14567_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_7542_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "CA0C7B626B2",
+    "name": "zt",
+    "created": 1598019760,
+    "creator": "PERSON_6273_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "BANON0002",
+      "BANON0003",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14534_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14539_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14556_SLACK_ID",
+      "PERSON_14557_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_14576_SLACK_ID",
+      "PERSON_14584_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_6430_SLACK_ID",
+      "PERSON_7542_SLACK_ID",
+      "PERSON_7780_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C468893AC65",
+    "name": "zt-fbo",
+    "created": 1628185188,
+    "creator": "PERSON_6273_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_12023_SLACK_ID",
+      "PERSON_12029_SLACK_ID",
+      "PERSON_13417_SLACK_ID",
+      "PERSON_14350_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14539_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14553_SLACK_ID",
+      "PERSON_14557_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_14584_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_6430_SLACK_ID",
+      "PERSON_7542_SLACK_ID",
+      "PERSON_7780_SLACK_ID",
+      "PERSON_9253_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C04918BC27C",
+    "name": "zt_plus",
+    "created": 1675716098,
+    "creator": "PERSON_10167_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "BANON0001",
+      "PERSON_10148_SLACK_ID",
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14557_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_14584_SLACK_ID",
+      "PERSON_6273_SLACK_ID",
+      "PERSON_7542_SLACK_ID",
+      "PERSON_7780_SLACK_ID",
+      "PERSON_7870_SLACK_ID",
+      "PERSON_9253_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  },
+  {
+    "id": "C2EA6B31DC5",
+    "name": "zt_product",
+    "created": 1653495018,
+    "creator": "PERSON_7542_SLACK_ID",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "PERSON_10167_SLACK_ID",
+      "PERSON_10639_SLACK_ID",
+      "PERSON_14536_SLACK_ID",
+      "PERSON_14542_SLACK_ID",
+      "PERSON_14556_SLACK_ID",
+      "PERSON_14557_SLACK_ID",
+      "PERSON_14558_SLACK_ID",
+      "PERSON_14584_SLACK_ID",
+      "PERSON_6430_SLACK_ID",
+      "PERSON_7542_SLACK_ID",
+      "PERSON_7780_SLACK_ID"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    }
+  }
+]
