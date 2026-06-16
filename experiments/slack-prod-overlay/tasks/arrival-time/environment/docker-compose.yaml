@@ -1,0 +1,30 @@
+# Two-container task: thin agent + the SHARED prod Slack sidecar, with this task's small overlay
+# bind-mounted in. slack-boot.sh copies the baked prod DB then imports /data/slack-overlay on top
+# (--overlay: preserves prod rows, adds the planted message). The agent reaches the workspace only
+# over HTTP at http://slack and has no filesystem access to the data.
+# Requires `custom_docker_compose = true` in task.toml. No `networks:` block.
+services:
+  main:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${APEX_TASK_DOCKER_CLIENT_IMAGE_NAME:-arrival-time-main:local}
+    platform: linux/amd64
+    environment:
+      SLACK_API_URL: http://slack
+      SLACK_BOT_TOKEN: xoxp-acme-eval-0001
+    depends_on:
+      slack:
+        condition: service_healthy
+
+  slack:
+    image: ${SLACK_GATEWAY_IMAGE:-ghcr.io/abundant-ai/slack-gateway:prod-v1}
+    platform: linux/amd64
+    volumes:
+      - ./data/overlay:/data/slack-overlay:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:80/api/auth.test >/dev/null || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 90
+      start_period: 30s

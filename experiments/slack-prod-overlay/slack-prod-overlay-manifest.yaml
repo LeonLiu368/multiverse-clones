@@ -1,0 +1,26 @@
+metadata:
+  name: slack-prod-overlay
+  enable_image_push: true
+  description: |
+    Demonstrates the shared-prod-corpus + per-task-overlay model. One large, realistic prod Slack
+    workspace (ghcr.io/abundant-ai/slack-gateway:prod-v1 — 88 channels, ~2.4M messages, named users)
+    is pulled as a shared sidecar; each task bind-mounts a tiny overlay that slack-boot.sh imports on
+    top of the prod DB at standup (preserving prod rows, adding the planted data).
+
+      - arrival-time: a planted message in the real #engineering channel says a teammate is "coming
+        in at 6pm" to push the payments hotfix. The agent must find it via the slack CLI/MCP among
+        real traffic and report the time (18:00).
+
+    Two-container, isolated (agent has no filesystem access to the data). Deterministic: nop=0, oracle=1.
+  task_path: experiments/slack-prod-overlay/tasks
+  n_trials: 1
+  skip_trajectory_analysis: false
+
+tasks:
+  - arrival-time
+
+agents:
+  - name: nop
+  - name: oracle
+  - name: gemini-cli
+    model_name: google/gemini-3.1-pro-preview
