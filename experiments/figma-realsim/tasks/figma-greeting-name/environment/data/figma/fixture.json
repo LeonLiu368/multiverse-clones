@@ -1,0 +1,188 @@
+{
+  "team": {
+    "id": "T1",
+    "name": "Imported Team"
+  },
+  "projects": [
+    {
+      "id": "P1",
+      "name": "Imported",
+      "files": [
+        "BM8JZIS9LbZnEZSUQit8T0"
+      ]
+    }
+  ],
+  "files": [
+    {
+      "key": "BM8JZIS9LbZnEZSUQit8T0",
+      "project_id": "",
+      "name": "Untitled",
+      "version": "2365477853803642780",
+      "lastModified": "2026-06-16T00:16:45Z",
+      "thumbnailUrl": "https://s3-alpha.figma.com/thumbnails/1c24dbf2-c534-4f51-b222-a13d83546a4c?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQ4GOSFWC5D26EHQQ%2F20260614%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260614T120000Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=caa47ea5806ab8eab743702091f4a20f6f5169fee41933a37e5f3154d3baf959",
+      "editorType": "figma",
+      "role": "owner",
+      "document": {
+        "id": "0:0",
+        "name": "Document",
+        "type": "DOCUMENT",
+        "scrollBehavior": "SCROLLS",
+        "children": [
+          {
+            "id": "0:1",
+            "name": "Page 1",
+            "type": "CANVAS",
+            "scrollBehavior": "SCROLLS",
+            "children": [
+              {
+                "id": "1:2",
+                "name": "Rectangle 1",
+                "type": "RECTANGLE",
+                "scrollBehavior": "SCROLLS",
+                "blendMode": "PASS_THROUGH",
+                "fills": [
+                  {
+                    "blendMode": "NORMAL",
+                    "type": "SOLID",
+                    "color": {
+                      "r": 1.0,
+                      "g": 0.0,
+                      "b": 0.0,
+                      "a": 1.0
+                    }
+                  }
+                ],
+                "strokes": [],
+                "strokeWeight": 1.0,
+                "strokeAlign": "INSIDE",
+                "absoluteBoundingBox": {
+                  "x": -184.0,
+                  "y": -176.0,
+                  "width": 217.0,
+                  "height": 192.0
+                },
+                "absoluteRenderBounds": {
+                  "x": -184.0,
+                  "y": -176.0,
+                  "width": 217.0,
+                  "height": 192.0
+                },
+                "constraints": {
+                  "vertical": "TOP",
+                  "horizontal": "LEFT"
+                },
+                "effects": [],
+                "interactions": [],
+                "complexStrokeProperties": {
+                  "strokeType": "BASIC"
+                }
+              },
+              {
+                "id": "1:3",
+                "name": "Hello World! My name is Jaquavious",
+                "type": "TEXT",
+                "scrollBehavior": "SCROLLS",
+                "blendMode": "PASS_THROUGH",
+                "fills": [
+                  {
+                    "blendMode": "NORMAL",
+                    "type": "SOLID",
+                    "color": {
+                      "r": 0.0,
+                      "g": 0.0,
+                      "b": 0.0,
+                      "a": 1.0
+                    }
+                  }
+                ],
+                "strokes": [],
+                "strokeWeight": 1.0,
+                "strokeAlign": "OUTSIDE",
+                "absoluteBoundingBox": {
+                  "x": -124.0,
+                  "y": -102.0,
+                  "width": 132.0,
+                  "height": 45.0
+                },
+                "absoluteRenderBounds": {
+                  "x": -122.94318389892578,
+                  "y": -98.7272720336914,
+                  "width": 130.16229248046875,
+                  "height": 26.18181610107422
+                },
+                "constraints": {
+                  "vertical": "TOP",
+                  "horizontal": "LEFT"
+                },
+                "characters": "Hello World!\nMy name is Jaquavious\n",
+                "characterStyleOverrides": [],
+                "styleOverrideTable": {},
+                "lineTypes": [
+                  "NONE",
+                  "NONE",
+                  "NONE"
+                ],
+                "lineIndentations": [
+                  0,
+                  0,
+                  0
+                ],
+                "style": {
+                  "fontFamily": "Inter",
+                  "fontPostScriptName": null,
+                  "fontStyle": "Regular",
+                  "fontWeight": 400,
+                  "textAutoResize": "WIDTH_AND_HEIGHT",
+                  "fontSize": 12.0,
+                  "textAlignHorizontal": "LEFT",
+                  "textAlignVertical": "TOP",
+                  "letterSpacing": 0.0,
+                  "lineHeightPx": 14.522727012634277,
+                  "lineHeightPercent": 100.0,
+                  "lineHeightUnit": "INTRINSIC_%"
+                },
+                "layoutVersion": 5,
+                "effects": [],
+                "interactions": [],
+                "complexStrokeProperties": {
+                  "strokeType": "BASIC"
+                }
+              }
+            ],
+            "backgroundColor": {
+              "r": 0.9607843160629272,
+              "g": 0.9607843160629272,
+              "b": 0.9607843160629272,
+              "a": 1.0
+            },
+            "prototypeStartNodeID": null,
+            "flowStartingPoints": [],
+            "prototypeDevice": {
+              "type": "NONE",
+              "rotation": "NONE"
+            }
+          }
+        ]
+      },
+      "components": {},
+      "componentSets": {},
+      "styles": {},
+      "images": {},
+      "comments": [],
+      "versions": [
+        {
+          "id": "2365477853803642780",
+          "created_at": "2026-06-16T00:22:42Z",
+          "label": null,
+          "description": null,
+          "user": {
+            "handle": "Figma",
+            "img_url": "https://www.gravatar.com/avatar/b41ea5bb2cbd89cf1620699952746936?size=240&default=https%3A%2F%2Fs3-alpha.figma.com%2Fstatic%2Fuser_f_v2.png",
+            "id": "183317509314044055"
+          },
+          "thumbnail_url": "https://s3-alpha-sig.figma.com/thumbnails/1c24dbf2-c534-4f51-b222-a13d83546a4c?Expires=1782691200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=X7RPEOEspLfKYyQnYy~d9i8KEXbqWyqosZ-hGtUnaSHozFVANvPECR8j-5~e53lCQBUM-z~cVjeR3eWHWlRTrfipU~plhDsOBYBwgcZkcaSA9JVH6u95NSTxboQZkWiflIMMcIjilRxgf7Nak5ALTmpHAaJiSAsG6TFgCMowgmpFA~-aj~7funVva774FhHDdTk9PZP3xAXQMli~asAyk8AI9WItSJBcDDcRHS9NmqEKx-2mIv8M3E1rXVRR7GP6TOnClG~pxDoZ0uxqu1l1~JYIzmKSUuZJd0PPGzXEc74LH-Zz5R3d4ZjbMmQqXSE07fLDgRwLhXVC3JnsP8xchg__"
+        }
+      ]
+    }
+  ]
+}

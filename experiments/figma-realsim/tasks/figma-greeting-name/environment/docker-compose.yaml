@@ -1,0 +1,32 @@
+# The agent (`main`) + the figma service (pulled public image), seeded per-task by
+# mounting a REAL imported Figma file as fixture.json into the service container only.
+services:
+  main:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${MAIN_IMAGE_NAME}
+    working_dir: /app
+    environment:
+      FIGMA_API_URL: http://figma:3000
+      FIGMA_TOKEN: figma-clone-token
+      FIGMA_FILE_KEY: BM8JZIS9LbZnEZSUQit8T0
+    depends_on:
+      figma:
+        condition: service_healthy
+
+  figma:
+    image: ghcr.io/abundant-ai/figma-service:latest
+    hostname: figma
+    platform: linux/amd64
+    environment:
+      FIGMA_FIXTURE: /srv/fixture.json
+    volumes:
+      - ./data/figma/fixture.json:/srv/fixture.json:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:3000/health >/dev/null || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 24
+      start_period: 15s
