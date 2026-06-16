@@ -24,6 +24,7 @@ metadata:
 tasks:
   - rw-small-slack-read
   - rw-large-slack-read
+  - rw-full-slack-read
 
 agents:
   - name: nop
