@@ -1,0 +1,29 @@
+schema_version = "1.2"
+name = "figma-realsim/figma-ios-widget-sizes"
+description = "Real2sim task on a slice of the real 'iOS and iPadOS 26 (Community)' Figma file. The figma service is seeded with the imported iPhone Examples section. The agent must use the figma tool (figma-cli/figma-mcp) to find the 'Home Screen Widgets' component set and implement home_screen_widget_sizes() to return its three size variants. The sizes exist only in the design, not the repo. A hidden grader pins them (order-insensitive). nop=0, oracle=1."
+
+[metadata]
+category = "observability"
+source = "Figma Community: iOS and iPadOS 26 (Community), file R1jno9FuCgYkNXayz8zglW"
+failure_mode = "info-in-design-only"
+tags = ["figma", "figma-clone", "real2sim", "observability", "components"]
+
+[agent]
+timeout_sec = 1200
+
+[verifier]
+timeout_sec = 180
+
+[environment]
+cpus = 2
+memory_mb = 4096
+storage_mb = 12288
+gpus = 0
+allow_internet = true
+workdir = "/app"
+build_timeout_sec = 2400
+
+[[environment.mcp_servers]]
+name = "figma"
+transport = "stdio"
+command = "figma-mcp"
