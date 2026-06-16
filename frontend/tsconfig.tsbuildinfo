@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/api.ts","./src/main.tsx","./src/apps/genericapp.tsx","./src/apps/slack/messagelist.tsx","./src/apps/slack/seedbar.tsx","./src/apps/slack/slackapp.tsx","./src/apps/slack/threadpanel.tsx"],"version":"5.9.3"}
