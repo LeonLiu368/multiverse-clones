@@ -63,18 +63,21 @@ class Store:
         row = self.conn.execute("SELECT value FROM meta WHERE key = ?", (key,)).fetchone()
         return row["value"] if row else default
 
-    def upsert_channel(self, **c: Any) -> None:
+    def upsert_channel(self, *, if_absent: bool = False, **c: Any) -> None:
+        # if_absent=True (overlay mode) preserves an existing prod row instead of replacing it.
+        verb = "INSERT OR IGNORE" if if_absent else "INSERT OR REPLACE"
         self.conn.execute(
-            """INSERT OR REPLACE INTO channels
+            f"""{verb} INTO channels
                (id,name,created,creator,is_archived,is_general,topic,purpose)
                VALUES (:id,:name,:created,:creator,:is_archived,:is_general,:topic,:purpose)""",
             {"created": 0, "creator": "", "is_archived": 0, "is_general": 0,
              "topic": "", "purpose": "", **c},
         )
 
-    def upsert_user(self, **u: Any) -> None:
+    def upsert_user(self, *, if_absent: bool = False, **u: Any) -> None:
+        verb = "INSERT OR IGNORE" if if_absent else "INSERT OR REPLACE"
         self.conn.execute(
-            """INSERT OR REPLACE INTO users
+            f"""{verb} INTO users
                (id,name,real_name,display_name,email,is_bot,deleted,tz)
                VALUES (:id,:name,:real_name,:display_name,:email,:is_bot,:deleted,:tz)""",
             {"real_name": "", "display_name": "", "email": "", "is_bot": 0,

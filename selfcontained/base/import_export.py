@@ -100,7 +100,10 @@ def _load_json(path: str):
 
 
 def import_export(store: Store, export_dir: str, channels: list[str] | None,
-                  start: str | None, end: str | None) -> dict:
+                  start: str | None, end: str | None, overlay: bool = False) -> dict:
+    # overlay=True layers this export ON TOP of an existing (prod) DB: channels/users that already
+    # exist are preserved (INSERT OR IGNORE) so prod metadata isn't clobbered; only new entities and
+    # all messages are added. Also leaves the prod team_id/team_name meta untouched.
     ids = IdMap()
     team_id = ""
 
@@ -119,6 +122,7 @@ def import_export(store: Store, export_dir: str, channels: list[str] | None,
             prof = u.get("profile") or {}
             team_id = team_id or u.get("team_id", "")
             store.upsert_user(
+                if_absent=overlay,
                 id=ids.uid(u["id"]), name=u.get("name") or "",
                 real_name=u.get("real_name") or prof.get("real_name") or "",
                 display_name=prof.get("display_name") or u.get("name") or "",
@@ -140,6 +144,7 @@ def import_export(store: Store, export_dir: str, channels: list[str] | None,
         topic = (meta.get("topic") or {}).get("value", "") if isinstance(meta.get("topic"), dict) else ""
         purpose = (meta.get("purpose") or {}).get("value", "") if isinstance(meta.get("purpose"), dict) else ""
         store.upsert_channel(
+            if_absent=overlay,
             id=cid, name=cname, created=int(meta.get("created") or 0),
             creator=ids.uid(meta["creator"]) if meta.get("creator") else "",
             is_archived=int(bool(meta.get("is_archived"))),
@@ -171,6 +176,7 @@ def import_export(store: Store, export_dir: str, channels: list[str] | None,
                 if raw_user not in user_seen:
                     prof = m.get("user_profile") or {}
                     store.upsert_user(
+                        if_absent=overlay,
                         id=uid, name=prof.get("name") or m.get("username") or uid,
                         real_name=prof.get("real_name") or "",
                         display_name=prof.get("display_name") or prof.get("name") or "",
@@ -187,8 +193,9 @@ def import_export(store: Store, export_dir: str, channels: list[str] | None,
                 )
                 n_msgs += 1
 
-    store.set_meta("team_id", team_id or "T0000000000")
-    store.set_meta("team_name", os.environ.get("SLACK_TEAM", "workspace"))
+    if not overlay:  # overlay layers onto prod — keep prod's workspace identity
+        store.set_meta("team_id", team_id or "T0000000000")
+        store.set_meta("team_name", os.environ.get("SLACK_TEAM", "workspace"))
     store.commit()
     return {"channels": len(dirs), "messages": n_msgs, "users": len(user_seen)}
 
@@ -283,7 +290,61 @@ def _user_record(raw: str, prof: dict, team_id: str, is_bot: bool = False) -> di
     }
 
 
-def write_metadata(export_dir: str, *, force: bool = False) -> dict:
+# Deterministic synthetic-name pools — an anonymized export has no real names, so we assign stable,
+# human-readable names keyed by the (content-hashed) user id. Same id -> same name across rebuilds.
+FIRST_NAMES = [
+    "Alex", "Jordan", "Sam", "Taylor", "Morgan", "Casey", "Riley", "Avery", "Quinn", "Reese",
+    "Devon", "Harper", "Rowan", "Parker", "Emerson", "Skyler", "Cameron", "Drew", "Hayden", "Logan",
+    "Maya", "Noah", "Priya", "Diego", "Wei", "Sofia", "Omar", "Hana", "Lucas", "Nadia",
+    "Ivan", "Leila", "Kenji", "Amara", "Felix", "Yara", "Mateo", "Zoe", "Arjun", "Elena",
+]
+LAST_NAMES = [
+    "Avila", "Brooks", "Chen", "Diaz", "Okafor", "Fischer", "Gupta", "Haddad", "Ibrahim", "Jensen",
+    "Kowalski", "Lopez", "Martin", "Nakamura", "Owusu", "Petrov", "Quintero", "Reyes", "Singh", "Tan",
+    "Ueda", "Vargas", "Walsh", "Xu", "Yousef", "Zhang", "Andersen", "Bianchi", "Costa", "Duval",
+    "Eriksson", "Ferreira", "Goldberg", "Hassan", "Ivanov", "Johansson", "Kim", "Larsson", "Mensah", "Novak",
+]
+
+
+# Anonymizer placeholders that should be treated as "no real name" and replaced with a synthetic one:
+# bracketed tokens like "[PERSON_NAME_6771]", and raw/anon id shapes (PERSON_*, UANON*, U0123ABC).
+_ANON_NAME = re.compile(r"^\[.*\]$|person_name|^uanon|^person_|^[uwb][a-z0-9]{6,}$", re.I)
+
+
+def _needs_synthetic(rec: dict, raw: str) -> bool:
+    nm = (rec.get("real_name") or rec.get("name") or "").strip()
+    return (not nm) or nm == raw or bool(_ANON_NAME.search(nm))
+
+
+def _assign_synthetic_names(users: dict) -> None:
+    """Give every user a stable, human-readable name derived from its id. Only synthesizes when no
+    real name was recovered (missing, equal to the raw id, or an anonymizer placeholder), so genuine
+    profiles are kept. Deterministic: iterate ids in sorted order and key the name pool on sha1(id)."""
+    used: set[str] = set()
+    for raw in sorted(users):
+        rec = users[raw]
+        if not _needs_synthetic(rec, raw):
+            continue  # a real name was recovered — leave it
+        h = int(hashlib.sha1(raw.encode()).hexdigest(), 16)
+        first = FIRST_NAMES[h % len(FIRST_NAMES)]
+        last = LAST_NAMES[(h // len(FIRST_NAMES)) % len(LAST_NAMES)]
+        is_bot = bool(rec.get("is_bot"))
+        real = f"{first} Bot" if is_bot else f"{first} {last}"
+        base = f"{first.lower()}-bot" if is_bot else f"{first.lower()}.{last.lower()}"
+        handle, n = base, 2
+        while handle in used:
+            handle, n = f"{base}{n}", n + 1
+        used.add(handle)
+        disp = real if is_bot else first
+        rec["name"], rec["real_name"] = handle, real
+        rec["profile"].update({
+            "real_name": real, "display_name": disp,
+            "real_name_normalized": real, "display_name_normalized": disp,
+            "first_name": "" if is_bot else first, "last_name": "" if is_bot else last,
+        })
+
+
+def write_metadata(export_dir: str, *, force: bool = False, names: str = "raw") -> dict:
     """Materialize the two top-level files a complete Slack export has — `channels.json` and
     `users.json` — for an ANONYMIZED export that had them stripped. Everything is derived from the
     message stream (already present): users from each message's `user` + embedded `user_profile`
@@ -331,6 +392,9 @@ def write_metadata(export_dir: str, *, force: bool = False) -> dict:
         u["team_id"] = team_id
         u["profile"]["team"] = team_id
 
+    if names == "synthetic":
+        _assign_synthetic_names(users)
+
     channels_out = []
     for name in sorted(chans):
         c = chans[name]
@@ -363,12 +427,18 @@ def main() -> None:
                     help="derive + write channels.json and users.json into --export-dir "
                          "(completes an anonymized export that had them stripped), then exit")
     ap.add_argument("--force", action="store_true", help="overwrite existing metadata files")
+    ap.add_argument("--names", choices=["raw", "synthetic"], default="raw",
+                    help="with --write-metadata: 'synthetic' assigns stable human-readable names to "
+                         "users that have none (anonymized exports); 'raw' keeps the source id")
+    ap.add_argument("--overlay", action="store_true",
+                    help="layer this export on top of an existing (prod) DB: preserve existing "
+                         "channel/user rows, add only new entities + all messages")
     args = ap.parse_args()
 
     if args.write_metadata:
         if not args.export_dir:
             ap.error("--write-metadata requires --export-dir")
-        stats = write_metadata(args.export_dir, force=args.force)
+        stats = write_metadata(args.export_dir, force=args.force, names=args.names)
         print(f"WROTE_METADATA channels={stats['channels']} users={stats['users']} "
               f"messages_scanned={stats['messages_scanned']} team_id={stats['team_id']}")
         return
@@ -376,7 +446,7 @@ def main() -> None:
     store = Store(args.db)
     if args.export_dir:
         chans = [c.strip() for c in args.channels.split(",")] if args.channels else None
-        stats = import_export(store, args.export_dir, chans, args.start, args.end)
+        stats = import_export(store, args.export_dir, chans, args.start, args.end, overlay=args.overlay)
     elif args.scraped:
         stats = import_scraped(store, args.scraped)
     else:

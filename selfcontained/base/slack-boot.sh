@@ -14,6 +14,16 @@ rm -f "$SLACK_DB"
 if [ -f "$PREBUILT" ]; then
   echo "[boot] using pre-built SQLite DB ($PREBUILT) — skipping import"
   cp "$PREBUILT" "$SLACK_DB"
+  # Per-task OVERLAY: a task may mount/bake a small Slack export at /data/slack-overlay to layer its
+  # own data on top of the shared prod corpus. import_export.py merges (INSERT OR REPLACE), so
+  # overlay rows that reference a prod channel/user by name resolve to the same id and attach to it;
+  # new channels/users/messages are added. Overlay timestamps should post-date the prod corpus so
+  # (channel_id, ts) never collides. Harmless when absent.
+  OVERLAY="${SLACK_OVERLAY_DIR:-/data/slack-overlay}"
+  if [ -d "$OVERLAY" ] && [ -n "$(ls -A "$OVERLAY" 2>/dev/null)" ]; then
+    echo "[boot] importing task overlay from $OVERLAY on top of the prod DB"
+    python3 /opt/import_export.py --export-dir "$OVERLAY" --db "$SLACK_DB" --overlay || echo "[boot] overlay import error (non-fatal)"
+  fi
 # Otherwise import the seed at boot. Priority order:
 #   1. a real Slack export directory at /data/slack-export (complete or anonymized variant)
 #   2. a legacy scraped.json at /data/seed/scraped.json or /data/mattermost/scraped.json
