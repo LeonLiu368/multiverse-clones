@@ -1,11 +1,6 @@
-# Agent container (Harbor `main`) for the FULL real Slack export (88 channels, 2.4M messages).
-# Pulls the pre-built DB from the versioned seed image — no data committed, no import at boot.
-FROM ghcr.io/abundant-ai/slack-service:slack-mcp-oss
-ENV SLACK_API_URL=http://localhost \
-    SLACK_BOT_TOKEN=xoxp-acme-eval-0001
-COPY --from=ghcr.io/abundant-ai/slack-seed:full /slack.prebuilt.db /opt/slack.prebuilt.db
-COPY main-entrypoint.sh /usr/local/bin/main-entrypoint.sh
-RUN chmod +x /usr/local/bin/main-entrypoint.sh
+# Agent container (Harbor `main`) — FROM the published thin agent base; adds only this task's
+# codebase. Tools-only (slack CLI + korotovsky MCP), no gateway, no data: the Slack workspace lives
+# in the `slack` sidecar (see docker-compose.yaml), reachable only over HTTP at http://slack. The
+# agent has no filesystem access to the chat data, so it can't bypass the tools.
+FROM ghcr.io/abundant-ai/slack-agent:slack-mcp-oss
 COPY codebase /workspace
-WORKDIR /workspace
-ENTRYPOINT ["/usr/local/bin/main-entrypoint.sh"]
