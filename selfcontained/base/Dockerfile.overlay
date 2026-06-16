@@ -1,0 +1,9 @@
+# syntax=docker/dockerfile:1
+# slack-gateway:<task> — a per-task sidecar = the shared prod gateway + this task's tiny overlay.
+# The prod base layers (incl. the ~558MB DB) are IDENTICAL across tasks, so the runner pulls them
+# once and caches them; only the small overlay layer differs per task. slack-boot.sh imports
+# /data/slack-overlay on top of the prod DB at standup. This is the no-volume-mount delivery of the
+# shared-prod + per-task-overlay model (Harbor rejects host bind-mounts on sidecars at validation).
+ARG PROD=ghcr.io/abundant-ai/slack-gateway:prod-v1
+FROM ${PROD}
+COPY overlay /data/slack-overlay
