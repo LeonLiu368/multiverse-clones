@@ -1,22 +1,16 @@
-# Agent container (Harbor `main`), built FROM the prebuilt slack-service image (SQLite Slack gateway
-# + importer + `slack` CLI + korotovsky `slack-mcp` + pytest). This layer bakes in the seed export,
-# PRE-BUILDS the SQLite DB at docker-build time (so boot is instant — no per-container import), and
-# adds the placeholder codebase. Fully self-contained — no runtime mount.
-#
-# Pinned to the branch-scoped image ghcr.io/abundant-ai/slack-service:slack-mcp-oss (public), so this
-# experiment does not depend on (or clobber) the shared :latest.
+# Agent container (Harbor `main`). Pulls a PRE-BUILT SQLite DB from a versioned seed image instead
+# of carrying the raw export — so the real-world Slack data lives in ghcr.io/abundant-ai/slack-seed,
+# not in this task. Boot uses the baked DB directly (slack-boot.sh skips import). Self-contained.
 FROM ghcr.io/abundant-ai/slack-service:slack-mcp-oss
 
 ENV SLACK_API_URL=http://localhost \
     SLACK_BOT_TOKEN=xoxp-acme-eval-0001
 
+# The seed: a tiny image carrying just /slack.prebuilt.db for the eng-2021q1 export.
+COPY --from=ghcr.io/abundant-ai/slack-seed:eng-2021q1 /slack.prebuilt.db /opt/slack.prebuilt.db
+
 COPY main-entrypoint.sh /usr/local/bin/main-entrypoint.sh
 RUN chmod +x /usr/local/bin/main-entrypoint.sh
-
-# Bake the real Slack export, then pre-build the SQLite DB from it at build time.
-COPY data/slack-export /data/slack-export
-RUN python3 /opt/import_export.py --export-dir /data/slack-export --db /opt/slack.prebuilt.db
-
 COPY codebase /workspace
 WORKDIR /workspace
 ENTRYPOINT ["/usr/local/bin/main-entrypoint.sh"]
