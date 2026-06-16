@@ -121,8 +121,24 @@ git. See `tasks/paperless-ngx-10195-10196/` as the reference.
    - paperless: `python -m pytest <files> -o addopts= -p no:cacheprovider -p no:xdist` → 56 pass.
    - bor: `go test <pkgs> -run "^(<tops>)$" -v -timeout 30m` → 437/437 `--- PASS:`.
    Then revert the product files (keep test.patch) and re-run → the F2P tests fail (nop=0).
-4. **Oddish**: run with oracle/nop + ≥1 model; confirm oracle=1, nop=0, agents produce
+4. **Flakiness pre-check (REQUIRED — reject non-deterministic tasks).** Re-run the oracle
+   test suite with `-count=3` (Go) / `--count 3` or 3 repeats (pytest). If *any* repeat shows a
+   `--- FAIL:` / failed required test, the task's oracle is non-deterministic → **do not ship it.**
+   This is how op-geth-655 was caught: `TestDAFilters` uses `t.Parallel()` + async
+   `buildPayload().WaitFull()` with an exact tx-count assert — it passed unloaded (arm64) and
+   failed under load (oddish amd64). Such tasks waste oddish runs and corrupt grading.
+5. **Oddish**: run with oracle/nop + ≥1 model; confirm oracle=1, nop=0, agents produce
    real trajectories that exercise `linear`/`slack`/`gcx`.
+
+### Determinism triage (pick deterministic tasks up front)
+Prefer tasks whose F2P tests are pure logic / data-structure / config (e.g. bor `./params`,
+gossamer `./dot/parachain/types`, paperless API-validation). **Avoid** test packages built around
+concurrency/async/timing — they tend to flake under load:
+- miner / payload-building (`buildPayload`, `WaitFull`, exact tx counts) — op-geth.
+- parachain `statement-distribution` / `availability-distribution` — gossamer networking subsystems.
+- anything with `t.Parallel()` + timers/goroutines + exact-count or ordering assertions.
+A quick scan of `test.patch` for `t.Parallel`, `time.`, `go func`, `chan ` flags candidates to
+pre-check (step 4) harder or skip.
 
 ## Batching the remaining ~24 Observability tasks
 

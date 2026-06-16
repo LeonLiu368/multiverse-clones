@@ -1,0 +1,37 @@
+schema_version = "1.2"
+name = "apex-swe-clones/bor-1743"
+description = "Exact APEX-SWE Observability task (0xPolygon/bor #1743) re-platformed onto the clone stack. Bor needs configurable coinbase/fee-recipient addresses activating at specific block heights (the Rio hardfork redirects all tx fees to a protocol address). The agent investigates via a ticketvector tracker, slack/Discord chat, and gauge logs, then implements the fee-recipient config + transition logic in /app/repo (go-ethereum/bor). Graded by the upstream PR's own deterministic Go config/integration tests in ./params and ./tests/bor (52 F2P). nop=0, oracle=1."
+
+[metadata]
+category = "observability"
+source_repo = "0xPolygon/bor"
+apex_task = "Observability/0xpolygon-bor-1743-observability"
+apex_origin = "mercor/APEX-SWE (exact task, re-platformed onto abundant clones)"
+failure_mode = "configurable-fee-recipient"
+tags = ["apex-swe", "observability", "clones", "multi-service", "sre", "ticketvector", "slack", "gauge", "go", "blockchain"]
+
+[agent]
+timeout_sec = 3000
+
+[verifier]
+timeout_sec = 2400
+user = "root"
+
+[environment]
+allow_internet = true
+build_timeout_sec = 3000
+cpus = 4
+memory_mb = 8192
+storage_mb = 51200
+gpus = 0
+workdir = "/app/repo"
+
+[[environment.mcp_servers]]
+name = "slack"
+transport = "stdio"
+command = "slack-mcp"
+
+[[environment.mcp_servers]]
+name = "grafana"
+transport = "stdio"
+command = "mcp-grafana"

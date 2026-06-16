@@ -1,0 +1,272 @@
+diff --git a/core/evm.go b/core/evm.go
+index af58195ce..b13cd41f8 100644
+--- a/core/evm.go
++++ b/core/evm.go
+@@ -54,7 +54,16 @@ func NewEVMBlockContext(header *types.Header, chain ChainContext, author *common
+
+ 	// If we don't have an explicit author (i.e. not mining), extract from the header
+ 	if author == nil {
+-		beneficiary, _ = chain.Engine().Author(header) // Ignore error, we're past header validation
++		if chain.Config().Bor != nil && chain.Config().Bor.IsRio(header.Number) {
++			beneficiary = common.HexToAddress(chain.Config().Bor.CalculateCoinbase(header.Number.Uint64()))
++
++			// In case of coinbase is not set post Rio, use the default coinbase
++			if beneficiary == (common.Address{}) {
++				beneficiary, _ = chain.Engine().Author(header)
++			}
++		} else {
++			beneficiary, _ = chain.Engine().Author(header) // Ignore error, we're past header validation
++		}
+ 	} else {
+ 		beneficiary = *author
+ 	}
+diff --git a/core/parallel_state_processor.go b/core/parallel_state_processor.go
+index 401b253a0..98ad43650 100644
+--- a/core/parallel_state_processor.go
++++ b/core/parallel_state_processor.go
+@@ -290,8 +290,6 @@ func (p *ParallelStateProcessor) Process(block *types.Block, statedb *state.Stat
+
+ 	shouldDelayFeeCal := true
+
+-	coinbase, _ := p.bc.Engine().Author(header)
+-
+ 	blockTxDependency := block.GetTxDependency()
+
+ 	deps := GetDeps(blockTxDependency)
+@@ -306,7 +304,9 @@ func (p *ParallelStateProcessor) Process(block *types.Block, statedb *state.Stat
+ 	}
+
+ 	blockContext := NewEVMBlockContext(header, p.bc, author)
+-	context := NewEVMBlockContext(header, p.bc.hc, nil)
++	coinbase := blockContext.Coinbase
++
++	context := NewEVMBlockContext(header, p.bc.hc, author)
+
+ 	vmenv := vm.NewEVM(context, statedb, p.config, cfg)
+
+diff --git a/eth/fetcher/witness_manager.go b/eth/fetcher/witness_manager.go
+index 6157393b8..29a5b3174 100644
+--- a/eth/fetcher/witness_manager.go
++++ b/eth/fetcher/witness_manager.go
+@@ -516,10 +516,7 @@ func (m *witnessManager) tick() {
+ func (m *witnessManager) fetchWitness(peer string, hash common.Hash, announce *blockAnnounce) {
+ 	resCh := make(chan *eth.Response)
+
+-	m.mu.Lock()
+ 	announcedAt := announce.time // Capture the original 'ready-to-fetch' time for logging/timestamping
+-	m.mu.Unlock()
+-
+ 	witnessFetchMeter.Mark(1)
+
+ 	req, err := announce.fetchWitness(hash, resCh)
+diff --git a/eth/peer.go b/eth/peer.go
+index fac030eb0..6bd38feea 100644
+--- a/eth/peer.go
++++ b/eth/peer.go
+@@ -174,14 +174,14 @@ func (p *ethPeer) RequestWitnesses(hashes []common.Hash, dlResCh chan *eth.Respo
+ 	var mapsMu sync.RWMutex
+ 	var buildRequestMu sync.RWMutex
+
+-	// Build all the initial requests synchronously.
+-	buildWitReqErr := p.buildWitnessRequests(hashes, &witReqs, &witReqsWg, witTotalPages, witTotalRequest, witReqResCh, witReqSem, &mapsMu, &buildRequestMu, failedRequests)
+-	if buildWitReqErr != nil {
+-		p.witPeer.Peer.Log().Error("Error in building witness requests", "peer", p.ID(), "err", buildWitReqErr)
+-		return nil, buildWitReqErr
+-	}
++	// non-blocking build first requests
++	witReqsWg.Add(1)
++	go func() {
++		p.buildWitnessRequests(hashes, &witReqs, &witReqsWg, witTotalPages, witTotalRequest, witReqResCh, witReqSem, &mapsMu, &buildRequestMu, failedRequests)
++		witReqsWg.Done()
++	}()
+
+-	// Close the witResCh after all the requests are done.
++	// closes witResCh after all requests are done
+ 	go func() {
+ 		defer close(witReqResCh)
+ 		witReqsWg.Wait()
+@@ -332,10 +332,7 @@ func (p *ethPeer) receiveWitnessPage(
+ 			// non blocking call to avoid race condition because of semaphore
+ 			witReqsWg.Add(1) // protecting from not finishing before requests are built
+ 			go func() {
+-				buildWitReqErr := p.buildWitnessRequests(hashes, witReqs, witReqsWg, witTotalPages, witTotalRequest, witResCh, witReqSem, mapsMu, buildRequestMu, failedRequests)
+-				if buildWitReqErr != nil {
+-					p.witPeer.Peer.Log().Error("Error in building witness requests", "peer", p.ID(), "err", buildWitReqErr)
+-				}
++				p.buildWitnessRequests(hashes, witReqs, witReqsWg, witTotalPages, witTotalRequest, witResCh, witReqSem, mapsMu, buildRequestMu, failedRequests)
+ 				witReqsWg.Done()
+ 			}()
+ 		}
+@@ -376,10 +373,7 @@ func (p *ethPeer) receiveWitnessPage(
+ 		// non blocking call to avoid race condition because of semaphore
+ 		witReqsWg.Add(1) // protecting from not finishing before requests are built
+ 		go func() {
+-			buildWitReqErr := p.buildWitnessRequests(hashes, witReqs, witReqsWg, witTotalPages, witTotalRequest, witResCh, witReqSem, mapsMu, buildRequestMu, failedRequests)
+-			if buildWitReqErr != nil {
+-				p.witPeer.Peer.Log().Error("Error in building witness requests", "peer", p.ID(), "err", buildWitReqErr)
+-			}
++			p.buildWitnessRequests(hashes, witReqs, witReqsWg, witTotalPages, witTotalRequest, witResCh, witReqSem, mapsMu, buildRequestMu, failedRequests)
+ 			witReqsWg.Done()
+ 		}()
+ 	}
+@@ -487,7 +481,7 @@ func (p *ethPeer) doWitnessRequest(
+ 	request := []wit.WitnessPageRequest{{Hash: hash, Page: page}}
+ 	witReq, err := p.witPeer.Peer.RequestWitness(request, witResCh)
+ 	if err != nil {
+-		p.witPeer.Peer.Log().Error("Error in making wit request", "peer", p.ID(), "err", err)
++		p.witPeer.Peer.Log().Error("RequestWitnesses failed to make wit request", "peer", p.ID(), "err", err)
+ 		return err
+ 	}
+ 	go func() {
+diff --git a/go.mod b/go.mod
+index f80fa0a51..690cf13f0 100644
+--- a/go.mod
++++ b/go.mod
+@@ -20,7 +20,6 @@ require (
+ 	github.com/cespare/cp v1.1.1
+ 	github.com/cloudflare/cloudflare-go v0.97.0
+ 	github.com/cockroachdb/pebble v1.1.2
+-	github.com/cometbft/cometbft v0.38.17
+ 	github.com/consensys/gnark-crypto v0.16.0
+ 	github.com/cosmos/cosmos-sdk v0.50.13
+ 	github.com/cosmos/gogoproto v1.7.0
+@@ -223,6 +222,7 @@ require (
+ 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
+ 	github.com/chzyer/readline v1.5.1 // indirect
+ 	github.com/cockroachdb/apd/v2 v2.0.2 // indirect
++	github.com/cometbft/cometbft v0.38.17 // indirect
+ 	github.com/cometbft/cometbft-db v0.14.1 // indirect
+ 	github.com/cosmos/btcutil v1.0.5 // indirect
+ 	github.com/cosmos/cosmos-db v1.0.2 // indirect
+diff --git a/internal/cli/server/chains/amoy.go b/internal/cli/server/chains/amoy.go
+index 39ccaa7e1..a4c9509ad 100644
+--- a/internal/cli/server/chains/amoy.go
++++ b/internal/cli/server/chains/amoy.go
+@@ -59,6 +59,10 @@ var amoyTestnet = &Chain{
+ 					"0":     "0x000000000000000000000000000000000000dead",
+ 					"73100": "0xeCDD77cE6f146cCf5dab707941d318Bd50eeD2C9",
+ 				},
++				Coinbase: map[string]string{
++					"0":        "0x0000000000000000000000000000000000000000",
++					"26201856": "0x7Ee41D8A25641000661B1EF5E6AE8A00400466B0",
++				},
+ 				BlockAlloc: map[string]interface{}{
+ 					"11865856": map[string]interface{}{
+ 						// StateReceiver contract
+diff --git a/internal/cli/server/chains/mumbai.go b/internal/cli/server/chains/mumbai.go
+index f68f0aa88..e60bc5538 100644
+--- a/internal/cli/server/chains/mumbai.go
++++ b/internal/cli/server/chains/mumbai.go
+@@ -64,6 +64,10 @@ var mumbaiTestnet = &Chain{
+ 					"22640000": "0x70bcA57F4579f58670aB2d18Ef16e02C17553C38",
+ 					"41874000": "0x617b94CCCC2511808A3C9478ebb96f455CF167aA",
+ 				},
++				Coinbase: map[string]string{
++					"0":        "0x0000000000000000000000000000000000000000",
++					"50000000": "0x7Ee41D8A25641000661B1EF5E6AE8A00400466B0",
++				},
+ 				BlockAlloc: map[string]interface{}{
+ 					// write as interface since that is how it is decoded in genesis
+ 					"22244000": map[string]interface{}{
+diff --git a/miner/worker.go b/miner/worker.go
+index 0dd344dae..43e94ce72 100644
+--- a/miner/worker.go
++++ b/miner/worker.go
+@@ -1305,13 +1305,27 @@ func (w *worker) prepareWork(genParams *generateParams, witness bool) (*environm
+
+ 		timestamp = parent.Time + 1
+ 	}
++
++	var coinbase common.Address
++	newBlockNumber := new(big.Int).Add(parent.Number, common.Big1)
++	if w.chainConfig.Bor != nil && w.chainConfig.Bor.IsRio(newBlockNumber) {
++		coinbase = common.HexToAddress(w.chainConfig.Bor.CalculateCoinbase(newBlockNumber.Uint64()))
++
++		// In case of coinbase is not set post Rio, use the default coinbase
++		if coinbase == (common.Address{}) {
++			coinbase = genParams.coinbase
++		}
++	} else {
++		coinbase = genParams.coinbase
++	}
++
+ 	// Construct the sealing block header.
+ 	header := &types.Header{
+ 		ParentHash: parent.Hash(),
+-		Number:     new(big.Int).Add(parent.Number, common.Big1),
++		Number:     newBlockNumber,
+ 		GasLimit:   core.CalcGasLimit(parent.GasLimit, w.config.GasCeil),
+ 		Time:       timestamp,
+-		Coinbase:   genParams.coinbase,
++		Coinbase:   coinbase,
+ 	}
+ 	// Set the extra field.
+ 	if len(w.extra) != 0 {
+@@ -1348,7 +1362,7 @@ func (w *worker) prepareWork(genParams *generateParams, witness bool) (*environm
+ 	// Could potentially happen if starting to mine in an odd state.
+ 	// Note genParams.coinbase can be different with header.Coinbase
+ 	// since clique algorithm can modify the coinbase field in header.
+-	env, err := w.makeEnv(parent, header, genParams.coinbase, witness)
++	env, err := w.makeEnv(parent, header, coinbase, witness)
+ 	if err != nil {
+ 		log.Error("Failed to create sealing context", "err", err)
+ 		return nil, err
+diff --git a/params/config.go b/params/config.go
+index 5f1e611a3..b7d5074d7 100644
+--- a/params/config.go
++++ b/params/config.go
+@@ -226,6 +226,9 @@ var (
+ 			BackupMultiplier: map[string]uint64{
+ 				"0": 2,
+ 			},
++			Coinbase: map[string]string{
++				"0": "0x000000000000000000000000000000000000ba5e",
++			},
+ 			ValidatorContract:     "0x0000000000000000000000000000000000001000",
+ 			StateReceiverContract: "0x0000000000000000000000000000000000001001",
+ 			BurntContract: map[string]string{
+@@ -287,6 +290,10 @@ var (
+ 				"22640000": "0x70bcA57F4579f58670aB2d18Ef16e02C17553C38",
+ 				"41874000": "0x617b94CCCC2511808A3C9478ebb96f455CF167aA",
+ 			},
++			Coinbase: map[string]string{
++				"0":        "0x0000000000000000000000000000000000000000",
++				"50000000": "0x7Ee41D8A25641000661B1EF5E6AE8A00400466B0",
++			},
+ 			BlockAlloc: map[string]interface{}{
+ 				// write as interface since that is how it is decoded in genesis
+ 				"22244000": map[string]interface{}{
+@@ -354,6 +361,10 @@ var (
+ 				"0":     "0x000000000000000000000000000000000000dead",
+ 				"73100": "0xeCDD77cE6f146cCf5dab707941d318Bd50eeD2C9",
+ 			},
++			Coinbase: map[string]string{
++				"0":        "0x0000000000000000000000000000000000000000",
++				"26201856": "0x7Ee41D8A25641000661B1EF5E6AE8A00400466B0",
++			},
+ 			BlockAlloc: map[string]interface{}{
+ 				// write as interface since that is how it is decoded in genesis
+ 				"11865856": map[string]interface{}{
+@@ -852,6 +863,7 @@ type BorConfig struct {
+ 	OverrideStateSyncRecordsInRange []BlockRangeOverride   `json:"overrideStateSyncRecordsInRange"` // override state records count in a given block range
+ 	BlockAlloc                      map[string]interface{} `json:"blockAlloc"`
+ 	BurntContract                   map[string]string      `json:"burntContract"`              // governance contract where the token will be sent to and burnt in london fork
++	Coinbase                        map[string]string      `json:"coinbase"`                   // coinbase address
+ 	JaipurBlock                     *big.Int               `json:"jaipurBlock"`                // Jaipur switch block (nil = no fork, 0 = already on jaipur)
+ 	DelhiBlock                      *big.Int               `json:"delhiBlock"`                 // Delhi switch block (nil = no fork, 0 = already on delhi)
+ 	IndoreBlock                     *big.Int               `json:"indoreBlock"`                // Indore switch block (nil = no fork, 0 = already on indore)
+@@ -955,6 +967,14 @@ func (c *BorConfig) CalculateBurntContract(number uint64) string {
+ 	return borKeyValueConfigHelper(c.BurntContract, number)
+ }
+
++func (c *BorConfig) CalculateCoinbase(number uint64) string {
++	if c.Coinbase != nil {
++		return borKeyValueConfigHelper(c.Coinbase, number)
++	} else {
++		return common.Address{}.Hex()
++	}
++}
++
+ func (c *BorConfig) GetOverrideStateSyncRecord(block uint64) (int, bool) {
+ 	for _, r := range c.OverrideStateSyncRecordsInRange {
+ 		if block >= r.StartBlock && block <= r.EndBlock {

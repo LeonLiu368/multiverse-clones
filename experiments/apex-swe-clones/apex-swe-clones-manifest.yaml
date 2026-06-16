@@ -18,7 +18,6 @@ tasks:
   - paperless-ngx-10195-10196
   - bor-1710
   - podman-compose-23-1214
-  - op-geth-655
 
 agents:
   - name: oracle

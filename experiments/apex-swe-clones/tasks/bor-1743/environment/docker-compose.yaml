@@ -32,9 +32,9 @@ services:
       context: ./seed
       dockerfile: Dockerfile
     environment:
-      APEX_TASK: Observability/ethereum-optimism-op-geth-655-observability
-      APEX_SERVICE: op-geth
-      APEX_KEY: OPGETH
+      APEX_TASK: Observability/0xpolygon-bor-1743-observability
+      APEX_SERVICE: bor-node
+      APEX_KEY: BOR
       APEX_WORKSPACE: meridian
     volumes:
       - tvseed:/out/ticketvector

@@ -11,10 +11,13 @@ git config --global --add safe.directory /app/repo 2>/dev/null || true
 export PATH="/usr/local/go/bin:/usr/local/bin:${PATH:-/usr/bin:/bin}"
 export GOPATH="${GOPATH:-/go}"
 export GOCACHE="${GOCACHE:-/tmp/go-build-cache}"
-export GOFLAGS="${GOFLAGS:-}"
+# golden.patch for this task edits go.mod; allow go to resolve/refetch deps (default
+# -mod=readonly would error on the changed go.mod) and pre-download once.
+export GOFLAGS="-mod=mod"
 
 git apply /tests/test.patch 2>/logs/verifier/patch.err || patch -p1 < /tests/test.patch 2>>/logs/verifier/patch.err || {
   echo "failed to apply test.patch" >> /logs/verifier/patch.err; echo 0 > /logs/verifier/reward.txt; exit 0; }
+go mod download 2>>/logs/verifier/patch.err || true
 
 LOG=/logs/verifier/test-output.txt
 # Packages from the upstream test_command; restrict to the required tests via -run for speed.
