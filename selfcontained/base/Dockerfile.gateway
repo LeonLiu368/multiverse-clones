@@ -1,0 +1,13 @@
+# syntax=docker/dockerfile:1
+# slack-gateway:<dataset> — the `slack` SIDECAR: the SQLite Slack gateway serving a dataset's
+# PRE-BUILT DB. Built once per dataset, pushed to GHCR, and PULLED as the sidecar by each task whose
+# compose references it. Reuses the seed images (slack-seed:<dataset>) for the data, so the DB is
+# baked in once and boots instantly. The agent never gets this image — only HTTP access to it.
+ARG SEED=ghcr.io/abundant-ai/slack-seed:eng-2021q1
+ARG SLACK_SERVICE=ghcr.io/abundant-ai/slack-service:slack-mcp-oss
+
+FROM ${SEED} AS seed
+FROM ${SLACK_SERVICE}
+COPY --from=seed /slack.prebuilt.db /opt/slack.prebuilt.db
+# ENTRYPOINT is inherited from slack-service (api-entrypoint.sh): slack-boot.sh copies the pre-built
+# DB into place and runs uvicorn on :80 as PID 1. EXPOSE 80 is already declared.
