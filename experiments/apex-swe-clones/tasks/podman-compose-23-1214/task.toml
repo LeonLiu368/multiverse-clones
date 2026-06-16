@@ -1,0 +1,37 @@
+schema_version = "1.2"
+name = "apex-swe-clones/podman-compose-23-1214"
+description = "Exact APEX-SWE Observability task (containers/podman-compose #23/#1214) re-platformed onto the clone stack. podman-compose formats healthcheck commands with /bin/sh -c shell quoting, but podman expects JSON arrays (CMD/CMD-SHELL handling in container_to_args), so healthchecks fail. The agent investigates via a ticketvector tracker + gauge logs (this task has no chat scrape) and fixes podman_compose.py. Graded by the upstream PR's own pytest suite (3 F2P + 37 P2P). nop=0, oracle=1."
+
+[metadata]
+category = "observability"
+source_repo = "containers/podman-compose"
+apex_task = "Observability/containers-podman-compose-23-1214-observability"
+apex_origin = "mercor/APEX-SWE (exact task, re-platformed onto abundant clones)"
+failure_mode = "healthcheck-arg-formatting"
+tags = ["apex-swe", "observability", "clones", "multi-service", "sre", "ticketvector", "gauge", "python"]
+
+[agent]
+timeout_sec = 2400
+
+[verifier]
+timeout_sec = 1200
+user = "root"
+
+[environment]
+allow_internet = true
+build_timeout_sec = 2400
+cpus = 2
+memory_mb = 4096
+storage_mb = 20480
+gpus = 0
+workdir = "/app/repo"
+
+[[environment.mcp_servers]]
+name = "slack"
+transport = "stdio"
+command = "slack-mcp"
+
+[[environment.mcp_servers]]
+name = "grafana"
+transport = "stdio"
+command = "mcp-grafana"
