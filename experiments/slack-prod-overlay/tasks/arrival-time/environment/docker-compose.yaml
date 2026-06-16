@@ -1,7 +1,12 @@
-# Two-container task: thin agent + the SHARED prod Slack sidecar, with this task's small overlay
-# bind-mounted in. slack-boot.sh copies the baked prod DB then imports /data/slack-overlay on top
-# (--overlay: preserves prod rows, adds the planted message). The agent reaches the workspace only
-# over HTTP at http://slack and has no filesystem access to the data.
+# Two-container task: thin agent + a per-task Slack gateway sidecar. The sidecar
+# (ghcr.io/abundant-ai/slack-gateway:arrival-time) is the SHARED prod gateway (slack-gateway:prod-v1,
+# 88 channels / ~2.4M msgs) plus this task's tiny overlay baked at /data/slack-overlay; the prod base
+# layers are shared/cached across tasks, only the KB overlay layer differs. slack-boot.sh imports the
+# overlay on top of the prod DB at standup. The agent reaches the workspace only over HTTP at
+# http://slack and has no filesystem access to the data.
+#
+# (Host bind-mounts on a sidecar are rejected by Harbor task validation, so the overlay is delivered
+# as an image layer rather than a `volumes:` mount.)
 # Requires `custom_docker_compose = true` in task.toml. No `networks:` block.
 services:
   main:
@@ -18,10 +23,8 @@ services:
         condition: service_healthy
 
   slack:
-    image: ${SLACK_GATEWAY_IMAGE:-ghcr.io/abundant-ai/slack-gateway:prod-v1}
+    image: ${SLACK_GATEWAY_IMAGE:-ghcr.io/abundant-ai/slack-gateway:arrival-time}
     platform: linux/amd64
-    volumes:
-      - ./data/overlay:/data/slack-overlay:ro
     healthcheck:
       test: ["CMD-SHELL", "curl -sf http://localhost:80/api/auth.test >/dev/null || exit 1"]
       interval: 5s

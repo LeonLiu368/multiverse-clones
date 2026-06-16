@@ -4,7 +4,8 @@ metadata:
   description: |
     Demonstrates the shared-prod-corpus + per-task-overlay model. One large, realistic prod Slack
     workspace (ghcr.io/abundant-ai/slack-gateway:prod-v1 — 88 channels, ~2.4M messages, named users)
-    is pulled as a shared sidecar; each task bind-mounts a tiny overlay that slack-boot.sh imports on
+    is the shared base for each task's sidecar; a task adds only a tiny overlay LAYER on top (the prod
+    base layers are shared/cached, the KB overlay differs per task) and slack-boot.sh imports it on
     top of the prod DB at standup (preserving prod rows, adding the planted data).
 
       - arrival-time: a planted message in the real #engineering channel says a teammate is "coming
