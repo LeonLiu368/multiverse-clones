@@ -82,12 +82,14 @@ Fix without touching the test/oracle: make the contract **discoverable through t
 investigation** the task is already about. `apex_to_clones.py --spec <overlay.json>` merges a
 realistic on-call handoff (a tech-lead **ticket comment** naming the file, symbols/signatures,
 and behavior, plus a corroborating slack line) into the seeds. The agent finds it via
-`linear issue view <ISSUE> --comments`. See `tasks/paperless-ngx-12856/spec.json` (symbols)
-and `tasks/bor-2157/spec.json` (signatures).
+`linear issue view <ISSUE> --comments`.
 
 Add a spec when a task's `test.patch` pins an interface a behavioral fix can't infer — either
 new private symbols (`grep -E "import .*_[A-Z]" test.patch`) or new required call signatures
 (`grep -E "func \(|\w+\(" test.patch` vs the pre-fix repo). Purely behavioral tests need none.
+NOTE: the **exact** APEX tasks ship the detailed problem statement as the prompt (it already
+names the files/messages/behaviors), so in practice the pilots passed **without** a spec — only
+reach for `--spec` if a run shows a correct-but-different fix being graded 0.
 
 ## Exact APEX tasks (build-time fetch)
 
@@ -99,7 +101,9 @@ our git light, these are **fetched from the public dataset at build**, not commi
 - **data → seeds** — a `seed/` init service (compose) fetches `<task>/data/**` from HF and runs
   `apex_to_clones.py` into named volumes (`tvseed`/`slackseed`/`gaugeseed`) the sidecars mount.
   The converter auto-detects the real APEX formats: full GitHub `issues.json` (→ a tracker the
-  agent **searches**, not "issue mine"), Matrix `scraped.json`, and raw `data/loki/*.log`.
+  agent **searches**, not "issue mine"); the chat export, which **varies per task** — Matrix
+  (paperless) or Discord (bor) — both flattened to `{channel,author,content,timestamp}`; and raw
+  `data/loki/*.log` (Django, geth, …) parsed into gauge entries with `{service,level}` labels.
 - **golden.patch / test.patch / test_metadata.json** are small and committed; grading parses the
   exact F2P/P2P node ids and runs the upstream test command. golden = product-only, test = tests-only.
 
@@ -108,12 +112,50 @@ git. See `tasks/paperless-ngx-10195-10196/` as the reference.
 
 ## Per-task local gate (before Oddish)
 
-- Converter fidelity: every diagnostic fact present in the generated seeds.
-- gauge: `gcx logs query '{service="<svc>"}'` (and a `|=` filter) returns the incident lines.
-- ticketvector: `linear issue mine` returns the agent-assigned ticket.
-- Grading: `golden.patch` + `test.patch` apply cleanly at `base_commit`.
-- Full `oracle=1 / nop=0` is confirmed on Oddish (the amd64 repo build is heavy to run on
-  an arm64 dev host; grading logic is identical to the proven `apex-swe-variants` tasks).
+1. **Converter fidelity**: run `apex_to_clones.py` on the task's data; confirm issues, chat,
+   and log lines are all present in the generated seeds.
+2. **Patches apply**: `git init` the fetched `repo/` snapshot, `git apply golden.patch` then
+   `git apply test.patch` — both must be clean (golden = product-only, test = tests-only).
+3. **oracle=1 / nop=0 repro** (cheap, native arch — don't emulate): in the repo's language
+   base image with golden+test applied, run the verifier's exact test command and parsing.
+   - paperless: `python -m pytest <files> -o addopts= -p no:cacheprovider -p no:xdist` → 56 pass.
+   - bor: `go test <pkgs> -run "^(<tops>)$" -v -timeout 30m` → 437/437 `--- PASS:`.
+   Then revert the product files (keep test.patch) and re-run → the F2P tests fail (nop=0).
+4. **Oddish**: run with oracle/nop + ≥1 model; confirm oracle=1, nop=0, agents produce
+   real trajectories that exercise `linear`/`slack`/`gcx`.
+
+## Batching the remaining ~24 Observability tasks
+
+Both pilots (paperless = Python/Django, bor = Go/go-ethereum) are proven, so the per-task work
+is now mostly filling knobs. For each task, copy `tasks/paperless-ngx-10195-10196/` (Python) or
+`tasks/bor-1710/` (Go) and set:
+
+- **Dockerfile**: language base image + repo build (`uv sync` vs `go mod download && go build`),
+  and `ARG APEX_TASK=Observability/<task-dir>`.
+- **environment/seed/**: reuse verbatim (the seed image + `apex_to_clones.py` are task-agnostic);
+  set `APEX_TASK` / `APEX_SERVICE` / `APEX_KEY` in `docker-compose.yaml`'s `apex-seed` block.
+- **instruction.md**: the APEX `task.yaml` instruction (detailed bug spec) with the tools
+  section pointed at `gcx`/`linear`/`slack`.
+- **tests/run_verifier.sh**: run the upstream `test_command` and grade the exact F2P/P2P ids
+  (pytest `--- ... PASSED` or go `--- PASS:`); `solution/solve.sh` applies golden.patch.
+- **task.toml**: schema 1.2; `[[environment.mcp_servers]]` slack + grafana.
+
+### Lessons baked in (gotchas that cost a run each)
+- **Verifier env ≠ agent env.** The verifier step runs with a stripped PATH. Toolchains off the
+  default PATH must be exported in `run_verifier.sh` (Go: `export PATH=/usr/local/go/bin:$PATH`);
+  set `[verifier] user = "root"` so it can read the build's module/cache. (Python `python3` is
+  already on PATH, so paperless needed none.)
+- **Repo test harness defaults can break collection.** paperless's pytest `addopts` (coverage +
+  xdist `-n auto`) crashed workers → "no tests ran"; override with `-o addopts= -p no:xdist`.
+- **Large-repo HF fetch hits 429s.** `huggingface_hub` auto-retries (slow); set `HF_TOKEN` in the
+  build env for big repos (go-ethereum) to raise the rate limit.
+- **golden vs test patches are disjoint** (product-only vs tests-only) — apply golden in the
+  oracle, test.patch in the verifier; no conflict.
+
+### Running with cursor
+The GitHub `/oddish` workflow's `validate-agents` gate has no Cursor provider (`cursor/composer`
+400s as openai). Run via the **oddish CLI directly** instead — it accepts cursor:
+`oddish run <task-dir> -c sweep.yaml --background` with a sweep listing oracle/nop/gemini/cursor.
 
 ## Clone tool surface (agent)
 

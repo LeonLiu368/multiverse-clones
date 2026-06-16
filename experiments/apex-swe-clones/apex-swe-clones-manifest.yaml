@@ -16,6 +16,7 @@ metadata:
 
 tasks:
   - paperless-ngx-10195-10196
+  - bor-1710
 
 agents:
   - name: oracle
@@ -23,6 +24,6 @@ agents:
   - name: gemini-cli
     model_name: gemini/gemini-3.1-pro-preview
     n_trials: 2
-  - name: cursor-cli
-    model_name: cursor/composer
-    n_trials: 2
+# cursor-cli is NOT listed here: the GitHub /oddish validate-agents gate has no Cursor
+# provider (cursor/composer 400s as openai). To run cursor, use the oddish CLI directly
+# with a sweep file (see README "Running with cursor").
