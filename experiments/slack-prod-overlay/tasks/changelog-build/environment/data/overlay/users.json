@@ -1,0 +1,19 @@
+[
+  {
+    "id": "U47ABDC1C36",
+    "team_id": "T0EXACME01",
+    "name": "morgan.cole",
+    "real_name": "Morgan.cole",
+    "deleted": false,
+    "is_bot": false,
+    "is_app_user": false,
+    "profile": {
+      "real_name": "Morgan.cole",
+      "display_name": "morgan.cole",
+      "real_name_normalized": "Morgan.cole",
+      "display_name_normalized": "morgan.cole",
+      "email": "morgan.cole@acme.example",
+      "team": "T0EXACME01"
+    }
+  }
+]

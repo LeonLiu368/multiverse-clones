@@ -8,9 +8,13 @@ metadata:
     base layers are shared/cached, the KB overlay differs per task) and slack-boot.sh imports it on
     top of the prod DB at standup (preserving prod rows, adding the planted data).
 
-      - arrival-time: a planted message in the real #engineering channel says a teammate is "coming
-        in at 6pm" to push the payments hotfix. The agent must find it via the slack CLI/MCP among
-        real traffic and report the time (18:00).
+      - arrival-time: a planted #engineering message says a teammate is "coming in at 6pm" to push
+        the payments hotfix; find it and report the time (18:00).
+      - changelog-build: a planted #engineering changelog message needs a build number defined as a
+        delta over the build v8.5.0 originally shipped as (a REAL message in
+        #defect-and-blocker-thunderdome) — combine both messages (10 + 9 = 19).
+      - testing-smoke: smoke test on a second baked dataset (WorldsDataTest) + a one-message overlay;
+        count messages containing "testing" (answer 3).
 
     Two-container, isolated (agent has no filesystem access to the data). Deterministic: nop=0, oracle=1.
   task_path: experiments/slack-prod-overlay/tasks
@@ -19,6 +23,8 @@ metadata:
 
 tasks:
   - arrival-time
+  - changelog-build
+  - testing-smoke
 
 agents:
   - name: nop

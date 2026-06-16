@@ -1,0 +1,23 @@
+[
+  {
+    "id": "C72917EF6C1",
+    "name": "engineering",
+    "created": 1766484000,
+    "creator": "U47ABDC1C36",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "U47ABDC1C36"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "#engineering",
+      "creator": "U47ABDC1C36",
+      "last_set": 1766484000
+    }
+  }
+]

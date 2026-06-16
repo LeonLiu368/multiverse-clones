@@ -1,0 +1,22 @@
+# Two-container: thin agent + per-task sidecar = shared prod gateway (slack-gateway:prod-v1) + this
+# task's overlay layer (slack-boot imports /data/slack-overlay on top). Agent reaches only http://slack.
+# Requires custom_docker_compose = true. No `networks:` block.
+services:
+  main:
+    build: { context: ., dockerfile: Dockerfile }
+    image: ${APEX_TASK_DOCKER_CLIENT_IMAGE_NAME:-changelog-build-main:local}
+    platform: linux/amd64
+    environment:
+      SLACK_API_URL: http://slack
+      SLACK_BOT_TOKEN: xoxp-acme-eval-0001
+    depends_on:
+      slack: { condition: service_healthy }
+  slack:
+    image: ${SLACK_GATEWAY_IMAGE:-ghcr.io/abundant-ai/slack-gateway:changelog-build}
+    platform: linux/amd64
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:80/api/auth.test >/dev/null || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 90
+      start_period: 30s
