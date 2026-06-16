@@ -14,7 +14,7 @@ COPY --from=seed /slack.prebuilt.db /opt/slack.prebuilt.db
 # overwrite the same paths from the base and are backward-compatible (no-op when no overlay).
 COPY slack-boot.sh /usr/local/bin/slack-boot.sh
 COPY import_export.py /opt/import_export.py
-COPY slackgw/store.py /opt/slackgw/store.py
+COPY slackgw /opt/slackgw
 RUN chmod +x /usr/local/bin/slack-boot.sh
 # ENTRYPOINT is inherited from slack-service (api-entrypoint.sh): slack-boot.sh copies the pre-built
 # DB into place, imports any /data/slack-overlay, and runs uvicorn on :80 as PID 1.

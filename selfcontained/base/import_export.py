@@ -137,10 +137,12 @@ def import_export(store: Store, export_dir: str, channels: list[str] | None,
             if os.path.isdir(os.path.join(export_dir, d)) and (wanted is None or d in wanted)]
 
     n_msgs = 0
+    imported_cids: list[str] = []
     for cname in dirs:
         cdir = os.path.join(export_dir, cname)
         meta = chan_meta.get(cname, {})
         cid = ids.cid(meta.get("id") or cname)
+        imported_cids.append(cid)
         topic = (meta.get("topic") or {}).get("value", "") if isinstance(meta.get("topic"), dict) else ""
         purpose = (meta.get("purpose") or {}).get("value", "") if isinstance(meta.get("purpose"), dict) else ""
         store.upsert_channel(
@@ -193,9 +195,12 @@ def import_export(store: Store, export_dir: str, channels: list[str] | None,
                 )
                 n_msgs += 1
 
-    if not overlay:  # overlay layers onto prod — keep prod's workspace identity
+    if not overlay:  # full import: set workspace identity + member counts for all channels
         store.set_meta("team_id", team_id or "T0000000000")
         store.set_meta("team_name", os.environ.get("SLACK_TEAM", "workspace"))
+        store.recount_members()
+    else:  # overlay layers onto prod — keep prod identity; refresh counts only for touched channels
+        store.recount_members(imported_cids)
     store.commit()
     return {"channels": len(dirs), "messages": n_msgs, "users": len(user_seen)}
 

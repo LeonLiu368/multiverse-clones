@@ -8,6 +8,7 @@ cursor fields, and snake_case error codes. No external backend — the store is 
 """
 from __future__ import annotations
 
+import datetime
 import json
 import os
 import re
@@ -105,15 +106,57 @@ def _msg(m: dict, *, channel: str | None = None) -> dict:
 
 
 def _channel(c: dict) -> dict:
+    name = c.get("name")
     return {
-        "id": c["id"], "name": c.get("name"),
+        # name_normalized matters: the korotovsky MCP renders a channel as "#" + name_normalized,
+        # so without it every channel shows up as just "#" and can't be found/filtered by name.
+        "id": c["id"], "name": name, "name_normalized": name,
         "is_channel": True, "is_group": False, "is_im": False,
         "is_private": False, "is_archived": bool(c.get("is_archived")),
         "is_general": bool(c.get("is_general")), "created": c.get("created") or 0,
-        "creator": c.get("creator") or "",
+        "creator": c.get("creator") or "", "num_members": c.get("num_members") or 0,
         "topic": {"value": c.get("topic") or "", "creator": "", "last_set": 0},
         "purpose": {"value": c.get("purpose") or "", "creator": "", "last_set": 0},
     }
+
+
+# Slack search operators we honor: free text is ANDed; in:/from: scope to a channel/user; date
+# operators bound the ts range. Anything else (is:, with:, during:) is parsed but ignored gracefully.
+_FILTER_KEYS = {"in", "from", "with", "is", "before", "after", "on", "during"}
+
+
+def _parse_search(raw: str) -> tuple[list[str], dict[str, str]]:
+    """Split a Slack-style query into free-text terms (quoted phrases kept whole) + operator filters."""
+    terms: list[str] = []
+    ops: dict[str, str] = {}
+    for tok in re.findall(r'"[^"]*"|\S+', raw or ""):
+        if not tok.startswith('"') and ":" in tok:
+            key, val = tok.split(":", 1)
+            if key.lower() in _FILTER_KEYS and val:
+                ops.setdefault(key.lower(), val)
+                continue
+        terms.append(tok.strip('"'))
+    return [t for t in terms if t], ops
+
+
+def _clean_ref(v: str) -> str:
+    """Normalize a channel/user operator value (#name, @user, <#C123|name>, C123) to a bare ref."""
+    v = v.strip().strip('"')
+    if v.startswith("<") and v.endswith(">"):
+        v = v[1:-1]
+    if "|" in v:
+        v = v.split("|")[-1]
+    return v.lstrip("#@")
+
+
+def _date_ts(d: str, *, end: bool = False) -> str | None:
+    try:
+        dt = datetime.datetime.strptime(d.strip(), "%Y-%m-%d").replace(tzinfo=datetime.timezone.utc)
+    except Exception:
+        return None
+    if end:
+        dt = dt.replace(hour=23, minute=59, second=59)
+    return f"{dt.timestamp():.6f}"
 
 
 def _user(u: dict) -> dict:
@@ -179,12 +222,30 @@ async def _dispatch(method: str, request: Request) -> JSONResponse:
     if method in ("search.messages", "search.all", "search.inline"):
         # slack-go's combined SearchContext posts to search.all (messages + files in one response);
         # search.messages is the messages-only variant. We have no files, so files is always empty.
+        # Parse Slack search operators (in:/from:/before:/after:/on:) so channel-scoped and
+        # multi-term queries work like the real API instead of literal-substring matching the whole
+        # string (which the korotovsky MCP and agents lean on heavily).
         query = str(p.get("query", p.get("terms", "")))
         try:
             count = int(p.get("count", 100))
         except Exception:
             count = 100
-        matches = [_msg(m, channel=m["channel_id"]) for m in store.search(query, count)]
+        terms, ops = _parse_search(query)
+        channel_id: str | None = None
+        if ops.get("in"):
+            c = store.channel_by_ref(_clean_ref(ops["in"]))
+            channel_id = c["id"] if c else "\x00"  # unresolved channel -> no matches
+        user_id: str | None = None
+        if ops.get("from"):
+            u = store.user_by_ref(_clean_ref(ops["from"]))
+            user_id = u["id"] if u else "\x00"
+        after = _date_ts(ops["after"]) if ops.get("after") else None
+        before = _date_ts(ops["before"], end=True) if ops.get("before") else None
+        if ops.get("on"):
+            after, before = _date_ts(ops["on"]), _date_ts(ops["on"], end=True)
+        rows = store.search(terms, count, channel_id=channel_id, user_id=user_id,
+                            after=after, before=before)
+        matches = [_msg(m, channel=m["channel_id"]) for m in rows]
         n = len(matches)
         msg_paging = {"count": n, "total": n, "page": 1, "pages": 1}
         msg_pag = {"total_count": n, "page": 1, "per_page": count, "page_count": 1, "first": 1, "last": n}

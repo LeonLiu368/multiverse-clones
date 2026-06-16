@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT);
 CREATE TABLE IF NOT EXISTS channels (
     id TEXT PRIMARY KEY, name TEXT, created INTEGER DEFAULT 0, creator TEXT DEFAULT '',
     is_archived INTEGER DEFAULT 0, is_general INTEGER DEFAULT 0,
-    topic TEXT DEFAULT '', purpose TEXT DEFAULT ''
+    topic TEXT DEFAULT '', purpose TEXT DEFAULT '', num_members INTEGER DEFAULT 0
 );
 CREATE TABLE IF NOT EXISTS users (
     id TEXT PRIMARY KEY, name TEXT, real_name TEXT DEFAULT '', display_name TEXT DEFAULT '',
@@ -53,7 +53,35 @@ class Store:
     def __init__(self, path: str | None = None) -> None:
         self.conn = connect(path)
         self.conn.executescript(SCHEMA)
+        self._migrate()
         self.conn.commit()
+
+    def _migrate(self) -> None:
+        # Add num_members to channels for a DB built before the column existed (an older prebuilt
+        # seed), then backfill it once. import_export populates num_members via recount_members(), so
+        # this only does real work for a prebuilt DB that predates the column (then it's baked in).
+        cols = {r["name"] for r in self.conn.execute("PRAGMA table_info(channels)")}
+        if "num_members" not in cols:
+            self.conn.execute("ALTER TABLE channels ADD COLUMN num_members INTEGER DEFAULT 0")
+        has_counts = self.conn.execute("SELECT 1 FROM channels WHERE num_members > 0 LIMIT 1").fetchone()
+        has_msgs = self.conn.execute("SELECT 1 FROM messages LIMIT 1").fetchone()
+        if has_msgs and not has_counts:
+            self.recount_members()
+
+    def recount_members(self, channel_ids: list[str] | None = None) -> None:
+        """Recompute num_members (distinct posters) for every channel, or just `channel_ids`."""
+        if channel_ids is not None:
+            if not channel_ids:
+                return
+            ph = ",".join("?" * len(channel_ids))
+            counts = self.conn.execute(
+                f"SELECT channel_id, COUNT(DISTINCT user) AS n FROM messages "
+                f"WHERE channel_id IN ({ph}) GROUP BY channel_id", list(channel_ids)).fetchall()
+        else:
+            counts = self.conn.execute(
+                "SELECT channel_id, COUNT(DISTINCT user) AS n FROM messages GROUP BY channel_id").fetchall()
+        self.conn.executemany("UPDATE channels SET num_members = ? WHERE id = ?",
+                              [(r["n"], r["channel_id"]) for r in counts])
 
     # ------------------------------------------------------------------ meta / write (import)
     def set_meta(self, key: str, value: str) -> None:
@@ -146,15 +174,42 @@ class Store:
         ).fetchall()
         return [dict(r) for r in rows]
 
-    def search(self, query: str, limit: int = 100) -> list[dict]:
-        q = (query or "").strip()
-        if not q:
+    def search(self, terms: list[str], limit: int = 100, *, channel_id: str | None = None,
+               user_id: str | None = None, after: str | None = None,
+               before: str | None = None) -> list[dict]:
+        # `terms` are free-text substrings ANDed together (each must appear in the message text);
+        # the keyword filters (channel/user/date) come from parsed Slack search operators. Returns
+        # most-recent-first. An empty WHERE (no terms and no filters) returns nothing.
+        where: list[str] = []
+        args: list[Any] = []
+        for t in terms or []:
+            t = (t or "").strip()
+            if not t:
+                continue
+            esc = t.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+            where.append(r"text LIKE ? ESCAPE '\'")
+            args.append(f"%{esc}%")
+        if channel_id is not None:
+            where.append("channel_id = ?")
+            args.append(channel_id)
+        if user_id is not None:
+            where.append("user = ?")
+            args.append(user_id)
+        if after is not None:
+            where.append("ts >= ?")
+            args.append(after)
+        if before is not None:
+            where.append("ts <= ?")
+            args.append(before)
+        if not where:
             return []
-        esc = q.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+        try:
+            lim = int(limit)
+        except (TypeError, ValueError):
+            lim = 100
+        args.append(max(1, min(lim, 1000)))
         rows = self.conn.execute(
-            r"""SELECT * FROM messages WHERE text LIKE ? ESCAPE '\'
-                ORDER BY ts DESC LIMIT ?""",
-            (f"%{esc}%", max(1, min(limit, 1000))),
+            f"SELECT * FROM messages WHERE {' AND '.join(where)} ORDER BY ts DESC LIMIT ?", args
         ).fetchall()
         return [dict(r) for r in rows]
 
