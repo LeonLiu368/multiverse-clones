@@ -15,6 +15,7 @@ timeout_sec = 3600
 
 [verifier]
 timeout_sec = 3000
+user = "root"
 
 [environment]
 allow_internet = true

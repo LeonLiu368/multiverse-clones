@@ -6,6 +6,13 @@ mkdir -p /logs/verifier
 cd /app/repo || { echo 0 > /logs/verifier/reward.txt; exit 0; }
 git config --global --add safe.directory /app/repo 2>/dev/null || true
 
+# The verifier step runs with a stripped PATH; the golang image installs go under
+# /usr/local/go/bin (not on the default PATH). Make go + the module cache reachable.
+export PATH="/usr/local/go/bin:/usr/local/bin:${PATH:-/usr/bin:/bin}"
+export GOPATH="${GOPATH:-/go}"
+export GOCACHE="${GOCACHE:-/tmp/go-build-cache}"
+export GOFLAGS="${GOFLAGS:-}"
+
 git apply /tests/test.patch 2>/logs/verifier/patch.err || patch -p1 < /tests/test.patch 2>>/logs/verifier/patch.err || {
   echo "failed to apply test.patch" >> /logs/verifier/patch.err; echo 0 > /logs/verifier/reward.txt; exit 0; }
 
