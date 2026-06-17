@@ -2,6 +2,7 @@
 The viewer never runs a clone container to serve data; it reads the extracted DB host-side."""
 from __future__ import annotations
 
+import os
 import shutil
 import subprocess
 import tempfile
@@ -9,6 +10,11 @@ import tempfile
 # Where clones bake their prebuilt SQLite. slack-gateway/prod uses /opt/...; slack-seed (FROM
 # scratch) uses /...; we probe both.
 DB_PATHS = ("/opt/slack.prebuilt.db", "/slack.prebuilt.db")
+
+# The clone images are published linux/amd64-only. On an arm64 host (Apple Silicon), docker defaults
+# to the host arch and pull/create fail with "no matching manifest for linux/arm64". We only ever
+# copy a file out (never run the container), so forcing amd64 is safe and correct everywhere.
+PLATFORM = "linux/amd64"
 
 
 def _run(args: list[str], **kw) -> subprocess.CompletedProcess:
@@ -43,7 +49,7 @@ def image_exists(ref: str) -> bool:
 def pull_image(ref: str) -> None:
     if not have_docker():
         raise RuntimeError("docker not available")
-    cp = _run(["docker", "pull", ref])
+    cp = _run(["docker", "pull", "--platform", PLATFORM, ref])
     if cp.returncode != 0:
         raise RuntimeError(f"docker pull {ref} failed:\n{cp.stderr.strip()}")
 
@@ -54,7 +60,7 @@ def extract_db(ref: str, dest_path: str) -> str:
         raise RuntimeError("docker not available")
     if not image_exists(ref):
         pull_image(ref)
-    cid = _run(["docker", "create", ref]).stdout.strip()
+    cid = _run(["docker", "create", "--platform", PLATFORM, ref]).stdout.strip()
     if not cid:
         raise RuntimeError(f"could not create container from {ref}")
     try:
@@ -68,7 +74,38 @@ def extract_db(ref: str, dest_path: str) -> str:
                     return dest_path
                 last_err = cp.stderr.strip()
         raise RuntimeError(
-            f"no baked DB found in {ref} at any of {DB_PATHS}. Last error: {last_err}"
+            f"no baked Slack DB in {ref} (probed {DB_PATHS}). This looks like a tools-only "
+            "agent/main image, not a seed image — load the gateway sidecar (e.g. "
+            "ghcr.io/abundant-ai/slack-gateway:<task>) instead. Last error: " + last_err
         )
+    finally:
+        _run(["docker", "rm", "-f", cid])
+
+
+# A gateway sidecar (slack-gateway:<task>) bakes its per-task overlay export here, unmerged; boot
+# layers it on the prebuilt DB. We extract it so loading the sidecar alone shows the task's real
+# merged state.
+OVERLAY_PATHS = ("/data/slack-overlay",)
+
+
+def extract_overlay(ref: str, dest_dir: str) -> str | None:
+    """Copy a baked overlay export dir out of image `ref` into dest_dir. Returns the path to the
+    extracted overlay dir, or None if the image bakes no overlay."""
+    if not have_docker():
+        return None
+    if not image_exists(ref):
+        return None
+    cid = _run(["docker", "create", "--platform", PLATFORM, ref]).stdout.strip()
+    if not cid:
+        return None
+    try:
+        for src in OVERLAY_PATHS:
+            cp = _run(["docker", "cp", f"{cid}:{src}", dest_dir])
+            if cp.returncode == 0:
+                # docker cp of a dir creates dest_dir/<basename>; return that
+                base = src.rstrip("/").rsplit("/", 1)[-1]
+                got = f"{dest_dir}/{base}"
+                return got if os.path.isdir(got) and os.listdir(got) else None
+        return None
     finally:
         _run(["docker", "rm", "-f", cid])

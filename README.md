@@ -46,6 +46,18 @@ In the UI: open **Slack** → pick a **Base** (e.g. `slack-gateway:prod-v1`) →
 **Overlay dir** (a task's `environment/data/overlay`) → **Load**. Seeded channels/messages carry a
 green `seed`/`SEEDED` badge. **Pull GHCR** fetches a registry tag on demand.
 
+### Loading a specific task / run
+
+The data lives in the **gateway sidecar** image (`ghcr.io/abundant-ai/slack-gateway:<task>`), not in
+the `main`/agent image (`ghcr.io/abundant-ai/experiments/<task>:run-<id>`), which is tools + codebase
+only and carries no DB. Pull the sidecar tag — the viewer extracts its base DB **and** its baked
+`/data/slack-overlay`, auto-merging them so you see the task's real seeded state from one image, no
+separate overlay needed.
+
+The clone images are published **linux/amd64-only**; on Apple Silicon a plain `docker pull` fails
+with *"no matching manifest for linux/arm64"*. The viewer always pulls/extracts with
+`--platform linux/amd64` (it only copies a file out, never runs the container), so this is handled.
+
 ## Layout
 
 ```

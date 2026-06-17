@@ -104,12 +104,20 @@ class SlackAdapter(CloneAdapter):
         db_path = os.path.join(workdir, "slack.db")
 
         # 1. base corpus -> db_path  (mirror slack-boot.sh: prebuilt DB copy, or import an export dir)
+        baked_overlay = None
         if base.kind == "image":
             dockerutil.extract_db(base.ref, db_path)
+            # A gateway sidecar bakes its per-task overlay (unmerged) at /data/slack-overlay; boot
+            # merges it. Pull it out so loading the sidecar alone shows the task's real seeded state.
+            baked_overlay = dockerutil.extract_overlay(base.ref, workdir)
         else:
             store = Store(db_path)
             import_export.import_export(store, base.ref, None, None, None, overlay=False)
             store.commit()
+
+        # An explicit overlay arg wins; otherwise use the image's own baked overlay if it has one.
+        if not overlay_path and baked_overlay:
+            overlay_path = baked_overlay
 
         # snapshot base identity (cheap: channels/users are small) for provenance
         base_store = Store(db_path)

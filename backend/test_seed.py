@@ -17,6 +17,7 @@ OVERLAY = (
     "tasks/arrival-time/environment/data/overlay"
 )
 PROD_IMG = "ghcr.io/abundant-ai/slack-gateway:prod-v1"
+SIDECAR_IMG = "ghcr.io/abundant-ai/slack-gateway:testing-smoke"
 
 client = TestClient(app)
 have_clone = os.path.isdir(CLONE)
@@ -74,3 +75,17 @@ def test_prod_base_overlay_attaches_by_name_hash():
     assert eng[0]["origin"] == "base" and eng[0]["has_overlay"] is True
     top = client.get("/api/slack/messages", params={"container": "engineering", "limit": 1}).json()
     assert top[0]["origin"] == "overlay"  # planted msg post-dates prod -> newest
+
+
+@pytest.mark.skipif(
+    not (have_clone and dockerutil.image_exists(SIDECAR_IMG)),
+    reason="needs clone + local slack-gateway:testing-smoke sidecar image",
+)
+def test_gateway_sidecar_auto_merges_its_baked_overlay():
+    # Loading a sidecar image with NO explicit overlay should still surface the task's seeded data,
+    # because the image bakes its overlay at /data/slack-overlay (boot merges it; we mirror that).
+    r = client.post("/api/slack/load", json={"base_id": SIDECAR_IMG})
+    assert r.status_code == 200, r.text
+    assert r.json()["stats"].get("overlay"), "baked overlay should have been detected + merged"
+    hits = client.get("/api/slack/search", params={"q": "testing"}).json()
+    assert any(m["origin"] == "overlay" for m in hits)

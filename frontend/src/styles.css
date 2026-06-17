@@ -48,19 +48,24 @@ button { font-family: inherit; cursor: pointer; }
 .slack-body { flex: 1; display: flex; min-height: 0; }
 
 /* seed bar */
-.seedbar { background: #f8f8f8; border-bottom: 1px solid var(--border); padding: 8px 12px 8px 64px; }
-.seedbar-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.seedbar-row.sub { margin-top: 6px; }
-.seedbar label { font-size: 12px; color: var(--muted); font-weight: 600; }
-.seedbar select, .seedbar input {
-  font-size: 13px; padding: 5px 8px; border: 1px solid var(--border); border-radius: 6px; background: #fff;
+.seedbar { background: #f8f8f8; border-bottom: 1px solid var(--border); padding: 10px 14px 10px 96px; }
+.seedbar-section-label {
+  font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .05em;
+  color: var(--muted); margin: 6px 0 4px;
 }
+.seedbar-section-label:first-child { margin-top: 0; }
+.seedbar-row { display: flex; align-items: center; gap: 8px; }
+.seedbar select, .seedbar input {
+  font-size: 13px; padding: 6px 9px; border: 1px solid var(--border); border-radius: 6px; background: #fff;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.base-select { min-width: 260px; max-width: 360px; }
 .overlay-input { flex: 1; min-width: 240px; }
-.pull-input { width: 360px; }
-.seedbar button { font-size: 13px; padding: 6px 14px; border: 1px solid var(--border); border-radius: 6px; background: #fff; }
+.pull-input { flex: 1; min-width: 320px; }
+.seedbar button { font-size: 13px; padding: 7px 16px; border: 1px solid var(--border); border-radius: 6px; background: #fff; white-space: nowrap; }
 .seedbar button.primary { background: var(--seed); color: #fff; border-color: var(--seed); font-weight: 700; }
 .seedbar button:disabled { opacity: .5; cursor: default; }
-.seedbar-status { font-size: 12px; margin-left: auto; }
+.seedbar-status { font-size: 12.5px; margin-top: 8px; min-height: 18px; }
 .seedbar-status .err { color: #b00; }
 .hint { color: var(--muted); font-size: 13px; padding: 8px 0; }
 .err { color: #b00; }
