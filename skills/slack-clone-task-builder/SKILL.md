@@ -144,8 +144,11 @@ sw.write_export([
 ], "environment/data/overlay")          # writes channels.json/users.json/<channel>/<date>.json
 ```
 
-Commit the generated `environment/data/overlay/` AND a small `environment/data/gen_overlay.py` that
-reproduces it.
+Commit the generated `environment/data/overlay/` directory — that folder is the artifact that gets
+baked into the sidecar. To change the overlay, re-run `write_export()`; don't hand-edit the JSON
+(the ids and `ts` must stay consistent). If you want a record of how it was authored, keep the
+`write_export([...])` call in the task.toml description or a comment — you don't need a separate
+script.
 
 ## 1d. Build the per-task sidecar image
 
@@ -189,8 +192,7 @@ A task is a directory with this exact layout (this is the Harbor task contract):
 │   ├── .dockerignore
 │   ├── codebase/                 # the agent's /workspace (a README placeholder for pure read tasks)
 │   └── data/
-│       ├── overlay/              # the per-task overlay export (Part 1)
-│       └── gen_overlay.py        # reproducibility
+│       └── overlay/              # the per-task overlay export (Part 1) — the only thing baked in
 ├── tests/
 │   ├── test.sh                   # REQUIRED Harbor entrypoint -> writes /logs/verifier/reward.txt
 │   ├── run_verifier.sh
