@@ -1,6 +1,6 @@
-# Smoke test: thin agent + per-task sidecar = a small WorldsDataTest gateway (slack-gateway:worldsdata-v1)
-# + this task's overlay layer (one extra "testing" message, imported on top at standup).
-# Requires custom_docker_compose = true. No `networks:` block.
+# Smoke test: thin agent + the SHARED empty gateway, with this task's small custom export MOUNTED in
+# (the WorldsDataTest workspace + one planted "testing" message). slack-boot imports /data/slack-export
+# at standup. No per-task image. Requires custom_docker_compose = true. No `networks:` block.
 services:
   main:
     build: { context: ., dockerfile: Dockerfile }
@@ -12,8 +12,10 @@ services:
     depends_on:
       slack: { condition: service_healthy }
   slack:
-    image: ${SLACK_GATEWAY_IMAGE:-ghcr.io/abundant-ai/slack-gateway:testing-smoke}
+    image: ${SLACK_GATEWAY_IMAGE:-ghcr.io/abundant-ai/slack-gateway:empty}
     platform: linux/amd64
+    volumes:
+      - ./data/slack-export:/data/slack-export:ro
     healthcheck:
       test: ["CMD-SHELL", "curl -sf http://localhost:80/api/auth.test >/dev/null || exit 1"]
       interval: 5s
