@@ -247,7 +247,7 @@ export function SlackApp({ appId }: { appId: string }) {
               )}
             </div>
 
-            {!results && active && <ComposeBar channel={active} onSend={sendMessage} />}
+            {!results && active && <ComposeBar channel={active} users={users} onSend={sendMessage} />}
           </main>
 
           {thread && (
@@ -312,11 +312,16 @@ function ChannelMessages({
 }
 
 // Compose box pinned to the bottom of a channel — every message it adds is overlay (task-seed).
+// The author field is a picker over existing workspace users: choosing one sends the message AS that
+// user (the server resolves the username to the real id); a name not in the list creates a new
+// overlay user.
 function ComposeBar({
   channel,
+  users,
   onSend,
 }: {
   channel: string;
+  users: User[];
   onSend: (author: string, text: string, timestamp?: string) => Promise<void>;
 }) {
   const [author, setAuthor] = useState("");
@@ -325,7 +330,19 @@ function ComposeBar({
   const [tm, setTm] = useState("");
   const [busy, setBusy] = useState(false);
 
-  // Combine the optional date + time fields into an ISO timestamp; blank date => "now" (server).
+  // Resolve what was typed to an existing user by username / real name / display name (the server
+  // matches on username, so we send that). Falls back to a new user when nothing matches.
+  const byLabel = useMemo(() => {
+    const m: Record<string, User> = {};
+    users.forEach((u) => {
+      [u.name, u.real_name, u.display_name].forEach((l) => {
+        if (l) m[l.toLowerCase()] = u;
+      });
+    });
+    return m;
+  }, [users]);
+  const matched = byLabel[author.trim().toLowerCase()];
+
   function timestamp(): string | undefined {
     if (!date) return undefined;
     return `${date}T${tm || "00:00"}:00`;
@@ -335,7 +352,7 @@ function ComposeBar({
     if (!author.trim() || !text.trim()) return;
     setBusy(true);
     try {
-      await onSend(author.trim(), text.trim(), timestamp());
+      await onSend(matched ? matched.name : author.trim(), text.trim(), timestamp());
       setText("");
     } finally {
       setBusy(false);
@@ -344,12 +361,28 @@ function ComposeBar({
 
   return (
     <div className="compose">
-      <input
-        className="compose-author"
-        value={author}
-        placeholder="author"
-        onChange={(e) => setAuthor(e.target.value)}
-      />
+      <div className="compose-author-wrap">
+        <input
+          className="compose-author"
+          value={author}
+          list="compose-users"
+          placeholder="author"
+          autoComplete="off"
+          onChange={(e) => setAuthor(e.target.value)}
+        />
+        <datalist id="compose-users">
+          {users.map((u) => (
+            <option key={u.id} value={u.name}>
+              {u.real_name || u.display_name || u.name}
+            </option>
+          ))}
+        </datalist>
+        {author.trim() && (
+          <span className={`author-hint ${matched ? "known" : "new"}`}>
+            {matched ? `as @${matched.name}` : "new user"}
+          </span>
+        )}
+      </div>
       <input
         className="compose-text"
         value={text}

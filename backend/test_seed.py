@@ -127,6 +127,19 @@ def test_overlay_export_zip_is_a_named_export_directory():
     assert any("/launch-room/" in n for n in names)
 
 
+@pytest.mark.skipif(not have_clone, reason="needs clone checkout")
+def test_add_message_as_existing_user_reuses_their_id():
+    client.post("/api/slack/load", json={"base_id": f"dir:{os.path.abspath(TINY)}"})
+    before = client.get("/api/slack/entities").json()
+    existing = before[0]  # tiny has one user
+    m = client.post("/api/slack/overlay/message/add",
+                    json={"container": "all-worldsdatatest", "author": existing["name"],
+                          "text": "as an existing user"}).json()
+    assert m["user"] == existing["id"]  # attributed to the existing user, not a fresh one
+    after = client.get("/api/slack/entities").json()
+    assert len(after) == len(before)  # no new user created
+
+
 def test_editor_unsupported_on_echo_is_clean_400():
     client.post("/api/echo/load", json={"base_id": "fixture"})
     r = client.post("/api/echo/overlay/container/add", json={"name": "x"})
