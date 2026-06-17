@@ -28,22 +28,25 @@ A Slack task runs as **two containers**:
 - The `slack` sidecar holds **all** the chat data and serves a faithful subset of the Slack Web API.
   The agent can reach it **only over HTTP through the tools** — it cannot read the data off disk, so
   it can't cheat the grader.
-- The data is layered: a **shared, frozen "prod" corpus** (a large real Slack export baked into
-  `slack-gateway:prod-v1`) plus a **tiny per-task overlay** (your planted messages) merged on top at
-  container startup.
+- **Use ONE of two shared sidecar images — never build a per-task gateway image.** Your per-task
+  data is delivered by **mounting** it into the chosen sidecar (Harbor honors sidecar `volumes:`;
+  `figma-linear` does the same). `slack-boot` imports the mounted data at startup.
 - The agent operates the workspace with the **`slack` CLI** and the **korotovsky `slack-mcp`** MCP
   server (both thin HTTP clients of the gateway). A verifier in `main` grades the result.
 
-Key images (all public on GHCR `ghcr.io/abundant-ai/`):
-| image | what it is |
-|---|---|
-| `slack-agent:slack-mcp-oss` | thin agent base (CLI + MCP, no data) — task `main` builds FROM this |
-| `slack-gateway:prod-v1` | the shared prod gateway + corpus (88 channels, ~2.4M msgs, named users) |
-| `slack-gateway:<task>` | your per-task sidecar = `prod-v1` + your overlay layer |
+The only images you ever reference (all public on GHCR `ghcr.io/abundant-ai/`):
+| image | what it is | per-task data |
+|---|---|---|
+| `slack-agent:slack-mcp-oss` | thin agent base (CLI + MCP, no data) — task `main` builds FROM this | — |
+| `slack-gateway:prod-v1` | **shared** prod gateway + real corpus (88 channels, ~2.4M msgs, named users) | mount your **overlay** at `/data/slack-overlay` (merged on top of prod) |
+| `slack-gateway:empty` | **shared** blank gateway (no data) | mount your **full small export** at `/data/slack-export` (becomes the whole workspace) |
 
-The clone source + helper scripts live in the `abundant-slack-clone-mattermost` repo under
-`selfcontained/base/` (importer, `slack_export_writer.py`, `build-overlay.sh`) and
-`selfcontained/prod/v1/catalog/` (the author "directory" of real channels/users).
+Pick `prod-v1` when your task should live inside the big realistic corpus (plant a few messages on
+top); pick `empty` when you want a clean, fully-custom mini-workspace. **Do not create new images.**
+
+The clone source + helpers live in the `abundant-slack-clone-mattermost` repo under
+`selfcontained/base/` (importer, `slack_export_writer.py`) and `selfcontained/prod/v1/catalog/`
+(the author "directory" of real channels/users for `prod-v1`).
 
 ---
 
@@ -150,21 +153,21 @@ baked into the sidecar. To change the overlay, re-run `write_export()`; don't ha
 `write_export([...])` call in the task.toml description or a comment — you don't need a separate
 script.
 
-## 1d. Build the per-task sidecar image
+## 1d. Deliver the overlay by MOUNTING it (no per-task image)
 
-The overlay is delivered as an **image layer** on top of the shared prod gateway (NOT a volume mount
-— Harbor rejects host bind-mounts on sidecars). Use `selfcontained/base/build-overlay.sh`:
+Do **not** build a per-task image. Commit `environment/data/overlay/` and **mount** it into the
+shared sidecar in the compose (see Part 2):
 
-```bash
-OVERLAY_DIR=<task>/environment/data \    # the dir that CONTAINS overlay/
-TAG=<task-name> \
-PROD=ghcr.io/abundant-ai/slack-gateway:prod-v1 \
-REGISTRY=ghcr.io/abundant-ai PUSH=1 PLATFORM=linux/amd64 \
-  selfcontained/base/build-overlay.sh
-# -> ghcr.io/abundant-ai/slack-gateway:<task-name>  (prod-v1 layers are cached; only the KB overlay differs)
+```yaml
+  slack:
+    image: ghcr.io/abundant-ai/slack-gateway:prod-v1   # shared image, used as-is
+    volumes:
+      - ./data/overlay:/data/slack-overlay:ro          # your overlay, mounted in
 ```
-The image must be **public** on GHCR (the cloud runner pulls it anonymously). `slack-boot.sh` inside
-imports `/data/slack-overlay` on top of the prod DB at startup automatically.
+`slack-boot.sh` inside the sidecar imports `/data/slack-overlay` on top of the prod DB at startup
+automatically. For an **`empty`**-based task, instead author a full small export under
+`environment/data/slack-export/` and mount it at `/data/slack-export` — it becomes the whole
+workspace. Either way: zero images to build or push; the agent's container never sees the mount.
 
 ## 1e. What the agent (and your oracle/verifier) can call
 
@@ -192,7 +195,8 @@ A task is a directory with this exact layout (this is the Harbor task contract):
 │   ├── .dockerignore
 │   ├── codebase/                 # the agent's /workspace (a README placeholder for pure read tasks)
 │   └── data/
-│       └── overlay/              # the per-task overlay export (Part 1) — the only thing baked in
+│       └── overlay/              # the per-task overlay export (Part 1) — MOUNTED into the sidecar
+│                                 #   (for an `empty`-based task: data/slack-export/ instead)
 ├── tests/
 │   ├── test.sh                   # REQUIRED Harbor entrypoint -> writes /logs/verifier/reward.txt
 │   ├── run_verifier.sh
@@ -210,8 +214,9 @@ COPY codebase /workspace
 
 ### environment/docker-compose.yaml
 ```yaml
-# Two services. NO `networks:` block (the runtime injects network_mode on main; service-name DNS
-# still resolves `slack`). NO `volumes:` on the sidecar (rejected at validation — bake the overlay).
+# Two services. The sidecar is one of the two SHARED images (prod-v1 here, or :empty); the per-task
+# data is MOUNTED in — no per-task image. NO `networks:` block (the runtime injects network_mode on
+# main; service-name DNS still resolves `slack`).
 services:
   main:
     build: { context: ., dockerfile: Dockerfile }
@@ -223,8 +228,11 @@ services:
     depends_on:
       slack: { condition: service_healthy }
   slack:
-    image: ${SLACK_GATEWAY_IMAGE:-ghcr.io/abundant-ai/slack-gateway:<task-name>}
+    image: ${SLACK_GATEWAY_IMAGE:-ghcr.io/abundant-ai/slack-gateway:prod-v1}   # shared; or :empty
     platform: linux/amd64
+    volumes:
+      - ./data/overlay:/data/slack-overlay:ro    # prod-v1: overlay merged on top
+      # for :empty instead ->  - ./data/slack-export:/data/slack-export:ro     # full custom workspace
     healthcheck:
       test: ["CMD-SHELL", "curl -sf http://localhost:80/api/auth.test >/dev/null || exit 1"]
       interval: 5s
@@ -331,10 +339,11 @@ PY
 - **`tests/test.sh` is mandatory** and the reward must land in `/logs/verifier/reward.txt`. If it's
   missing, Harbor validation reports **"0 tasks" / HARNESS_ERROR** (it is NOT a runtime bug).
 - **`custom_docker_compose = true`** in `task.toml`, or Harbor ignores the two-service compose.
-- **No `volumes:`** on the `slack` sidecar (host bind-mounts are rejected at validation) — bake the
-  overlay into the per-task image instead.
+- **Use a shared sidecar image — never build a per-task `slack-gateway:<task>`.** The sidecar is
+  always `slack-gateway:prod-v1` or `slack-gateway:empty`; the per-task data is **mounted** in via
+  `volumes:` (Harbor honors sidecar mounts — confirmed by `figma-linear`). This keeps the image
+  count at two, forever.
 - **No `networks:`** block in the compose.
-- The per-task `slack-gateway:<task>` image must be **public** on GHCR.
 - Overlay messages: attach **by name**, timestamp **after** the corpus tail (2025-12-19).
 - The agent reaches the gateway at **`http://slack`** (set via `SLACK_API_URL`). Oracle/verifier run
   in `main` and use the same URL.
@@ -344,11 +353,11 @@ PY
 
 # Validate before shipping (local, then cloud)
 
-1. **Local two-container smoke** (native arch): build the sidecar (`build-overlay.sh`, no `PUSH`),
-   build `main` from the Dockerfile, run them on a docker network with `SLACK_API_URL=http://slack`,
-   then: confirm the agent has **no data on disk** (`ls /opt/slack.prebuilt.db` → absent in `main`),
-   the planted message is findable via `slack search`, **nop → reward 0**, **oracle (solve.sh) →
-   reward 1**.
+1. **Local two-container smoke** (native arch): run the shared sidecar with your overlay mounted
+   (`docker run -v "$PWD/data/overlay:/data/slack-overlay:ro" slack-gateway:prod-v1`), build `main`
+   from the Dockerfile, put them on a docker network with `SLACK_API_URL=http://slack`, then: confirm
+   the agent has **no data on disk** (`ls /opt/slack.prebuilt.db` → absent in `main`), the planted
+   message is findable via `slack search`, **nop → reward 0**, **oracle (solve.sh) → reward 1**.
 2. **Cloud:** push the public sidecar image, put the task under an experiment `task_path` with a
    manifest (agents `nop`, `oracle`, and a model), open a PR, comment `/oddish`. Confirm
    nop=GOOD_FAILURE, oracle=GOOD_SUCCESS, model=GOOD_SUCCESS.
