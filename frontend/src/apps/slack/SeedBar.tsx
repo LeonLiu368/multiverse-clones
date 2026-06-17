@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { api, Base, Meta } from "../../api";
 
 // Strip the noisy registry prefix for display; keep the full ref in a title tooltip.
@@ -23,10 +23,12 @@ export function SeedBar({
   const [bases, setBases] = useState<Base[]>([]);
   const [extra, setExtra] = useState<Base[]>([]); // images pulled this session, not in the curated list
   const [baseId, setBaseId] = useState("");
-  const [overlay, setOverlay] = useState("");
+  const [overlayFiles, setOverlayFiles] = useState<File[]>([]);
+  const [overlayLabel, setOverlayLabel] = useState("");
   const [pullRef, setPullRef] = useState("");
   const [busy, setBusy] = useState<string>("");
   const [err, setErr] = useState("");
+  const dirRef = useRef<HTMLInputElement>(null);
 
   async function loadBases() {
     const b = await api.bases(appId);
@@ -47,11 +49,34 @@ export function SeedBar({
     };
   }, [bases, extra]);
 
+  // Folder pickers need the non-standard `webkitdirectory` attribute, which JSX/TS won't accept
+  // directly — set it on the DOM node so the picker chooses a directory (an overlay export dir).
+  useEffect(() => {
+    if (dirRef.current) {
+      dirRef.current.setAttribute("webkitdirectory", "");
+      dirRef.current.setAttribute("directory", "");
+    }
+  }, []);
+
+  function onPickOverlay(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(e.target.files ?? []);
+    setOverlayFiles(files);
+    const top = (files[0] as any)?.webkitRelativePath?.split("/")[0];
+    setOverlayLabel(top ? `${top}/ (${files.length} files)` : files[0]?.name ?? "");
+  }
+
+  function clearOverlay() {
+    setOverlayFiles([]);
+    setOverlayLabel("");
+    if (dirRef.current) dirRef.current.value = "";
+  }
+
   async function doLoad() {
     setErr("");
     setBusy("Loading & merging…");
     try {
-      await api.load(appId, baseId, overlay.trim() || undefined);
+      if (overlayFiles.length) await api.loadUpload(appId, baseId, overlayFiles);
+      else await api.load(appId, baseId);
       onLoaded();
     } catch (e) {
       setErr(String(e));
@@ -103,12 +128,24 @@ export function SeedBar({
           )}
         </select>
         <input
-          className="overlay-input"
-          value={overlay}
-          placeholder="overlay dir (optional) — auto-detected for gateway sidecar images"
-          onChange={(e) => setOverlay(e.target.value)}
-          title="Path to a task's environment/data/overlay. Leave blank to use an image's baked overlay."
+          ref={dirRef}
+          type="file"
+          multiple
+          className="overlay-file-hidden"
+          onChange={onPickOverlay}
         />
+        <button
+          className="overlay-pick"
+          onClick={() => dirRef.current?.click()}
+          title="Pick a task's overlay export folder (environment/data/overlay). Leave empty to use a sidecar image's baked overlay."
+        >
+          {overlayLabel ? `📁 ${overlayLabel}` : "📁 Choose overlay folder…"}
+        </button>
+        {overlayLabel && (
+          <button className="overlay-clear" onClick={clearOverlay} title="clear overlay">
+            ✕
+          </button>
+        )}
         <button className="primary" onClick={doLoad} disabled={!baseId || !!busy}>
           Load
         </button>
@@ -146,7 +183,7 @@ export function SeedBar({
             {meta.stats?.overlay ? (
               <>
                 {" "}
-                · <span className="badge seed">+{meta.stats.overlay.messages} seeded</span>
+                · <span className="badge seed">+{meta.stats.overlay.messages} task-seed</span>
               </>
             ) : null}
           </span>

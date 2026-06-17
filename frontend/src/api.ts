@@ -65,6 +65,17 @@ export const api = {
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ base_id, overlay_path: overlay_path || null }),
     }).then(j<any>),
+  // Load with an overlay uploaded from the browser (a picked file or folder).
+  loadUpload: (app: string, base_id: string, files: File[]) => {
+    const fd = new FormData();
+    fd.append("base_id", base_id);
+    fd.append(
+      "paths",
+      JSON.stringify(files.map((f) => (f as any).webkitRelativePath || f.name))
+    );
+    files.forEach((f) => fd.append("files", f));
+    return fetch(`/api/${app}/load_upload`, { method: "POST", body: fd }).then(j<any>);
+  },
   meta: (app: string) => fetch(`/api/${app}/meta`).then(j<Meta>),
   containers: (app: string) => fetch(`/api/${app}/containers`).then(j<Channel[]>),
   entities: (app: string) => fetch(`/api/${app}/entities`).then(j<User[]>),

@@ -60,8 +60,16 @@ button { font-family: inherit; cursor: pointer; }
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 .base-select { min-width: 260px; max-width: 360px; }
-.overlay-input { flex: 1; min-width: 240px; }
 .pull-input { flex: 1; min-width: 320px; }
+
+/* overlay folder picker (replaces the old typed path) */
+.overlay-file-hidden { display: none; }
+.overlay-pick {
+  flex: 1; min-width: 240px; text-align: left; color: var(--text);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap;
+}
+.overlay-clear { padding: 7px 10px !important; }
 .seedbar button { font-size: 13px; padding: 7px 16px; border: 1px solid var(--border); border-radius: 6px; background: #fff; white-space: nowrap; }
 .seedbar button.primary { background: var(--seed); color: #fff; border-color: var(--seed); font-weight: 700; }
 .seedbar button:disabled { opacity: .5; cursor: default; }

@@ -2,10 +2,12 @@
 segment. Adding a clone = register one adapter below + add one frontend view; no route changes."""
 from __future__ import annotations
 
+import json
 import os
+import tempfile
 from typing import Optional
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -66,6 +68,34 @@ def pull(app_id: str, body: PullBody):
 @app.post("/api/{app_id}/load")
 def load(app_id: str, body: LoadBody):
     return _guard(lambda: _adapter(app_id).load(body.base_id, body.overlay_path).__dict__)
+
+
+@app.post("/api/{app_id}/load_upload")
+async def load_upload(
+    app_id: str,
+    base_id: str = Form(...),
+    paths: str = Form("[]"),  # JSON array of per-file relative paths (from a folder picker)
+    files: list[UploadFile] = File(default=[]),
+):
+    """Load with an overlay UPLOADED from the browser (a file or a picked folder). The files are
+    written into a temp export dir preserving their relative structure, then merged like any overlay."""
+    a = _adapter(app_id)
+    overlay_dir: Optional[str] = None
+    if files:
+        rels = json.loads(paths) if paths else []
+        overlay_dir = tempfile.mkdtemp(prefix="seedview-upload-")
+        for i, f in enumerate(files):
+            # Use the supplied relative path (folder picks), else the bare filename; sanitize and
+            # strip the picked folder's own top segment so channels.json lands at the export root.
+            rel = (rels[i] if i < len(rels) else None) or f.filename or f"file{i}"
+            rel = rel.replace("..", "").lstrip("/")
+            if "/" in rel:
+                rel = rel.split("/", 1)[1]  # drop the leading folder name
+            dest = os.path.join(overlay_dir, rel)
+            os.makedirs(os.path.dirname(dest) or overlay_dir, exist_ok=True)
+            with open(dest, "wb") as out:
+                out.write(await f.read())
+    return _guard(lambda: a.load(base_id, overlay_dir).__dict__)
 
 
 @app.get("/api/{app_id}/meta")

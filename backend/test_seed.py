@@ -77,6 +77,27 @@ def test_prod_base_overlay_attaches_by_name_hash():
     assert top[0]["origin"] == "overlay"  # planted msg post-dates prod -> newest
 
 
+@pytest.mark.skipif(not (have_clone and have_overlay), reason="needs clone + arrival overlay")
+def test_load_upload_reconstructs_overlay_from_files():
+    # Mimic the browser folder picker: post each overlay file with a webkitRelativePath-style path.
+    import glob as _glob
+
+    files, paths = [], []
+    for f in _glob.glob(os.path.join(OVERLAY, "**", "*.json"), recursive=True):
+        rel = "overlay/" + os.path.relpath(f, OVERLAY)  # leading folder is stripped server-side
+        paths.append(rel)
+        files.append(("files", (os.path.basename(f), open(f, "rb"), "application/json")))
+    r = client.post(
+        "/api/slack/load_upload",
+        data={"base_id": f"dir:{os.path.abspath(TINY)}", "paths": __import__("json").dumps(paths)},
+        files=files,
+    )
+    assert r.status_code == 200, r.text
+    assert r.json()["stats"].get("overlay", {}).get("messages") == 1
+    msgs = client.get("/api/slack/messages", params={"container": "engineering"}).json()
+    assert any(m["origin"] == "overlay" for m in msgs)
+
+
 @pytest.mark.skipif(
     not (have_clone and dockerutil.image_exists(SIDECAR_IMG)),
     reason="needs clone + local slack-gateway:testing-smoke sidecar image",
