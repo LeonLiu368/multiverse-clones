@@ -8,6 +8,7 @@ from __future__ import annotations
 import glob
 import json
 import os
+import re
 import tempfile
 import time
 import uuid
@@ -419,3 +420,37 @@ class SlackAdapter(CloneAdapter):
             "channel_purposes": purposes,
             "channels": [c["name"] for c in spec["channels"]],
         }
+
+    def export_overlay_dir(self, dest_parent: str, name: str = "overlay",
+                           session_id: Optional[str] = None) -> str:
+        """Write the edited overlay as a real Slack-export DIRECTORY `<dest_parent>/<name>/` — the
+        exact shape import_export.py / a task's environment/data/overlay expects. Returns the dir."""
+        Store, _, sw = load_slack_clone()
+        if sw is None:
+            raise RuntimeError("slack_export_writer unavailable in the clone checkout")
+        s = self._sess(session_id)
+        spec = s["spec"]
+        name = re.sub(r"[^A-Za-z0-9._-]", "_", (name or "overlay").strip()).strip("._-") or "overlay"
+        out = os.path.join(dest_parent, name)
+        msgs = [{"channel": m["channel"], "author": m["author"],
+                 "content": m["content"], "timestamp": str(m["ts"])} for m in spec["messages"]]
+        purposes = {c["name"]: c["purpose"] for c in spec["channels"] if c.get("purpose")}
+        sw.write_export(msgs, out, channel_purposes=purposes)
+
+        # write_export only emits channels that have messages; represent any empty added channels too
+        # so the exported directory matches what was built in the UI.
+        ch_json = os.path.join(out, "channels.json")
+        existing = []
+        if os.path.isfile(ch_json):
+            existing = json.load(open(ch_json))
+        have = {c.get("name") for c in existing}
+        for c in spec["channels"]:
+            if c["name"] not in have:
+                existing.append({"id": sw._sid("C", c["name"]), "name": c["name"], "created": 0,
+                                 "creator": "", "is_archived": False, "is_general": False,
+                                 "members": [], "topic": {"value": "", "creator": "", "last_set": 0},
+                                 "purpose": {"value": c.get("purpose", ""), "creator": "", "last_set": 0}})
+                os.makedirs(os.path.join(out, c["name"]), exist_ok=True)
+        with open(ch_json, "w") as fh:
+            json.dump(existing, fh, indent=2)
+        return out

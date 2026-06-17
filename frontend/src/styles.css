@@ -123,7 +123,8 @@ button { font-family: inherit; cursor: pointer; }
 .compose input { border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; font-size: 14px; height: 36px; }
 .compose-author { width: 130px; }
 .compose-text { flex: 1; }
-.compose-when { width: 150px; font-size: 12px !important; }
+.compose-date { width: 150px; }
+.compose-time { width: 110px; }
 .compose .primary { background: var(--seed); color: #fff; border: 1px solid var(--seed); border-radius: 6px; font-weight: 700; padding: 0 16px; }
 .compose .primary:disabled { opacity: .45; cursor: default; }
 

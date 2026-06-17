@@ -2,13 +2,17 @@
 segment. Adding a clone = register one adapter below + add one frontend view; no route changes."""
 from __future__ import annotations
 
+import io
 import json
 import os
+import shutil
 import tempfile
+import zipfile
 from typing import Optional
 
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import Response
 from pydantic import BaseModel
 
 from adapters.base import CloneAdapter
@@ -173,6 +177,35 @@ def overlay_remove_message(app_id: str, body: RemoveMessageBody):
 @app.get("/api/{app_id}/overlay/export")
 def overlay_export(app_id: str):
     return _guard(lambda: _adapter(app_id).export_overlay())
+
+
+@app.get("/api/{app_id}/overlay/export.zip")
+def overlay_export_zip(app_id: str, name: str = "overlay"):
+    """Download the edited overlay as a zipped Slack-export DIRECTORY named `<name>/` — the exact
+    shape import_export.py / a task's environment/data/overlay expects."""
+    a = _adapter(app_id)
+
+    def build():
+        tmp = tempfile.mkdtemp(prefix="seedview-export-")
+        try:
+            out = a.export_overlay_dir(tmp, name)
+            buf = io.BytesIO()
+            parent = os.path.dirname(out)
+            with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as z:
+                for root, _, files in os.walk(out):
+                    for f in files:
+                        full = os.path.join(root, f)
+                        z.write(full, os.path.relpath(full, parent))  # arcname = <name>/...
+            return buf.getvalue(), os.path.basename(out)
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    data, dirname = _guard(build)
+    return Response(
+        content=data,
+        media_type="application/zip",
+        headers={"Content-Disposition": f'attachment; filename="{dirname}.zip"'},
+    )
 
 
 @app.get("/api/health")

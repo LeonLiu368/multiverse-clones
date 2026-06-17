@@ -118,4 +118,15 @@ export const api = {
       body: JSON.stringify({ container_id, ts }),
     }).then(j<any>),
   exportOverlay: (app: string) => fetch(`/api/${app}/overlay/export`).then(j<any>),
+  exportOverlayZip: async (app: string, name: string): Promise<Blob> => {
+    const r = await fetch(`/api/${app}/overlay/export.zip?name=${encodeURIComponent(name)}`);
+    if (!r.ok) {
+      let detail = r.statusText;
+      try {
+        detail = (await r.json()).detail ?? detail;
+      } catch {}
+      throw new Error(detail);
+    }
+    return r.blob();
+  },
 };

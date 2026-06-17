@@ -66,12 +66,13 @@ export function SlackApp({ appId }: { appId: string }) {
     refresh();
   }
   async function downloadOverlay() {
+    const name = window.prompt("Name the export directory:", "overlay")?.trim();
+    if (!name) return;
     try {
-      const data = await api.exportOverlay(appId);
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const blob = await api.exportOverlayZip(appId, name);
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
-      a.download = "overlay.json";
+      a.download = `${name}.zip`;
       a.click();
       URL.revokeObjectURL(a.href);
     } catch (e) {
@@ -209,8 +210,12 @@ export function SlackApp({ appId }: { appId: string }) {
                     clear
                   </button>
                 )}
-                <button className="ghost-btn" title="Download the edited overlay as JSON" onClick={downloadOverlay}>
-                  ⬇ overlay.json
+                <button
+                  className="ghost-btn"
+                  title="Download the edited overlay as a zipped Slack-export directory"
+                  onClick={downloadOverlay}
+                >
+                  ⬇ export dir
                 </button>
               </div>
             </header>
@@ -316,14 +321,21 @@ function ComposeBar({
 }) {
   const [author, setAuthor] = useState("");
   const [text, setText] = useState("");
-  const [when, setWhen] = useState("");
+  const [date, setDate] = useState("");
+  const [tm, setTm] = useState("");
   const [busy, setBusy] = useState(false);
+
+  // Combine the optional date + time fields into an ISO timestamp; blank date => "now" (server).
+  function timestamp(): string | undefined {
+    if (!date) return undefined;
+    return `${date}T${tm || "00:00"}:00`;
+  }
 
   async function submit() {
     if (!author.trim() || !text.trim()) return;
     setBusy(true);
     try {
-      await onSend(author.trim(), text.trim(), when.trim() || undefined);
+      await onSend(author.trim(), text.trim(), timestamp());
       setText("");
     } finally {
       setBusy(false);
@@ -346,11 +358,18 @@ function ComposeBar({
         onKeyDown={(e) => e.key === "Enter" && submit()}
       />
       <input
-        className="compose-when"
-        value={when}
-        placeholder="time (optional, ISO)"
-        title="Optional timestamp (ISO 8601 or epoch). Blank = now."
-        onChange={(e) => setWhen(e.target.value)}
+        className="compose-date"
+        type="date"
+        value={date}
+        title="Optional date — blank posts at 'now'"
+        onChange={(e) => setDate(e.target.value)}
+      />
+      <input
+        className="compose-time"
+        type="time"
+        value={tm}
+        title="Optional time of day"
+        onChange={(e) => setTm(e.target.value)}
       />
       <button className="primary" onClick={submit} disabled={busy || !author.trim() || !text.trim()}>
         Add

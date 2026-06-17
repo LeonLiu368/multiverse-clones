@@ -108,6 +108,25 @@ def test_overlay_editor_add_remove_export_and_base_protection():
     assert not client.get("/api/slack/overlay/export").json()["messages"]
 
 
+@pytest.mark.skipif(not have_clone, reason="needs clone checkout")
+def test_overlay_export_zip_is_a_named_export_directory():
+    import io
+    import zipfile
+
+    client.post("/api/slack/load", json={"base_id": f"dir:{os.path.abspath(TINY)}"})
+    client.post("/api/slack/overlay/container/add", json={"name": "launch-room"})
+    client.post("/api/slack/overlay/message/add",
+                json={"container": "launch-room", "author": "robin.vega", "text": "ship at 6pm",
+                      "timestamp": "2026-06-17T18:00:00"})
+    r = client.get("/api/slack/overlay/export.zip", params={"name": "my overlay/.."})
+    assert r.status_code == 200 and r.headers["content-type"] == "application/zip"
+    # name is sanitized (no spaces / path traversal) into the filename + the top-level dir
+    assert 'filename="my_overlay.zip"' in r.headers["content-disposition"]
+    names = zipfile.ZipFile(io.BytesIO(r.content)).namelist()
+    assert any(n.startswith("my_overlay/") and n.endswith("channels.json") for n in names)
+    assert any("/launch-room/" in n for n in names)
+
+
 def test_editor_unsupported_on_echo_is_clean_400():
     client.post("/api/echo/load", json={"base_id": "fixture"})
     r = client.post("/api/echo/overlay/container/add", json={"name": "x"})

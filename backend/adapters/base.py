@@ -94,6 +94,9 @@ class CloneAdapter:
     def export_overlay(self) -> dict[str, Any]:
         raise NotImplementedError("this clone does not support exporting an overlay")
 
+    def export_overlay_dir(self, dest_parent: str, name: str = "overlay") -> str:
+        raise NotImplementedError("this clone does not support exporting an overlay directory")
+
     # ---- summary for the launcher tile --------------------------------------
     def describe(self) -> dict[str, Any]:
         return {

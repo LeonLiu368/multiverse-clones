@@ -45,11 +45,21 @@ demand.
 ### Editing the overlay
 
 You can build/edit the overlay in place and download it: **+** next to "Channels" adds an overlay
-channel, the **compose bar** adds an overlay message, and 🗑 removes an overlay channel/message.
-Every edit lands on the **overlay (task-seed) layer only** — the server refuses to delete base
-corpus/image data. **⬇ overlay.json** downloads the edited overlay in `slack_export_writer.write_export`
-input shape, so it round-trips straight into a task:
-`write_export(json["messages"], out_dir, channel_purposes=json["channel_purposes"])`.
+channel, the **compose bar** adds an overlay message (author, text, optional date + time pickers),
+and 🗑 removes an overlay channel/message. Every edit lands on the **overlay (task-seed) layer
+only** — the server refuses to delete base corpus/image data.
+
+**⬇ export dir** prompts for a directory name and downloads the edited overlay as a **zipped Slack-
+export directory** (`<name>/channels.json`, `users.json`, `<channel>/<YYYY-MM-DD>.json`) — the exact
+shape `import_export.py` / a task's `environment/data/overlay` expects, so it drops straight into a
+task. (A raw `GET /overlay/export` JSON endpoint in `write_export` input shape is also available.)
+
+### Building a workspace from scratch — the empty base image
+
+`ghcr.io/abundant-ai/slack-gateway:empty` is an **empty workspace** (0 channels/users). Load it as
+the Base, then add channels/messages with the editor and **export dir** to author a brand-new
+overlay corpus with no base data underneath. Built host-side (empty SQLite baked onto the standard
+`slack-seed` → `slack-gateway` images) so there's no amd64-emulation step.
 
 ### Loading a specific task / run
 
