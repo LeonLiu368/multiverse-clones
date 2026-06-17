@@ -1,0 +1,18 @@
+[
+  {
+    "user": "U71E41BACEE",
+    "type": "message",
+    "ts": "1766248200.000000",
+    "client_msg_id": "2bca5b248e792d1352",
+    "text": "Scheduling note: the v9.0.0 release is set to go live on December 22. Please lock your changes by EOD Friday.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dana.reed",
+      "real_name": "Dana.reed",
+      "display_name": "dana.reed",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]
