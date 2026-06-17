@@ -5,7 +5,7 @@ import { GenericApp } from "./apps/GenericApp";
 
 // Visual metadata per app id. A new clone adds one entry; everything else is generic.
 const APP_META: Record<string, { glyph: string; color: string; blurb: string }> = {
-  slack: { glyph: "S", color: "#4a154b", blurb: "Seeded Slack workspace" },
+  slack: { glyph: "S", color: "#4a154b", blurb: "Slack workspace (base + overlay)" },
   echo: { glyph: "E", color: "#1264a3", blurb: "Demo adapter (extension-point proof)" },
   github: { glyph: "G", color: "#24292f", blurb: "Coming soon" },
   linear: { glyph: "L", color: "#5e6ad2", blurb: "Coming soon" },
@@ -21,8 +21,8 @@ function Launcher({ apps, onOpen }: { apps: AppInfo[]; onOpen: (a: AppInfo) => v
   return (
     <div className="launcher">
       <header className="launcher-head">
-        <h1>Seed Dashboard</h1>
-        <p>Inspect the data seeded into each service clone — exactly as an agent's tools would see it.</p>
+        <h1>Overlay Dashboard</h1>
+        <p>Inspect the data overlaid onto each service clone — exactly as an agent's tools would see it.</p>
       </header>
       <div className="tile-grid">
         {all.map((a) => {

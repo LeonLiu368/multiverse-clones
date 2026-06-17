@@ -70,7 +70,7 @@ export function MessageList({
                 {showChannel && channelMap && (
                   <span className="msg-channel">#{channelMap[m.channel_id] ?? m.channel_id}</span>
                 )}
-                {m.origin === "overlay" && <span className="badge seed">task-seed</span>}
+                {m.origin === "overlay" && <span className="badge ov">overlay</span>}
                 {isReply && <span className="msg-reply-tag">↳ reply</span>}
               </div>
               {m.subtype === "channel_join" ? (

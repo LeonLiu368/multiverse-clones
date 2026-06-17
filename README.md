@@ -44,8 +44,8 @@ SLACK_CLONE_BASE=/path/to/abundant-slack-clone-mattermost/selfcontained/base ./r
 
 In the UI: open **Slack** → pick a **Base** (e.g. `slack-gateway:prod-v1`) → optionally **Choose
 overlay folder** (a task's `environment/data/overlay`, uploaded from the browser) → **Load**.
-Messages that come from the task overlay (not the base image) carry a small green **task-seed** tag;
-channels with seeded content are flagged in the sidebar. **Pull GHCR** fetches a registry tag on
+Messages that come from the task overlay (not the base image) carry a small green **overlay** tag;
+channels with overlay content are flagged in the sidebar. **Pull GHCR** fetches a registry tag on
 demand.
 
 ### Loading a specific task / run

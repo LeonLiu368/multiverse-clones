@@ -104,12 +104,11 @@ export function SeedBar({
 
   return (
     <div className="seedbar">
-      {/* Section 1 — choose & load a base */}
-      <div className="seedbar-section-label">Base seed</div>
       <div className="seedbar-row">
+        <span className="field-label">Base</span>
         <select className="base-select" value={baseId} onChange={(e) => setBaseId(e.target.value)} title={baseId}>
           {images.length > 0 && (
-            <optgroup label="Seed images">
+            <optgroup label="Images">
               {images.map((b) => (
                 <option key={b.id} value={b.id} title={b.ref}>
                   {prettyRef(b.ref)}
@@ -118,7 +117,7 @@ export function SeedBar({
             </optgroup>
           )}
           {dirs.length > 0 && (
-            <optgroup label="Local export dirs">
+            <optgroup label="Local dirs">
               {dirs.map((b) => (
                 <option key={b.id} value={b.id} title={b.ref}>
                   {b.label}
@@ -127,67 +126,56 @@ export function SeedBar({
             </optgroup>
           )}
         </select>
-        <input
-          ref={dirRef}
-          type="file"
-          multiple
-          className="overlay-file-hidden"
-          onChange={onPickOverlay}
-        />
+
+        <span className="field-label">Overlay</span>
+        <input ref={dirRef} type="file" multiple className="overlay-file-hidden" onChange={onPickOverlay} />
         <button
           className="overlay-pick"
           onClick={() => dirRef.current?.click()}
           title="Pick a task's overlay export folder (environment/data/overlay). Leave empty to use a sidecar image's baked overlay."
         >
-          {overlayLabel ? `📁 ${overlayLabel}` : "📁 Choose overlay folder…"}
+          {overlayLabel ? `📁 ${overlayLabel}` : "Choose folder…"}
         </button>
         {overlayLabel && (
-          <button className="overlay-clear" onClick={clearOverlay} title="clear overlay">
+          <button className="icon-btn" onClick={clearOverlay} title="clear overlay">
             ✕
           </button>
         )}
+
         <button className="primary" onClick={doLoad} disabled={!baseId || !!busy}>
           Load
         </button>
+
+        <div className="seedbar-status">
+          {busy && <span className="hint">⏳ {busy}</span>}
+          {err && <span className="err">⚠ {err}</span>}
+          {!busy && !err && meta && (
+            <span className="hint">
+              <b title={meta.base}>{prettyRef(meta.base || "")}</b>
+              {meta.overlay_path ? (
+                <> + <b title={meta.overlay_path}>{shortPath(meta.overlay_path)}</b></>
+              ) : null}{" "}
+              · {meta.stats?.channels} ch · {meta.stats?.users} users
+              {meta.stats?.overlay ? (
+                <> · <span className="badge ov">+{meta.stats.overlay.messages} overlay</span></>
+              ) : null}
+            </span>
+          )}
+        </div>
       </div>
 
-      {/* Section 2 — fetch an image from the registry */}
-      <div className="seedbar-section-label">Fetch from registry (GHCR)</div>
-      <div className="seedbar-row">
+      <div className="seedbar-row sub">
+        <span className="field-label muted">Pull</span>
         <input
           className="pull-input"
           value={pullRef}
-          placeholder="ghcr.io/abundant-ai/slack-gateway:<tag>  (the gateway sidecar holds the data)"
+          placeholder="ghcr.io/abundant-ai/slack-gateway:<tag>  — the gateway sidecar holds the data"
           onChange={(e) => setPullRef(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && doPull()}
         />
         <button onClick={doPull} disabled={!pullRef.trim() || !!busy}>
-          Pull
+          Pull from GHCR
         </button>
-      </div>
-
-      {/* status line on its own row, always readable */}
-      <div className="seedbar-status">
-        {busy && <span className="hint">⏳ {busy}</span>}
-        {err && <span className="err">⚠ {err}</span>}
-        {!busy && !err && meta && (
-          <span className="hint">
-            Loaded <b title={meta.base}>{prettyRef(meta.base || "")}</b>
-            {meta.overlay_path ? (
-              <>
-                {" "}
-                + overlay <b title={meta.overlay_path}>{shortPath(meta.overlay_path)}</b>
-              </>
-            ) : null}{" "}
-            · {meta.stats?.channels} channels, {meta.stats?.users} users
-            {meta.stats?.overlay ? (
-              <>
-                {" "}
-                · <span className="badge seed">+{meta.stats.overlay.messages} task-seed</span>
-              </>
-            ) : null}
-          </span>
-        )}
       </div>
     </div>
   );

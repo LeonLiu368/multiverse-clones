@@ -47,33 +47,30 @@ button { font-family: inherit; cursor: pointer; }
 .slack { display: flex; flex-direction: column; height: 100vh; }
 .slack-body { flex: 1; display: flex; min-height: 0; }
 
-/* seed bar */
-.seedbar { background: #f8f8f8; border-bottom: 1px solid var(--border); padding: 10px 14px 10px 96px; }
-.seedbar-section-label {
-  font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .05em;
-  color: var(--muted); margin: 6px 0 4px;
-}
-.seedbar-section-label:first-child { margin-top: 0; }
+/* seed/overlay bar */
+.seedbar { background: #fafafa; border-bottom: 1px solid var(--border); padding: 9px 16px 9px 92px; }
 .seedbar-row { display: flex; align-items: center; gap: 8px; }
+.seedbar-row.sub { margin-top: 7px; }
+.field-label { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+.field-label.muted { opacity: .7; }
 .seedbar select, .seedbar input {
-  font-size: 13px; padding: 6px 9px; border: 1px solid var(--border); border-radius: 6px; background: #fff;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px; padding: 6px 9px; border: 1px solid var(--border); border-radius: 6px; background: #fff; height: 32px;
 }
-.base-select { min-width: 260px; max-width: 360px; }
-.pull-input { flex: 1; min-width: 320px; }
+.seedbar input, .base-select { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+.base-select { min-width: 220px; max-width: 320px; }
+.pull-input { flex: 1; min-width: 300px; }
 
 /* overlay folder picker (replaces the old typed path) */
 .overlay-file-hidden { display: none; }
 .overlay-pick {
-  flex: 1; min-width: 240px; text-align: left; color: var(--text);
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; overflow: hidden;
-  text-overflow: ellipsis; white-space: nowrap;
+  min-width: 170px; max-width: 280px; text-align: left; color: var(--text); height: 32px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.overlay-clear { padding: 7px 10px !important; }
-.seedbar button { font-size: 13px; padding: 7px 16px; border: 1px solid var(--border); border-radius: 6px; background: #fff; white-space: nowrap; }
-.seedbar button.primary { background: var(--seed); color: #fff; border-color: var(--seed); font-weight: 700; }
-.seedbar button:disabled { opacity: .5; cursor: default; }
-.seedbar-status { font-size: 12.5px; margin-top: 8px; min-height: 18px; }
+.seedbar button { font-size: 13px; padding: 0 14px; height: 32px; border: 1px solid var(--border); border-radius: 6px; background: #fff; white-space: nowrap; }
+.icon-btn { padding: 0 9px !important; color: var(--muted); }
+.seedbar button.primary { background: var(--seed); color: #fff; border-color: var(--seed); font-weight: 700; padding: 0 18px; }
+.seedbar button:disabled { opacity: .45; cursor: default; }
+.seedbar-status { font-size: 12.5px; margin-left: auto; padding-left: 12px; color: var(--muted); }
 .seedbar-status .err { color: #b00; }
 .hint { color: var(--muted); font-size: 13px; padding: 8px 0; }
 .err { color: #b00; }
@@ -100,7 +97,7 @@ button { font-family: inherit; cursor: pointer; }
 .channel-list li.active { background: var(--sidebar-active); color: #fff; }
 .hash { opacity: .7; }
 .ch-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.dot.seed { width: 7px; height: 7px; border-radius: 50%; background: var(--seed); }
+.dot.ov { width: 7px; height: 7px; border-radius: 50%; background: var(--seed); margin-left: auto; }
 
 /* main */
 .main { flex: 1; display: flex; flex-direction: column; min-width: 0; background: #fff; }
@@ -137,7 +134,7 @@ button { font-family: inherit; cursor: pointer; }
 
 /* badges */
 .badge { font-size: 10px; font-weight: 800; padding: 1px 6px; border-radius: 4px; text-transform: uppercase; letter-spacing: .04em; }
-.badge.seed { background: var(--seed); color: #fff; }
+.badge.seed, .badge.ov { background: var(--seed); color: #fff; }
 .badge.bot { background: #616061; color: #fff; }
 .link { background: none; border: none; color: var(--sidebar-active); font-size: 13px; }
 

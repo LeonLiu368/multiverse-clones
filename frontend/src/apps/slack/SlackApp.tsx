@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { api, Base, Channel, Meta, Msg, User } from "../../api";
 import { SeedBar } from "./SeedBar";
 import { MessageList } from "./MessageList";
@@ -61,7 +61,7 @@ export function SlackApp({ appId }: { appId: string }) {
       <SeedBar appId={appId} meta={meta} onLoaded={onLoaded} />
       {!loaded ? (
         <div className="empty-state">
-          Pick a base seed image and (optionally) an overlay above, then <b>Load</b> to inspect the
+          Pick a base image and (optionally) an overlay above, then <b>Load</b> to inspect the
           merged workspace.
         </div>
       ) : (
@@ -95,8 +95,8 @@ export function SlackApp({ appId }: { appId: string }) {
                 >
                   <span className="hash">#</span>
                   <span className="ch-name">{c.name}</span>
-                  {c.origin === "overlay" && <span className="badge seed">seed</span>}
-                  {c.origin === "base" && c.has_overlay && <span className="dot seed" title="overlay messages" />}
+                  {c.origin === "overlay" && <span className="badge ov">overlay</span>}
+                  {c.origin === "base" && c.has_overlay && <span className="dot ov" title="overlay messages" />}
                 </li>
               ))}
             </ul>
@@ -112,7 +112,7 @@ export function SlackApp({ appId }: { appId: string }) {
                   <>
                     <span className="hash">#</span>
                     {active}
-                    {activeChannel?.has_overlay && <span className="badge seed">overlay</span>}
+                    {activeChannel?.has_overlay && <span className="badge ov">overlay</span>}
                   </>
                 )}
               </div>
@@ -187,11 +187,27 @@ function ChannelMessages({
   onOpenThread: (m: Msg) => void;
 }) {
   const [msgs, setMsgs] = useState<Msg[] | null>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     setMsgs(null);
     api.messages(appId, channel, 200).then((m) => setMsgs(m.slice().reverse()));
   }, [appId, channel]);
+  // Open at the bottom (newest), like Slack. Pin the scroll container after paint so it lands fully
+  // at the bottom even once avatars/wrapping settle the layout.
+  useEffect(() => {
+    if (!msgs?.length) return;
+    const pin = () => {
+      const c = bottomRef.current?.closest(".main-scroll") as HTMLElement | null;
+      if (c) c.scrollTop = c.scrollHeight;
+    };
+    requestAnimationFrame(() => requestAnimationFrame(pin));
+  }, [msgs]);
   if (!msgs) return <div className="hint">loading…</div>;
   if (!msgs.length) return <div className="hint">No messages in #{channel}.</div>;
-  return <MessageList appId={appId} messages={msgs} userMap={userMap} onOpenThread={onOpenThread} />;
+  return (
+    <>
+      <MessageList appId={appId} messages={msgs} userMap={userMap} onOpenThread={onOpenThread} />
+      <div ref={bottomRef} />
+    </>
+  );
 }
