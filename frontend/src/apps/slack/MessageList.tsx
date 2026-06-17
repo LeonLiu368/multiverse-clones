@@ -61,12 +61,16 @@ export function MessageList({
             key={`${m.channel_id}:${m.ts}:${i}`}
             className={`msg ${m.origin === "overlay" ? "msg-seed" : ""}`}
           >
-            <div className="avatar" style={{ background: avatarColor(m.user) }}>
-              {name[0]?.toUpperCase()}
-            </div>
+            <UserHover u={u} id={m.user}>
+              <div className="avatar" style={{ background: avatarColor(m.user) }}>
+                {name[0]?.toUpperCase()}
+              </div>
+            </UserHover>
             <div className="msg-body">
               <div className="msg-head">
-                <span className="msg-author">{name}</span>
+                <UserHover u={u} id={m.user}>
+                  <span className="msg-author">{name}</span>
+                </UserHover>
                 {u?.is_bot ? <span className="badge bot">APP</span> : null}
                 <span className="msg-time">{fmtTime(m.ts)}</span>
                 {showChannel && channelMap && (
@@ -108,5 +112,36 @@ export function MessageList({
         );
       })}
     </ul>
+  );
+}
+
+// Hover any author name/avatar to see the full user profile (real name, @username, email, tz, id).
+function UserHover({ u, id, children }: { u?: User; id: string; children: React.ReactNode }) {
+  return (
+    <span className="user-hover">
+      {children}
+      <span className="user-card">
+        <span className="uc-avatar" style={{ background: avatarColor(id) }}>
+          {displayName(u, id)[0]?.toUpperCase()}
+        </span>
+        <span className="uc-body">
+          <span className="uc-name">
+            {u?.real_name || u?.display_name || u?.name || id}
+            {u?.is_bot ? <span className="badge bot">APP</span> : null}
+            <span className={`badge ${u?.origin === "overlay" ? "ov" : "base-tag"}`}>
+              {u?.origin ?? "?"}
+            </span>
+          </span>
+          {u?.name && <span className="uc-row">@{u.name}</span>}
+          {u?.display_name && u.display_name !== u.name && (
+            <span className="uc-row">display: {u.display_name}</span>
+          )}
+          {u?.email && <span className="uc-row">✉ {u.email}</span>}
+          {u?.tz && <span className="uc-row">🕑 {u.tz}</span>}
+          {u?.deleted ? <span className="uc-row uc-muted">deactivated</span> : null}
+          <span className="uc-row uc-id">{id}</span>
+        </span>
+      </span>
+    </span>
   );
 }

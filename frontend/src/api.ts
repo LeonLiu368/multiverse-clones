@@ -28,7 +28,10 @@ export type User = {
   name: string;
   real_name?: string;
   display_name?: string;
+  email?: string;
+  tz?: string;
   is_bot?: number;
+  deleted?: number;
   origin: "base" | "overlay";
 };
 export type Meta = {
