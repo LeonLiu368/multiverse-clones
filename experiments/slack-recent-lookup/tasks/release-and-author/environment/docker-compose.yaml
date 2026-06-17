@@ -1,5 +1,6 @@
-# Two-container: thin agent + per-task sidecar = shared prod gateway (slack-gateway:prod-v1) + this
-# task's recent overlay layer. slack-boot imports /data/slack-overlay on top of the prod DB at standup.
+# Two-container: thin agent + the SHARED prod gateway. The per-task overlay is MOUNTED into the
+# sidecar (no per-task image) and slack-boot imports /data/slack-overlay on top of the prod DB at
+# standup. The agent never mounts the data — only the sidecar does — so it's reachable only via tools.
 # Requires custom_docker_compose = true. No `networks:` block.
 services:
   main:
@@ -12,8 +13,10 @@ services:
     depends_on:
       slack: { condition: service_healthy }
   slack:
-    image: ${SLACK_GATEWAY_IMAGE:-ghcr.io/abundant-ai/slack-gateway:release-and-author}
+    image: ${SLACK_GATEWAY_IMAGE:-ghcr.io/abundant-ai/slack-gateway:prod-v1}
     platform: linux/amd64
+    volumes:
+      - ./data/overlay:/data/slack-overlay:ro
     healthcheck:
       test: ["CMD-SHELL", "curl -sf http://localhost:80/api/auth.test >/dev/null || exit 1"]
       interval: 5s
