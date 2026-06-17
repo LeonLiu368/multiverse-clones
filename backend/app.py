@@ -32,12 +32,12 @@ def _adapter(app_id: str) -> CloneAdapter:
 
 
 def _guard(fn):
-    """Turn adapter RuntimeErrors (e.g. 'no loaded session', missing docker) into clean 400s."""
+    """Turn adapter errors (no session, missing docker, refused edit, unsupported op) into clean 400s."""
     try:
         return fn()
     except HTTPException:
         raise
-    except RuntimeError as e:
+    except (RuntimeError, NotImplementedError) as e:
         raise HTTPException(400, str(e))
 
 
@@ -126,6 +126,53 @@ def thread(app_id: str, container: str, root_ts: str):
 @app.get("/api/{app_id}/search")
 def search(app_id: str, q: str, limit: int = 100):
     return _guard(lambda: _adapter(app_id).search(q, limit=limit))
+
+
+# ---- overlay editor (operates only on the task-seed overlay layer) ----------
+class AddContainerBody(BaseModel):
+    name: str
+    purpose: str = ""
+
+
+class AddMessageBody(BaseModel):
+    container: str
+    author: str
+    text: str
+    timestamp: Optional[str] = None
+
+
+class RemoveMessageBody(BaseModel):
+    container_id: str
+    ts: str
+
+
+class RemoveContainerBody(BaseModel):
+    container_id: str
+
+
+@app.post("/api/{app_id}/overlay/container/add")
+def overlay_add_container(app_id: str, body: AddContainerBody):
+    return _guard(lambda: _adapter(app_id).add_container(body.name, body.purpose))
+
+
+@app.post("/api/{app_id}/overlay/container/remove")
+def overlay_remove_container(app_id: str, body: RemoveContainerBody):
+    return _guard(lambda: _adapter(app_id).remove_container(body.container_id))
+
+
+@app.post("/api/{app_id}/overlay/message/add")
+def overlay_add_message(app_id: str, body: AddMessageBody):
+    return _guard(lambda: _adapter(app_id).add_message(body.container, body.author, body.text, body.timestamp))
+
+
+@app.post("/api/{app_id}/overlay/message/remove")
+def overlay_remove_message(app_id: str, body: RemoveMessageBody):
+    return _guard(lambda: _adapter(app_id).remove_message(body.container_id, body.ts))
+
+
+@app.get("/api/{app_id}/overlay/export")
+def overlay_export(app_id: str):
+    return _guard(lambda: _adapter(app_id).export_overlay())
 
 
 @app.get("/api/health")

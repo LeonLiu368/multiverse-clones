@@ -14,12 +14,70 @@ export function SlackApp({ appId }: { appId: string }) {
   const [results, setResults] = useState<Msg[] | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [rev, setRev] = useState(0); // bump to force the open channel to re-fetch after an edit
+  const [editErr, setEditErr] = useState("");
 
   const userMap = useMemo(() => {
     const m: Record<string, User> = {};
     users.forEach((u) => (m[u.id] = u));
     return m;
   }, [users]);
+
+  function flash(e: unknown) {
+    setEditErr(String(e));
+    setTimeout(() => setEditErr(""), 4000);
+  }
+
+  // ---- overlay edit handlers (task-seed layer only) ----
+  async function addChannel() {
+    const name = window.prompt("New overlay channel name (e.g. launch-room):")?.trim();
+    if (!name) return;
+    try {
+      await api.addContainer(appId, name);
+      await refresh();
+      setActive(name);
+      setResults(null);
+    } catch (e) {
+      flash(e);
+    }
+  }
+  async function deleteChannel(c: Channel) {
+    if (!window.confirm(`Delete overlay channel #${c.name} and its messages?`)) return;
+    try {
+      await api.removeContainer(appId, c.id);
+      if (active === c.name) setActive("");
+      await refresh();
+    } catch (e) {
+      flash(e);
+    }
+  }
+  async function deleteMessage(m: Msg) {
+    try {
+      await api.removeMessage(appId, m.channel_id, m.ts);
+      setRev((v) => v + 1);
+      refresh();
+    } catch (e) {
+      flash(e);
+    }
+  }
+  async function sendMessage(author: string, text: string, timestamp?: string) {
+    await api.addMessage(appId, active, author, text, timestamp);
+    setRev((v) => v + 1);
+    refresh();
+  }
+  async function downloadOverlay() {
+    try {
+      const data = await api.exportOverlay(appId);
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "overlay.json";
+      a.click();
+      URL.revokeObjectURL(a.href);
+    } catch (e) {
+      flash(e);
+    }
+  }
 
   async function refresh() {
     const [mt, ch, us] = await Promise.all([
@@ -81,7 +139,12 @@ export function SlackApp({ appId }: { appId: string }) {
                 {channels.length} channels · {users.length} members
               </div>
             </div>
-            <div className="sidebar-section">Channels</div>
+            <div className="sidebar-section">
+              <span>Channels</span>
+              <button className="add-ch" title="Add an overlay channel" onClick={addChannel}>
+                +
+              </button>
+            </div>
             <ul className="channel-list">
               {channels.map((c) => (
                 <li
@@ -97,6 +160,18 @@ export function SlackApp({ appId }: { appId: string }) {
                   <span className="ch-name">{c.name}</span>
                   {c.origin === "overlay" && <span className="badge ov">overlay</span>}
                   {c.origin === "base" && c.has_overlay && <span className="dot ov" title="overlay messages" />}
+                  {c.origin === "overlay" && (
+                    <button
+                      className="ch-del"
+                      title="Delete this overlay channel"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteChannel(c);
+                      }}
+                    >
+                      🗑
+                    </button>
+                  )}
                 </li>
               ))}
             </ul>
@@ -134,8 +209,13 @@ export function SlackApp({ appId }: { appId: string }) {
                     clear
                   </button>
                 )}
+                <button className="ghost-btn" title="Download the edited overlay as JSON" onClick={downloadOverlay}>
+                  ⬇ overlay.json
+                </button>
               </div>
             </header>
+
+            {editErr && <div className="edit-err">⚠ {editErr}</div>}
 
             <div className="main-scroll">
               {busy && <div className="hint">searching…</div>}
@@ -153,12 +233,16 @@ export function SlackApp({ appId }: { appId: string }) {
                   <ChannelMessages
                     appId={appId}
                     channel={active}
+                    rev={rev}
                     userMap={userMap}
                     onOpenThread={setThread}
+                    onDelete={deleteMessage}
                   />
                 )
               )}
             </div>
+
+            {!results && active && <ComposeBar channel={active} onSend={sendMessage} />}
           </main>
 
           {thread && (
@@ -178,20 +262,24 @@ export function SlackApp({ appId }: { appId: string }) {
 function ChannelMessages({
   appId,
   channel,
+  rev,
   userMap,
   onOpenThread,
+  onDelete,
 }: {
   appId: string;
   channel: string;
+  rev: number;
   userMap: Record<string, User>;
   onOpenThread: (m: Msg) => void;
+  onDelete: (m: Msg) => void;
 }) {
   const [msgs, setMsgs] = useState<Msg[] | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     setMsgs(null);
     api.messages(appId, channel, 200).then((m) => setMsgs(m.slice().reverse()));
-  }, [appId, channel]);
+  }, [appId, channel, rev]);
   // Open at the bottom (newest), like Slack. Pin the scroll container after paint so it lands fully
   // at the bottom even once avatars/wrapping settle the layout.
   useEffect(() => {
@@ -203,11 +291,70 @@ function ChannelMessages({
     requestAnimationFrame(() => requestAnimationFrame(pin));
   }, [msgs]);
   if (!msgs) return <div className="hint">loading…</div>;
-  if (!msgs.length) return <div className="hint">No messages in #{channel}.</div>;
+  if (!msgs.length) return <div className="hint">No messages in #{channel} yet — add one below.</div>;
   return (
     <>
-      <MessageList appId={appId} messages={msgs} userMap={userMap} onOpenThread={onOpenThread} />
+      <MessageList
+        appId={appId}
+        messages={msgs}
+        userMap={userMap}
+        onOpenThread={onOpenThread}
+        onDelete={onDelete}
+      />
       <div ref={bottomRef} />
     </>
+  );
+}
+
+// Compose box pinned to the bottom of a channel — every message it adds is overlay (task-seed).
+function ComposeBar({
+  channel,
+  onSend,
+}: {
+  channel: string;
+  onSend: (author: string, text: string, timestamp?: string) => Promise<void>;
+}) {
+  const [author, setAuthor] = useState("");
+  const [text, setText] = useState("");
+  const [when, setWhen] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  async function submit() {
+    if (!author.trim() || !text.trim()) return;
+    setBusy(true);
+    try {
+      await onSend(author.trim(), text.trim(), when.trim() || undefined);
+      setText("");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="compose">
+      <input
+        className="compose-author"
+        value={author}
+        placeholder="author"
+        onChange={(e) => setAuthor(e.target.value)}
+      />
+      <input
+        className="compose-text"
+        value={text}
+        placeholder={`Add an overlay message to #${channel}…`}
+        onChange={(e) => setText(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && submit()}
+      />
+      <input
+        className="compose-when"
+        value={when}
+        placeholder="time (optional, ISO)"
+        title="Optional timestamp (ISO 8601 or epoch). Blank = now."
+        onChange={(e) => setWhen(e.target.value)}
+      />
+      <button className="primary" onClick={submit} disabled={busy || !author.trim() || !text.trim()}>
+        Add
+      </button>
+    </div>
   );
 }

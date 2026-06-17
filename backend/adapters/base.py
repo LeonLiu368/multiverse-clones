@@ -77,6 +77,23 @@ class CloneAdapter:
     def search(self, query: str, limit: int = 100) -> list[dict[str, Any]]:
         raise NotImplementedError
 
+    # ---- overlay editor (optional; adapters that support editing override these) ----
+    def add_container(self, name: str, purpose: str = "") -> dict[str, Any]:
+        raise NotImplementedError("this clone does not support editing")
+
+    def add_message(self, container: str, author: str, text: str,
+                    timestamp: Optional[str] = None) -> dict[str, Any]:
+        raise NotImplementedError("this clone does not support editing")
+
+    def remove_message(self, container_id: str, ts: str) -> dict[str, Any]:
+        raise NotImplementedError("this clone does not support editing")
+
+    def remove_container(self, container_id: str) -> dict[str, Any]:
+        raise NotImplementedError("this clone does not support editing")
+
+    def export_overlay(self) -> dict[str, Any]:
+        raise NotImplementedError("this clone does not support exporting an overlay")
+
     # ---- summary for the launcher tile --------------------------------------
     def describe(self) -> dict[str, Any]:
         return {

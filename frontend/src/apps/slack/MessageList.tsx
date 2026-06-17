@@ -40,6 +40,7 @@ export function MessageList({
   channelMap,
   showChannel,
   onOpenThread,
+  onDelete,
 }: {
   appId: string;
   messages: Msg[];
@@ -47,6 +48,7 @@ export function MessageList({
   channelMap?: Record<string, string>;
   showChannel?: boolean;
   onOpenThread: (m: Msg) => void;
+  onDelete?: (m: Msg) => void;
 }) {
   return (
     <ul className="msg-list">
@@ -72,6 +74,15 @@ export function MessageList({
                 )}
                 {m.origin === "overlay" && <span className="badge ov">overlay</span>}
                 {isReply && <span className="msg-reply-tag">↳ reply</span>}
+                {onDelete && m.origin === "overlay" && (
+                  <button
+                    className="msg-del"
+                    title="Delete this overlay message"
+                    onClick={() => onDelete(m)}
+                  >
+                    🗑
+                  </button>
+                )}
               </div>
               {m.subtype === "channel_join" ? (
                 <div className="msg-system">{renderText(m.text, userMap)}</div>

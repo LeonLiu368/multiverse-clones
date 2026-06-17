@@ -42,6 +42,15 @@ Messages that come from the task overlay (not the base image) carry a small gree
 channels with overlay content are flagged in the sidebar. **Pull GHCR** fetches a registry tag on
 demand.
 
+### Editing the overlay
+
+You can build/edit the overlay in place and download it: **+** next to "Channels" adds an overlay
+channel, the **compose bar** adds an overlay message, and 🗑 removes an overlay channel/message.
+Every edit lands on the **overlay (task-seed) layer only** — the server refuses to delete base
+corpus/image data. **⬇ overlay.json** downloads the edited overlay in `slack_export_writer.write_export`
+input shape, so it round-trips straight into a task:
+`write_export(json["messages"], out_dir, channel_purposes=json["channel_purposes"])`.
+
 ### Loading a specific task / run
 
 The bulk of the data lives in the **gateway sidecar** image (`ghcr.io/abundant-ai/slack-gateway:<task>`), not in

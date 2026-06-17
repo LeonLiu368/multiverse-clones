@@ -77,6 +77,43 @@ def test_prod_base_overlay_attaches_by_name_hash():
     assert top[0]["origin"] == "overlay"  # planted msg post-dates prod -> newest
 
 
+@pytest.mark.skipif(not have_clone, reason="needs clone checkout")
+def test_overlay_editor_add_remove_export_and_base_protection():
+    client.post("/api/slack/load", json={"base_id": f"dir:{os.path.abspath(TINY)}"})
+    # add an overlay channel + message
+    assert client.post("/api/slack/overlay/container/add", json={"name": "launch-room"}).status_code == 200
+    m = client.post("/api/slack/overlay/message/add",
+                    json={"container": "launch-room", "author": "robin.vega", "text": "ship at 6pm"})
+    assert m.status_code == 200 and m.json()["origin"] == "overlay"
+    # export reflects the edit, in write_export shape
+    exp = client.get("/api/slack/overlay/export").json()
+    assert exp["messages"] and exp["messages"][0]["content"] == "ship at 6pm"
+    assert exp["messages"][0]["channel"] == "launch-room"
+
+    # base data is protected: deleting a base message / base channel is refused
+    base = client.get("/api/slack/messages", params={"container": "all-worldsdatatest", "limit": 1}).json()[0]
+    assert base["origin"] == "base"
+    r = client.post("/api/slack/overlay/message/remove",
+                    json={"container_id": base["channel_id"], "ts": base["ts"]})
+    assert r.status_code == 400 and "base data" in r.json()["detail"]
+    assert client.post("/api/slack/overlay/container/remove",
+                       json={"container_id": "all-worldsdatatest"}).status_code == 400
+
+    # deleting the overlay message + channel works
+    om = client.get("/api/slack/messages", params={"container": "launch-room"}).json()[0]
+    assert client.post("/api/slack/overlay/message/remove",
+                       json={"container_id": om["channel_id"], "ts": om["ts"]}).status_code == 200
+    assert client.post("/api/slack/overlay/container/remove",
+                       json={"container_id": "launch-room"}).status_code == 200
+    assert not client.get("/api/slack/overlay/export").json()["messages"]
+
+
+def test_editor_unsupported_on_echo_is_clean_400():
+    client.post("/api/echo/load", json={"base_id": "fixture"})
+    r = client.post("/api/echo/overlay/container/add", json={"name": "x"})
+    assert r.status_code == 400 and "not support" in r.json()["detail"]
+
+
 @pytest.mark.skipif(not (have_clone and have_overlay), reason="needs clone + arrival overlay")
 def test_load_upload_reconstructs_overlay_from_files():
     # Mimic the browser folder picker: post each overlay file with a webkitRelativePath-style path.

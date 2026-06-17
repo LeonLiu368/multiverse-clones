@@ -91,4 +91,31 @@ export const api = {
     ).then(j<Msg[]>),
   search: (app: string, q: string, limit = 100) =>
     fetch(`/api/${app}/search?q=${encodeURIComponent(q)}&limit=${limit}`).then(j<Msg[]>),
+
+  // ---- overlay editor (operates only on the task-seed layer) ----
+  addContainer: (app: string, name: string, purpose = "") =>
+    fetch(`/api/${app}/overlay/container/add`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ name, purpose }),
+    }).then(j<any>),
+  removeContainer: (app: string, container_id: string) =>
+    fetch(`/api/${app}/overlay/container/remove`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ container_id }),
+    }).then(j<any>),
+  addMessage: (app: string, container: string, author: string, text: string, timestamp?: string) =>
+    fetch(`/api/${app}/overlay/message/add`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ container, author, text, timestamp: timestamp || null }),
+    }).then(j<Msg>),
+  removeMessage: (app: string, container_id: string, ts: string) =>
+    fetch(`/api/${app}/overlay/message/remove`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ container_id, ts }),
+    }).then(j<any>),
+  exportOverlay: (app: string) => fetch(`/api/${app}/overlay/export`).then(j<any>),
 };
