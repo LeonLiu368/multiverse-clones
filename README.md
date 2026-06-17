@@ -8,23 +8,17 @@ inside an app-launcher shell ("dashboard of apps") that extends to future clones
 Today there is no window into a seeded clone except the agent's own tool calls. This makes authoring
 tasks and debugging clone bugs slow and blind. The viewer gives you eyes on the merged workspace.
 
-## How it works
+## How it works (Slack)
 
-It is **faithful by reuse, not reimplementation**. The backend imports the Slack clone's own
+The backend imports the Slack clone's own
 `store.py` (reads) and `import_export.py` (merge) from the checkout on disk, so what the viewer shows
 is byte-for-byte what the agent's CLI/MCP/HTTP tools return. Nothing is vendored → zero drift.
 
 The seed process mirrors the clone's `slack-boot.sh`:
 
 1. **Base corpus** — a baked SQLite DB extracted from a docker image (`slack-gateway:prod-v1` at
-   `/opt/slack.prebuilt.db`, or `slack-seed:<dataset>` at `/slack.prebuilt.db`), or imported from a
-   local Slack-export dir.
-2. **Overlay** — a per-task Slack-export directory (`environment/data/overlay/`, the format
-   `slack_export_writer.write_export` emits) merged on top with `import_export(..., overlay=True)`
-   (INSERT OR IGNORE entities, all messages). Overlay channels attach to prod channels by the same
-   name→id hash the corpus uses.
-3. **Provenance** — each merged row is tagged `origin: base | overlay` (computed from the small
-   overlay, never by diffing the multi-million-row corpus) so the UI badges seeded content.
+  `/opt/slack.prebuilt.db`, or `slack-seed:<dataset>` at `/slack.prebuilt.db`), or imported from a local Slack-export dir.
+2. **Overlay** — a per-task Slack-export directory
 
 ## Scaling to other clones
 
@@ -50,8 +44,8 @@ demand.
 
 ### Loading a specific task / run
 
-The data lives in the **gateway sidecar** image (`ghcr.io/abundant-ai/slack-gateway:<task>`), not in
-the `main`/agent image (`ghcr.io/abundant-ai/experiments/<task>:run-<id>`), which is tools + codebase
+The bulk of the data lives in the **gateway sidecar** image (`ghcr.io/abundant-ai/slack-gateway:<task>`), not in
+the `main`/agent image (somewhere like `ghcr.io/abundant-ai/experiments/<task>:run-<id>`), which is tools + codebase
 only and carries no DB. Pull the sidecar tag — the viewer extracts its base DB **and** its baked
 `/data/slack-overlay`, auto-merging them so you see the task's real seeded state from one image, no
 separate overlay needed.
@@ -69,8 +63,8 @@ backend/
   dockerutil.py          # list/pull images, extract baked SQLite DB
   adapters/
     base.py              # CloneAdapter protocol (the extension point)
-    slack.py             # Slack adapter (host-side merge + provenance + reads)
-    echo.py              # fixture adapter (scalability proof)
+    slack.py             # Slack adapter
+    echo.py              # mock test adapter
   test_seed.py
 frontend/                # React + Vite + TS
   src/App.tsx            # launcher shell
@@ -84,11 +78,9 @@ frontend/                # React + Vite + TS
 cd backend && SLACK_CLONE_BASE=/path/to/clone/selfcontained/base .venv/bin/python -m pytest -v
 ```
 
-Merge-parity tests need the clone checkout and a local `slack-gateway:prod-v1` image; they skip
-gracefully when absent so the adapter-contract + scalability tests still run anywhere.
-
 ## Requirements
 
 - Python 3.11+, Node 18+, Docker (only for image-backed bases — local export dirs need no Docker).
 - A Slack clone checkout (default `~/projects/abundant-slack-clone-mattermost`, override with
-  `SLACK_CLONE_BASE`).
+`SLACK_CLONE_BASE`).
+
