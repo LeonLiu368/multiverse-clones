@@ -1,0 +1,43 @@
+# Two-container task: a thin agent (`main`) + the Jira gateway sidecar holding the data.
+#   main — the agent (Harbor force-builds it from environment/Dockerfile). Tools + codebase only,
+#          no service, no state.json. Reaches the corpus ONLY over HTTP at http://jira:8765.
+#   jira — the gateway sidecar (PULLED): the ticketvector issue service serving the ENG prod corpus
+#          BAKED into ghcr.io/abundant-ai/jira-gateway:prod-v1. The ticket data lives here and is NOT on the agent's
+#          filesystem, so the agent can't bypass the `jira` CLI by reading state.json.
+#
+# This task uses the SHARED prod corpus baked in the gateway image, so it mounts NO per-task data.
+# Requires `custom_docker_compose = true` in task.toml. NO `networks:` block — service-name DNS
+# resolves `jira`. Both services pin linux/amd64 (the ticketvector base is amd64-only).
+services:
+  main:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${APEX_TASK_DOCKER_CLIENT_IMAGE_NAME:-jira-status-lookup-main:local}
+    platform: linux/amd64
+    environment:
+      WORLD_ISSUES_BACKEND: remote
+      WORLD_ISSUES_AGENT_MODE: "1"
+      WORLD_ISSUES_OUTPUT: json
+      WORLD_ISSUES_ACTOR: agent
+      WORLD_ISSUES_DEFAULT_PROJECT: ENG
+      PLANE_BASE_URL: http://jira:8765
+    depends_on:
+      jira:
+        condition: service_healthy
+
+  jira:
+    image: ${JIRA_GATEWAY_IMAGE:-ghcr.io/abundant-ai/jira-gateway:prod-v1}
+    hostname: jira
+    platform: linux/amd64
+    environment:
+      WORLD_ISSUES_STATE_FILE: /var/lib/ticketvector/state.json
+      WORLD_ISSUES_BIND_HOST: 0.0.0.0
+      WORLD_ISSUES_PORT: "8765"
+      WORLD_ISSUES_ACTOR: agent
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8765/health')\" || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 24
+      start_period: 15s

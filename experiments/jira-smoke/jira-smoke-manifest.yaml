@@ -1,0 +1,25 @@
+metadata:
+  name: jira-smoke
+  enable_image_push: true
+  description: |
+    Two simple read tasks on the Jira clone (the ticketvector-backed issue tracker, agent uses the
+    `jira` CLI; data lives only in the `jira` sidecar). Mirrors the Slack clone's two-image + mount +
+    isolation model:
+      - jira-status-lookup: look up ENG-2016 in the real ENG corpus (sidecar jira-gateway:prod-v1)
+        and report its status + assignee.
+      - jira-assignee-count: count WEB issues assigned to priya.singh in a small custom workspace
+        (sidecar jira-gateway:empty + a mounted state.json).
+    Two-container, isolated (agent has no state.json on disk). Deterministic nop=0, oracle=1.
+  task_path: experiments/jira-smoke/tasks
+  n_trials: 1
+  skip_trajectory_analysis: false
+
+tasks:
+  - jira-status-lookup
+  - jira-assignee-count
+
+agents:
+  - name: nop
+  - name: oracle
+  - name: gemini-cli
+    model_name: google/gemini-3.1-pro-preview

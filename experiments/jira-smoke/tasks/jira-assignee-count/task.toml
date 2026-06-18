@@ -1,0 +1,25 @@
+schema_version = "1.2"
+name = "jira-smoke/jira-assignee-count"
+description = "Read task over the Jira clone, with a CUSTOM per-task project mounted into the EMPTY gateway. The agent must use the `jira` CLI (talking to the `jira` sidecar over HTTP) to count how many issues in project WEB are assigned to Priya Singh, and write the number to /workspace/answer.txt. The project data lives only in the sidecar (jira-gateway:empty + a mounted state.json); the agent has no state.json on disk. nop=0, oracle=1."
+
+[metadata]
+category = "observability"
+source_repo = "askzeta/web"
+failure_mode = "tool-required-aggregation"
+tags = ["jira", "ticketvector", "observability", "read", "smoke", "mounted-state"]
+
+[agent]
+timeout_sec = 900
+
+[verifier]
+timeout_sec = 300
+
+[environment]
+cpus = 2
+memory_mb = 4096
+storage_mb = 20480
+gpus = 0
+allow_internet = true
+workdir = "/workspace"
+build_timeout_sec = 1800
+custom_docker_compose = true
