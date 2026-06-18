@@ -1,0 +1,566 @@
+[
+  {
+    "id": "PERSON_14350_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_10167_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_7542_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_6430_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_13417_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "UANON0001",
+    "is_bot": false
+  },
+  {
+    "id": "UANON0003",
+    "is_bot": false
+  },
+  {
+    "id": "UANON0002",
+    "is_bot": false
+  },
+  {
+    "id": "U020A9QG4P9",
+    "is_bot": false
+  },
+  {
+    "id": "UANON0004",
+    "is_bot": false
+  },
+  {
+    "id": "U01PK72F5V4",
+    "is_bot": false
+  },
+  {
+    "id": "UANON0005",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_7959_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_10639_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "U0315DW619T",
+    "is_bot": false
+  },
+  {
+    "id": "U6W3ZPPRT",
+    "is_bot": false
+  },
+  {
+    "id": "U01UT3LDNBD",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14584_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14557_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_6273_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14556_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14536_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14542_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_12023_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14558_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "U04GNC1N5QF",
+    "is_bot": false
+  },
+  {
+    "id": "U6WQ9TSFQ",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14576_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "BANON0001",
+    "is_bot": true
+  },
+  {
+    "id": "PERSON_14533_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14534_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "U6ZCEMA86",
+    "is_bot": false
+  },
+  {
+    "id": "U0186HB76C8",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14539_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "U01DU7BRMDJ",
+    "is_bot": false
+  },
+  {
+    "id": "UANON0006",
+    "is_bot": false
+  },
+  {
+    "id": "UANON0007",
+    "is_bot": false
+  },
+  {
+    "id": "U01PS0GFDU2",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_7780_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14553_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "BANON0002",
+    "is_bot": true
+  },
+  {
+    "id": "PERSON_10148_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "U04AUJQ4RML",
+    "is_bot": false
+  },
+  {
+    "id": "U041YM8B4EL",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_7870_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_9253_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "U05BRMD4L7N",
+    "is_bot": false
+  },
+  {
+    "id": "B01NBA04MGB",
+    "is_bot": false
+  },
+  {
+    "id": "UANON0008",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14561_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14567_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "U9N4V476D",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14562_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "U0L83J2RZ",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14570_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "UF7KKQH3R",
+    "is_bot": false
+  },
+  {
+    "id": "UJ31UJM5G",
+    "is_bot": false
+  },
+  {
+    "id": "BFEQ5DATX",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_11651_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "U02V4NALZJ5",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_12029_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "U048U9X6D8R",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14541_SLACK_ID",
+    "is_bot": true
+  },
+  {
+    "id": "U01N81ER2JH",
+    "is_bot": false
+  },
+  {
+    "id": "UANON0009",
+    "is_bot": false
+  },
+  {
+    "id": "USLACKBOT",
+    "is_bot": false
+  },
+  {
+    "id": "U057MAB5M5K",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14560_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "BANON0003",
+    "is_bot": true
+  },
+  {
+    "id": "PERSON_14545_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14537_SLACK_ID",
+    "is_bot": true
+  },
+  {
+    "id": "PERSON_14579_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14550_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14538_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14548_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "U02AK0AH4D7",
+    "is_bot": false
+  },
+  {
+    "id": "U01AYH2B74M",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14532_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "U029DV0RM3K",
+    "is_bot": false
+  },
+  {
+    "id": "U015GEUA1RD",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14549_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14552_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "U0174FW2SF7",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14540_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "U02ASTEEGKX",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14551_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14572_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "BGFQ41L79",
+    "is_bot": false
+  },
+  {
+    "id": "UANON0010",
+    "is_bot": false
+  },
+  {
+    "id": "U03CW910E3X",
+    "is_bot": false
+  },
+  {
+    "id": "U04JML03K2N",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14569_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "BBP4D4JDQ",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14568_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14573_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "UH56KEA7M",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14583_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "UPNTAHC9K",
+    "is_bot": false
+  },
+  {
+    "id": "U015M03JW82",
+    "is_bot": false
+  },
+  {
+    "id": "U01N5SDURMZ",
+    "is_bot": false
+  },
+  {
+    "id": "U03GNCN4K2L",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14543_SLACK_ID",
+    "is_bot": true
+  },
+  {
+    "id": "U029YGCC8S0",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14544_SLACK_ID",
+    "is_bot": true
+  },
+  {
+    "id": "U01ULSLS7S8",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14554_SLACK_ID",
+    "is_bot": true
+  },
+  {
+    "id": "PERSON_14563_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14564_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14565_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14566_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "U76V2QSM7",
+    "is_bot": false
+  },
+  {
+    "id": "UAM592G6L",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14571_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14574_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14531_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "U01535Z5JR5",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14546_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14547_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "UANON0011",
+    "is_bot": false
+  },
+  {
+    "id": "UANON0012",
+    "is_bot": false
+  },
+  {
+    "id": "UANON0013",
+    "is_bot": false
+  },
+  {
+    "id": "U03J3A8TCKD",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14559_SLACK_ID",
+    "is_bot": true
+  },
+  {
+    "id": "PERSON_14575_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14578_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "UJMEE6X2S",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14580_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "UK4KGU90E",
+    "is_bot": false
+  },
+  {
+    "id": "UHWGTLHB5",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14581_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "ULQHNAXMF",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14582_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "UMJHP91LZ",
+    "is_bot": false
+  },
+  {
+    "id": "UK0PEFEQ6",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14535_SLACK_ID",
+    "is_bot": true
+  },
+  {
+    "id": "U01764XHYAF",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14577_SLACK_ID",
+    "is_bot": false
+  },
+  {
+    "id": "U6Z8G53KK",
+    "is_bot": false
+  },
+  {
+    "id": "BFEF5H5L3",
+    "is_bot": false
+  },
+  {
+    "id": "PERSON_14555_SLACK_ID",
+    "is_bot": true
+  },
+  {
+    "id": "U041LJ46MBP",
+    "is_bot": false
+  }
+]
