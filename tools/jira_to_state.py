@@ -26,6 +26,7 @@ Usage:
 import argparse
 import hashlib
 import json
+import os
 import re
 import sys
 from datetime import datetime, timezone
@@ -121,9 +122,15 @@ class PersonRegistry:
     """Unifies the dual anonymization into one set of named users. Each registry key
     gets ONE stable synthetic name + handle, hashed on the key so it's reproducible."""
 
-    def __init__(self):
+    def __init__(self, registry_path=None):
         self.by_key = {}          # registry_key -> user dict {id, handle, name}
         self._used_handles = set()
+        # Shared cross-clone identity registry (abundant-identity): number -> canonical record. When
+        # present, a person resolves to the SAME name/handle as the Slack corpus (cross-clone unify).
+        self._reg = {}
+        if registry_path and os.path.isfile(registry_path):
+            with open(registry_path, encoding="utf-8") as fh:
+                self._reg = {k: v for k, v in json.load(fh).items() if k != "_meta"}
         # Seed an "unknown" fallback so every reference resolves to a real users[] entry.
         self.unknown = {"id": "user-unknown", "handle": "unknown", "name": "Unknown User"}
         self.by_key["__unknown__"] = self.unknown
@@ -135,9 +142,20 @@ class PersonRegistry:
             return self.unknown
         if key in self.by_key:
             return self.by_key[key]
-        rec = self._make(key)
+        rec = self._from_registry(key) or self._make(key)
         self.by_key[key] = rec
         return rec
+
+    def _from_registry(self, key):
+        # key is "name:<n>" or "jira:<n>"; look the bare number up in the shared registry so the
+        # person gets the canonical (Slack-matching) name/handle.
+        num = key.split(":", 1)[1] if ":" in key else None
+        r = self._reg.get(num)
+        if not r:
+            return None
+        handle = r["handle"]
+        self._used_handles.add(handle)
+        return {"id": f"user-{handle}", "handle": handle, "name": r["real_name"]}
 
     def _make(self, key):
         h = int(hashlib.sha1(key.encode()).hexdigest(), 16)
@@ -168,7 +186,7 @@ def _text_field(elem, attr, child_tag):
     return None
 
 
-def convert(entities_path, project_key, max_issues=None):
+def convert(entities_path, project_key, max_issues=None, registry_path=None):
     project_key = project_key.upper()
 
     # Lookup tables, built on the first streaming pass over the (whole) document.
@@ -176,7 +194,7 @@ def convert(entities_path, project_key, max_issues=None):
     statuses = {}        # id -> {name, category}
     priorities = {}      # id -> name
     resolutions = {}     # id -> name
-    registry = PersonRegistry()
+    registry = PersonRegistry(registry_path)
 
     issues = []          # collected, project-filtered
     issue_id_to_ident = {}   # jira issue id -> "ENG-2016" (for comment grouping)
@@ -422,11 +440,14 @@ def main():
                     help="path to the Jira entities.xml backup")
     ap.add_argument("--project", default="ENG", help="project key to export (default ENG)")
     ap.add_argument("--out", required=True, help="output state.json path")
+    ap.add_argument("--registry",
+                    default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "identity_registry.json"),
+                    help="shared abundant-identity registry.json for cross-clone name unification (default: vendored beside this script; pass '' to disable)")
     ap.add_argument("--max-issues", type=int, default=None,
                     help="cap issues for a quick smoke test")
     args = ap.parse_args()
 
-    state, stats = convert(args.entities, args.project, args.max_issues)
+    state, stats = convert(args.entities, args.project, args.max_issues, args.registry or None)
 
     with open(args.out, "w", encoding="utf-8") as f:
         json.dump(state, f, indent=2, ensure_ascii=False)
