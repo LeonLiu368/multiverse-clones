@@ -1,0 +1,24 @@
+# syntax=docker/dockerfile:1
+# jira-gateway:prod-v1 — the SHARED prod gateway: the ticketvector issue service with the real
+# Jira "ENG" corpus (8040 issues / 14997 comments / 22 users, converted from the native Jira XML
+# export) BAKED in as /var/lib/ticketvector/state.json. Built once, pushed to GHCR, and PULLED as
+# the `jira` sidecar by any task whose compose references it. The agent never gets this image — only
+# HTTP access to it at :8765, through the `jira`/`linear` CLI. This is the analogue of
+# slack-gateway:prod-v1.
+#
+# NOTE on per-task seeding: ticketvector loads a SINGLE state.json (no boot-time overlay-merge like
+# slack). So a task either (a) uses this prod image as-is for read tasks over the ENG corpus, or
+# (b) bakes a prod-with-planted-issues state.json into its own gateway tag, or (c) uses
+# jira-gateway:empty and MOUNTS a full custom state.json. See docs/PROD-OVERLAY.md.
+ARG TICKETVECTOR_SERVICE=ghcr.io/abundant-ai/ticketvector-service:latest
+FROM --platform=linux/amd64 ${TICKETVECTOR_SERVICE}
+
+# Bake the ENG prod corpus over the image's default demo state. The base CMD
+# (`python -m world_issues.server`) reads WORLD_ISSUES_STATE_FILE at boot and serves it on :8765.
+COPY data/eng-prod-state.json /var/lib/ticketvector/state.json
+
+ENV WORLD_ISSUES_STATE_FILE=/var/lib/ticketvector/state.json \
+    WORLD_ISSUES_BIND_HOST=0.0.0.0 \
+    WORLD_ISSUES_PORT=8765 \
+    WORLD_ISSUES_DEFAULT_PROJECT=ENG
+# ENTRYPOINT/CMD inherited from ticketvector-service (python -m world_issues.server on :8765).
