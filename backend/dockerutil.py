@@ -54,6 +54,24 @@ def pull_image(ref: str) -> None:
         raise RuntimeError(f"docker pull {ref} failed:\n{cp.stderr.strip()}")
 
 
+def extract_file(ref: str, src_path: str, dest_path: str) -> str:
+    """Copy a single file at `src_path` out of image `ref` to dest_path (no container run)."""
+    if not have_docker():
+        raise RuntimeError("docker not available")
+    if not image_exists(ref):
+        pull_image(ref)
+    cid = _run(["docker", "create", "--platform", PLATFORM, ref]).stdout.strip()
+    if not cid:
+        raise RuntimeError(f"could not create container from {ref}")
+    try:
+        cp = _run(["docker", "cp", f"{cid}:{src_path}", dest_path])
+        if cp.returncode != 0:
+            raise RuntimeError(f"{src_path} not found in {ref}: {cp.stderr.strip()}")
+        return dest_path
+    finally:
+        _run(["docker", "rm", "-f", cid])
+
+
 def extract_db(ref: str, dest_path: str) -> str:
     """Copy the baked prebuilt SQLite DB out of image `ref` to dest_path. Probes known DB paths."""
     if not have_docker():

@@ -1,20 +1,21 @@
 import { useEffect, useState } from "react";
 import { api, AppInfo } from "./api";
 import { SlackApp } from "./apps/slack/SlackApp";
+import { JiraApp } from "./apps/jira/JiraApp";
 import { GenericApp } from "./apps/GenericApp";
 
 // Visual metadata per app id. A new clone adds one entry; everything else is generic.
 const APP_META: Record<string, { glyph: string; color: string; blurb: string }> = {
   slack: { glyph: "S", color: "#4a154b", blurb: "Slack workspace (base + overlay)" },
+  jira: { glyph: "J", color: "#0052cc", blurb: "Jira issues (state.json base + overlay)" },
   echo: { glyph: "E", color: "#1264a3", blurb: "Demo adapter (extension-point proof)" },
   github: { glyph: "G", color: "#24292f", blurb: "Coming soon" },
-  linear: { glyph: "L", color: "#5e6ad2", blurb: "Coming soon" },
 };
 
 function Launcher({ apps, onOpen }: { apps: AppInfo[]; onOpen: (a: AppInfo) => void }) {
   // Always show known placeholders even if the backend doesn't register them yet.
   const ids = new Set(apps.map((a) => a.id));
-  const placeholders: AppInfo[] = ["github", "linear"]
+  const placeholders: AppInfo[] = ["github"]
     .filter((id) => !ids.has(id))
     .map((id) => ({ id, display_name: id[0].toUpperCase() + id.slice(1), status: "soon", ui_module: "generic" }));
   const all = [...apps, ...placeholders];
@@ -65,7 +66,13 @@ export default function App() {
         <button className="back-btn" onClick={() => setOpen(null)}>
           ← Apps
         </button>
-        {open.ui_module === "slack" ? <SlackApp appId={open.id} /> : <GenericApp appId={open.id} />}
+        {open.ui_module === "slack" ? (
+          <SlackApp appId={open.id} />
+        ) : open.ui_module === "jira" ? (
+          <JiraApp appId={open.id} />
+        ) : (
+          <GenericApp appId={open.id} />
+        )}
       </div>
     );
   }

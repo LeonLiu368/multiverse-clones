@@ -20,6 +20,29 @@ The seed process mirrors the clone's `slack-boot.sh`:
   `/opt/slack.prebuilt.db`, or `slack-seed:<dataset>` at `/slack.prebuilt.db`), or imported from a local Slack-export dir.
 2. **Overlay** — a per-task Slack-export directory
 
+## Jira (abundant-jira-clone)
+
+A second clone, to prove the abstraction across a very different data model. The **Jira** tile loads
+a ticketvector **`state.json`** (the format `abundant-jira-clone` ships) and renders it as an
+**issue list + detail** view: project sidebar with status counts, a filterable issue list
+(key/status/priority/assignee), and a detail panel (description + comments).
+
+- **Store reuse:** the backend imports **ticketvector's `FakePlaneBackend`** by path
+  (`TICKETVECTOR_BASE`, default `~/projects/ticketvector`) — the same code the `jira` CLI runs, zero
+  drift. Base data + images come from `JIRA_DATA_BASE` (default `~/projects/abundant-jira-clone`).
+- **Base seed:** a local `state.json` (`selfcontained/base/data/eng-prod-state.json`, a task's
+  `tasks/*/environment/data/state.json`), the **empty** option, or a `jira-gateway` image
+  (`prod-v1`/`empty`) — the viewer extracts the baked `/var/lib/ticketvector/state.json`.
+- **Editor (overlay layer, base protected):** add issue, add comment (as an existing user), edit
+  issue fields (status/priority/assignee — editing a base issue is allowed and flagged `edited`),
+  delete overlay-created issues/comments. New rows show an `overlay` badge.
+- **Export:** **⬇ state.json** downloads the merged snapshot — directly mountable onto
+  `jira-gateway:empty` at `/var/lib/ticketvector/state.json`.
+
+Adding it required only: one adapter (`backend/adapters/jira.py`) + a bridge function + one frontend
+view (`frontend/src/apps/jira/`) + registry/launcher entries + one generic route
+(`POST /overlay/op`). The other routes and the api client were reused unchanged.
+
 ## Scaling to other clones
 
 `backend/adapters/base.py` defines a `CloneAdapter` protocol; routes and the frontend shell speak

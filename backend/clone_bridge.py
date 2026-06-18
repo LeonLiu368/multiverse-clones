@@ -37,3 +37,35 @@ def load_slack_clone():
     except Exception:
         slack_export_writer = None
     return Store, import_export, slack_export_writer
+
+
+# ---- Jira clone (abundant-jira-clone data + images) on the ticketvector runtime ----------------
+# The Jira clone's data is a single state.json (ticketvector format). The runtime/store that reads &
+# writes it is ticketvector's FakePlaneBackend — we import it by path (zero vendoring), exactly like
+# the Slack store bridge. JIRA_DATA_BASE points at the abundant-jira-clone checkout (state.json
+# fixtures + the jira-gateway images); TICKETVECTOR_BASE points at the ticketvector checkout.
+DEFAULT_TICKETVECTOR_BASE = "/Users/leonliu/projects/ticketvector"
+DEFAULT_JIRA_DATA_BASE = "/Users/leonliu/projects/abundant-jira-clone"
+
+
+def ticketvector_base() -> str:
+    return os.environ.get("TICKETVECTOR_BASE", DEFAULT_TICKETVECTOR_BASE)
+
+
+def jira_data_base() -> str:
+    return os.environ.get("JIRA_DATA_BASE", DEFAULT_JIRA_DATA_BASE)
+
+
+@lru_cache(maxsize=1)
+def load_jira_clone():
+    """Return ticketvector's FakePlaneBackend class (reads/writes a state.json) and helpers module."""
+    base = ticketvector_base()
+    if not os.path.isdir(base):
+        raise RuntimeError(
+            f"TICKETVECTOR_BASE not found: {base!r}. Set TICKETVECTOR_BASE to the ticketvector "
+            "checkout (containing world_issues/client.py)."
+        )
+    if base not in sys.path:
+        sys.path.insert(0, base)
+    from world_issues import client as wi_client  # type: ignore
+    return wi_client.FakePlaneBackend, wi_client

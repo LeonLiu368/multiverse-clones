@@ -17,10 +17,11 @@ from pydantic import BaseModel
 
 from adapters.base import CloneAdapter
 from adapters.echo import EchoAdapter
+from adapters.jira import JiraAdapter
 from adapters.slack import SlackAdapter
 
 # --- registry: the one place clones are wired in -----------------------------
-ADAPTERS: dict[str, CloneAdapter] = {a.id: a for a in [SlackAdapter(), EchoAdapter()]}
+ADAPTERS: dict[str, CloneAdapter] = {a.id: a for a in [SlackAdapter(), JiraAdapter(), EchoAdapter()]}
 
 app = FastAPI(title="seed-dashboard")
 app.add_middleware(
@@ -152,6 +153,16 @@ class RemoveMessageBody(BaseModel):
 
 class RemoveContainerBody(BaseModel):
     container_id: str
+
+
+class OverlayOpBody(BaseModel):
+    op: str
+    payload: dict = {}
+
+
+@app.post("/api/{app_id}/overlay/op")
+def overlay_op(app_id: str, body: OverlayOpBody):
+    return _guard(lambda: _adapter(app_id).overlay_op(body.op, body.payload))
 
 
 @app.post("/api/{app_id}/overlay/container/add")

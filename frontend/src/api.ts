@@ -42,6 +42,43 @@ export type Meta = {
   stats?: any;
 };
 
+// ---- Jira (ticketvector state.json) shapes ----
+export type JiraUser = { id: string; handle: string; name: string };
+export type JiraState = { id: string; name: string; category?: string };
+export type JiraLabel = { id: string; name: string };
+export type JiraProject = { id: string; key: string; name: string; origin?: "base" | "overlay" };
+export type JiraIssue = {
+  id: string;
+  identifier: string;
+  project?: JiraProject;
+  title: string;
+  description?: string;
+  state: JiraState;
+  priority: string;
+  assignees: JiraUser[];
+  labels: JiraLabel[];
+  comments_count?: number;
+  created_at?: string;
+  updated_at?: string;
+  origin: "base" | "overlay";
+  edited?: boolean;
+};
+export type JiraComment = {
+  id: string;
+  author: JiraUser;
+  body: string;
+  created_at?: string;
+  origin: "base" | "overlay";
+};
+export type JiraMeta = {
+  workspace: string;
+  project: JiraProject;
+  states: JiraState[];
+  labels: JiraLabel[];
+  base?: string;
+  stats?: { issues: number; comments: number; users: number };
+};
+
 async function j<T>(r: Response): Promise<T> {
   if (!r.ok) {
     let detail = r.statusText;
@@ -121,6 +158,12 @@ export const api = {
       body: JSON.stringify({ container_id, ts }),
     }).then(j<any>),
   exportOverlay: (app: string) => fetch(`/api/${app}/overlay/export`).then(j<any>),
+  overlayOp: (app: string, op: string, payload: Record<string, any>) =>
+    fetch(`/api/${app}/overlay/op`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ op, payload }),
+    }).then(j<any>),
   exportOverlayZip: async (app: string, name: string): Promise<Blob> => {
     const r = await fetch(`/api/${app}/overlay/export.zip?name=${encodeURIComponent(name)}`);
     if (!r.ok) {
@@ -131,5 +174,24 @@ export const api = {
       throw new Error(detail);
     }
     return r.blob();
+  },
+
+  // ---- Jira-typed views over the generic routes ----
+  jira: {
+    meta: (app: string) => fetch(`/api/${app}/meta`).then(j<JiraMeta>),
+    projects: (app: string) => fetch(`/api/${app}/containers`).then(j<JiraProject[]>),
+    users: (app: string) => fetch(`/api/${app}/entities`).then(j<JiraUser[]>),
+    issues: (app: string, container: string, limit = 1000) =>
+      fetch(`/api/${app}/messages?container=${encodeURIComponent(container)}&limit=${limit}`).then(
+        j<JiraIssue[]>
+      ),
+    comments: (app: string, container: string, identifier: string) =>
+      fetch(
+        `/api/${app}/thread?container=${encodeURIComponent(container)}&root_ts=${encodeURIComponent(
+          identifier
+        )}`
+      ).then(j<JiraComment[]>),
+    search: (app: string, q: string, limit = 1000) =>
+      fetch(`/api/${app}/search?q=${encodeURIComponent(q)}&limit=${limit}`).then(j<JiraIssue[]>),
   },
 };

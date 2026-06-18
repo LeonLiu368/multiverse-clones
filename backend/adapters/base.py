@@ -97,6 +97,11 @@ class CloneAdapter:
     def export_overlay_dir(self, dest_parent: str, name: str = "overlay") -> str:
         raise NotImplementedError("this clone does not support exporting an overlay directory")
 
+    def overlay_op(self, op: str, payload: dict[str, Any]) -> dict[str, Any]:
+        """Generic overlay edit op (used by clones whose edits don't fit the message/container
+        verbs, e.g. Jira's add_issue/update_issue/add_comment/remove_*)."""
+        raise NotImplementedError("this clone does not support editing")
+
     # ---- summary for the launcher tile --------------------------------------
     def describe(self) -> dict[str, Any]:
         return {
