@@ -1,0 +1,48 @@
+{
+  "instances": [
+    {
+      "instance_id": "prom-ceems-primary",
+      "namespace": "ceems",
+      "image": "quay.io/prometheus/prometheus:v3.11.3-distroless",
+      "image_flavor": "distroless",
+      "listenLocal": true,
+      "port": 9090,
+      "current_probe_kind": "exec",
+      "ticket": "PROMOP-8605",
+      "evidence": "kubelet event at 18:03:23: exec failed because sh executable file was not found"
+    },
+    {
+      "instance_id": "prom-edge-rules",
+      "namespace": "edge",
+      "image": "quay.io/prometheus/prometheus:v3.11.3-distroless",
+      "image_flavor": "distroless",
+      "listenLocal": true,
+      "port": 9090,
+      "current_probe_kind": "exec",
+      "ticket": "PROMOP-8605",
+      "evidence": "startup probe repeats OCI runtime exec failure for sh"
+    },
+    {
+      "instance_id": "prom-legacy-shell",
+      "namespace": "ceems",
+      "image": "quay.io/prometheus/prometheus:v2.54.1",
+      "image_flavor": "full",
+      "listenLocal": true,
+      "port": 9090,
+      "current_probe_kind": "exec",
+      "ticket": "PROMOP-8605",
+      "evidence": "same listenLocal setting, but shell and wget are present"
+    },
+    {
+      "instance_id": "prom-public-metrics",
+      "namespace": "monitoring",
+      "image": "quay.io/prometheus/prometheus:v3.11.3-distroless",
+      "image_flavor": "distroless",
+      "listenLocal": false,
+      "port": 9090,
+      "current_probe_kind": "httpGet",
+      "ticket": "PROMOP-8612",
+      "evidence": "distroless image without local-only listener already uses httpGet"
+    }
+  ]
+}

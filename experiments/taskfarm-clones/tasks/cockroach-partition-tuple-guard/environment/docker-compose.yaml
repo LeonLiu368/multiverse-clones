@@ -1,0 +1,122 @@
+# Converted to the abundant clone format: ticketvector -> jira-gateway, slack-service ->
+# slack-gateway. Data lives ONLY in the sidecars (mounted, not on the agent FS); the agent
+# reaches them over HTTP at http://jira:8765 / http://slack via service-name DNS. No
+# network_mode/networks: blocks. See experiments/taskfarm-clones/README.md.
+name: cockroach-partition-tuple-guard
+services:
+  main:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${MAIN_IMAGE_NAME:-cockroach-partition-tuple-guard-main:local}
+    working_dir: /app/src
+    command:
+    - sleep
+    - infinity
+    environment:
+      PGHOST: postgres
+      PGUSER: agent
+      PGDATABASE: acme_cockroach_partition_tuple_guard
+      GH_HOST: http://github
+      GH_TOKEN_FILE: /run/secrets/token
+      PLANE_BASE_URL: http://jira:8765
+      PLANE_API_KEY: test-token-acme-eval
+      SENTRY_URL: http://sentry
+      SENTRY_AUTH_TOKEN: test-token-acme-eval
+      SENTRY_ORG: acme
+      PYTHONPATH: /app/src:/opt:/opt/ghclone:/opt/ticketvector:/opt/sentry-clone-cli
+      WORLD_ISSUES_BACKEND: remote
+      WORLD_ISSUES_AGENT_MODE: '1'
+      WORLD_ISSUES_OUTPUT: json
+      WORLD_ISSUES_ACTOR: agent
+      WORLD_ISSUES_DEFAULT_PROJECT: CRDB
+    volumes:
+    - ghc-shared:/run/secrets:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      github:
+        condition: service_healthy
+      sentry:
+        condition: service_healthy
+      jira:
+        condition: service_healthy
+  jira:
+    image: ${JIRA_GATEWAY_IMAGE:-ghcr.io/abundant-ai/jira-gateway:empty}
+    hostname: jira
+    platform: linux/amd64
+    environment:
+      WORLD_ISSUES_STATE_FILE: /var/lib/ticketvector/state.json
+      WORLD_ISSUES_BIND_HOST: 0.0.0.0
+      WORLD_ISSUES_PORT: '8765'
+      WORLD_ISSUES_ACTOR: agent
+    volumes:
+    - ./data/ticketvector/state.json:/var/lib/ticketvector/state.json:ro
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - python -c "import urllib.request; urllib.request.urlopen('http://localhost:8765/health')" || exit
+        1
+      interval: 5s
+      timeout: 5s
+      retries: 24
+      start_period: 15s
+  postgres:
+    image: postgres:16
+    platform: linux/amd64
+    environment:
+      POSTGRES_USER: agent
+      POSTGRES_DB: acme_cockroach_partition_tuple_guard
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+    - ./shared/cockroach-partition-tuple-guard/seed.sql:/docker-entrypoint-initdb.d/001-seed.sql:ro
+    - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - pg_isready -U agent -d acme_cockroach_partition_tuple_guard
+      interval: 2s
+      timeout: 2s
+      retries: 30
+  github:
+    image: ghcr.io/abundant-ai/ghc-service:latest@sha256:d4e88d7fa4af0ae84213d54f4b884b3a8954ebad9fe88b6f6fb97cea1443b3cf
+    hostname: github
+    platform: linux/amd64
+    volumes:
+    - ghc-shared:/shared
+    - ./data/github/seed.sh:/usr/local/bin/task-seed.sh:ro
+    - ./shared/cockroach-partition-tuple-guard/app-src:/seed/app-src:ro
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - curl -sf http://localhost/api/healthz >/dev/null || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 60
+      start_period: 45s
+  sentry:
+    image: ghcr.io/abundant-ai/sentry-clone-service:main
+    hostname: sentry
+    platform: linux/amd64
+    environment:
+      SENTRY_CLONE_STATE_FILE: /data/sentry-clone/state.json
+      SENTRY_CLONE_RUNTIME_STATE_FILE: /var/lib/sentry-clone/state.json
+      SENTRY_CLONE_ENABLE_ADMIN_API: '1'
+      SENTRY_CLONE_ADMIN_TOKEN: test-admin-token-acme-eval
+      SENTRY_AUTH_TOKEN: test-token-acme-eval
+      SENTRY_ORG: acme
+    volumes:
+    - ./data/sentry-clone/state.json:/data/sentry-clone/state.json:ro
+    - sentry-runtime:/var/lib/sentry-clone
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - python -c "import urllib.request; urllib.request.urlopen('http://localhost/api/healthz', timeout=1).read()"
+      interval: 2s
+      timeout: 2s
+      retries: 30
+volumes:
+  pgdata: null
+  ghc-shared: null
+  sentry-runtime: null

@@ -1,0 +1,52 @@
+{
+  "messages": [
+    {
+      "author": "nora",
+      "channel": "broker-oncall",
+      "content": "TBMQ-320: mqtt_gap is persistent APPLICATION, clean-session false. Kafka lag rose while offline; after reconnect offsets 3216-3262 are present but never delivered.",
+      "timestamp": "2026-06-11T12:24:00+00:00"
+    },
+    {
+      "author": "maya",
+      "channel": "broker-oncall",
+      "content": "The Edge bridge has the same committed-over shape at 8801-8817. Please keep this to replay-before-commit; a full group reset would redeliver healthy clients.",
+      "timestamp": "2026-06-11T12:36:00+00:00"
+    },
+    {
+      "author": "ori",
+      "channel": "broker-oncall",
+      "content": "Duplicate PUBACK warning for packet 2708 is visible, but the row has no confirmed Kafka lag. It should be tracked as follow-up, not repaired with the offset gap.",
+      "timestamp": "2026-06-11T12:43:00+00:00"
+    },
+    {
+      "author": "sam",
+      "channel": "customer-support",
+      "content": "Support note: ReSENSE sees missing telemetry from the offline window. They can test a debug build once we have a scoped artifact.",
+      "timestamp": "2026-06-11T12:51:00+00:00"
+    },
+    {
+      "author": "maya",
+      "channel": "release-coordination",
+      "content": "Background: mobile clean-session reconnect reports are unrelated to TBMQ-320. Do not mix clean-session device snapshot behavior into the persistent session fix.",
+      "timestamp": "2026-06-11T13:02:00+00:00"
+    },
+    {
+      "author": "opsbot",
+      "channel": "broker-oncall",
+      "content": "Alert tbmq-application-consumer-commit-gap fired for client=mqtt_gap node=tbmq1; sibling PubAck warning remains informational.",
+      "timestamp": "2026-06-11T13:04:00+00:00"
+    },
+    {
+      "author": "nina",
+      "channel": "infra-noise",
+      "content": "Routine Kafka compaction check completed for analytics topics; no change to per-client APPLICATION topics.",
+      "timestamp": "2026-06-11T13:09:00+00:00"
+    },
+    {
+      "author": "opsbot",
+      "channel": "broker-oncall",
+      "content": "Historical alert cleared for sensor_qos0_snapshot. It is a DEVICE clean-session QoS0 path and not eligible for persistent replay.",
+      "timestamp": "2026-06-11T13:12:00+00:00"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+metadata:
+  name: taskfarm-clones
+  enable_image_push: true
+  description: |
+    Six taskfarm-e2e tasks (from multiverse-tasks-owen @ codex/taskfarm-scout-accepted-wave)
+    re-pointed from the OLD ticketvector + OLD slack services to our NEW jira-gateway / slack-gateway
+    clones (two-image + mount + service-DNS isolation). Only the slack + ticketvector pieces were
+    swapped; the github/sentry/grafana/postgres sidecars and all app+verifier logic are unchanged.
+
+    Per task the agent reaches the issue tracker over HTTP at http://jira:8765 (the `jira` sidecar =
+    jira-gateway:empty serving the task's mounted state.json) via the `jira` CLI in
+    WORLD_ISSUES_BACKEND=remote/AGENT_MODE=1, and (tbmq only) Slack at http://slack
+    (slack-gateway:empty importing the task's scraped.json). Ticket/message data lives ONLY in the
+    sidecars — never on the agent FS — so the agent must go through the tools. Deterministic
+    nop=0, oracle=1.
+
+    NOTE: a full cloud stand-up also needs the unchanged github (ghc-service), sentry
+    (sentry-clone-service) and grafana images to be pullable; those were not part of this conversion.
+  task_path: experiments/taskfarm-clones/tasks
+  n_trials: 1
+  skip_trajectory_analysis: false
+
+tasks:
+  - cockroach-descriptor-backref-repair
+  - cockroach-partition-tuple-guard
+  - loki-boltdb-cache-isolation
+  - prometheus-distroless-local-probes
+  - tbmq-persistent-session-offset-gap
+  - tpcc-lockservice-memory-pressure
+
+agents:
+  - name: nop
+  - name: oracle
+  - name: gemini-cli
+    model_name: google/gemini-3.1-pro-preview

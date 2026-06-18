@@ -1,0 +1,119 @@
+# Converted to the abundant clone format: ticketvector -> jira-gateway, slack-service ->
+# slack-gateway. Data lives ONLY in the sidecars (mounted, not on the agent FS); the agent
+# reaches them over HTTP at http://jira:8765 / http://slack via service-name DNS. No
+# network_mode/networks: blocks. See experiments/taskfarm-clones/README.md.
+name: tbmq-persistent-session-offset-gap
+services:
+  main:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${MAIN_IMAGE_NAME:-tbmq-persistent-session-offset-gap-main:local}
+    working_dir: /app/src
+    command:
+    - sh
+    - -lc
+    - sleep infinity
+    environment:
+      PGHOST: postgres
+      PGUSER: agent
+      PGDATABASE: tbmq_persistent_session_offset_gap
+      PLANE_BASE_URL: http://jira:8765
+      PLANE_API_KEY: test-token-acme-eval
+      SLACK_API_URL: http://slack
+      SLACK_BOT_TOKEN: test-token-acme-eval
+      GRAFANA_URL: http://gcx:3000
+      GRAFANA_BASIC_AUTH: admin:admin
+      PYTHONPATH: /app/src:/opt:/opt/ticketvector:/opt/slackcli
+      WORLD_ISSUES_BACKEND: remote
+      WORLD_ISSUES_AGENT_MODE: '1'
+      WORLD_ISSUES_OUTPUT: json
+      WORLD_ISSUES_ACTOR: agent
+      WORLD_ISSUES_DEFAULT_PROJECT: TBMQ
+    depends_on:
+      postgres:
+        condition: service_healthy
+      slack:
+        condition: service_healthy
+      gcx:
+        condition: service_healthy
+      jira:
+        condition: service_healthy
+  jira:
+    image: ${JIRA_GATEWAY_IMAGE:-ghcr.io/abundant-ai/jira-gateway:empty}
+    hostname: jira
+    platform: linux/amd64
+    environment:
+      WORLD_ISSUES_STATE_FILE: /var/lib/ticketvector/state.json
+      WORLD_ISSUES_BIND_HOST: 0.0.0.0
+      WORLD_ISSUES_PORT: '8765'
+      WORLD_ISSUES_ACTOR: agent
+    volumes:
+    - ./data/ticketvector/state.json:/var/lib/ticketvector/state.json:ro
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - python -c "import urllib.request; urllib.request.urlopen('http://localhost:8765/health')" || exit
+        1
+      interval: 5s
+      timeout: 5s
+      retries: 24
+      start_period: 15s
+  postgres:
+    image: postgres:16
+    platform: linux/amd64
+    environment:
+      POSTGRES_USER: agent
+      POSTGRES_DB: tbmq_persistent_session_offset_gap
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+    - ./shared/tbmq-persistent-session-offset-gap/seed.sql:/docker-entrypoint-initdb.d/001-seed.sql:ro
+    - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - pg_isready -U agent -d tbmq_persistent_session_offset_gap
+      interval: 2s
+      timeout: 2s
+      retries: 30
+  slack:
+    image: ${SLACK_GATEWAY_IMAGE:-ghcr.io/abundant-ai/slack-gateway:empty}
+    hostname: slack
+    platform: linux/amd64
+    environment:
+      SLACK_BOT_TOKEN: test-token-acme-eval
+    volumes:
+    - ./data/slack:/data/mattermost:ro
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - curl -sf http://localhost:80/api/auth.test >/dev/null || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 24
+      start_period: 30s
+  gcx:
+    image: grafana/grafana-oss:11.5.2
+    hostname: gcx
+    platform: linux/amd64
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_AUTH_ANONYMOUS_ENABLED: 'false'
+      GF_USERS_ALLOW_SIGN_UP: 'false'
+      GF_PATHS_PROVISIONING: /etc/grafana/provisioning
+    volumes:
+    - ./data/gcx/provisioning:/etc/grafana/provisioning:ro
+    - ./data/gcx/dashboards:/var/lib/grafana/dashboards:ro
+    - gcx-runtime:/var/lib/grafana
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - wget -q -O- http://localhost:3000/api/health >/dev/null || exit 1
+      interval: 2s
+      timeout: 2s
+      retries: 60
+volumes:
+  pgdata: null
+  gcx-runtime: null

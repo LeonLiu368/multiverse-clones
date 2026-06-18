@@ -1,0 +1,37 @@
+schema_version = "1.3"
+source = "Accepted incident episode promoted to runnable task"
+
+[task]
+name = "taskfarm-clones/loki-boltdb-cache-isolation"
+authors = []
+description = "LOKI-3248 is a production Loki write-path incident: two write replicas crash while opening BoltDB shipper index files because their active/cache paths are shared, while a compactor and query-path alerts are decoys."
+keywords = ["loki", "boltdb", "kubernetes", "helm", "grafana", "postgres", "incident-response"]
+
+[metadata]
+difficulty = "hard"
+difficulty_explanation = "This is a deployment/on-call repair grounded in a real Loki CrashLoopBackOff issue. The difficult part is separating a tempting broad data wipe from a narrow chart/config repair, then proving exact scope across repo code, Kubernetes evidence, Grafana alert context, Postgres incident rows, and a ticket handoff."
+solution_explanation = "The reference solution edits charts/loki/values.yaml so loki-write-2 and loki-write-5 use pod-scoped BoltDB shipper active/cache paths, while loki-compactor-0 keeps its compactor/shared path. It then runs tools/loki_path_audit.py --apply to create /app/artifacts/loki_boltdb_repair.json and update Postgres, and moves LOKI-3248 to In Review with a scoped comment."
+verification_explanation = "The verifier executes the task audit tool to prove the current config has exactly two isolated write replicas and the untouched compactor decoy. It checks the repair artifact schema, Postgres repair_audit and incident_status rows, and TicketVector state/comment semantics without requiring implementation-specific source text."
+category = "deployment-incident-response"
+tags = ["loki", "boltdb", "helm", "kubernetes", "grafana", "postgres", "ticketvector"]
+expert_time_estimate_hours = 2.5
+relevant_experience = "SRE or platform engineer comfortable with Loki, Helm-style config, Kubernetes evidence, SQL, and incident handoffs"
+custom_docker_compose = true
+
+[agent]
+timeout_sec = 900
+user = "agent"
+
+[verifier]
+type = "shell"
+timeout_sec = 600
+user = "root"
+
+[environment]
+allow_internet = true
+build_timeout_sec = 1800
+cpus = 2
+memory_mb = 6144
+storage_mb = 20480
+gpus = 0
+workdir = "/app/src"

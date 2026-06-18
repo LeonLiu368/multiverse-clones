@@ -1,0 +1,46 @@
+schema_version = "1.3"
+
+[task]
+name = "taskfarm-clones/tbmq-persistent-session-offset-gap"
+authors = []
+keywords = ["tbmq", "mqtt", "kafka", "persistent-session", "queue", "postgres", "ticketvector", "slack", "grafana", "javascript"]
+description = "Repair a TBMQ persistent MQTT session replay planner so APPLICATION clients recover the full committed-over Kafka offset gap instead of only the last reconnect window."
+
+[metadata]
+difficulty = "hard"
+difficulty_explanation = "The incident is grounded in ThingsBoard TBMQ issue 320: persisted QoS 1 messages for a persistent APPLICATION session exist in the per-client Kafka topic, but reconnect handling commits past undelivered offsets. The task requires code investigation, runtime evidence correlation, scoped Postgres repair state, and ticket handoff while avoiding a tempting broad replay of unrelated duplicate-PUBACK symptoms."
+solution_explanation = "The reference solution fixes the JavaScript replay planner to derive the missing range from the retry offset and next delivered pack, not the reconnect grace window. It then runs the replay tool, producing /app/artifacts/tbmq_persistent_session_replay_plan.json for mqtt_gap_3216_3262 and edge_bridge_8801_8817 only, updates Postgres repair state, and moves TBMQ-320 to In Review with a scoped handoff comment."
+verification_explanation = "The verifier executes behavioral replay checks against the patched planner, parses the required artifact, checks Postgres repair/audit rows for exactly the two affected gaps, confirms duplicate-PUBACK and QoS0 decoys remain untouched, and requires a TicketVector In Review handoff with the artifact path, affected ids, untouched decoy, and narrow-repair rationale."
+category = "messaging"
+tags = ["mqtt", "kafka", "queue-replay", "incident-response", "postgres", "observability"]
+expert_time_estimate_hours = 2.0
+relevant_experience = "Backend queue semantics, MQTT persistent sessions, Kafka consumer offsets, operational debugging"
+custom_docker_compose = true
+
+[agent]
+timeout_sec = 900
+user = "agent"
+
+[verifier]
+type = "shell"
+timeout_sec = 600
+user = "root"
+
+[environment]
+allow_internet = true
+build_timeout_sec = 1800
+cpus = 2
+memory_mb = 4096
+storage_mb = 12288
+gpus = 0
+workdir = "/app/src"
+
+[[environment.mcp_servers]]
+name = "slack"
+transport = "stdio"
+command = "slack-mcp"
+
+[[environment.mcp_servers]]
+name = "grafana"
+transport = "stdio"
+command = "mcp-grafana"
