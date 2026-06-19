@@ -21,4 +21,13 @@ ENV WORLD_ISSUES_STATE_FILE=/var/lib/ticketvector/state.json \
     WORLD_ISSUES_BIND_HOST=0.0.0.0 \
     WORLD_ISSUES_PORT=8765 \
     WORLD_ISSUES_DEFAULT_PROJECT=ENG
-# ENTRYPOINT/CMD inherited from ticketvector-service (python -m world_issues.server on :8765).
+
+# Boot pre-processor: build a writable runtime copy of the baked state and apply an
+# optional mounted /data/state-overlay.json (ADDITIVE merge: baked ENG corpus + the
+# task's own tickets) and/or /data/state-patch.json (op-list mutations), then serve
+# THAT — leaving this baked image frozen. Without either mount it serves the baked
+# corpus unchanged. See docs/PROD-OVERLAY.md.
+COPY jira-boot.sh apply_state_patch.py /opt/
+RUN chmod +x /opt/jira-boot.sh /opt/apply_state_patch.py
+ENTRYPOINT ["/opt/jira-boot.sh"]
+CMD []
