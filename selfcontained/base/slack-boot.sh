@@ -41,6 +41,22 @@ else
   python3 -c "import sys; sys.path.insert(0,'/opt'); from slackgw.store import Store; Store('$SLACK_DB')"
 fi
 
+# Per-task PATCH: a task may mount/bake a JSON op-list that MUTATES the corpus (update/delete
+# existing rows, beyond the additive overlay) at /data/slack-patch.json. Applied AFTER the
+# seed/overlay import above, to whichever DB was built — prebuilt fast-path OR a boot-time import.
+# Deliberately NOT guarded by `|| echo`: a patch whose `match` resolves to 0 or >1 rows must
+# FAIL LOUD (apply_patch exits nonzero) and abort boot rather than silently shipping a wrong corpus.
+PATCH="${SLACK_PATCH_FILE:-/data/slack-patch.json}"
+if [ -f "$PATCH" ]; then
+  echo "[boot] applying task patch from $PATCH"
+  # No `set -e` in this script (and it's sourced), so check the status explicitly and abort boot on
+  # an unresolved match — exit propagates out of the sourcing entrypoint and fails the container.
+  if ! python3 /opt/import_export.py --db "$SLACK_DB" --patch "$PATCH"; then
+    echo "[boot] FATAL: patch failed — aborting boot" >&2
+    exit 1
+  fi
+fi
+
 echo "[boot] starting Slack gateway on :80"
 cd /opt
 uvicorn slackgw.app:app --host 0.0.0.0 --port 80 --log-level warning --no-server-header &

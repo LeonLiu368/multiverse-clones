@@ -420,6 +420,146 @@ def write_metadata(export_dir: str, *, force: bool = False, names: str = "raw") 
             "team_id": team_id}
 
 
+class PatchError(Exception):
+    """A patch op could not be applied unambiguously — abort the whole patch (fail loud)."""
+
+
+def _resolve_channel(store: Store, match: dict) -> dict:
+    """Resolve a channel `match` to exactly one channel row, else raise PatchError.
+
+    Accepts a human-stable `name` (the column the importer stores) or an explicit `id`. Channels
+    are unique by name in a real export, so name resolves to one row; we still verify the count.
+    """
+    if match.get("id"):
+        rows = store.conn.execute("SELECT * FROM channels WHERE id = ?", (match["id"],)).fetchall()
+    elif match.get("name") is not None:
+        rows = store.conn.execute(
+            "SELECT * FROM channels WHERE name = ? COLLATE NOCASE", (match["name"],)).fetchall()
+    else:
+        raise PatchError(f"channel match needs 'name' or 'id': {match}")
+    if len(rows) != 1:
+        raise PatchError(f"PATCH_ERROR entity=channel match={match} matched={len(rows)}")
+    return dict(rows[0])
+
+
+def _resolve_user(store: Store, match: dict) -> dict:
+    """Resolve a user `match` to exactly one user row, else raise PatchError. Matches the human
+    `name` (handle) column or an explicit `id`."""
+    if match.get("id"):
+        rows = store.conn.execute("SELECT * FROM users WHERE id = ?", (match["id"],)).fetchall()
+    elif match.get("name") is not None:
+        rows = store.conn.execute(
+            "SELECT * FROM users WHERE name = ? COLLATE NOCASE", (match["name"],)).fetchall()
+    else:
+        raise PatchError(f"user match needs 'name' or 'id': {match}")
+    if len(rows) != 1:
+        raise PatchError(f"PATCH_ERROR entity=user match={match} matched={len(rows)}")
+    return dict(rows[0])
+
+
+def _resolve_message(store: Store, match: dict) -> dict:
+    """Resolve a message `match` to exactly one message row, else raise PatchError.
+
+    The channel is resolved first (by name/id). Then the message is pinned by EITHER:
+      - `ts` (the per-channel PK) -> exactly that row, or
+      - `text_contains` -> must match EXACTLY one message in the channel.
+    """
+    if "channel" not in match:
+        raise PatchError(f"message match needs 'channel': {match}")
+    chan = _resolve_channel(store, {"name": match["channel"]} if not str(match["channel"]).startswith("C")
+                            else {"id": match["channel"], "name": match["channel"]})
+    cid = chan["id"]
+    if match.get("ts") is not None:
+        rows = store.conn.execute(
+            "SELECT * FROM messages WHERE channel_id = ? AND ts = ?", (cid, match["ts"])).fetchall()
+    elif match.get("text_contains") is not None:
+        needle = match["text_contains"]
+        esc = needle.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+        rows = store.conn.execute(
+            r"SELECT * FROM messages WHERE channel_id = ? AND text LIKE ? ESCAPE '\'",
+            (cid, f"%{esc}%")).fetchall()
+    else:
+        raise PatchError(f"message match needs 'ts' or 'text_contains': {match}")
+    if len(rows) != 1:
+        raise PatchError(f"PATCH_ERROR entity=message match={match} matched={len(rows)}")
+    return dict(rows[0])
+
+
+def apply_patch(store: Store, path: str) -> dict:
+    """Apply a per-task patch (a JSON op-list) that MUTATES the corpus: update/delete existing rows
+    (and add via the overlay upsert path). Each op's `match` must resolve to EXACTLY one existing
+    row for update/delete — otherwise we raise PatchError and abort the whole patch (fail loud).
+
+    Format: {"version":1,"ops":[{"op":"update|delete|add","entity":"message|channel|user",
+                                  "match":{...},"set":{...}}]}
+    """
+    with open(path, encoding="utf-8") as fh:
+        doc = json.load(fh)
+    ops = doc.get("ops") if isinstance(doc, dict) else doc
+    if not isinstance(ops, list):
+        raise PatchError(f"patch must contain an 'ops' list, got {type(ops).__name__}")
+
+    ids = IdMap()  # reused for name->id on `add` ops (same content-hash the importer uses)
+    touched_channels: set[str] = set()
+    n = 0
+    for i, op in enumerate(ops):
+        kind = op.get("op")
+        entity = op.get("entity")
+        match = op.get("match") or {}
+        sets = op.get("set") or {}
+        tag = f"op[{i}] {kind} {entity}"
+
+        if entity not in ("message", "channel", "user"):
+            raise PatchError(f"{tag}: entity must be message|channel|user")
+
+        if kind == "add":
+            # Reuse the existing overlay upsert path. Names resolve to the same ids the importer uses.
+            if entity == "channel":
+                store.upsert_channel(id=ids.cid(sets.get("id") or sets.get("name") or ""),
+                                     **{k: v for k, v in sets.items() if k != "id"})
+                touched_channels.add(ids.cid(sets.get("id") or sets.get("name") or ""))
+            elif entity == "user":
+                store.upsert_user(id=ids.uid(sets.get("id") or sets.get("name") or ""),
+                                  **{k: v for k, v in sets.items() if k != "id"})
+            else:  # message
+                cid = ids.cid(sets.get("channel") or match.get("channel") or "")
+                fields = {k: v for k, v in sets.items() if k != "channel"}
+                store.insert_message(channel_id=cid, **fields)
+                touched_channels.add(cid)
+            n += 1
+            continue
+
+        if kind not in ("update", "delete"):
+            raise PatchError(f"{tag}: op must be add|update|delete")
+
+        if entity == "message":
+            row = _resolve_message(store, match)
+            if kind == "update":
+                store.update_message(row["channel_id"], row["ts"], **sets)
+            else:
+                store.delete_message(row["channel_id"], row["ts"])
+            touched_channels.add(row["channel_id"])
+        elif entity == "channel":
+            row = _resolve_channel(store, match)
+            if kind == "update":
+                store.update_channel(row["id"], **sets)
+            else:
+                store.delete_channel(row["id"])
+            touched_channels.add(row["id"])
+        else:  # user
+            row = _resolve_user(store, match)
+            if kind == "update":
+                store.update_user(row["id"], **sets)
+            else:
+                store.delete_user(row["id"])
+        n += 1
+
+    # Member counts may have shifted (deleted messages, deleted channels, added messages).
+    store.recount_members(sorted(touched_channels) or None)
+    store.commit()
+    return {"ops": n}
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="Import a Slack export (or legacy scraped.json) into SQLite.")
     ap.add_argument("--export-dir", help="path to a Slack export directory")
@@ -438,6 +578,8 @@ def main() -> None:
     ap.add_argument("--overlay", action="store_true",
                     help="layer this export on top of an existing (prod) DB: preserve existing "
                          "channel/user rows, add only new entities + all messages")
+    ap.add_argument("--patch", help="path to a JSON op-list that MUTATES the corpus "
+                    "(update/delete/add existing rows); applied to --db")
     args = ap.parse_args()
 
     if args.write_metadata:
@@ -449,6 +591,15 @@ def main() -> None:
         return
 
     store = Store(args.db)
+    if args.patch:
+        # Mutating patch step (run AFTER any seed/overlay import). Fail loud on an unresolved match.
+        try:
+            stats = apply_patch(store, args.patch)
+        except PatchError as e:
+            print(str(e) if str(e).startswith("PATCH_ERROR") else f"PATCH_ERROR {e}", file=sys.stderr)
+            sys.exit(2)
+        print(f"PATCH_OK ops={stats['ops']}")
+        return
     if args.export_dir:
         chans = [c.strip() for c in args.channels.split(",")] if args.channels else None
         stats = import_export(store, args.export_dir, chans, args.start, args.end, overlay=args.overlay)

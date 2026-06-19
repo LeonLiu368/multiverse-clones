@@ -121,6 +121,59 @@ class Store:
              "edited_ts": "", "reactions": "", **m},
         )
 
+    # ------------------------------------------------------------------ mutate (patch)
+    # These do real UPDATE/DELETE ... WHERE on already-resolved PKs/ids. The patch driver
+    # (import_export.apply_patch) is responsible for resolving human-stable match keys to exactly
+    # one row BEFORE calling these, so they take ids/PKs and trust them. Column names mirror the
+    # SCHEMA above. Callers commit() + recount_members() after a batch.
+    _MSG_COLS = {"user", "text", "subtype", "thread_ts", "reply_count", "edited_ts", "reactions"}
+    _CHAN_COLS = {"name", "created", "creator", "is_archived", "is_general", "topic", "purpose",
+                  "num_members"}
+    _USER_COLS = {"name", "real_name", "display_name", "email", "is_bot", "deleted", "tz"}
+
+    @staticmethod
+    def _set_clause(fields: dict, allowed: set) -> tuple[str, list]:
+        cols = [k for k in fields if k in allowed]
+        if not cols:
+            raise ValueError(f"no updatable columns in {sorted(fields)} (allowed: {sorted(allowed)})")
+        return ", ".join(f"{c} = ?" for c in cols), [fields[c] for c in cols]
+
+    def update_message(self, channel_id: str, ts: str, **fields: Any) -> int:
+        set_sql, vals = self._set_clause(fields, self._MSG_COLS)
+        cur = self.conn.execute(
+            f"UPDATE messages SET {set_sql} WHERE channel_id = ? AND ts = ?",
+            [*vals, channel_id, ts])
+        return cur.rowcount
+
+    def delete_message(self, channel_id: str, ts: str) -> int:
+        cur = self.conn.execute(
+            "DELETE FROM messages WHERE channel_id = ? AND ts = ?", (channel_id, ts))
+        return cur.rowcount
+
+    def update_channel(self, id: str, **fields: Any) -> int:
+        set_sql, vals = self._set_clause(fields, self._CHAN_COLS)
+        cur = self.conn.execute(
+            f"UPDATE channels SET {set_sql} WHERE id = ?", [*vals, id])
+        return cur.rowcount
+
+    def delete_channel(self, id: str) -> int:
+        # Delete the channel and all its messages (a channel that no longer exists has no history).
+        self.conn.execute("DELETE FROM messages WHERE channel_id = ?", (id,))
+        cur = self.conn.execute("DELETE FROM channels WHERE id = ?", (id,))
+        return cur.rowcount
+
+    def update_user(self, id: str, **fields: Any) -> int:
+        set_sql, vals = self._set_clause(fields, self._USER_COLS)
+        cur = self.conn.execute(
+            f"UPDATE users SET {set_sql} WHERE id = ?", [*vals, id])
+        return cur.rowcount
+
+    def delete_user(self, id: str) -> int:
+        # Remove the user record. Messages authored by the user are left in place (Slack keeps the
+        # history of a deactivated user); only the user row goes away.
+        cur = self.conn.execute("DELETE FROM users WHERE id = ?", (id,))
+        return cur.rowcount
+
     def commit(self) -> None:
         self.conn.commit()
 

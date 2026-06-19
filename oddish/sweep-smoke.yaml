@@ -1,0 +1,19 @@
+# Smoke sweep for the slack-mcp-oss branch: harness validation before a full model sweep.
+#   cd /Users/leonliu/projects/experiments
+#   ODDISH_API_KEY=… uv run oddish run \
+#     /Users/leonliu/projects/abundant-slack-clone-mattermost/oddish/tasks \
+#     -c /Users/leonliu/projects/abundant-slack-clone-mattermost/oddish/sweep-smoke.yaml \
+#     -e daytona --force-build --run-analysis -E slack-mcp-oss-smoke --background
+task_names:
+  - buried-spec
+  - contract-drift
+  - incident-fix-report
+
+agents:
+  - name: nop
+    n_trials: 1
+  - name: oracle
+    n_trials: 1
+  - name: gemini-cli
+    model_name: google/gemini-3.1-pro-preview
+    n_trials: 1

@@ -12,12 +12,14 @@ task plants only its own small data on top — instead of baking a full standalo
 - **`selfcontained/prod/v1/catalog/{channels.json,users.json}`** — the published **author directory**.
   Browse it to pick which prod channel/user to plant against (by **name**).
 - **Per-task overlay** — a tiny Slack-export-shaped dir (`environment/data/overlay/`) carrying just the
-  planted messages. Delivered as a **per-task sidecar image layer** (`slack-gateway:<task>` =
-  `FROM slack-gateway:prod-v1` + `COPY overlay /data/slack-overlay`); `slack-boot.sh` imports it on
-  top of the prod DB at standup (`--overlay`: preserves prod rows, adds the planted data).
+  planted messages. Delivered by **mounting** it into the shared sidecar (`volumes: - ./data/overlay:
+  /data/slack-overlay:ro`); `slack-boot.sh` imports it on top of the prod DB at standup (`--overlay`:
+  preserves prod rows, adds the planted data).
 
-> Why an image layer and not a `volumes:` mount? Harbor task validation rejects host bind-mounts on a
-> sidecar. The overlay layer is a few KB on top of the shared, cached prod base, so it's cheap.
+> **Only two sidecar images exist — never build a per-task one.** Use `slack-gateway:prod-v1` (real
+> corpus; mount your overlay at `/data/slack-overlay`) or `slack-gateway:empty` (blank gateway; mount a
+> full small export at `/data/slack-export`). Harbor honors sidecar `volumes:` mounts (so does
+> `figma-linear`), so the per-task data is mounted in, not baked.
 
 ## How IDs line up (why overlays attach by name)
 
@@ -33,21 +35,21 @@ never collides with a real message.
 ## Authoring a task
 
 1. Pick a target channel from the catalog (e.g. `engineering`).
-2. Author the overlay with `slack_export_writer.write_export(...)` — see
-   `<task>/environment/data/gen_overlay.py`:
+2. Author the overlay with `slack_export_writer.write_export(...)` and commit `environment/data/overlay/`:
    ```python
    write_export([{ "channel": "engineering", "author": "robin.vega",
-                   "content": "…I'm coming in at 6pm…", "timestamp": "2025-12-22T18:05:00Z" }],
-                out_dir)   # -> environment/data/overlay/
+                   "content": "…I'm coming in at 6pm…", "timestamp": "2025-12-20T16:30:00Z" }],
+                "environment/data/overlay")
    ```
-3. Build + push the per-task sidecar:
-   ```bash
-   OVERLAY_DIR=<task>/environment/data TAG=<task> \
-     REGISTRY=ghcr.io/abundant-ai PUSH=1 PLATFORM=linux/amd64 \
-     selfcontained/base/build-overlay.sh
+3. Point the task's `docker-compose.yaml` `slack` service at the shared `slack-gateway:prod-v1` and
+   **mount** the overlay (no build, no per-task image):
+   ```yaml
+   slack:
+     image: ghcr.io/abundant-ai/slack-gateway:prod-v1
+     volumes:
+       - ./data/overlay:/data/slack-overlay:ro
    ```
-4. Point the task's `docker-compose.yaml` `slack` service at `slack-gateway:<task>` (no volume), set
-   `custom_docker_compose = true`, and write the verifier/oracle. Required task shape (Harbor):
+4. Set `custom_docker_compose = true` and write the verifier/oracle. Required task shape (Harbor):
    `task.toml`, `instruction.md`, `environment/{Dockerfile,docker-compose.yaml,codebase}`,
    `tests/test.sh` (entrypoint → writes `/logs/verifier/reward.txt`), `solution/solve.sh`.
 
