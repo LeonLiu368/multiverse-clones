@@ -121,6 +121,19 @@ def convert_tests(task_dir: Path):
             changed.append(p.name)
     return changed
 
+def convert_solution(task_dir: Path):
+    """The oracle solve.sh hits the tracker via raw RPC at the OLD address that only worked under
+    network_mode: service:main. Re-point it at the jira sidecar DNS host, same as the verifier."""
+    p = task_dir / "solution" / "solve.sh"
+    if not p.exists():
+        return False
+    text = p.read_text()
+    new = text.replace("http://127.0.0.1:8765", "http://jira:8765")
+    if new != text:
+        p.write_text(new)
+        return True
+    return False
+
 def main():
     DST.mkdir(parents=True, exist_ok=True)
     for task in sorted(p for p in SRC.iterdir() if p.is_dir()):
@@ -132,7 +145,8 @@ def main():
         convert_compose(out / "environment" / "docker-compose.yaml", proj)
         df = convert_dockerfile(out / "environment" / "Dockerfile", proj)
         tests = convert_tests(out)
-        print(f"{task.name:42s} proj={proj:7s} dockerfile_env={df} tests={tests}")
+        sol = convert_solution(out)
+        print(f"{task.name:42s} proj={proj:7s} dockerfile_env={df} tests={tests} solve.sh={sol}")
 
 if __name__ == "__main__":
     main()

@@ -25,7 +25,7 @@ def rpc(method, *args, **kwargs):
     last = None
     for _ in range(30):
         try:
-            req = urllib.request.Request("http://127.0.0.1:8765/rpc", data=payload, headers={"Content-Type": "application/json"}, method="POST")
+            req = urllib.request.Request("http://jira:8765/rpc", data=payload, headers={"Content-Type": "application/json"}, method="POST")
             data = json.loads(urllib.request.urlopen(req, timeout=5).read().decode())
             if not data.get("ok"):
                 raise RuntimeError(data)

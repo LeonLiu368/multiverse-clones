@@ -37,7 +37,7 @@ def rpc(method, *args, **kwargs):
     for _ in range(30):
         try:
             req = urllib.request.Request(
-                "http://127.0.0.1:8765/rpc",
+                "http://jira:8765/rpc",
                 data=payload,
                 headers={"Content-Type": "application/json"},
                 method="POST",

@@ -47,7 +47,7 @@ import urllib.request
 def rpc(method, *args, **kwargs):
     payload = json.dumps({"method": method, "args": args, "kwargs": kwargs}).encode()
     req = urllib.request.Request(
-        "http://127.0.0.1:8765/rpc",
+        "http://jira:8765/rpc",
         data=payload,
         headers={"Content-Type": "application/json"},
         method="POST",

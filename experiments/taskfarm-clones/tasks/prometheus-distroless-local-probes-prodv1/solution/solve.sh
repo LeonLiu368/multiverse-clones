@@ -52,7 +52,7 @@ def rpc(method, *args, **kwargs):
     payload = json.dumps({"method": method, "args": args, "kwargs": kwargs}).encode()
     last = None
     for _ in range(30):
-        for base in ("http://127.0.0.1:8765", "http://main:8765"):
+        for base in ("http://jira:8765", "http://main:8765"):
             try:
                 req = urllib.request.Request(base + "/rpc", data=payload, headers={"Content-Type": "application/json"}, method="POST")
                 data = json.loads(urllib.request.urlopen(req, timeout=3).read().decode())
