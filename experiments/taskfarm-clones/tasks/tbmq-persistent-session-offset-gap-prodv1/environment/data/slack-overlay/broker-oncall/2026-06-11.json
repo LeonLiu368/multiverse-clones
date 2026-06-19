@@ -1,0 +1,82 @@
+[
+  {
+    "user": "U56E60E1F1E",
+    "type": "message",
+    "ts": "1781180640.000000",
+    "client_msg_id": "46c94852599946851a",
+    "text": "TBMQ-320: mqtt_gap is persistent APPLICATION, clean-session false. Kafka lag rose while offline; after reconnect offsets 3216-3262 are present but never delivered.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "nora",
+      "real_name": "Nora",
+      "display_name": "nora",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U13E51919BD",
+    "type": "message",
+    "ts": "1781181360.000000",
+    "client_msg_id": "83d63ca8afdddcc6d8",
+    "text": "The Edge bridge has the same committed-over shape at 8801-8817. Please keep this to replay-before-commit; a full group reset would redeliver healthy clients.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "maya",
+      "real_name": "Maya",
+      "display_name": "maya",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U6C720B6ECE",
+    "type": "message",
+    "ts": "1781181780.000000",
+    "client_msg_id": "65d7bef02c5d0eacd0",
+    "text": "Duplicate PUBACK warning for packet 2708 is visible, but the row has no confirmed Kafka lag. It should be tracked as follow-up, not repaired with the offset gap.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "ori",
+      "real_name": "Ori",
+      "display_name": "ori",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U1B2A5C518A",
+    "type": "message",
+    "ts": "1781183040.000000",
+    "client_msg_id": "e12cb7804a668bcf5c",
+    "text": "Alert tbmq-application-consumer-commit-gap fired for client=mqtt_gap node=tbmq1; sibling PubAck warning remains informational.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "opsbot",
+      "real_name": "Opsbot",
+      "display_name": "opsbot",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U1B2A5C518A",
+    "type": "message",
+    "ts": "1781183520.000000",
+    "client_msg_id": "585ffc798415338da7",
+    "text": "Historical alert cleared for sensor_qos0_snapshot. It is a DEVICE clean-session QoS0 path and not eligible for persistent replay.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "opsbot",
+      "real_name": "Opsbot",
+      "display_name": "opsbot",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

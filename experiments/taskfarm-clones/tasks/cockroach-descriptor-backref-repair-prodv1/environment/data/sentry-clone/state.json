@@ -1,0 +1,148 @@
+{
+  "meta": {
+    "organization": "cockroach",
+    "now": "2026-05-21T12:10:00Z"
+  },
+  "activity": [],
+  "comments": [],
+  "teams": [
+    {
+      "id": "team-sql-catalog",
+      "slug": "sql-catalog",
+      "name": "SQL Catalog"
+    }
+  ],
+  "events": [
+    {
+      "breadcrumbs": [],
+      "exception": {
+        "type": "AssertionFailure",
+        "value": "validate.go:358: relation x (193): invalid depended-on-by relation back reference: referenced descriptor ID 400: referenced descriptor not found"
+      },
+      "id": "evt-crdb-170371",
+      "issue_id": "CRDB-63963",
+      "message": "validate.go:358 relation 193 missing depended-on-by referenced descriptor 400",
+      "project_slug": "cockroach-descriptor-backref-repair",
+      "stacktrace": {
+        "frames": [
+          {"filename": "pkg/sql/repair.go", "function": "UnsafeUpsertDescriptor", "in_app": true, "lineno": 82},
+          {"filename": "pkg/sql/repair.go", "function": "unsafeReadDescriptor", "in_app": true, "lineno": 694},
+          {"filename": "pkg/sql/catalog/descs/descriptor.go", "function": "finalizeDescriptors", "in_app": true, "lineno": 668},
+          {"filename": "pkg/sql/catalog/tabledesc/validate.go", "function": "ValidateBackReferences", "in_app": true, "lineno": 358}
+        ]
+      },
+      "tags": {
+        "cockroach_release": "v25.4.0",
+        "environment": "production",
+        "ticket": "CRDB-63963",
+        "validation_key": "sql.schema.validation_errors.read.backward_references.relation"
+      },
+      "timestamp": "2026-05-21T11:36:27Z"
+    },
+    {
+      "breadcrumbs": [],
+      "exception": {"type": "BackupWarning", "value": "slow span scan warning after successful scheduled backup"},
+      "id": "evt-crdb-backup-noise",
+      "issue_id": "CRDB-63888",
+      "message": "scheduled backup completed with warning",
+      "project_slug": "cockroach-descriptor-backref-repair",
+      "stacktrace": {"frames": [{"filename": "pkg/ccl/backupccl/backup_job.go", "function": "Resume", "in_app": true, "lineno": 1201}]},
+      "tags": {"environment": "production", "ticket": "CRDB-63888"},
+      "timestamp": "2026-05-21T08:40:00Z"
+    },
+    {
+      "breadcrumbs": [],
+      "exception": {"type": "ValidationWarning", "value": "forward reference validation warning"},
+      "id": "evt-crdb-forward-ref-noise",
+      "issue_id": "CRDB-63912",
+      "message": "descriptor_lease_table forward reference warning",
+      "project_slug": "cockroach-descriptor-backref-repair",
+      "stacktrace": {"frames": [{"filename": "pkg/sql/catalog/tabledesc/validate.go", "function": "ValidateForwardReferences", "in_app": true, "lineno": 411}]},
+      "tags": {"environment": "production", "ticket": "CRDB-63912"},
+      "timestamp": "2026-05-21T09:44:00Z"
+    }
+  ],
+  "issues": [
+    {
+      "assignedTo": "catalog-oncall",
+      "count": 9,
+      "firstSeen": "2026-05-21T10:54:22Z",
+      "id": "CRDB-63963",
+      "shortId": "CRDB-63963",
+      "project_slug": "cockroach-descriptor-backref-repair",
+      "lastSeen": "2026-05-21T11:36:27Z",
+      "level": "fatal",
+      "metadata": {"filename": "pkg/sql/catalog/tabledesc/validate.go", "function": "ValidateBackReferences"},
+      "project": {"slug": "cockroach-descriptor-backref-repair"},
+      "status": "unresolved",
+      "title": "validate.go panic on depended-on-by back reference"
+    },
+    {
+      "assignedTo": null,
+      "count": 1,
+      "firstSeen": "2026-05-21T08:40:00Z",
+      "id": "CRDB-63888",
+      "shortId": "CRDB-63888",
+      "project_slug": "cockroach-descriptor-backref-repair",
+      "lastSeen": "2026-05-21T08:40:00Z",
+      "level": "warning",
+      "metadata": {"filename": "pkg/ccl/backupccl/backup_job.go", "function": "Resume"},
+      "status": "resolved",
+      "title": "scheduled backup completed with warning"
+    },
+    {
+      "assignedTo": null,
+      "count": 2,
+      "firstSeen": "2026-05-21T09:44:00Z",
+      "id": "CRDB-63912",
+      "shortId": "CRDB-63912",
+      "project_slug": "cockroach-descriptor-backref-repair",
+      "lastSeen": "2026-05-21T09:55:00Z",
+      "level": "warning",
+      "metadata": {"filename": "pkg/sql/catalog/tabledesc/validate.go", "function": "ValidateForwardReferences"},
+      "status": "unresolved",
+      "title": "forward reference warning for descriptor lease table"
+    }
+  ],
+  "projects": [
+    {
+      "id": "proj-crdb",
+      "slug": "cockroach-descriptor-backref-repair",
+      "name": "Cockroach Descriptor Backref Repair",
+      "platform": "go",
+      "team_slug": "sql-catalog"
+    }
+  ],
+  "releases": [
+    {
+      "version": "cockroach@v25.4.0",
+      "project_slug": "cockroach-descriptor-backref-repair",
+      "dateCreated": "2026-05-21T10:00:00Z",
+      "lastDeploy": {
+        "environment": "production",
+        "dateFinished": "2026-05-21T10:11:00Z",
+        "commit": "4f4179243a351bc48c00dd9243dc56b8af98e210"
+      },
+      "commits": [
+        {
+          "id": "4f4179243a351bc48c00dd9243dc56b8af98e210",
+          "repository": "cockroachdb/cockroach",
+          "message": "v25.4.0 production build",
+          "author": "release@example.local",
+          "files": ["pkg/sql/catalog/tabledesc/validate.go", "pkg/sql/repair.go"]
+        }
+      ]
+    }
+  ],
+  "ownership_rules": [
+    {
+      "project_slug": "cockroach-descriptor-backref-repair",
+      "match": "pkg/sql/catalog/**",
+      "owner": "team:sql-catalog"
+    }
+  ],
+  "mutation_log": [],
+  "deploys": [],
+  "commits": [],
+  "users": []
+}

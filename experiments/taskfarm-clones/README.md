@@ -47,6 +47,22 @@ sentry, the app build, the deterministic verifier) and is intended to run via th
 (`taskfarm-clones-manifest.yaml`). A cloud run additionally depends on the unchanged
 github/sentry/grafana images being pullable.
 
+## Two variants per task (12 task dirs)
+
+Each of the 6 tasks ships twice:
+
+| Variant | jira sidecar | slack sidecar (tbmq) | Workspace served |
+|---|---|---|---|
+| `<task>` | `jira-gateway:empty` + task `state.json` mounted at `/var/lib/ticketvector/state.json` | `slack-gateway:empty` + `scraped.json` at `/data/mattermost` | only the task's own data |
+| `<task>-prodv1` | `jira-gateway:prod-v1` + task `state.json` mounted as an **overlay** at `/data/state-overlay.json` | `slack-gateway:prod-v1` + the task messages as an export **overlay** at `/data/slack-overlay` | **prod corpus + task data merged** |
+
+The `-prodv1` variants exercise realism/scale: the agent must locate the task's tickets/messages
+inside a large real corpus (ENG: 8040 issues → 8043 after merge; slack: 88 prod channels → 92). This
+relies on the jira gateway's boot-time overlay merge (`jira-boot.sh` + `apply_state_patch.py`,
+shipped in `jira-gateway:prod-v1`) and the slack gateway's native overlay import. Verified locally:
+jira serves both `CRDB-63963` (task) and `ENG-2016` (prod); slack serves `broker-oncall` (task) among
+the 92 channels with `mqtt_gap` searchable.
+
 ## How it was converted
 
 Deterministically, by `convert_taskfarm.py` (vendored here) (copies each task dir, rewrites the compose via

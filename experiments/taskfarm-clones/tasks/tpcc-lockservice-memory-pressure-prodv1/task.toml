@@ -1,0 +1,41 @@
+schema_version = "1.3"
+
+[task]
+name = "taskfarm-clones/tpcc-lockservice-memory-pressure-prodv1"
+authors = []
+description = "MatrixOne nightly TPCC 1000W/1000-terminal run failed with lockservice RPC timeouts while the target CN was near its memory limit, but the later OOMKilled event is unrelated."
+keywords = ["matrixone", "tpcc", "lockservice", "ci", "postgres", "grafana", "ticketvector", "github"]
+
+[metadata]
+difficulty = "hard"
+difficulty_explanation = "The task requires cross-checking CI issue context, Grafana-style memory evidence, static Kubernetes event evidence, Postgres incident state, and TicketVector handoff state. The tempting shortcuts are to disable the benchmark, raise every CN profile globally, or call the later IVF OOM the root cause. The correct repair is scoped to one high-pressure TPCC profile while preserving all smaller TPCC cases and noise evidence."
+solution_explanation = "Patch nightly/tpcc_profiles.yaml so only tpcc_1000w_1000t uses cn_memory_limit_gib 64 and lockservice_rpc_timeout_ms 45000, leaving all other profiles enabled and unchanged. Then run tools/render_tpcc_repair.py --apply to write /app/artifacts/mo-24893-tpcc-repair.json and update Postgres, and add a scoped In Review handoff to MO-24893."
+verification_explanation = "The verifier checks the artifact schema and semantic content, the exact profile config changes, Postgres repair_audit and incident_status rows, and TicketVector state. It also verifies smaller TPCC profiles, the later IVF vector index OOM evidence, and MO-24788 remain untouched."
+category = "database-ci-incident-response"
+tags = ["matrixone", "tpcc", "benchmarksql", "memory-pressure", "lockservice", "postgres", "grafana", "ticketvector"]
+expert_time_estimate_hours = 2.0
+relevant_experience = "DevOps/SWE on-call, CI triage, database benchmark incident response, service-clone investigation"
+custom_docker_compose = true
+
+[agent]
+timeout_sec = 900
+user = "agent"
+
+[verifier]
+type = "shell"
+timeout_sec = 600
+user = "root"
+
+[environment]
+allow_internet = true
+build_timeout_sec = 1800
+cpus = 2
+memory_mb = 4096
+storage_mb = 15360
+gpus = 0
+workdir = "/app/src"
+
+[[environment.mcp_servers]]
+name = "grafana"
+transport = "stdio"
+command = "mcp-grafana"

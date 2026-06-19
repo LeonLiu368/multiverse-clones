@@ -16,6 +16,14 @@ metadata:
 
     NOTE: a full cloud stand-up also needs the unchanged github (ghc-service), sentry
     (sentry-clone-service) and grafana images to be pullable; those were not part of this conversion.
+    Each task ships in two variants:
+      - <task>          : sidecars = jira-gateway:empty / slack-gateway:empty (only the task's own
+                          data, mounted). Clean, minimal workspace.
+      - <task>-prodv1   : sidecars = jira-gateway:prod-v1 / slack-gateway:prod-v1 — the REAL prod
+                          corpus (ENG issues / slack prod), with the task's tickets+messages MERGED
+                          on top as an overlay (jira /data/state-overlay.json; slack /data/slack-overlay).
+                          Realism/scale test: the agent must find its tickets/messages among a large
+                          corpus. Same agent + verifier wiring as the empty variant.
   task_path: experiments/taskfarm-clones/tasks
   n_trials: 1
   skip_trajectory_analysis: false
@@ -27,9 +35,16 @@ tasks:
   - prometheus-distroless-local-probes
   - tbmq-persistent-session-offset-gap
   - tpcc-lockservice-memory-pressure
+  - cockroach-descriptor-backref-repair-prodv1
+  - cockroach-partition-tuple-guard-prodv1
+  - loki-boltdb-cache-isolation-prodv1
+  - prometheus-distroless-local-probes-prodv1
+  - tbmq-persistent-session-offset-gap-prodv1
+  - tpcc-lockservice-memory-pressure-prodv1
 
 agents:
   - name: nop
   - name: oracle
   - name: gemini-cli
     model_name: google/gemini-3.1-pro-preview
+    n_trials: 3

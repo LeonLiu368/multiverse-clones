@@ -1,0 +1,70 @@
+{
+  "incident_id": "TBMQ-320",
+  "source_issue": "thingsboard/tbmq#320",
+  "captures": [
+    {
+      "gap_id": "mqtt_gap_3216_3262",
+      "client_id": "mqtt_gap",
+      "client_type": "APPLICATION",
+      "clean_session": false,
+      "qos": 1,
+      "topic": "tbmq.msg.app.reSENSE.telemetry",
+      "broker_node": "tbmq1",
+      "fanout_node": "tbmq2",
+      "offline_seconds": 134,
+      "retry_packet": {"packet_id": 2708, "offset": 3215, "payload_ts_suffix": "900561", "is_dup": false},
+      "puback_at": "2026-06-11T12:09:17.608Z",
+      "next_pack": {"packet_start": 2709, "packet_end": 2718, "offset_start": 3263, "offset_end": 3272, "strategy": "BurstSubmitStrategy"},
+      "consumer_group": {"lag_before_reconnect": 58, "lag_after_commit": 0, "records_confirmed": true},
+      "expected_replay": {"offset_start": 3216, "offset_end": 3262}
+    },
+    {
+      "gap_id": "edge_bridge_8801_8817",
+      "client_id": "edge_bridge_west",
+      "client_type": "APPLICATION",
+      "clean_session": false,
+      "qos": 1,
+      "topic": "tbmq.msg.app.edge.integration.telemetry",
+      "broker_node": "tbmq2",
+      "fanout_node": "tbmq1",
+      "offline_seconds": 31,
+      "retry_packet": {"packet_id": 4112, "offset": 8800, "payload_ts_suffix": "118044", "is_dup": false},
+      "puback_at": "2026-06-11T12:17:44.220Z",
+      "next_pack": {"packet_start": 4113, "packet_end": 4119, "offset_start": 8818, "offset_end": 8824, "strategy": "BurstSubmitStrategy"},
+      "consumer_group": {"lag_before_reconnect": 24, "lag_after_commit": 0, "records_confirmed": true},
+      "expected_replay": {"offset_start": 8801, "offset_end": 8817}
+    },
+    {
+      "gap_id": "mqtt_gap_packet_2708_dup0_followup",
+      "client_id": "mqtt_gap",
+      "client_type": "APPLICATION",
+      "clean_session": false,
+      "qos": 1,
+      "topic": "tbmq.msg.app.reSENSE.telemetry",
+      "broker_node": "tbmq1",
+      "fanout_node": "tbmq2",
+      "offline_seconds": 30,
+      "retry_packet": {"packet_id": 2708, "offset": 3215, "payload_ts_suffix": "900561", "is_dup": false},
+      "puback_at": "2026-06-11T12:09:18.106Z",
+      "next_pack": {"packet_start": 2708, "packet_end": 2708, "offset_start": 3215, "offset_end": 3215, "strategy": "InFlightRetry"},
+      "consumer_group": {"lag_before_reconnect": 0, "lag_after_commit": 0, "records_confirmed": false},
+      "untouched_reason": "Duplicate PUBACK and DUP flag symptom; no separate committed-over offset gap."
+    },
+    {
+      "gap_id": "sensor_qos0_snapshot_noise",
+      "client_id": "sensor_qos0_snapshot",
+      "client_type": "DEVICE",
+      "clean_session": true,
+      "qos": 0,
+      "topic": "tbmq.msg.device.snapshot",
+      "broker_node": "tbmq2",
+      "fanout_node": "tbmq2",
+      "offline_seconds": 65,
+      "retry_packet": {"packet_id": 188, "offset": 6042, "payload_ts_suffix": "551901", "is_dup": false},
+      "puback_at": null,
+      "next_pack": {"packet_start": 189, "packet_end": 192, "offset_start": 6043, "offset_end": 6046, "strategy": "VolatileDeviceSnapshot"},
+      "consumer_group": {"lag_before_reconnect": 0, "lag_after_commit": 0, "records_confirmed": false},
+      "untouched_reason": "QoS0 clean-session device snapshot has no persistent replay contract."
+    }
+  ]
+}

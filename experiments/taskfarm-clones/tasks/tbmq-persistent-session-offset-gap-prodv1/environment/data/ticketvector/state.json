@@ -1,0 +1,126 @@
+{
+  "base_url": "https://linear.local/acme",
+  "workspace": {"id": "workspace-acme", "name": "Acme Messaging"},
+  "project": {"id": "proj-tbmq", "key": "TBMQ", "name": "Broker Reliability"},
+  "states": [
+    {"id": "state-open", "name": "Open", "category": "unstarted"},
+    {"id": "state-progress", "name": "In Progress", "category": "started"},
+    {"id": "state-review", "name": "In Review", "category": "started"},
+    {"id": "state-done", "name": "Done", "category": "completed"}
+  ],
+  "users": [
+    {"id": "user-agent", "handle": "agent", "name": "Agent User"},
+    {"id": "user-maya", "handle": "maya", "name": "Maya Chen"},
+    {"id": "user-ori", "handle": "ori", "name": "Ori Patel"},
+    {"id": "user-nora", "handle": "nora", "name": "Nora Singh"}
+  ],
+  "labels": [
+    {"id": "label-incident", "name": "incident"},
+    {"id": "label-mqtt", "name": "mqtt"},
+    {"id": "label-kafka", "name": "kafka"}
+  ],
+  "issues": [
+    {
+      "id": "issue-tbmq-320",
+      "identifier": "TBMQ-320",
+      "title": "Persistent APPLICATION session skips queued QoS1 offsets after reconnect",
+      "description": "Public ThingsBoard TBMQ issue 320 was reproduced in the local docker-compose cluster. Client mqtt_gap and an Edge integration both had Kafka lag during the offline window, but reconnect processing committed over records that were never packed for delivery.",
+      "priority": "urgent",
+      "state": {"id": "state-progress", "name": "In Progress", "category": "started"},
+      "assignees": [{"id": "user-agent", "handle": "agent", "name": "Agent User"}],
+      "labels": [{"id": "label-incident", "name": "incident"}, {"id": "label-mqtt", "name": "mqtt"}, {"id": "label-kafka", "name": "kafka"}],
+      "project": {"id": "proj-tbmq", "key": "TBMQ", "name": "Broker Reliability"},
+      "module": {"id": "module-persistence", "name": "Application Persistence"},
+      "cycle": {"id": "cycle-2026-06", "name": "June Reliability", "starts_at": "2026-06-01", "ends_at": "2026-06-30"},
+      "links": [
+        {"id": "link-source", "title": "Upstream issue", "url": "https://github.com/thingsboard/tbmq/issues/320"},
+        {"id": "link-artifact", "title": "Expected artifact", "url": "/app/artifacts/tbmq_persistent_session_replay_plan.json"},
+        {"id": "link-gcx", "title": "Grafana persistent session panel", "url": "http://gcx:3000/d/tbmq-gap/tbmq-persistent-session-offset-gap"}
+      ],
+      "relations": [],
+      "attachments_count": 0,
+      "comments_count": 3,
+      "created_at": "2026-06-11T12:22:00Z",
+      "updated_at": "2026-06-11T13:05:00Z",
+      "url": "https://linear.local/acme/issue/TBMQ-320"
+    },
+    {
+      "id": "issue-tbmq-144",
+      "identifier": "TBMQ-144",
+      "title": "Shared subscription PubAck warning during duplicate acknowledgements",
+      "description": "Old warning audit for PubAck messages that arrive after in-flight state has been cleared.",
+      "priority": "medium",
+      "state": {"id": "state-open", "name": "Open", "category": "unstarted"},
+      "assignees": [{"id": "user-maya", "handle": "maya", "name": "Maya Chen"}],
+      "labels": [{"id": "label-mqtt", "name": "mqtt"}],
+      "project": {"id": "proj-tbmq", "key": "TBMQ", "name": "Broker Reliability"},
+      "relations": [],
+      "attachments_count": 0,
+      "comments_count": 1,
+      "created_at": "2026-05-28T09:10:00Z",
+      "updated_at": "2026-06-10T17:00:00Z",
+      "url": "https://linear.local/acme/issue/TBMQ-144"
+    },
+    {
+      "id": "issue-tbmq-287",
+      "identifier": "TBMQ-287",
+      "title": "Document clean-session QoS0 snapshot loss during device reconnects",
+      "description": "Support confusion around clean-session telemetry snapshots. Not a persistent session replay bug.",
+      "priority": "low",
+      "state": {"id": "state-open", "name": "Open", "category": "unstarted"},
+      "assignees": [{"id": "user-ori", "handle": "ori", "name": "Ori Patel"}],
+      "labels": [{"id": "label-mqtt", "name": "mqtt"}],
+      "project": {"id": "proj-tbmq", "key": "TBMQ", "name": "Broker Reliability"},
+      "relations": [],
+      "attachments_count": 0,
+      "comments_count": 1,
+      "created_at": "2026-06-09T14:00:00Z",
+      "updated_at": "2026-06-10T11:00:00Z",
+      "url": "https://linear.local/acme/issue/TBMQ-287"
+    }
+  ],
+  "comments": {
+    "TBMQ-320": [
+      {
+        "id": "comment-tbmq-320-a",
+        "author": {"id": "user-nora", "handle": "nora", "name": "Nora Singh"},
+        "body": "Reproduced on v2.3.0 and v2.2.0. mqtt_gap has offsets 3216-3262 present in the per-client Kafka topic, but the next delivery pack starts at 3263 after PubAck for packet 2708.",
+        "created_at": "2026-06-11T12:25:00Z"
+      },
+      {
+        "id": "comment-tbmq-320-b",
+        "author": {"id": "user-maya", "handle": "maya", "name": "Maya Chen"},
+        "body": "Please avoid a full consumer reset. The Edge integration has the same committed-over replay shape, but the duplicate PUBACK/DUP=0 warning is a follow-up symptom and should stay out of this repair unless the planner proves otherwise.",
+        "created_at": "2026-06-11T12:42:00Z"
+      },
+      {
+        "id": "comment-tbmq-320-c",
+        "author": {"id": "user-ori", "handle": "ori", "name": "Ori Patel"},
+        "body": "Local evidence is in Postgres and the replay planner fixtures. Expected handoff is a JSON artifact plus In Review once the affected gaps are scoped.",
+        "created_at": "2026-06-11T13:05:00Z"
+      }
+    ],
+    "TBMQ-144": [
+      {
+        "id": "comment-tbmq-144-a",
+        "author": {"id": "user-maya", "handle": "maya", "name": "Maya Chen"},
+        "body": "The shared subscription warning shows up after duplicate PubAck, but there is no offset gap on this ticket.",
+        "created_at": "2026-06-10T17:00:00Z"
+      }
+    ],
+    "TBMQ-287": [
+      {
+        "id": "comment-tbmq-287-a",
+        "author": {"id": "user-ori", "handle": "ori", "name": "Ori Patel"},
+        "body": "QoS0 clean-session device snapshots are not retained by design.",
+        "created_at": "2026-06-10T11:00:00Z"
+      }
+    ]
+  },
+  "attachments": {"TBMQ-320": [], "TBMQ-144": [], "TBMQ-287": []},
+  "history": {},
+  "relations": {},
+  "links": {},
+  "modules": [],
+  "cycles": []
+}

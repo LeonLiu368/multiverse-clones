@@ -1,0 +1,23 @@
+[
+  {
+    "at": "2026-06-08T18:44:18Z",
+    "namespace": "mo-branch-commit-7a8e7cd84-20260608",
+    "object": "nightly-regression-dis-tp-cn-phqxp",
+    "reason": "HighMemoryPressure",
+    "message": "container memory 54.47Gi of 55Gi; no OOMKilled event"
+  },
+  {
+    "at": "2026-06-08T18:46:00Z",
+    "namespace": "mo-branch-commit-7a8e7cd84-20260608",
+    "object": "nightly-regression-dis-tp-cn-wkq2r",
+    "reason": "Normal",
+    "message": "memory 31.2Gi of 55Gi"
+  },
+  {
+    "at": "2026-06-08T23:49:00Z",
+    "namespace": "mo-branch-commit-7a8e7cd84-20260608",
+    "object": "ivf-vector-index-worker-0",
+    "reason": "OOMKilled",
+    "message": "later IVF vector index pod terminated after the TPCC window"
+  }
+]

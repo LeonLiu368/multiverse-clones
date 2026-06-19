@@ -1,0 +1,47 @@
+{
+  "profiles": {
+    "tpcc_10w_10t": {
+      "warehouses": 10,
+      "terminals": 10,
+      "enabled": true,
+      "cn_memory_limit_gib": 55,
+      "lockservice_rpc_timeout_ms": 30000
+    },
+    "tpcc_10w_100t": {
+      "warehouses": 10,
+      "terminals": 100,
+      "enabled": true,
+      "cn_memory_limit_gib": 55,
+      "lockservice_rpc_timeout_ms": 30000
+    },
+    "tpcc_100w_100t": {
+      "warehouses": 100,
+      "terminals": 100,
+      "enabled": true,
+      "cn_memory_limit_gib": 55,
+      "lockservice_rpc_timeout_ms": 30000
+    },
+    "tpcc_100w_1000t": {
+      "warehouses": 100,
+      "terminals": 1000,
+      "enabled": true,
+      "cn_memory_limit_gib": 55,
+      "lockservice_rpc_timeout_ms": 30000
+    },
+    "tpcc_1000w_1000t": {
+      "warehouses": 1000,
+      "terminals": 1000,
+      "enabled": true,
+      "cn_memory_limit_gib": 55,
+      "lockservice_rpc_timeout_ms": 30000
+    },
+    "ivf_vector_index": {
+      "warehouses": 0,
+      "terminals": 0,
+      "enabled": true,
+      "cn_memory_limit_gib": 55,
+      "lockservice_rpc_timeout_ms": 30000,
+      "notes": "Later OOMKilled evidence belongs to this workload, not TPCC 1000W."
+    }
+  }
+}

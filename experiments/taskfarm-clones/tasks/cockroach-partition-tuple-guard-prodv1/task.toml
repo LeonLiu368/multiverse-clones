@@ -1,0 +1,36 @@
+schema_version = "1.3"
+
+[task]
+name = "taskfarm-clones/cockroach-partition-tuple-guard-prodv1"
+description = "Investigate a CockroachDB declarative schema-change panic from Sentry and apply a scoped guard for malformed partition tuple validation cases."
+authors = []
+keywords = ["cockroachdb", "schema-change", "postgres", "sentry", "ticketvector", "github", "incident-response", "database"]
+
+[metadata]
+difficulty = "hard"
+difficulty_explanation = "The task requires correlating a Sentry stack trace, seeded repository code, Postgres incident rows, and a work-tracking handoff. The obvious workaround is to skip or rewrite all partition validation, but the correct outcome is a narrow repair for only the malformed CRDB-63642 descriptor cases."
+solution_explanation = "Patch pkg/sql/rowenc/partition_tuple_guard.py so empty partition tuple payloads with nonzero tuple arity and the CRDB-63642 slice-bounds signature are guarded, while intentional zero-arity empty lists remain untouched. Run tools/build_partition_tuple_guard_plan.py --apply, then move CRDB-63642 to In Review with a comment naming the two repaired ids, the artifact, the untouched decoy, and the narrow-repair rationale."
+verification_explanation = "The verifier checks the generated JSON artifact, Postgres repair_audit and incident_status rows, the untouched decoy row, and TicketVector handoff state/comment semantics."
+category = "incident-response"
+tags = ["cockroachdb", "postgres", "sentry", "schema-change", "python", "github", "ticketvector"]
+expert_time_estimate_hours = 2.0
+relevant_experience = "Database reliability, incident triage, service-clone investigation"
+custom_docker_compose = true
+
+[agent]
+timeout_sec = 900
+user = "agent"
+
+[verifier]
+type = "shell"
+timeout_sec = 600
+user = "root"
+
+[environment]
+allow_internet = true
+build_timeout_sec = 1800
+cpus = 2
+memory_mb = 4096
+storage_mb = 12288
+gpus = 0
+workdir = "/app/src"

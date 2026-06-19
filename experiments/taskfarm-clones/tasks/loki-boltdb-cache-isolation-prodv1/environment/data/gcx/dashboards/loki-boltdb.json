@@ -1,0 +1,33 @@
+{
+  "annotations": {"list": []},
+  "editable": false,
+  "panels": [
+    {
+      "datasource": {"type": "grafana-testdata-datasource", "uid": "loki-incident-evidence"},
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+      "id": 1,
+      "options": {"content": "alert_loki_write_boltdb_panic: loki-write-2 and loki-write-5 CrashLoopBackOff opening BoltDB index_18652. loki-compactor-0 is Running and is not in repair scope.", "mode": "markdown"},
+      "pluginVersion": "11.5.2",
+      "title": "LOKI-3248 write path",
+      "type": "text"
+    },
+    {
+      "datasource": {"type": "grafana-testdata-datasource", "uid": "loki-incident-evidence"},
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+      "id": 2,
+      "options": {"content": "alert_loki_query_latency is normal and belongs to query frontend noise.", "mode": "markdown"},
+      "pluginVersion": "11.5.2",
+      "title": "Decoy alert",
+      "type": "text"
+    }
+  ],
+  "schemaVersion": 40,
+  "tags": ["loki", "boltdb", "incident"],
+  "templating": {"list": []},
+  "time": {"from": "now-6h", "to": "now"},
+  "title": "Loki BoltDB incident evidence",
+  "uid": "loki-boltdb-incident",
+  "version": 1
+}

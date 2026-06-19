@@ -1,0 +1,10 @@
+{
+  "name": "tbmq-persistent-session-offset-gap",
+  "version": "0.1.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "plan": "node tools/replayPersistentSession.js",
+    "plan:apply": "node tools/replayPersistentSession.js --apply"
+  }
+}

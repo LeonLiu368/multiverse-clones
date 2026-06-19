@@ -1,0 +1,104 @@
+[
+  {
+    "id": "U13E51919BD",
+    "team_id": "T0EXACME01",
+    "name": "maya",
+    "real_name": "Maya",
+    "deleted": false,
+    "is_bot": false,
+    "is_app_user": false,
+    "profile": {
+      "real_name": "Maya",
+      "display_name": "maya",
+      "real_name_normalized": "Maya",
+      "display_name_normalized": "maya",
+      "email": "maya@acme.example",
+      "team": "T0EXACME01"
+    }
+  },
+  {
+    "id": "UB443DE4B0F",
+    "team_id": "T0EXACME01",
+    "name": "nina",
+    "real_name": "Nina",
+    "deleted": false,
+    "is_bot": false,
+    "is_app_user": false,
+    "profile": {
+      "real_name": "Nina",
+      "display_name": "nina",
+      "real_name_normalized": "Nina",
+      "display_name_normalized": "nina",
+      "email": "nina@acme.example",
+      "team": "T0EXACME01"
+    }
+  },
+  {
+    "id": "U56E60E1F1E",
+    "team_id": "T0EXACME01",
+    "name": "nora",
+    "real_name": "Nora",
+    "deleted": false,
+    "is_bot": false,
+    "is_app_user": false,
+    "profile": {
+      "real_name": "Nora",
+      "display_name": "nora",
+      "real_name_normalized": "Nora",
+      "display_name_normalized": "nora",
+      "email": "nora@acme.example",
+      "team": "T0EXACME01"
+    }
+  },
+  {
+    "id": "U1B2A5C518A",
+    "team_id": "T0EXACME01",
+    "name": "opsbot",
+    "real_name": "Opsbot",
+    "deleted": false,
+    "is_bot": false,
+    "is_app_user": false,
+    "profile": {
+      "real_name": "Opsbot",
+      "display_name": "opsbot",
+      "real_name_normalized": "Opsbot",
+      "display_name_normalized": "opsbot",
+      "email": "opsbot@acme.example",
+      "team": "T0EXACME01"
+    }
+  },
+  {
+    "id": "U6C720B6ECE",
+    "team_id": "T0EXACME01",
+    "name": "ori",
+    "real_name": "Ori",
+    "deleted": false,
+    "is_bot": false,
+    "is_app_user": false,
+    "profile": {
+      "real_name": "Ori",
+      "display_name": "ori",
+      "real_name_normalized": "Ori",
+      "display_name_normalized": "ori",
+      "email": "ori@acme.example",
+      "team": "T0EXACME01"
+    }
+  },
+  {
+    "id": "UF16BED5618",
+    "team_id": "T0EXACME01",
+    "name": "sam",
+    "real_name": "Sam",
+    "deleted": false,
+    "is_bot": false,
+    "is_app_user": false,
+    "profile": {
+      "real_name": "Sam",
+      "display_name": "sam",
+      "real_name_normalized": "Sam",
+      "display_name_normalized": "sam",
+      "email": "sam@acme.example",
+      "team": "T0EXACME01"
+    }
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "user": "UF16BED5618",
+    "type": "message",
+    "ts": "1781182260.000000",
+    "client_msg_id": "d91b2342f3d9daed6d",
+    "text": "Support note: ReSENSE sees missing telemetry from the offline window. They can test a debug build once we have a scoped artifact.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "sam",
+      "real_name": "Sam",
+      "display_name": "sam",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]
