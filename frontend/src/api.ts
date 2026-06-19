@@ -70,6 +70,14 @@ export type JiraComment = {
   created_at?: string;
   origin: "base" | "overlay";
 };
+export type JiraChanges = {
+  added: string[];
+  edited: string[];
+  deleted: { identifier: string; title: string }[];
+  comments_added: number;
+  comments_deleted: number;
+  ops: number;
+};
 export type JiraMeta = {
   workspace: string;
   project: JiraProject;
@@ -77,6 +85,7 @@ export type JiraMeta = {
   labels: JiraLabel[];
   base?: string;
   stats?: { issues: number; comments: number; users: number };
+  changes?: JiraChanges;
 };
 
 async function j<T>(r: Response): Promise<T> {

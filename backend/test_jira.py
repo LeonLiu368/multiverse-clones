@@ -34,7 +34,7 @@ def test_load_reads_project_and_issues():
 
 
 @need
-def test_overlay_ops_provenance_and_base_protection():
+def test_overlay_ops_and_provenance():
     client.post("/api/jira/load", json={"base_id": f"file:{WEB}"})
 
     def op(name, payload):
@@ -44,46 +44,56 @@ def test_overlay_ops_provenance_and_base_protection():
     added = op("add_issue", {"title": "planted", "state": "In Progress", "priority": "high",
                              "assignee": "priya.singh"}).json()
     assert added["origin"] == "overlay" and added["identifier"].startswith("WEB-")
-    ident = added["identifier"]
 
-    # comment on it -> overlay, attributed to the chosen existing user
-    c = op("add_comment", {"identifier": ident, "body": "repro", "author": "diego.brooks"}).json()
+    # comment -> overlay, attributed to the chosen existing user
+    c = op("add_comment", {"identifier": added["identifier"], "body": "repro",
+                           "author": "diego.brooks"}).json()
     assert c["origin"] == "overlay" and c["author"]["handle"] == "diego.brooks"
 
-    # edit a BASE issue -> allowed, flagged edited
+    # edit a BASE issue (genuine change) -> allowed, flagged edited
     e = op("update_issue", {"identifier": "WEB-1", "state": "In Progress"}).json()
-    assert e["origin"] == "base" and e["edited"] is True and e["state"]["name"] == "In Progress"
+    assert e["origin"] == "base" and e["edited"] is True
 
-    # base data is protected from deletion
-    assert op("remove_issue", {"identifier": "WEB-2"}).status_code == 400
+    # base issue can now be DELETED (recorded in the patch, not refused)
+    assert op("remove_issue", {"identifier": "WEB-2"}).status_code == 200
+    assert op("remove_issue", {"identifier": "NOPE-9"}).status_code == 400  # unknown still errors
 
-    # overlay issue can be removed
-    assert op("remove_issue", {"identifier": ident}).status_code == 200
+    changes = client.get("/api/jira/meta").json()["changes"]
+    assert changes["added"] and "WEB-1" in changes["edited"]
+    assert any(d["identifier"] == "WEB-2" for d in changes["deleted"])
 
 
 @need
-def test_export_merged_state_round_trips():
+def test_export_is_a_patch_that_applies_back():
     client.post("/api/jira/load", json={"base_id": f"file:{WEB}"})
-    client.post("/api/jira/overlay/op", json={"op": "update_issue",
-                                              "payload": {"identifier": "WEB-1", "state": "Done"}})
-    added = client.post("/api/jira/overlay/op", json={"op": "add_issue",
-                                                      "payload": {"title": "exported"}}).json()
-    state = client.get("/api/jira/overlay/export").json()
-    assert set(["project", "issues", "comments", "users", "states"]).issubset(state)
 
-    # the exported state.json loads back through ticketvector's own backend
-    if TV not in sys.path:
-        sys.path.insert(0, TV)
-    from world_issues.client import FakePlaneBackend  # type: ignore
+    def op(name, payload):
+        client.post("/api/jira/overlay/op", json={"op": name, "payload": payload})
 
-    with tempfile.TemporaryDirectory() as d:
-        p = os.path.join(d, "state.json")
-        json.dump(state, open(p, "w"))
-        b = FakePlaneBackend(state_file=p)
-        idents = {i["identifier"] for i in b.issue_list(limit=999)["results"]}
-        assert added["identifier"] in idents
-        assert next(i for i in b.issue_list(limit=999)["results"]
-                    if i["identifier"] == "WEB-1")["state"]["name"] == "Done"
+    op("add_issue", {"title": "exported add", "state": "To Do", "priority": "high"})
+    op("update_issue", {"identifier": "WEB-1", "state": "In Progress", "priority": "low"})
+    op("remove_issue", {"identifier": "WEB-2"})
+    op("add_comment", {"identifier": "WEB-3", "body": "ping", "author": "priya.singh"})
+
+    patch = client.get("/api/jira/overlay/export").json()
+    assert patch["version"] == 1
+    kinds = {(o["op"], o["entity"]) for o in patch["ops"]}
+    assert {("add", "issue"), ("update", "issue"), ("delete", "issue"), ("add", "comment")} <= kinds
+
+    # the patch applies cleanly onto a fresh copy of the base via the clone's own applier
+    applier_dir = os.path.join(jira_data_base(), "selfcontained", "base")
+    if applier_dir not in sys.path:
+        sys.path.insert(0, applier_dir)
+    import apply_state_patch  # type: ignore
+
+    state = json.load(open(WEB))
+    n = apply_state_patch.apply_patch(state, patch)
+    assert n == len(patch["ops"])
+    issues = {i["identifier"]: i for i in state["issues"]}
+    assert "WEB-2" not in issues  # deleted
+    assert any(i["title"] == "exported add" for i in state["issues"])  # added
+    assert issues["WEB-1"]["state"]["name"] == "In Progress" and issues["WEB-1"]["priority"] == "low"
+    assert any(c["body"] == "ping" for c in state["comments"].get("WEB-3", []))
 
 
 def test_jira_op_requires_session():

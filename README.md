@@ -33,11 +33,16 @@ a ticketvector **`state.json`** (the format `abundant-jira-clone` ships) and ren
 - **Base seed:** a local `state.json` (`selfcontained/base/data/eng-prod-state.json`, a task's
   `tasks/*/environment/data/state.json`), the **empty** option, or a `jira-gateway` image
   (`prod-v1`/`empty`) — the viewer extracts the baked `/var/lib/ticketvector/state.json`.
-- **Editor (overlay layer, base protected):** add issue, add comment (as an existing user), edit
-  issue fields (status/priority/assignee — editing a base issue is allowed and flagged `edited`),
-  delete overlay-created issues/comments. New rows show an `overlay` badge.
-- **Export:** **⬇ state.json** downloads the merged snapshot — directly mountable onto
-  `jira-gateway:empty` at `/var/lib/ticketvector/state.json`.
+- **Editor:** add issue, add comment (as an existing user), edit issue fields
+  (status/priority/assignee), and delete issues/comments — **including base data** (base edits/deletes
+  are recorded in the patch; the source state file is never mutated). Added rows show an `overlay`
+  badge, changed base issues an `edited` badge.
+- **Patch diff:** the **Changes** entry in the sidebar lists the pending diff (added/edited/deleted,
+  with deleted issues as struck tombstones). **⬇ patch.json** downloads the task diff as an
+  `apply_state_patch.py --patch` op-list (`{version:1, ops:[{op,entity,match,set}]}`) covering
+  add/update/delete issues + add/delete comments — applied onto the base (`jira-gateway:prod-v1`) at
+  task standup. (Extended the clone's `apply_state_patch.py` to support issue-add and comment-delete
+  so one patch fully reproduces the edits.)
 
 Adding it required only: one adapter (`backend/adapters/jira.py`) + a bridge function + one frontend
 view (`frontend/src/apps/jira/`) + registry/launcher entries + one generic route

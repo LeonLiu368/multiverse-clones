@@ -58,6 +58,51 @@ def _empty_state() -> dict:
     })
 
 
+def _assignee_handles(issue: dict) -> list:
+    return [a.get("handle") or a.get("id") for a in issue.get("assignees", [])]
+
+
+def _label_names(issue: dict) -> list:
+    return [l.get("name") for l in issue.get("labels", [])]
+
+
+def _issue_changes(base_i: dict, cur_i: dict) -> dict:
+    """Fields that differ base→current, in apply_state_patch update-op `set` shape (state/labels by
+    name, assignees by handle)."""
+    ch: dict = {}
+    if base_i.get("title") != cur_i.get("title"):
+        ch["title"] = cur_i.get("title", "")
+    if base_i.get("description") != cur_i.get("description"):
+        ch["description"] = cur_i.get("description", "")
+    if base_i.get("priority") != cur_i.get("priority"):
+        ch["priority"] = cur_i.get("priority")
+    if (base_i.get("state") or {}).get("name") != (cur_i.get("state") or {}).get("name"):
+        ch["state"] = (cur_i.get("state") or {}).get("name")
+    if _assignee_handles(base_i) != _assignee_handles(cur_i):
+        ch["assignees"] = _assignee_handles(cur_i)
+    if _label_names(base_i) != _label_names(cur_i):
+        ch["labels"] = _label_names(cur_i)
+    return ch
+
+
+def _issue_authoring(issue: dict) -> dict:
+    """A new issue in apply_state_patch add-op `set` shape."""
+    return {
+        "identifier": issue["identifier"],
+        "title": issue.get("title", ""),
+        "description": issue.get("description", ""),
+        "state": (issue.get("state") or {}).get("name"),
+        "priority": issue.get("priority", "medium"),
+        "assignees": _assignee_handles(issue),
+        "labels": _label_names(issue),
+    }
+
+
+def _natural_key(ident: str) -> tuple:
+    key, _, num = ident.rpartition("-")
+    return (key, int(num) if num.isdigit() else 0)
+
+
 class JiraAdapter(CloneAdapter):
     id = "jira"
     display_name = "Jira"
@@ -111,7 +156,11 @@ class JiraAdapter(CloneAdapter):
         json.dump(data, open(state_path, "w"))
 
         backend = FakePlaneBackend(state_file=state_path)
+        # pristine base snapshot — the patch diff is computed against this, so base edits/deletes are
+        # recorded as ops without mutating the source state file.
+        base_snapshot = backend.snapshot()
         base_issue_ids = {i["identifier"] for i in backend.issues}
+        base_issue_by_id = {i["identifier"]: i for i in base_snapshot.get("issues", [])}
         base_comment_ids = {c["id"] for cs in backend.comments.values() for c in cs}
 
         session_id = uuid.uuid4().hex[:12]
@@ -119,9 +168,10 @@ class JiraAdapter(CloneAdapter):
             "backend": backend,
             "state_path": state_path,
             "base": base_id,
+            "base_snapshot": base_snapshot,
             "base_issue_ids": base_issue_ids,
+            "base_issue_by_id": base_issue_by_id,
             "base_comment_ids": base_comment_ids,
-            "edited": set(),  # base issue identifiers modified via update
         }
         self._current = session_id
         stats = {"issues": len(backend.issues), "comments": len(base_comment_ids),
@@ -138,8 +188,9 @@ class JiraAdapter(CloneAdapter):
     def _decorate_issue(self, s: dict[str, Any], issue: dict) -> dict:
         issue = copy.deepcopy(issue)
         ident = issue["identifier"]
-        issue["origin"] = "base" if ident in s["base_issue_ids"] else "overlay"
-        issue["edited"] = ident in s["edited"]
+        base_i = s["base_issue_by_id"].get(ident)
+        issue["origin"] = "base" if base_i else "overlay"
+        issue["edited"] = bool(base_i) and bool(_issue_changes(base_i, issue))
         return issue
 
     def _decorate_comment(self, s: dict[str, Any], c: dict) -> dict:
@@ -151,6 +202,7 @@ class JiraAdapter(CloneAdapter):
     def meta(self, session_id: Optional[str] = None) -> dict[str, Any]:
         s = self._sess(session_id)
         b = s["backend"]
+        d = self._diff(s)
         return {
             "workspace": b.workspace,
             "project": b.project,
@@ -159,6 +211,15 @@ class JiraAdapter(CloneAdapter):
             "base": s["base"],
             "stats": {"issues": len(b.issues), "comments": sum(len(v) for v in b.comments.values()),
                       "users": len(b.users)},
+            "changes": {
+                "added": [i["identifier"] for i in d["added"]],
+                "edited": [k for k, _ in d["edited"]],
+                "deleted": [{"identifier": i["identifier"], "title": i.get("title", "")} for i in d["deleted"]],
+                "comments_added": len(d["comments_added"]),
+                "comments_deleted": len(d["comments_deleted"]),
+                "ops": len(d["added"]) + len(d["edited"]) + len(d["deleted"])
+                + len(d["comments_added"]) + len(d["comments_deleted"]),
+            },
             "session_id": session_id or self._current,
         }
 
@@ -172,11 +233,20 @@ class JiraAdapter(CloneAdapter):
         s = self._sess(session_id)
         return [dict(u, origin="base") for u in s["backend"].users]
 
-    def messages(self, container_id: str, limit: int = 200,
+    def messages(self, container_id: str, limit: int = 500,
                  session_id: Optional[str] = None) -> list[dict[str, Any]]:
+        # Natural-sort by issue number (not lexicographic), and ALWAYS include added/edited issues
+        # even on a huge corpus where they'd otherwise fall outside the page — so an added issue is
+        # never invisible. Returned in natural order for the list view.
         s = self._sess(session_id)
-        rows = s["backend"].issue_list(limit=max(1, min(int(limit), 5000)))["results"]
-        return [self._decorate_issue(s, i) for i in rows]
+        decorated = [self._decorate_issue(s, i) for i in s["backend"].issues]
+        changed = [i for i in decorated if i["origin"] == "overlay" or i["edited"]]
+        rest = [i for i in decorated if not (i["origin"] == "overlay" or i["edited"])]
+        rest.sort(key=lambda i: _natural_key(i["identifier"]))
+        lim = max(1, int(limit))
+        keep = changed + rest[: max(0, lim - len(changed))]
+        keep.sort(key=lambda i: _natural_key(i["identifier"]))
+        return keep
 
     def thread(self, container_id: str, root_ts: str,
                session_id: Optional[str] = None) -> list[dict[str, Any]]:
@@ -250,8 +320,6 @@ class JiraAdapter(CloneAdapter):
             _before, after = b.update_issue(ident, **fields)
         except wi.NotFoundError as e:
             raise RuntimeError(str(e))
-        if ident in s["base_issue_ids"]:
-            s["edited"].add(ident)  # a base issue edited on the overlay layer
         return self._decorate_issue(s, after)
 
     def _op_add_comment(self, s: dict[str, Any], p: dict[str, Any]) -> dict[str, Any]:
@@ -267,10 +335,10 @@ class JiraAdapter(CloneAdapter):
         return self._decorate_comment(s, c)
 
     def _op_remove_issue(self, s: dict[str, Any], p: dict[str, Any]) -> dict[str, Any]:
+        # Deleting a base issue is allowed and recorded as a delete op in the patch — the source
+        # state file is never mutated, only the in-session working state + the diff.
         b = s["backend"]
         ident = p.get("identifier")
-        if ident in s["base_issue_ids"]:
-            raise RuntimeError(f"refusing to delete: {ident} is base data, not overlay")
         if not any(i["identifier"] == ident for i in b.issues):
             raise RuntimeError(f"unknown issue: {ident}")
         b.delete_issue(ident)
@@ -281,8 +349,6 @@ class JiraAdapter(CloneAdapter):
     def _op_remove_comment(self, s: dict[str, Any], p: dict[str, Any]) -> dict[str, Any]:
         b = s["backend"]
         ident, cid = p.get("identifier"), p.get("comment_id")
-        if cid in s["base_comment_ids"]:
-            raise RuntimeError("refusing to delete: this comment is base data, not overlay")
         lst = b.comments.get(ident, [])
         new = [c for c in lst if c["id"] != cid]
         if len(new) == len(lst):
@@ -291,6 +357,39 @@ class JiraAdapter(CloneAdapter):
         b._save()
         return {"ok": True}
 
-    # ---- export: merged state.json (mountable onto jira-gateway:empty) -------
+    # ---- diff + patch export ------------------------------------------------
+    def _diff(self, s: dict[str, Any]) -> dict[str, Any]:
+        base = s["base_snapshot"]
+        cur = s["backend"].snapshot()
+        b = {i["identifier"]: i for i in base.get("issues", [])}
+        c = {i["identifier"]: i for i in cur.get("issues", [])}
+        added = [c[k] for k in c if k not in b]
+        deleted = [b[k] for k in b if k not in c]
+        edited = [(k, _issue_changes(b[k], c[k])) for k in c if k in b and _issue_changes(b[k], c[k])]
+        bc = {cc["id"]: (k, cc) for k, lst in base.get("comments", {}).items() for cc in lst}
+        cc = {cc["id"]: (k, cc) for k, lst in cur.get("comments", {}).items() for cc in lst}
+        comments_added = [(k, com) for cid, (k, com) in cc.items() if cid not in bc]
+        comments_deleted = [(k, com) for cid, (k, com) in bc.items() if cid not in cc]
+        return {"added": added, "deleted": deleted, "edited": edited,
+                "comments_added": comments_added, "comments_deleted": comments_deleted}
+
     def export_overlay(self, session_id: Optional[str] = None) -> dict[str, Any]:
-        return self._sess(session_id)["backend"].snapshot()
+        """The TASK DIFF as an apply_state_patch.py op-list (`--patch`): add/update/delete issues +
+        add/delete comments. Applied onto the base at task standup; the base file is untouched."""
+        s = self._sess(session_id)
+        d = self._diff(s)
+        ops: list[dict[str, Any]] = []
+        for i in d["added"]:
+            ops.append({"op": "add", "entity": "issue", "set": _issue_authoring(i)})
+        for k, ch in d["edited"]:
+            ops.append({"op": "update", "entity": "issue", "match": {"key": k}, "set": ch})
+        for i in d["deleted"]:
+            ops.append({"op": "delete", "entity": "issue", "match": {"key": i["identifier"]}})
+        for k, com in d["comments_added"]:
+            ops.append({"op": "add", "entity": "comment", "match": {"key": k},
+                        "set": {"author": (com.get("author") or {}).get("handle")
+                                or (com.get("author") or {}).get("id"), "body": com.get("body", "")}})
+        for k, com in d["comments_deleted"]:
+            ops.append({"op": "delete", "entity": "comment", "match": {"key": k},
+                        "set": {"comment_id": com["id"]}})
+        return {"version": 1, "ops": ops}

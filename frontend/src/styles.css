@@ -197,6 +197,11 @@ button { font-family: inherit; cursor: pointer; }
 .jira { display: flex; flex-direction: column; height: 100vh; background: #fff; }
 .jira-body { flex: 1; display: flex; min-height: 0; }
 .badge.edited { background: #e6a817; color: #fff; }
+.badge.del { background: #de350b; color: #fff; }
+.changes-item.active { background: #e2e8f5; font-weight: 700; }
+.changes-summary { padding: 6px 16px 0; font-size: 11.5px; color: var(--muted); line-height: 1.5; }
+.jira-row.tombstone { opacity: .6; }
+.jira-row.tombstone .ji-title { text-decoration: line-through; }
 
 /* sidebar */
 .jira-side { width: 240px; background: #f4f5f7; border-right: 1px solid var(--border); overflow-y: auto; padding-bottom: 16px; }

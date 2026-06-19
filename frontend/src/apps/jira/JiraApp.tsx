@@ -27,6 +27,7 @@ export function JiraApp({ appId }: { appId: string }) {
   const [issues, setIssues] = useState<JiraIssue[]>([]);
   const [selected, setSelected] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<string>("");
+  const [changesView, setChangesView] = useState(false);
   const [text, setText] = useState("");
   const [showNew, setShowNew] = useState(false);
   const [loaded, setLoaded] = useState(false);
@@ -68,11 +69,11 @@ export function JiraApp({ appId }: { appId: string }) {
     }
   }
 
-  async function downloadState() {
-    const name = window.prompt("Name the export file:", "state")?.trim();
+  async function downloadPatch() {
+    const name = window.prompt("Name the patch file:", "state-patch")?.trim();
     if (!name) return;
     try {
-      const data = await api.exportOverlay(appId);
+      const data = await api.exportOverlay(appId); // the {version, ops} task diff
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
@@ -84,13 +85,18 @@ export function JiraApp({ appId }: { appId: string }) {
     }
   }
 
+  const matchText = (i: JiraIssue) =>
+    !text ||
+    i.identifier.toLowerCase().includes(text.toLowerCase()) ||
+    i.title.toLowerCase().includes(text.toLowerCase());
   const filtered = issues.filter(
     (i) =>
-      (!statusFilter || i.state.name === statusFilter) &&
-      (!text ||
-        i.identifier.toLowerCase().includes(text.toLowerCase()) ||
-        i.title.toLowerCase().includes(text.toLowerCase()))
+      matchText(i) &&
+      (changesView
+        ? i.origin === "overlay" || i.edited
+        : !statusFilter || i.state.name === statusFilter)
   );
+  const deletedTombstones = changesView ? meta?.changes?.deleted ?? [] : [];
   const active = issues.find((i) => i.identifier === selected) ?? null;
 
   return (
@@ -103,7 +109,7 @@ export function JiraApp({ appId }: { appId: string }) {
           setStatusFilter("");
           await refresh();
         }}
-        onDownload={downloadState}
+        onDownload={downloadPatch}
       />
       {err && <div className="edit-err">⚠ {err}</div>}
       {!loaded ? (
@@ -128,7 +134,13 @@ export function JiraApp({ appId }: { appId: string }) {
             </div>
             <div className="jira-section">Statuses</div>
             <ul className="status-list">
-              <li className={!statusFilter ? "active" : ""} onClick={() => setStatusFilter("")}>
+              <li
+                className={!statusFilter && !changesView ? "active" : ""}
+                onClick={() => {
+                  setStatusFilter("");
+                  setChangesView(false);
+                }}
+              >
                 All<span className="count">{issues.length}</span>
               </li>
               {meta?.states.map((st: JiraState) => {
@@ -136,8 +148,11 @@ export function JiraApp({ appId }: { appId: string }) {
                 return (
                   <li
                     key={st.id}
-                    className={statusFilter === st.name ? "active" : ""}
-                    onClick={() => setStatusFilter(st.name)}
+                    className={!changesView && statusFilter === st.name ? "active" : ""}
+                    onClick={() => {
+                      setStatusFilter(st.name);
+                      setChangesView(false);
+                    }}
                   >
                     <span className={`st-dot ${stateClass(st.category)}`} />
                     {st.name}
@@ -146,6 +161,29 @@ export function JiraApp({ appId }: { appId: string }) {
                 );
               })}
             </ul>
+            <div className="jira-section">Patch diff</div>
+            <ul className="status-list">
+              <li
+                className={`changes-item ${changesView ? "active" : ""}`}
+                onClick={() => setChangesView(true)}
+              >
+                <span className="st-dot st-prog" />
+                Changes
+                <span className="count">{meta?.changes?.ops ?? 0} ops</span>
+              </li>
+            </ul>
+            {meta?.changes && meta.changes.ops > 0 && (
+              <div className="changes-summary">
+                +{meta.changes.added.length} added · ~{meta.changes.edited.length} edited · −
+                {meta.changes.deleted.length} deleted
+                {meta.changes.comments_added + meta.changes.comments_deleted > 0 && (
+                  <>
+                    {" "}
+                    · {meta.changes.comments_added + meta.changes.comments_deleted} comment ops
+                  </>
+                )}
+              </div>
+            )}
           </aside>
 
           {/* main: issue list */}
@@ -193,7 +231,16 @@ export function JiraApp({ appId }: { appId: string }) {
                   </span>
                 </div>
               ))}
-              {!filtered.length && <div className="hint">No issues match.</div>}
+              {deletedTombstones.map((d) => (
+                <div key={d.identifier} className="jira-row tombstone" title="Deleted (recorded as a delete op)">
+                  <span className="ji-key">{d.identifier}</span>
+                  <span className="ji-title">{d.title}</span>
+                  <span className="badge del">deleted</span>
+                </div>
+              ))}
+              {!filtered.length && !deletedTombstones.length && (
+                <div className="hint">{changesView ? "No pending changes." : "No issues match."}</div>
+              )}
             </div>
           </main>
 
@@ -307,8 +354,8 @@ function JiraSeedBar({
         <button className="primary" onClick={doLoad} disabled={!baseId || !!busy}>
           Load
         </button>
-        <button className="ghost-btn" title="Download merged state.json" onClick={onDownload}>
-          ⬇ state.json
+        <button className="ghost-btn" title="Download the task diff as an apply_state_patch op-list" onClick={onDownload}>
+          ⬇ patch.json
         </button>
         <div className="seedbar-status">
           {busy && <span className="hint">⏳ {busy}</span>}
@@ -436,8 +483,6 @@ function IssueDetail({
     loadComments();
   }, [appId, issue.identifier]);
 
-  const canDelete = issue.origin === "overlay";
-
   return (
     <aside className="jira-detail">
       <header className="jd-head">
@@ -445,14 +490,13 @@ function IssueDetail({
         {issue.origin === "overlay" && <span className="badge ov">overlay</span>}
         {issue.edited && <span className="badge edited">edited</span>}
         <span className="jd-spacer" />
-        {canDelete && (
-          <button
-            className="ghost-btn danger"
-            onClick={() => onOp("remove_issue", { identifier: issue.identifier })}
-          >
-            🗑 delete
-          </button>
-        )}
+        <button
+          className="ghost-btn danger"
+          title={issue.origin === "base" ? "Delete (recorded as a delete op in the patch)" : "Delete overlay issue"}
+          onClick={() => onOp("remove_issue", { identifier: issue.identifier })}
+        >
+          🗑 delete
+        </button>
         <button className="link" onClick={onClose}>
           ✕
         </button>
@@ -514,19 +558,17 @@ function IssueDetail({
               <div className="jc-meta">
                 <b>{c.author?.name ?? c.author?.handle}</b>
                 {c.origin === "overlay" && <span className="badge ov">overlay</span>}
-                {c.origin === "overlay" && (
-                  <button
-                    className="jc-del"
-                    title="Delete overlay comment"
-                    onClick={() =>
-                      onOp("remove_comment", { identifier: issue.identifier, comment_id: c.id }).then(
-                        loadComments
-                      )
-                    }
-                  >
-                    🗑
-                  </button>
-                )}
+                <button
+                  className="jc-del"
+                  title={c.origin === "base" ? "Delete (recorded as a delete op)" : "Delete overlay comment"}
+                  onClick={() =>
+                    onOp("remove_comment", { identifier: issue.identifier, comment_id: c.id }).then(
+                      loadComments
+                    )
+                  }
+                >
+                  🗑
+                </button>
               </div>
               <div className="jc-body">{c.body}</div>
             </div>
