@@ -15,6 +15,10 @@ Two modes (exactly one of --overlay / --patch):
                      {"version":1,"ops":[ {op,entity,match,set}, ... ]}
                      op    ∈ add|update|delete
                      entity∈ issue|comment|user|state
+                       issue:   add (set=full fields) | update | delete
+                       comment: add (match issue) | delete (match issue, set.comment_id)
+                       user:    add
+                       state:   add
                      Fails LOUD (SystemExit "PATCH_ERROR …") if a match resolves to
                      0 rows, so a stale/typo'd key aborts boot instead of silently
                      no-op'ing. Prints  PATCH_OK ops=N
@@ -158,6 +162,56 @@ def _resolve_labels(state: dict, names: list) -> list:
     return out
 
 
+def _next_identifier(state: dict) -> str:
+    key = (state.get("project") or {}).get("key", "ISSUE")
+    nums = [
+        int(i["identifier"].rsplit("-", 1)[1])
+        for i in state.get("issues", [])
+        if i.get("identifier", "").startswith(key + "-") and i["identifier"].rsplit("-", 1)[1].isdigit()
+    ]
+    return f"{key}-{(max(nums) + 1) if nums else 1}"
+
+
+def _op_add_issue(state: dict, fields: dict) -> None:
+    ident = fields.get("identifier") or _next_identifier(state)
+    if any(i.get("identifier") == ident for i in state.get("issues", [])):
+        die(f"PATCH_ERROR issue already exists: {ident}")
+    states = state.get("states", [])
+    issue = {
+        "id": f"issue-{ident.lower()}",
+        "identifier": ident,
+        "project": dict(state.get("project", {})),
+        "title": fields.get("title", ""),
+        "description": fields.get("description", ""),
+        "state": _resolve_state(state, fields["state"]) if fields.get("state") else dict(states[0]) if states else {},
+        "priority": fields.get("priority", "medium"),
+        "assignees": [_resolve_user(state, h) for h in fields.get("assignees", [])],
+        "labels": _resolve_labels(state, fields.get("labels", [])),
+        "cycle": None,
+        "module": None,
+        "links": [],
+        "relations": [],
+        "comments_count": 0,
+        "attachments_count": 0,
+        "created_at": now_iso(),
+        "updated_at": now_iso(),
+    }
+    state.setdefault("issues", []).append(issue)
+
+
+def _op_delete_comment(state: dict, match: dict, fields: dict) -> None:
+    ident = _find_issue(state, match["key"])["identifier"]
+    cid = fields.get("comment_id")
+    bucket = state.get("comments", {}).get(ident, [])
+    kept = [c for c in bucket if c.get("id") != cid]
+    if len(kept) == len(bucket):
+        die(f"PATCH_ERROR comment match resolved 0 rows: {cid}")
+    state["comments"][ident] = kept
+    issue = _find_issue(state, ident)
+    if "comments_count" in issue:
+        issue["comments_count"] = len(kept)
+
+
 def _op_update_issue(state: dict, match: dict, fields: dict) -> None:
     issue = _find_issue(state, match["key"])
     if "title" in fields and fields["title"]:
@@ -244,12 +298,16 @@ def apply_patch(state: dict, patch: dict) -> int:
         entity = op.get("entity")
         match = op.get("match") or {}
         fields = op.get("set") or {}
-        if entity == "issue" and kind == "update":
+        if entity == "issue" and kind == "add":
+            _op_add_issue(state, fields)
+        elif entity == "issue" and kind == "update":
             _op_update_issue(state, match, fields)
         elif entity == "issue" and kind == "delete":
             _op_delete_issue(state, match)
         elif entity == "comment" and kind == "add":
             _op_add_comment(state, match, fields)
+        elif entity == "comment" and kind == "delete":
+            _op_delete_comment(state, match, fields)
         elif entity == "user" and kind == "add":
             _op_add_user(state, fields)
         elif entity == "state" and kind == "add":
