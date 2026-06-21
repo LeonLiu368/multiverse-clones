@@ -28,8 +28,13 @@ OVERLAY=0
 PATCH=0
 
 if [ -f /data/state-overlay.json ]; then
+  # apply_overlay normalizes first, then merges.
   python3 /opt/apply_state_patch.py --state "$RUNTIME" --overlay /data/state-overlay.json
   OVERLAY=1
+else
+  # No overlay: normalize the runtime copy so the prod corpus is write-faithful (it bakes
+  # `history` as a list, which breaks update_issue/add_comment until coerced to a dict).
+  python3 /opt/apply_state_patch.py --state "$RUNTIME" --normalize
 fi
 
 if [ -f /data/state-patch.json ]; then

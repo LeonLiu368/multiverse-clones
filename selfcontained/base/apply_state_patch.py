@@ -92,6 +92,28 @@ def _merge_keyed_lists(base: dict, extra: dict) -> None:
         base[key].extend(items)
 
 
+def normalize_state(state: dict) -> int:
+    """Coerce the per-identifier keyed collections to dicts, the shape the server's write paths
+    require (FakePlaneBackend.update_issue does `self.history.setdefault(...)` etc.). The prod
+    corpus bakes `history` as an empty LIST `[]` (a converter quirk), which is fine for read-only
+    tasks but raises AttributeError on the first write. Coerce `[] -> {}`; a populated list keyed
+    by issue identifier is regrouped into a dict. Returns the number of fields fixed."""
+    fixed = 0
+    for coll in ("comments", "links", "relations", "history", "attachments"):
+        val = state.get(coll)
+        if isinstance(val, dict) or val is None:
+            continue
+        if isinstance(val, list):
+            regrouped: dict = {}
+            for item in val:
+                ident = (item.get("issue") or item.get("identifier")) if isinstance(item, dict) else None
+                if ident:
+                    regrouped.setdefault(ident, []).append(item)
+            state[coll] = regrouped  # [] -> {}, populated list -> grouped by issue identifier
+            fixed += 1
+    return fixed
+
+
 def apply_overlay(state: dict, overlay: dict) -> int:
     # issues: ADD ones whose identifier is not already present; base wins on collision.
     existing = {i.get("identifier") for i in state.get("issues", [])}
@@ -323,20 +345,27 @@ def main(argv=None) -> int:
     grp = ap.add_mutually_exclusive_group(required=True)
     grp.add_argument("--overlay")
     grp.add_argument("--patch")
+    grp.add_argument("--normalize", action="store_true",
+                     help="only coerce keyed collections to the server's write-faithful dict shape")
     args = ap.parse_args(argv)
 
     state = load(args.state)
+    # Always normalize first so writes (update_issue/add_comment) work against any corpus shape.
+    nfix = normalize_state(state)
 
     if args.overlay:
         overlay = load(args.overlay)
         added = apply_overlay(state, overlay)
         save(args.state, state)
-        print(f"OVERLAY_OK issues+={added}")
-    else:
+        print(f"OVERLAY_OK issues+={added} normalized={nfix}")
+    elif args.patch:
         patch = load(args.patch)
         n = apply_patch(state, patch)
         save(args.state, state)
-        print(f"PATCH_OK ops={n}")
+        print(f"PATCH_OK ops={n} normalized={nfix}")
+    else:
+        save(args.state, state)
+        print(f"NORMALIZE_OK normalized={nfix}")
     return 0
 
 
