@@ -25,8 +25,14 @@ if [ -f "$PREBUILT" ]; then
     python3 /opt/import_export.py --export-dir "$OVERLAY" --db "$SLACK_DB" --overlay || echo "[boot] overlay import error (non-fatal)"
   fi
 # Otherwise import the seed at boot. Priority order:
+#   0. /data/slack-overlay — the UNIFIED per-task mount: on :prod-v1 the prebuilt fast-path above
+#      layers it onto the prod corpus; on :empty (no prebuilt) it IS the base workspace. Same mount
+#      path for both images, so a task switches empty<->prod-v1 by changing ONLY the image.
 #   1. a real Slack export directory at /data/slack-export (complete or anonymized variant)
 #   2. a legacy scraped.json at /data/seed/scraped.json or /data/mattermost/scraped.json
+elif [ -d /data/slack-overlay ] && [ -n "$(ls -A /data/slack-overlay 2>/dev/null)" ]; then
+  echo "[boot] importing Slack export from /data/slack-overlay (empty base)"
+  python3 /opt/import_export.py --export-dir /data/slack-overlay --db "$SLACK_DB" || echo "[boot] import error (non-fatal)"
 elif [ -d /data/slack-export ] && [ -n "$(ls -A /data/slack-export 2>/dev/null)" ]; then
   echo "[boot] importing Slack export from /data/slack-export"
   python3 /opt/import_export.py --export-dir /data/slack-export --db "$SLACK_DB" || echo "[boot] import error (non-fatal)"
