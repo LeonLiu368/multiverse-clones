@@ -73,17 +73,23 @@ GHCR** fetches a registry tag on demand.
 
 ### Editing the overlay
 
-You can build/edit the overlay in place and download it: **+** next to "Channels" adds an overlay
-channel, the **compose bar** adds an overlay message (author, text, optional date + time pickers),
-and 🗑 removes an overlay channel/message. The **author** field is a picker over existing workspace
-users — choose one to post **as that user** (shown by an `as @user` hint; the server resolves the
-username to the real id); a name not in the list creates a new overlay user. Every edit lands on the **overlay (task-seed) layer
-only** — the server refuses to delete base corpus/image data.
+Slack uses a **two-artifact** model: bulk adds ship as a Slack-export overlay; edits/deletes of the
+existing corpus ship as a patch op-list.
 
-**⬇ export dir** prompts for a directory name and downloads the edited overlay as a **zipped Slack-
-export directory** (`<name>/channels.json`, `users.json`, `<channel>/<YYYY-MM-DD>.json`) — the exact
-shape `import_export.py` / a task's `environment/data/overlay` expects, so it drops straight into a
-task. (A raw `GET /overlay/export` JSON endpoint in `write_export` input shape is also available.)
+**Adds.** **+** next to "Channels" adds an overlay channel; the **compose bar** adds an overlay
+message (author, text, optional date + time). The **author** field is a picker over existing
+workspace users — choose one to post **as that user** (`as @user` hint; the server resolves the
+username to the real id); an unknown name creates a new overlay user. **⬇ export dir** downloads
+these as a **zipped Slack-export directory** (`<name>/channels.json`, `users.json`,
+`<channel>/<YYYY-MM-DD>.json`) — the shape `import_export.py` / a task's `environment/data/overlay`
+expects. (Raw JSON at `GET /overlay/export`.)
+
+**Edit / delete messages.** Hover a message for **✎ edit** and **🗑 delete** — on **any** message,
+base or overlay. Editing/deleting an overlay-added message updates the export dir; editing/deleting a
+**base** message is recorded in the patch (the source corpus is never mutated). Edited base messages
+show an `edited` badge. **⬇ patch.json** downloads those mutations as an `import_export.py --patch`
+op-list (`{op:update|delete, entity:message, match:{channel,ts}, set:{text}}`), applied onto prod at
+task standup. (Base **channels** stay delete-protected.)
 
 ### Building a workspace from scratch — the empty base image
 

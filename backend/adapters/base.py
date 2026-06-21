@@ -97,6 +97,11 @@ class CloneAdapter:
     def export_overlay_dir(self, dest_parent: str, name: str = "overlay") -> str:
         raise NotImplementedError("this clone does not support exporting an overlay directory")
 
+    def export_patch(self) -> dict[str, Any]:
+        """The mutations layer as the clone's patch op-list ({version, ops}) — applied onto the base
+        at task standup (Slack import_export.py --patch / Jira apply_state_patch.py --patch)."""
+        raise NotImplementedError("this clone does not support exporting a patch")
+
     def overlay_op(self, op: str, payload: dict[str, Any]) -> dict[str, Any]:
         """Generic overlay edit op (used by clones whose edits don't fit the message/container
         verbs, e.g. Jira's add_issue/update_issue/add_comment/remove_*)."""

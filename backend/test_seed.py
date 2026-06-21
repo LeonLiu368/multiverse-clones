@@ -78,7 +78,7 @@ def test_prod_base_overlay_attaches_by_name_hash():
 
 
 @pytest.mark.skipif(not have_clone, reason="needs clone checkout")
-def test_overlay_editor_add_remove_export_and_base_protection():
+def test_overlay_editor_add_remove_export():
     client.post("/api/slack/load", json={"base_id": f"dir:{os.path.abspath(TINY)}"})
     # add an overlay channel + message
     assert client.post("/api/slack/overlay/container/add", json={"name": "launch-room"}).status_code == 200
@@ -90,14 +90,15 @@ def test_overlay_editor_add_remove_export_and_base_protection():
     assert exp["messages"] and exp["messages"][0]["content"] == "ship at 6pm"
     assert exp["messages"][0]["channel"] == "launch-room"
 
-    # base data is protected: deleting a base message / base channel is refused
+    # deleting a base message is now allowed and recorded as a patch op (channels stay protected)
     base = client.get("/api/slack/messages", params={"container": "all-worldsdatatest", "limit": 1}).json()[0]
     assert base["origin"] == "base"
-    r = client.post("/api/slack/overlay/message/remove",
-                    json={"container_id": base["channel_id"], "ts": base["ts"]})
-    assert r.status_code == 400 and "base data" in r.json()["detail"]
+    assert client.post("/api/slack/overlay/message/remove",
+                       json={"container_id": base["channel_id"], "ts": base["ts"]}).status_code == 200
+    assert any(o["op"] == "delete" and o["entity"] == "message"
+               for o in client.get("/api/slack/overlay/patch").json()["ops"])
     assert client.post("/api/slack/overlay/container/remove",
-                       json={"container_id": "all-worldsdatatest"}).status_code == 400
+                       json={"container_id": "all-worldsdatatest"}).status_code == 400  # base channel
 
     # deleting the overlay message + channel works
     om = client.get("/api/slack/messages", params={"container": "launch-room"}).json()[0]
@@ -138,6 +139,48 @@ def test_add_message_as_existing_user_reuses_their_id():
     assert m["user"] == existing["id"]  # attributed to the existing user, not a fresh one
     after = client.get("/api/slack/entities").json()
     assert len(after) == len(before)  # no new user created
+
+
+@pytest.mark.skipif(not have_clone, reason="needs clone checkout")
+def test_slack_edit_delete_message_patch_roundtrip():
+    import json
+    import sys
+    import tempfile
+
+    client.post("/api/slack/load", json={"base_id": f"dir:{os.path.abspath(TINY)}"})
+    msgs = client.get("/api/slack/messages", params={"container": "all-worldsdatatest", "limit": 10}).json()
+    assert len(msgs) >= 2 and all(m["origin"] == "base" for m in msgs)
+    edit_ts, del_ts = msgs[0]["ts"], msgs[1]["ts"]
+
+    def op(name, payload):
+        return client.post("/api/slack/overlay/op", json={"op": name, "payload": payload})
+
+    assert op("edit_message", {"channel": "all-worldsdatatest", "ts": edit_ts, "text": "[redacted]"}).status_code == 200
+    assert op("delete_message", {"channel": "all-worldsdatatest", "ts": del_ts}).status_code == 200
+
+    after = client.get("/api/slack/messages", params={"container": "all-worldsdatatest", "limit": 10}).json()
+    assert any(m["ts"] == edit_ts and m["edited"] and m["text"] == "[redacted]" for m in after)
+    assert not any(m["ts"] == del_ts for m in after)
+
+    patch = client.get("/api/slack/overlay/patch").json()
+    assert {(o["op"], o["entity"]) for o in patch["ops"]} >= {("update", "message"), ("delete", "message")}
+
+    # round-trips through the clone's own import_export.py --patch
+    if CLONE not in sys.path:
+        sys.path.insert(0, CLONE)
+    from slackgw.store import Store  # type: ignore
+    import import_export  # type: ignore
+
+    with tempfile.TemporaryDirectory() as d:
+        db, pf = os.path.join(d, "slack.db"), os.path.join(d, "patch.json")
+        st = Store(db)
+        import_export.import_export(st, os.path.abspath(TINY), None, None, None, overlay=False)
+        st.commit()
+        json.dump(patch, open(pf, "w"))
+        import_export.apply_patch(st, pf)
+        rows = st.history(st.channel_by_ref("all-worldsdatatest")["id"], limit=10)
+        texts = {m["ts"]: m["text"] for m in rows}
+        assert texts.get(edit_ts) == "[redacted]" and del_ts not in texts
 
 
 def test_editor_unsupported_on_echo_is_clean_400():

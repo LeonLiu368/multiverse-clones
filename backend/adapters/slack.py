@@ -205,6 +205,8 @@ class SlackAdapter(CloneAdapter):
             "name_by_id": name_by_id,
             "spec": spec,
             "ts_to_specid": ts_to_specid,
+            "edits": {},     # (channel_id, ts) -> new text, for BASE messages (→ patch update ops)
+            "deletes": set(),  # (channel_id, ts) of BASE messages deleted (→ patch delete ops)
             "base": base.id,
             "overlay_path": overlay_path,
             "stats": stats,
@@ -233,6 +235,7 @@ class SlackAdapter(CloneAdapter):
         except Exception:
             m["reactions"] = []
         m["origin"] = self._msg_origin(s, m)
+        m["edited"] = (m.get("channel_id"), str(m.get("ts"))) in s["edits"]
         return m
 
     # ---- normalized reads ---------------------------------------------------
@@ -366,22 +369,55 @@ class SlackAdapter(CloneAdapter):
         s["ts_to_specid"][(cid, ts)] = spec_id
         return self._decorate_msg(s, {"ts": ts, "channel_id": cid, "user": uid, "text": text or ""})
 
+    # ---- edit / delete a message (overlay → spec; base → patch op) ----------
+    def overlay_op(self, op: str, payload: dict[str, Any],
+                   session_id: Optional[str] = None) -> dict[str, Any]:
+        s = self._sess(session_id)
+        if op == "edit_message":
+            return self._edit_message(s, payload or {})
+        if op == "delete_message":
+            return self.remove_message(payload.get("channel"), payload.get("ts"), session_id)
+        raise RuntimeError(f"unknown op: {op}")
+
+    def _edit_message(self, s: dict[str, Any], p: dict[str, Any]) -> dict[str, Any]:
+        ch = s["store"].channel_by_ref(p.get("channel", ""))
+        if not ch:
+            raise RuntimeError("unknown channel")
+        cid, name, ts = ch["id"], ch["name"], str(p.get("ts"))
+        text = p.get("text", "")
+        if not s["store"].update_message(cid, ts, text=text):
+            raise RuntimeError(f"message not found: {name}@{ts}")
+        s["store"].commit()
+        if ts in s["overlay"]["ts_by_channel"].get(name, set()):
+            # overlay-added message: keep its final text in the spec (carried by the export dir)
+            spec_id = s["ts_to_specid"].get((cid, ts))
+            for m in s["spec"]["messages"]:
+                if m.get("id") == spec_id:
+                    m["content"] = text
+        else:
+            s["edits"][(cid, ts)] = text  # base edit → patch update op
+        return {"ok": True}
+
     def remove_message(self, channel_id: str, ts: str,
                        session_id: Optional[str] = None) -> dict[str, Any]:
         s = self._sess(session_id)
         ch = s["store"].channel_by_ref(channel_id)
         if not ch:
             raise RuntimeError("unknown channel")
-        cid, name = ch["id"], ch["name"]
-        if str(ts) not in s["overlay"]["ts_by_channel"].get(name, set()):
-            raise RuntimeError("refusing to delete: this message is base data, not task-seed overlay")
-        s["store"].conn.execute("DELETE FROM messages WHERE channel_id=? AND ts=?", (cid, str(ts)))
+        cid, name, ts = ch["id"], ch["name"], str(ts)
+        is_overlay = ts in s["overlay"]["ts_by_channel"].get(name, set())
+        if not s["store"].delete_message(cid, ts):
+            raise RuntimeError(f"message not found: {name}@{ts}")
         s["store"].recount_members([cid])
         s["store"].commit()
-        s["overlay"]["ts_by_channel"][name].discard(str(ts))
-        spec_id = s["ts_to_specid"].pop((cid, str(ts)), None)
-        s["spec"]["messages"] = [m for m in s["spec"]["messages"]
-                                 if m.get("id") != spec_id and not (m["channel"] == name and str(m["ts"]) == str(ts))]
+        if is_overlay:
+            s["overlay"]["ts_by_channel"][name].discard(ts)
+            spec_id = s["ts_to_specid"].pop((cid, ts), None)
+            s["spec"]["messages"] = [m for m in s["spec"]["messages"]
+                                     if m.get("id") != spec_id and not (m["channel"] == name and str(m["ts"]) == ts)]
+        else:
+            s["deletes"].add((cid, ts))  # base delete → patch delete op
+            s["edits"].pop((cid, ts), None)
         return {"ok": True}
 
     def remove_container(self, channel_id: str,
@@ -405,6 +441,20 @@ class SlackAdapter(CloneAdapter):
         s["spec"]["messages"] = [m for m in s["spec"]["messages"] if m["channel"] != name]
         s["ts_to_specid"] = {k: v for k, v in s["ts_to_specid"].items() if k[0] != cid}
         return {"ok": True}
+
+    def export_patch(self, session_id: Optional[str] = None) -> dict[str, Any]:
+        """The mutations layer as an import_export.py --patch op-list: update/delete of BASE messages
+        (edits to overlay-added messages stay in the export dir). Applied onto prod at task standup."""
+        s = self._sess(session_id)
+        ops: list[dict[str, Any]] = []
+        for (cid, ts), text in s["edits"].items():
+            ops.append({"op": "update", "entity": "message",
+                        "match": {"channel": s["name_by_id"].get(cid, cid), "ts": ts},
+                        "set": {"text": text}})
+        for cid, ts in s["deletes"]:
+            ops.append({"op": "delete", "entity": "message",
+                        "match": {"channel": s["name_by_id"].get(cid, cid), "ts": ts}})
+        return {"version": 1, "ops": ops}
 
     def export_overlay(self, session_id: Optional[str] = None) -> dict[str, Any]:
         """The edited overlay in slack_export_writer.write_export input shape — round-trips into a

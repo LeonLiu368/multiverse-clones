@@ -41,6 +41,7 @@ export function MessageList({
   showChannel,
   onOpenThread,
   onDelete,
+  onEdit,
 }: {
   appId: string;
   messages: Msg[];
@@ -49,6 +50,7 @@ export function MessageList({
   showChannel?: boolean;
   onOpenThread: (m: Msg) => void;
   onDelete?: (m: Msg) => void;
+  onEdit?: (m: Msg) => void;
 }) {
   return (
     <ul className="msg-list">
@@ -77,11 +79,17 @@ export function MessageList({
                   <span className="msg-channel">#{channelMap[m.channel_id] ?? m.channel_id}</span>
                 )}
                 {m.origin === "overlay" && <span className="badge ov">overlay</span>}
+                {m.edited && <span className="badge edited">edited</span>}
                 {isReply && <span className="msg-reply-tag">↳ reply</span>}
-                {onDelete && m.origin === "overlay" && (
+                {onEdit && (
+                  <button className="msg-act" title="Edit this message" onClick={() => onEdit(m)}>
+                    ✎
+                  </button>
+                )}
+                {onDelete && (
                   <button
-                    className="msg-del"
-                    title="Delete this overlay message"
+                    className="msg-act"
+                    title={m.origin === "base" ? "Delete (recorded as a patch delete op)" : "Delete overlay message"}
                     onClick={() => onDelete(m)}
                   >
                     🗑

@@ -373,6 +373,9 @@ class JiraAdapter(CloneAdapter):
         return {"added": added, "deleted": deleted, "edited": edited,
                 "comments_added": comments_added, "comments_deleted": comments_deleted}
 
+    def export_patch(self, session_id: Optional[str] = None) -> dict[str, Any]:
+        return self.export_overlay(session_id)
+
     def export_overlay(self, session_id: Optional[str] = None) -> dict[str, Any]:
         """The TASK DIFF as an apply_state_patch.py op-list (`--patch`): add/update/delete issues +
         add/delete comments. Applied onto the base at task standup; the base file is untouched."""

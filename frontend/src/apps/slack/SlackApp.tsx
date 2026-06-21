@@ -53,7 +53,18 @@ export function SlackApp({ appId }: { appId: string }) {
   }
   async function deleteMessage(m: Msg) {
     try {
-      await api.removeMessage(appId, m.channel_id, m.ts);
+      await api.overlayOp(appId, "delete_message", { channel: m.channel_id, ts: m.ts });
+      setRev((v) => v + 1);
+      refresh();
+    } catch (e) {
+      flash(e);
+    }
+  }
+  async function editMessage(m: Msg) {
+    const text = window.prompt("Edit message text:", m.text);
+    if (text == null || text === m.text) return;
+    try {
+      await api.overlayOp(appId, "edit_message", { channel: m.channel_id, ts: m.ts, text });
       setRev((v) => v + 1);
       refresh();
     } catch (e) {
@@ -73,6 +84,21 @@ export function SlackApp({ appId }: { appId: string }) {
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
       a.download = `${name}.zip`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    } catch (e) {
+      flash(e);
+    }
+  }
+  async function downloadPatch() {
+    const name = window.prompt("Name the patch file:", "slack-patch")?.trim();
+    if (!name) return;
+    try {
+      const data = await api.exportPatch(appId); // {version, ops} mutations of base messages
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `${name}.json`;
       a.click();
       URL.revokeObjectURL(a.href);
     } catch (e) {
@@ -212,10 +238,17 @@ export function SlackApp({ appId }: { appId: string }) {
                 )}
                 <button
                   className="ghost-btn"
-                  title="Download the edited overlay as a zipped Slack-export directory"
+                  title="Download added channels/messages as a zipped Slack-export directory"
                   onClick={downloadOverlay}
                 >
                   ⬇ export dir
+                </button>
+                <button
+                  className="ghost-btn"
+                  title="Download base-message edits/deletes as an import_export --patch op-list"
+                  onClick={downloadPatch}
+                >
+                  ⬇ patch.json
                 </button>
               </div>
             </header>
@@ -242,6 +275,7 @@ export function SlackApp({ appId }: { appId: string }) {
                     userMap={userMap}
                     onOpenThread={setThread}
                     onDelete={deleteMessage}
+                    onEdit={editMessage}
                   />
                 )
               )}
@@ -271,6 +305,7 @@ function ChannelMessages({
   userMap,
   onOpenThread,
   onDelete,
+  onEdit,
 }: {
   appId: string;
   channel: string;
@@ -278,6 +313,7 @@ function ChannelMessages({
   userMap: Record<string, User>;
   onOpenThread: (m: Msg) => void;
   onDelete: (m: Msg) => void;
+  onEdit: (m: Msg) => void;
 }) {
   const [msgs, setMsgs] = useState<Msg[] | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -305,6 +341,7 @@ function ChannelMessages({
         userMap={userMap}
         onOpenThread={onOpenThread}
         onDelete={onDelete}
+        onEdit={onEdit}
       />
       <div ref={bottomRef} />
     </>

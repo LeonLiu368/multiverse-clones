@@ -152,9 +152,9 @@ button { font-family: inherit; cursor: pointer; }
 .msg-channel { color: var(--muted); font-size: 12px; }
 .msg-reply-tag { color: var(--muted); font-size: 12px; }
 .msg-text { white-space: pre-wrap; line-height: 1.46; }
-.msg-del { background: none; border: none; opacity: 0; font-size: 12px; padding: 0 4px; }
-.msg:hover .msg-del { opacity: .6; }
-.msg-del:hover { opacity: 1; }
+.msg-del, .msg-act { background: none; border: none; opacity: 0; font-size: 12px; padding: 0 4px; cursor: pointer; }
+.msg:hover .msg-del, .msg:hover .msg-act { opacity: .55; }
+.msg-del:hover, .msg-act:hover { opacity: 1; }
 .msg-system { color: var(--muted); font-style: italic; }
 .reactions { display: flex; gap: 6px; margin-top: 4px; flex-wrap: wrap; }
 .reaction { background: #f0f0f0; border: 1px solid var(--border); border-radius: 12px; padding: 1px 8px; font-size: 12px; }

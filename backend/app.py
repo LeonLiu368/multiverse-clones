@@ -190,6 +190,11 @@ def overlay_export(app_id: str):
     return _guard(lambda: _adapter(app_id).export_overlay())
 
 
+@app.get("/api/{app_id}/overlay/patch")
+def overlay_patch(app_id: str):
+    return _guard(lambda: _adapter(app_id).export_patch())
+
+
 @app.get("/api/{app_id}/overlay/export.zip")
 def overlay_export_zip(app_id: str, name: str = "overlay"):
     """Download the edited overlay as a zipped Slack-export DIRECTORY named `<name>/` — the exact

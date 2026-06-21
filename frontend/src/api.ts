@@ -12,6 +12,7 @@ export type Msg = {
   reply_count?: number;
   reactions: { name: string; users?: string[]; count?: number }[];
   origin: "base" | "overlay";
+  edited?: boolean;
 };
 export type Channel = {
   id: string;
@@ -167,6 +168,7 @@ export const api = {
       body: JSON.stringify({ container_id, ts }),
     }).then(j<any>),
   exportOverlay: (app: string) => fetch(`/api/${app}/overlay/export`).then(j<any>),
+  exportPatch: (app: string) => fetch(`/api/${app}/overlay/patch`).then(j<any>),
   overlayOp: (app: string, op: string, payload: Record<string, any>) =>
     fetch(`/api/${app}/overlay/op`, {
       method: "POST",
