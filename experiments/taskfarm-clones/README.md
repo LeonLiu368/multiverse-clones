@@ -47,21 +47,32 @@ sentry, the app build, the deterministic verifier) and is intended to run via th
 (`taskfarm-clones-manifest.yaml`). A cloud run additionally depends on the unchanged
 github/sentry/grafana images being pullable.
 
-## Two variants per task (12 task dirs)
+## Two variants per task — empty ↔ prod-v1 is a ONE-LINE switch
 
-Each of the 6 tasks ships twice:
+Each of the 6 tasks ships twice. The two composes are **identical except the sidecar image** — the
+data mounts are the same path in both variants:
 
-| Variant | jira sidecar | slack sidecar (tbmq) | Workspace served |
-|---|---|---|---|
-| `<task>` | `jira-gateway:empty` + task `state.json` mounted at `/var/lib/ticketvector/state.json` | `slack-gateway:empty` + `scraped.json` at `/data/mattermost` | only the task's own data |
-| `<task>-prodv1` | `jira-gateway:prod-v1` + task `state.json` mounted as an **overlay** at `/data/state-overlay.json` | `slack-gateway:prod-v1` + the task messages as an export **overlay** at `/data/slack-overlay` | **prod corpus + task data merged** |
+| Variant | sidecar image | jira mount | slack mount (tbmq) | Workspace served |
+|---|---|---|---|---|
+| `<task>` | `jira-gateway:empty` / `slack-gateway:empty` | `…/state.json:/data/state-overlay.json` | `…/slack-overlay:/data/slack-overlay` | only the task's own data |
+| `<task>-prodv1` | `jira-gateway:prod-v1` / `slack-gateway:prod-v1` | **same** | **same** | **prod corpus + task data merged** |
+
+The gateways decide base-vs-overlay by whether the image has a baked corpus, so the **same mount
+path** works for both:
+- **jira** (`jira-boot.sh`): `:prod-v1` has the baked ENG corpus → the mount at `/data/state-overlay.json`
+  is **merged on top**; `:empty` has no corpus → that mount **is** the base. (Boot also normalizes the
+  state to a write-faithful shape.)
+- **slack** (`slack-boot.sh`): `:prod-v1` has the prebuilt prod DB → `/data/slack-overlay` is layered on
+  top; `:empty` imports the same `/data/slack-overlay` export as the base workspace.
+
+So flipping a task between an empty workspace and the prod corpus is just changing the image (or
+setting `JIRA_GATEWAY_IMAGE` / `SLACK_GATEWAY_IMAGE`). The prod-v1 sidecars are **pinned by digest**
+because the cloud runner caches image tags — a re-pushed tag won't refresh.
 
 The `-prodv1` variants exercise realism/scale: the agent must locate the task's tickets/messages
-inside a large real corpus (ENG: 8040 issues → 8043 after merge; slack: 88 prod channels → 92). This
-relies on the jira gateway's boot-time overlay merge (`jira-boot.sh` + `apply_state_patch.py`,
-shipped in `jira-gateway:prod-v1`) and the slack gateway's native overlay import. Verified locally:
-jira serves both `CRDB-63963` (task) and `ENG-2016` (prod); slack serves `broker-oncall` (task) among
-the 92 channels with `mqtt_gap` searchable.
+inside a large real corpus (ENG: 8040 → 8043 issues after merge; slack: 88 → 92 channels). Verified
+locally: jira serves both `CRDB-63963` (task) and `ENG-2016` (prod) and the full oracle
+`update→comment→update` sequence returns `ok=True`; slack serves `broker-oncall` among the 92 channels.
 
 ## How it was converted
 

@@ -43,7 +43,7 @@ services:
       jira:
         condition: service_healthy
   jira:
-    image: ${JIRA_GATEWAY_IMAGE:-ghcr.io/abundant-ai/jira-gateway:empty}
+    image: ${JIRA_GATEWAY_IMAGE:-ghcr.io/abundant-ai/jira-gateway:empty@sha256:71dc8d5d0d992dae3394da5669d6b727036cda67db915a5cc54fd369390f295f}
     hostname: jira
     platform: linux/amd64
     environment:
@@ -52,7 +52,7 @@ services:
       WORLD_ISSUES_PORT: '8765'
       WORLD_ISSUES_ACTOR: agent
     volumes:
-    - ./data/ticketvector/state.json:/var/lib/ticketvector/state.json:ro
+    - ./data/ticketvector/state.json:/data/state-overlay.json:ro
     healthcheck:
       test:
       - CMD-SHELL

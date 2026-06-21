@@ -48,7 +48,7 @@ services:
       jira:
         condition: service_healthy
   jira:
-    image: ${JIRA_GATEWAY_IMAGE:-ghcr.io/abundant-ai/jira-gateway:prod-v1@sha256:8a1b3379d53a31c2cbcc48763d600177c081893c2ffcbf1ed75f78e34979d54f}
+    image: ${JIRA_GATEWAY_IMAGE:-ghcr.io/abundant-ai/jira-gateway:prod-v1@sha256:7701b536418bdeb6485edbfb28cc7ea67300032fb52f3400a7687d985d2ad219}
     hostname: jira
     platform: linux/amd64
     environment:

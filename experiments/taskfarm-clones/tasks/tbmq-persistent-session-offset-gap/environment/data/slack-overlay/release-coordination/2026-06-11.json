@@ -1,0 +1,18 @@
+[
+  {
+    "user": "U13E51919BD",
+    "type": "message",
+    "ts": "1781182920.000000",
+    "client_msg_id": "95d31ad7e687ca4c47",
+    "text": "Background: mobile clean-session reconnect reports are unrelated to TBMQ-320. Do not mix clean-session device snapshot behavior into the persistent session fix.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "maya",
+      "real_name": "Maya",
+      "display_name": "maya",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

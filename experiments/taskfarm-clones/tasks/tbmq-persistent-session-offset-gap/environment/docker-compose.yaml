@@ -41,7 +41,7 @@ services:
       jira:
         condition: service_healthy
   jira:
-    image: ${JIRA_GATEWAY_IMAGE:-ghcr.io/abundant-ai/jira-gateway:empty}
+    image: ${JIRA_GATEWAY_IMAGE:-ghcr.io/abundant-ai/jira-gateway:empty@sha256:71dc8d5d0d992dae3394da5669d6b727036cda67db915a5cc54fd369390f295f}
     hostname: jira
     platform: linux/amd64
     environment:
@@ -50,7 +50,7 @@ services:
       WORLD_ISSUES_PORT: '8765'
       WORLD_ISSUES_ACTOR: agent
     volumes:
-    - ./data/ticketvector/state.json:/var/lib/ticketvector/state.json:ro
+    - ./data/ticketvector/state.json:/data/state-overlay.json:ro
     healthcheck:
       test:
       - CMD-SHELL
@@ -78,13 +78,13 @@ services:
       timeout: 2s
       retries: 30
   slack:
-    image: ${SLACK_GATEWAY_IMAGE:-ghcr.io/abundant-ai/slack-gateway:empty}
+    image: ${SLACK_GATEWAY_IMAGE:-ghcr.io/abundant-ai/slack-gateway:empty@sha256:0e8dbf339515c888eafbd501d9aede2ee2bd616692ea6e4fc6870db504b8e5d7}
     hostname: slack
     platform: linux/amd64
     environment:
       SLACK_BOT_TOKEN: test-token-acme-eval
     volumes:
-    - ./data/slack:/data/mattermost:ro
+    - ./data/slack-overlay:/data/slack-overlay:ro
     healthcheck:
       test:
       - CMD-SHELL
