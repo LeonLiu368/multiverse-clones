@@ -1,0 +1,63 @@
+{
+  "org": "acme",
+  "project": "web",
+  "issues": [
+    {
+      "id": "ISSUE-1",
+      "shortId": "WEB-7K2",
+      "title": "TimeoutError: upstream read timeout after 5s calling payments",
+      "culprit": "checkout.charge",
+      "level": "error",
+      "status": "unresolved",
+      "count": 142,
+      "userCount": 37,
+      "firstSeen": "2026-06-20T16:30:10Z",
+      "lastSeen": "2026-06-20T17:02:44Z",
+      "tags": { "environment": "production", "release": "web@2026.06.20" },
+      "events": [
+        {
+          "id": "ev-1a2b",
+          "timestamp": "2026-06-20T17:02:44Z",
+          "message": "upstream read timeout after 5s calling payments; deadline exceeded",
+          "tags": { "environment": "production", "transaction": "POST /checkout" },
+          "exception": {
+            "type": "TimeoutError",
+            "value": "read timeout after 5s (deadline exceeded)",
+            "stacktrace": [
+              { "filename": "app/checkout.py", "function": "charge", "lineno": 88, "context": "resp = http.post(PAYMENTS_URL, json=body, timeout=5)" },
+              { "filename": "app/http.py", "function": "post", "lineno": 41, "context": "return self._session.post(url, timeout=timeout)" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "ISSUE-2",
+      "shortId": "WEB-4Q9",
+      "title": "KeyError: 'idempotency_key' in refund handler",
+      "culprit": "refunds.create",
+      "level": "error",
+      "status": "resolved",
+      "count": 8,
+      "userCount": 5,
+      "firstSeen": "2026-06-19T11:04:00Z",
+      "lastSeen": "2026-06-19T13:20:00Z",
+      "tags": { "environment": "production" },
+      "events": [
+        {
+          "id": "ev-9c8d",
+          "timestamp": "2026-06-19T13:20:00Z",
+          "message": "KeyError: 'idempotency_key'",
+          "tags": { "environment": "production", "transaction": "POST /refunds" },
+          "exception": {
+            "type": "KeyError",
+            "value": "'idempotency_key'",
+            "stacktrace": [
+              { "filename": "app/refunds.py", "function": "create", "lineno": 53, "context": "key = payload['idempotency_key']" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

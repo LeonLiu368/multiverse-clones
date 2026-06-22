@@ -17,11 +17,16 @@ from pydantic import BaseModel
 
 from adapters.base import CloneAdapter
 from adapters.echo import EchoAdapter
+from adapters.gauge import GaugeAdapter
+from adapters.github import GithubAdapter
 from adapters.jira import JiraAdapter
+from adapters.sentry import SentryAdapter
 from adapters.slack import SlackAdapter
 
 # --- registry: the one place clones are wired in -----------------------------
-ADAPTERS: dict[str, CloneAdapter] = {a.id: a for a in [SlackAdapter(), JiraAdapter(), EchoAdapter()]}
+ADAPTERS: dict[str, CloneAdapter] = {a.id: a for a in [
+    SlackAdapter(), JiraAdapter(), GaugeAdapter(), SentryAdapter(), GithubAdapter(), EchoAdapter(),
+]}
 
 app = FastAPI(title="seed-dashboard")
 app.add_middleware(
@@ -106,6 +111,11 @@ async def load_upload(
 @app.get("/api/{app_id}/meta")
 def meta(app_id: str):
     return _guard(lambda: _adapter(app_id).meta())
+
+
+@app.get("/api/{app_id}/view")
+def view(app_id: str):
+    return _guard(lambda: _adapter(app_id).view())
 
 
 @app.get("/api/{app_id}/containers")

@@ -102,6 +102,13 @@ class CloneAdapter:
         at task standup (Slack import_export.py --patch / Jira apply_state_patch.py --patch)."""
         raise NotImplementedError("this clone does not support exporting a patch")
 
+    # ---- whole-seed view (for read-only clones whose seed doesn't fit the chat/issue vocabulary
+    #      — gauge logs/dashboards, sentry issues/events, github gh-seed script) ------------------
+    def view(self) -> dict[str, Any]:
+        """Return the full parsed seed payload for the frontend to render. Used by clones that load a
+        single seed file and visualize it read-only, instead of the normalized container/message API."""
+        raise NotImplementedError("this clone does not expose a seed view")
+
     def overlay_op(self, op: str, payload: dict[str, Any]) -> dict[str, Any]:
         """Generic overlay edit op (used by clones whose edits don't fit the message/container
         verbs, e.g. Jira's add_issue/update_issue/add_comment/remove_*)."""

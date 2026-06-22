@@ -48,6 +48,21 @@ Adding it required only: one adapter (`backend/adapters/jira.py`) + a bridge fun
 view (`frontend/src/apps/jira/`) + registry/launcher entries + one generic route
 (`POST /overlay/op`). The other routes and the api client were reused unchanged.
 
+## Other clones (read-only seed viewers)
+
+Per [`clone-task-builder`](https://github.com/abundant-ai/) the remaining clones ship a single
+per-task seed file (no shared prod corpus), so they get **read-only** viewers — load the seed, see it
+rendered as the agent's tools would. Each is one adapter (subclassing `FileSeedAdapter`) + one view;
+they expose the parsed seed through a generic `GET /api/{app}/view` instead of the chat/issue API.
+Bundled samples live under `samples/`; paste any path to load another file.
+
+- **gauge** (`gauge.state.json`) — Loki/Grafana shape: a dark **log explorer** (pick a LogQL selector
+  → level-colored log lines), plus dashboards (panels + exprs) and datasources.
+- **Sentry** (`sentry.state.json`) — an **issue list + detail** with events and **stack traces**
+  (frames + code context).
+- **GitHub** (`seed.sh`) — parses the `gh` API calls into a **preview** of repos / issues / PRs (with
+  nested reviews), plus the **raw script**.
+
 ## Scaling to other clones
 
 `backend/adapters/base.py` defines a `CloneAdapter` protocol; routes and the frontend shell speak

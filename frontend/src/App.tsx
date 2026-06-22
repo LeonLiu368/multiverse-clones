@@ -2,22 +2,25 @@ import { useEffect, useState } from "react";
 import { api, AppInfo } from "./api";
 import { SlackApp } from "./apps/slack/SlackApp";
 import { JiraApp } from "./apps/jira/JiraApp";
+import { GaugeApp } from "./apps/gauge/GaugeApp";
+import { SentryApp } from "./apps/sentry/SentryApp";
+import { GithubApp } from "./apps/github/GithubApp";
 import { GenericApp } from "./apps/GenericApp";
 
 // Visual metadata per app id. A new clone adds one entry; everything else is generic.
 const APP_META: Record<string, { glyph: string; color: string; blurb: string }> = {
   slack: { glyph: "S", color: "#4a154b", blurb: "Slack workspace (base + overlay)" },
   jira: { glyph: "J", color: "#0052cc", blurb: "Jira issues (state.json base + overlay)" },
+  gauge: { glyph: "G", color: "#f46800", blurb: "Logs & dashboards (gauge state.json)" },
+  sentry: { glyph: "S", color: "#362d59", blurb: "Issues & events (Sentry state.json)" },
+  github: { glyph: "G", color: "#24292f", blurb: "Repos/issues/PRs (gh seed.sh)" },
   echo: { glyph: "E", color: "#1264a3", blurb: "Demo adapter (extension-point proof)" },
-  github: { glyph: "G", color: "#24292f", blurb: "Coming soon" },
 };
 
 function Launcher({ apps, onOpen }: { apps: AppInfo[]; onOpen: (a: AppInfo) => void }) {
   // Always show known placeholders even if the backend doesn't register them yet.
   const ids = new Set(apps.map((a) => a.id));
-  const placeholders: AppInfo[] = ["github"]
-    .filter((id) => !ids.has(id))
-    .map((id) => ({ id, display_name: id[0].toUpperCase() + id.slice(1), status: "soon", ui_module: "generic" }));
+  const placeholders: AppInfo[] = []; // all registered clones are active
   const all = [...apps, ...placeholders];
   return (
     <div className="launcher">
@@ -70,6 +73,12 @@ export default function App() {
           <SlackApp appId={open.id} />
         ) : open.ui_module === "jira" ? (
           <JiraApp appId={open.id} />
+        ) : open.ui_module === "gauge" ? (
+          <GaugeApp appId={open.id} />
+        ) : open.ui_module === "sentry" ? (
+          <SentryApp appId={open.id} />
+        ) : open.ui_module === "github" ? (
+          <GithubApp appId={open.id} />
         ) : (
           <GenericApp appId={open.id} />
         )}

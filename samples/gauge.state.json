@@ -1,0 +1,36 @@
+{
+  "meta": { "workspace": "acme", "now": "2026-06-20T17:05:00Z" },
+  "users": [ { "id": "u-agent", "login": "agent", "name": "Agent User" } ],
+  "datasources": [
+    { "uid": "loki-default", "name": "web Loki", "type": "loki", "mode": "embedded", "health": "ok" },
+    { "uid": "prom-default", "name": "web Prometheus", "type": "prometheus", "mode": "embedded", "health": "ok" }
+  ],
+  "dashboards": [
+    {
+      "uid": "dash-web", "title": "web incident", "folder": "Incidents",
+      "tags": ["incident", "web"], "variables": [],
+      "panels": [
+        { "id": 1, "title": "web logs", "type": "logs", "datasource_uid": "loki-default",
+          "targets": [ { "datasource_uid": "loki-default", "expr": "{service=\"web\"}" } ] }
+      ]
+    }
+  ],
+  "alerts": [],
+  "metrics": { "queries": {} },
+  "logs": {
+    "queries": {
+      "{service=\"web\"}": [
+        { "ts": "2026-06-20T16:29:50Z", "labels": { "service": "web", "level": "info" },
+          "line": "GET /checkout 200 in 412ms" },
+        { "ts": "2026-06-20T16:30:10Z", "labels": { "service": "web", "level": "error" },
+          "line": "upstream read timeout after 5s calling payments; deadline exceeded" },
+        { "ts": "2026-06-20T16:30:12Z", "labels": { "service": "web", "level": "error" },
+          "line": "checkout retry failed: context deadline exceeded (read timeout=5s)" }
+      ]
+    }
+  },
+  "alert_instances": [],
+  "alert_state_history": [],
+  "annotations": [],
+  "mutation_log": []
+}

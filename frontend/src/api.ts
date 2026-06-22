@@ -127,6 +127,8 @@ export const api = {
     return fetch(`/api/${app}/load_upload`, { method: "POST", body: fd }).then(j<any>);
   },
   meta: (app: string) => fetch(`/api/${app}/meta`).then(j<Meta>),
+  // read-only whole-seed payload (gauge / sentry / github)
+  view: (app: string) => fetch(`/api/${app}/view`).then(j<any>),
   containers: (app: string) => fetch(`/api/${app}/containers`).then(j<Channel[]>),
   entities: (app: string) => fetch(`/api/${app}/entities`).then(j<User[]>),
   messages: (app: string, container: string, limit = 100) =>
