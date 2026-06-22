@@ -1,7 +1,7 @@
 metadata:
   name: multi-clone-fetch
   enable_image_push: true
-  description: "Pure-retrieval tasks: agent fetches facts from five service clones and writes to /app/report.json. No code fix required."
+  description: "Pure-retrieval tasks: agent fetches facts from five service clones and writes /app/report.json. No code fix required."
   task_path: experiments/multi-clone-fetch/tasks
   n_trials: 1
   skip_trajectory_analysis: false
@@ -10,7 +10,8 @@ tasks:
   - fetch-basics
 
 agents:
-- name: gemini-cli
-    model_name: google/gemini-3.1-pro-preview
   - name: nop
   - name: oracle
+  - name: gemini-cli
+    model_name: google/gemini-3.1-pro-preview
+    n_trials: 2
