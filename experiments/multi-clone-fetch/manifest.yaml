@@ -1,0 +1,15 @@
+metadata:
+  name: multi-clone-fetch
+  enable_image_push: true
+  description: "Pure-retrieval tasks: agent fetches facts from five service clones and writes to /app/report.json. No code fix required."
+  task_path: experiments/multi-clone-fetch/tasks
+  n_trials: 1
+  skip_trajectory_analysis: false
+
+tasks:
+  - fetch-basics
+
+agents:
+  - name: nop
+  - name: oracle
+  - name: claude-code
