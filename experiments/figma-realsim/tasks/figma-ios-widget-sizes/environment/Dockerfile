@@ -1,7 +1,7 @@
-# Agent (`main`) container — the public figma-service image (figma-cli + figma-mcp)
-# plus pytest and the codebase. No figma source vendored; the seeded design (a slice
-# of the real "iOS and iPadOS 26 (Community)" file) lives only in the `figma` service.
-FROM ghcr.io/abundant-ai/figma-service:latest
+# Agent (`main`) — the THIN figma-agent image (figma-cli + figma-mcp, no server
+# source, no seed data) + pytest + the codebase. The seeded design lives only in
+# the `figma` service (a mounted slice on :empty, or the baked corpus on :prod-v1).
+FROM ghcr.io/abundant-ai/figma-agent:latest
 
 RUN pip install --no-cache-dir pytest
 COPY codebase /app

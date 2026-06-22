@@ -16,7 +16,7 @@ The file key is `R1jno9FuCgYkNXayz8zglW` (also in `$FIGMA_FILE_KEY`).
 
 ## What to do
 
-1. Find the **"Home Screen Widgets"** component set in the design (try
+1. Find the **iPhone** "Home Screen Widgets" component set in the design (try
    `figma-cli search "$FIGMA_FILE_KEY" "Home Screen Widgets"`), then inspect its
    variants (`figma-cli node "$FIGMA_FILE_KEY" <node-id>`).
 2. Update `/app/ios_widgets/widgets.py` so `home_screen_widget_sizes()` returns the

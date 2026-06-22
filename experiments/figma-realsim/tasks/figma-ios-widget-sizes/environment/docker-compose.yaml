@@ -1,6 +1,7 @@
-# The agent (`main`) + the figma service (pulled public image), seeded per-task by
-# mounting a slice of the REAL "iOS and iPadOS 26 (Community)" file (the iPhone
-# Examples section) as fixture.json into the service container only.
+# empty <-> prod-v1 is a one-line switch: FIGMA_SERVICE_IMAGE=ghcr.io/abundant-ai/figma-service:prod-v1
+#   :empty   -> seeds from the mounted slice (iPhone section only; 1 widget set)
+#   :prod-v1 -> serves the baked full iOS corpus (2 widget sets; must disambiguate iPhone)
+# Same codebase + verifier across both, so the pass-rate delta isolates retrieval-under-distraction.
 services:
   main:
     platform: linux/amd64
@@ -18,7 +19,7 @@ services:
         condition: service_healthy
 
   figma:
-    image: ghcr.io/abundant-ai/figma-service:latest
+    image: ${FIGMA_SERVICE_IMAGE:-ghcr.io/abundant-ai/figma-service:empty}
     hostname: figma
     platform: linux/amd64
     environment:
