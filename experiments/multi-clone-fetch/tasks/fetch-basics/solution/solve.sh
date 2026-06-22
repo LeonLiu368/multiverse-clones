@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Oracle: fetch the seven facts through the clone CLIs/APIs and write /app/report.json.
-set -uo pipefail
+# -e so a failing CLI (e.g. a missing dep) aborts loudly instead of falling through
+# to the "wrote report.json" line and leaving the file unwritten.
+set -euo pipefail
 
 python3 - <<'PY'
 import json, re, subprocess, urllib.request

@@ -17,6 +17,7 @@ FROM python:3.12-slim
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl jq git ca-certificates bash \
     && pip install --no-cache-dir "slack_sdk>=3.27" pytest \
+        platformdirs==4.10.0 typer==0.26.7 httpx==0.28.1 rich==15.0.0 \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Clone CLIs + their support packages.
@@ -25,6 +26,8 @@ COPY --from=slack-tools /opt/slackcli /opt/slackcli
 COPY --from=tv-tools /usr/local/bin/linear /usr/local/bin/jira /usr/local/bin/
 COPY --from=tv-tools /opt/ticketvector /opt/ticketvector
 COPY --from=gh-tools /usr/local/bin/gh /usr/local/bin/ghc /usr/local/bin/
+# /opt/ghclone is the `gh` CLI's source; its runtime deps (platformdirs/typer/httpx/rich)
+# are pip-installed above — COPY --from only brings the source, not the image's site-packages.
 COPY --from=gh-tools /opt/ghclone /opt/ghclone
 COPY --from=gauge-tools /usr/local/bin/gcx /usr/local/bin/mcp-grafana /usr/local/bin/
 COPY --from=gauge-tools /opt/gaugecli /opt/gaugecli
