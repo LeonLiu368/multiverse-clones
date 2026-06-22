@@ -1,0 +1,30 @@
+# Two-container smoke for the gauge agent/gateway split + boot-overlay merge.
+#   main  — the agent (gauge-agent CLIs copied in; NO log data on disk). Reaches gauge over HTTP.
+#   gauge — the gateway sidecar (gauge-gateway:empty): mounts a baseline log corpus + an incident
+#           overlay; the boot MERGES them so {service="checkout"} serves baseline + the 500 incident.
+# custom_docker_compose = true; NO networks: block; linux/amd64.
+services:
+  main:
+    build: { context: ., dockerfile: Dockerfile }
+    image: ${APEX_TASK_DOCKER_CLIENT_IMAGE_NAME:-gauge-smoke-main:local}
+    platform: linux/amd64
+    environment:
+      GRAFANA_URL: http://gauge
+      GRAFANA_TOKEN: test-token
+    depends_on:
+      gauge:
+        condition: service_healthy
+
+  gauge:
+    image: ${GAUGE_GATEWAY_IMAGE:-ghcr.io/abundant-ai/gauge-gateway:empty}
+    hostname: gauge
+    platform: linux/amd64
+    volumes:
+      - ./data/gauge-baseline.json:/data/gauge/state.json:ro
+      - ./data/gauge-overlay.json:/data/gauge-overlay.json:ro
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost/api/healthz', timeout=1)\" || exit 1"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+      start_period: 5s

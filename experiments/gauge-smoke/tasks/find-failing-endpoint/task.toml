@@ -1,0 +1,24 @@
+schema_version = "1.2"
+name = "gauge-smoke/find-failing-endpoint"
+description = "Smoke test for the gauge clone's agent/gateway split + boot-overlay merge. The agent must use the gcx CLI (gauge-agent image; reaches the gauge-gateway sidecar over HTTP) to query checkout logs, find the endpoint returning 500s (/api/payments/charge — seeded as an incident overlay merged onto a baseline), and write it to /workspace/answer.txt. Log data lives only in the gauge sidecar, never on the agent FS. nop=0, oracle=1."
+
+[metadata]
+category = "observability"
+failure_mode = "log-investigation"
+tags = ["gauge", "observability", "clones", "agent-gateway-split", "smoke"]
+
+[agent]
+timeout_sec = 900
+
+[verifier]
+timeout_sec = 300
+
+[environment]
+allow_internet = true
+build_timeout_sec = 1800
+cpus = 2
+memory_mb = 4096
+storage_mb = 20480
+gpus = 0
+workdir = "/workspace"
+custom_docker_compose = true

@@ -1,0 +1,116 @@
+{
+  "meta": {
+    "workspace": "shop",
+    "now": "2026-06-22T10:30:00Z"
+  },
+  "users": [
+    {
+      "id": 1,
+      "login": "agent",
+      "name": "Agent",
+      "role": "Editor"
+    }
+  ],
+  "datasources": [
+    {
+      "uid": "loki-default",
+      "name": "checkout Loki",
+      "type": "loki"
+    }
+  ],
+  "dashboards": [],
+  "alerts": [],
+  "metrics": {
+    "queries": {}
+  },
+  "logs": {
+    "queries": {
+      "{service=\"checkout\"}": {
+        "entries": [
+          {
+            "ts": "2026-06-22T10:00:00Z",
+            "labels": {
+              "service": "checkout",
+              "level": "info"
+            },
+            "line": "\"GET /api/cart/ HTTP/1.1\" 200 120"
+          },
+          {
+            "ts": "2026-06-22T10:01:00Z",
+            "labels": {
+              "service": "checkout",
+              "level": "info"
+            },
+            "line": "\"GET /api/cart/ HTTP/1.1\" 200 121"
+          },
+          {
+            "ts": "2026-06-22T10:02:00Z",
+            "labels": {
+              "service": "checkout",
+              "level": "info"
+            },
+            "line": "\"GET /api/cart/ HTTP/1.1\" 200 122"
+          },
+          {
+            "ts": "2026-06-22T10:03:00Z",
+            "labels": {
+              "service": "checkout",
+              "level": "info"
+            },
+            "line": "\"GET /api/cart/ HTTP/1.1\" 200 123"
+          },
+          {
+            "ts": "2026-06-22T10:04:00Z",
+            "labels": {
+              "service": "checkout",
+              "level": "info"
+            },
+            "line": "\"GET /api/cart/ HTTP/1.1\" 200 124"
+          },
+          {
+            "ts": "2026-06-22T10:05:00Z",
+            "labels": {
+              "service": "checkout",
+              "level": "info"
+            },
+            "line": "\"GET /api/cart/ HTTP/1.1\" 200 125"
+          },
+          {
+            "ts": "2026-06-22T10:20:00Z",
+            "labels": {
+              "service": "checkout",
+              "level": "info"
+            },
+            "line": "\"GET /api/orders/ HTTP/1.1\" 200 200"
+          },
+          {
+            "ts": "2026-06-22T10:21:00Z",
+            "labels": {
+              "service": "checkout",
+              "level": "info"
+            },
+            "line": "\"GET /api/orders/ HTTP/1.1\" 200 201"
+          },
+          {
+            "ts": "2026-06-22T10:22:00Z",
+            "labels": {
+              "service": "checkout",
+              "level": "info"
+            },
+            "line": "\"GET /api/orders/ HTTP/1.1\" 200 202"
+          },
+          {
+            "ts": "2026-06-22T10:23:00Z",
+            "labels": {
+              "service": "checkout",
+              "level": "info"
+            },
+            "line": "\"GET /api/orders/ HTTP/1.1\" 200 203"
+          }
+        ]
+      }
+    }
+  },
+  "annotations": [],
+  "mutation_log": []
+}
