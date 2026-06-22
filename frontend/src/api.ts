@@ -129,6 +129,11 @@ export const api = {
   meta: (app: string) => fetch(`/api/${app}/meta`).then(j<Meta>),
   // read-only whole-seed payload (gauge / sentry / github)
   view: (app: string) => fetch(`/api/${app}/view`).then(j<any>),
+  loadFile: (app: string, file: File) => {
+    const fd = new FormData();
+    fd.append("file", file);
+    return fetch(`/api/${app}/load_file`, { method: "POST", body: fd }).then(j<any>);
+  },
   containers: (app: string) => fetch(`/api/${app}/containers`).then(j<Channel[]>),
   entities: (app: string) => fetch(`/api/${app}/entities`).then(j<User[]>),
   messages: (app: string, container: string, limit = 100) =>

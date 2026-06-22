@@ -1,22 +1,23 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { api, Base } from "../api";
 
 // Shared loader for the read-only single-file clones (gauge / sentry / github): pick a bundled sample
-// or paste a path to any seed file, then Load.
+// or upload a seed file, then it loads.
 export function SeedFileBar({
   appId,
-  pathHint,
+  accept,
   onLoaded,
 }: {
   appId: string;
-  pathHint: string;
+  accept: string;
   onLoaded: () => Promise<void> | void;
 }) {
   const [bases, setBases] = useState<Base[]>([]);
   const [baseId, setBaseId] = useState("");
-  const [path, setPath] = useState("");
+  const [fileName, setFileName] = useState("");
   const [busy, setBusy] = useState("");
   const [err, setErr] = useState("");
+  const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     api
@@ -28,11 +29,11 @@ export function SeedFileBar({
       .catch((e) => setErr(String(e)));
   }, [appId]);
 
-  async function load(id: string) {
+  async function run(label: string, fn: () => Promise<any>) {
     setErr("");
-    setBusy("Loading…");
+    setBusy(label);
     try {
-      await api.load(appId, id);
+      await fn();
       await onLoaded();
     } catch (e) {
       setErr(String(e));
@@ -41,32 +42,39 @@ export function SeedFileBar({
     }
   }
 
+  function onPick(e: React.ChangeEvent<HTMLInputElement>) {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    setFileName(f.name);
+    run(`Uploading ${f.name}…`, () => api.loadFile(appId, f));
+  }
+
   return (
     <div className="seedbar">
       <div className="seedbar-row">
-        <span className="field-label">Seed</span>
+        <span className="field-label">Sample</span>
         <select className="base-select" value={baseId} onChange={(e) => setBaseId(e.target.value)}>
           {bases.map((b) => (
             <option key={b.id} value={b.id}>
               {b.label}
             </option>
           ))}
-          {!bases.length && <option value="">(no bundled samples — paste a path →)</option>}
+          {!bases.length && <option value="">(none — upload a file →)</option>}
         </select>
-        <button className="primary" disabled={!baseId || !!busy} onClick={() => load(baseId)}>
+        <button
+          className="primary"
+          disabled={!baseId || !!busy}
+          onClick={() => run("Loading…", () => api.load(appId, baseId))}
+        >
           Load
         </button>
-        <span className="field-label muted">or path</span>
-        <input
-          className="pull-input"
-          value={path}
-          placeholder={pathHint}
-          onChange={(e) => setPath(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && path.trim() && load("file:" + path.trim())}
-        />
-        <button disabled={!path.trim() || !!busy} onClick={() => load("file:" + path.trim())}>
-          Load file
+
+        <span className="field-label muted">or upload</span>
+        <input ref={fileRef} type="file" accept={accept} className="overlay-file-hidden" onChange={onPick} />
+        <button className="overlay-pick" disabled={!!busy} onClick={() => fileRef.current?.click()}>
+          {fileName ? `📄 ${fileName}` : "Choose file…"}
         </button>
+
         <div className="seedbar-status">
           {busy && <span className="hint">⏳ {busy}</span>}
           {err && <span className="err">⚠ {err}</span>}

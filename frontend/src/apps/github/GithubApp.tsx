@@ -22,7 +22,7 @@ export function GithubApp({ appId }: { appId: string }) {
 
   return (
     <div className="ghv">
-      <SeedFileBar appId={appId} pathHint="path to a github seed.sh" onLoaded={load} />
+      <SeedFileBar appId={appId} accept=".sh,.bash,text/x-shellscript" onLoaded={load} />
       {!v ? (
         <div className="empty-state">
           Load a GitHub <b>seed.sh</b> to preview the repos / issues / PRs / reviews its <code>gh</code> calls create.

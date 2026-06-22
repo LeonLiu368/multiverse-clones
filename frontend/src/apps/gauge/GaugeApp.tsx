@@ -31,7 +31,7 @@ export function GaugeApp({ appId }: { appId: string }) {
 
   return (
     <div className="gauge">
-      <SeedFileBar appId={appId} pathHint="path to a gauge state.json" onLoaded={load} />
+      <SeedFileBar appId={appId} accept=".json,application/json" onLoaded={load} />
       {!v ? (
         <div className="empty-state">Load a gauge <b>state.json</b> to inspect its log streams, dashboards and datasources.</div>
       ) : (

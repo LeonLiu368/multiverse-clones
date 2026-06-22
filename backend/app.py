@@ -108,6 +108,18 @@ async def load_upload(
     return _guard(lambda: a.load(base_id, overlay_dir).__dict__)
 
 
+@app.post("/api/{app_id}/load_file")
+async def load_file(app_id: str, file: UploadFile = File(...)):
+    """Load a single uploaded seed file (gauge/sentry state.json, github seed.sh). The file is
+    written to a temp path (keeping its name/extension) and loaded via the adapter's file path."""
+    a = _adapter(app_id)
+    tmp = tempfile.mkdtemp(prefix="seedview-file-")
+    dest = os.path.join(tmp, os.path.basename(file.filename or "seed"))
+    with open(dest, "wb") as out:
+        out.write(await file.read())
+    return _guard(lambda: a.load(f"file:{dest}").__dict__)
+
+
 @app.get("/api/{app_id}/meta")
 def meta(app_id: str):
     return _guard(lambda: _adapter(app_id).meta())

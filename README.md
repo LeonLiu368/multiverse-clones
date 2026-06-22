@@ -54,7 +54,7 @@ Per [`clone-task-builder`](https://github.com/abundant-ai/) the remaining clones
 per-task seed file (no shared prod corpus), so they get **read-only** viewers — load the seed, see it
 rendered as the agent's tools would. Each is one adapter (subclassing `FileSeedAdapter`) + one view;
 they expose the parsed seed through a generic `GET /api/{app}/view` instead of the chat/issue API.
-Bundled samples live under `samples/`; paste any path to load another file.
+Pick a bundled sample (under `samples/`) or **upload** any seed file (`POST /api/{app}/load_file`).
 
 - **gauge** (`gauge.state.json`) — Loki/Grafana shape: a dark **log explorer** (pick a LogQL selector
   → level-colored log lines), plus dashboards (panels + exprs) and datasources.
