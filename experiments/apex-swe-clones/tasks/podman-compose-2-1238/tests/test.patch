@@ -1,0 +1,108 @@
+diff --git a/tests/integration/in_pod/test_podman_compose_in_pod.py b/tests/integration/in_pod/test_podman_compose_in_pod.py
+index 099a684..7b60886 100644
+--- a/tests/integration/in_pod/test_podman_compose_in_pod.py
++++ b/tests/integration/in_pod/test_podman_compose_in_pod.py
+@@ -467,6 +467,57 @@ class TestPodmanComposeInPod(unittest.TestCase, RunSubprocessMixin):
+             # can not actually find this pod because it was not created
+             self.run_subprocess_assert_returncode(command_rm_pod, 1)
+
++    def test_x_podman_in_pod_not_exists_command_line_in_pod_not_exists_env_var(self) -> None:
++        """
++        Test that podman-compose will not create a pod when env var is set.
++        """
++        command_up = [
++            "python3",
++            os.path.join(base_path(), "podman_compose.py"),
++            "-f",
++            os.path.join(
++                base_path(),
++                "tests",
++                "integration",
++                "in_pod",
++                "custom_x-podman_not_exists",
++                "docker-compose.yml",
++            ),
++            "up",
++            "-d",
++        ]
++
++        down_cmd = [
++            "python3",
++            podman_compose_path(),
++            "-f",
++            os.path.join(
++                base_path(),
++                "tests",
++                "integration",
++                "in_pod",
++                "custom_x-podman_not_exists",
++                "docker-compose.yml",
++            ),
++            "down",
++        ]
++
++        env = {
++            "PODMAN_COMPOSE_IN_POD": "0",
++        }
++
++        try:
++            self.run_subprocess_assert_returncode(
++                command_up, failure_exitcode_when_rootful(), env=env
++            )
++
++        finally:
++            self.run_subprocess_assert_returncode(down_cmd, env=env)
++
++            command_rm_pod = ["podman", "pod", "rm", "pod_custom_x-podman_not_exists"]
++            # can not actually find this pod because it was not created
++            self.run_subprocess_assert_returncode(command_rm_pod, 1)
++
+     def test_x_podman_in_pod_custom_name(self) -> None:
+         """
+         Test that podman-compose will create a pod with a custom name
+diff --git a/tests/integration/test_utils.py b/tests/integration/test_utils.py
+index d8adedb..828a4f4 100644
+--- a/tests/integration/test_utils.py
++++ b/tests/integration/test_utils.py
+@@ -34,7 +34,7 @@ class RunSubprocessMixin:
+     def is_debug_enabled(self) -> bool:
+         return "TESTS_DEBUG" in os.environ
+
+-    def run_subprocess(self, args: list[str]) -> tuple[bytes, bytes, int]:
++    def run_subprocess(self, args: list[str], env: dict[str, str] = {}) -> tuple[bytes, bytes, int]:
+         begin = time.time()
+         if self.is_debug_enabled():
+             print("TEST_CALL", args)
+@@ -42,6 +42,7 @@ class RunSubprocessMixin:
+             args,
+             stdout=subprocess.PIPE,
+             stderr=subprocess.PIPE,
++            env=os.environ | env,
+         )
+         out, err = proc.communicate()
+         if self.is_debug_enabled():
+@@ -51,9 +52,9 @@ class RunSubprocessMixin:
+         return out, err, proc.returncode
+
+     def run_subprocess_assert_returncode(
+-        self, args: list[str], expected_returncode: int = 0
++        self, args: list[str], expected_returncode: int = 0, env: dict[str, str] = {}
+     ) -> tuple[bytes, bytes]:
+-        out, err, returncode = self.run_subprocess(args)
++        out, err, returncode = self.run_subprocess(args, env=env)
+         decoded_out = out.decode('utf-8')
+         decoded_err = err.decode('utf-8')
+         self.assertEqual(  # type: ignore[attr-defined]
+diff --git a/tests/unit/test_container_to_args.py b/tests/unit/test_container_to_args.py
+index 0825b9b..db4e364 100644
+--- a/tests/unit/test_container_to_args.py
++++ b/tests/unit/test_container_to_args.py
+@@ -650,7 +650,7 @@ class TestContainerToArgs(unittest.IsolatedAsyncioTestCase):
+         self, name: str, is_compat: bool, project_name: str, expected_network_name: str
+     ) -> None:
+         c = create_compose_mock(project_name)
+-        c.x_podman = {"default_net_name_compat": is_compat}
++        c.x_podman = {PodmanCompose.XPodmanSettingKey.DEFAULT_NET_NAME_COMPAT: is_compat}
+         c.networks = {'network1': {}}
+
+         cnt = get_minimal_container()

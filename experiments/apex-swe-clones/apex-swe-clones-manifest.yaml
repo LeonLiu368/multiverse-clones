@@ -1,23 +1,21 @@
 metadata:
-  name: apex-swe-clones
+  name: apex-swe-clones-v2
   description: |
-    The exact mercor/APEX-SWE Observability tasks re-platformed onto abundant-ai's
-    service clones. Each task's upstream repo snapshot + fixtures are fetched from the
-    public APEX-SWE dataset at build; the agent discovers a production incident across
-    three lightweight, deterministic clone services — ticketvector (issue tracker),
-    slack-service (team chat), and gauge (Grafana/Loki/Prometheus observability) — then
-    fixes the root cause in /app/repo. The upstream PR's own test suite is the hidden
-    F2P/P2P verifier (clone-independent grading). This collapses APEX's six-container
-    Plane+Postgres+Redis+Loki+Grafana+Mattermost stack into three published images. See
-    README.md for the recipe and tools/apex_to_clones.py for the converter.
+    Two exact mercor/APEX-SWE Observability tasks re-platformed onto abundant-ai's service
+    clones (staged, approval-gated, near-perfect-fidelity conversion):
+      - paperless-ngx-10555    : secure webhook delivery (SSRF / redirect / host-header)
+      - podman-compose-2-1238  : x-podman compose network-name compat + service discovery
+    Each fetches its upstream repo + APEX fixtures at build and converts data/{plane,mattermost,loki}
+    -> ticketvector (issues) + slack-service (chat; empty here, Mattermost was template-empty) + gauge
+    (Loki/Grafana logs) via apex_to_clones.py. Graded by the upstream PR's own pytest suite (F2P/P2P,
+    clone-independent). Decisive signal lives in gauge logs + the Plane issue corpus. See README.md.
   task_path: experiments/apex-swe-clones/tasks
   n_trials: 1
   skip_trajectory_analysis: false
 
 tasks:
-  - paperless-ngx-10195-10196
-  - bor-1710
-  - podman-compose-23-1214
+  - paperless-ngx-10555
+  - podman-compose-2-1238
 
 agents:
   - name: oracle
@@ -25,6 +23,3 @@ agents:
   - name: gemini-cli
     model_name: gemini/gemini-3.1-pro-preview
     n_trials: 2
-# cursor-cli is NOT listed here: the GitHub /oddish validate-agents gate has no Cursor
-# provider (cursor/composer 400s as openai). To run cursor, use the oddish CLI directly
-# with a sweep file (see README "Running with cursor").

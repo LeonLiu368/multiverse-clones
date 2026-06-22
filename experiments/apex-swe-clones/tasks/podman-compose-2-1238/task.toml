@@ -1,0 +1,37 @@
+schema_version = "1.2"
+name = "apex-swe-clones/podman-compose-2-1238"
+description = "Exact APEX-SWE Observability task (podman-compose #2/#1238) re-platformed onto the clone stack: fix x-podman compose network-name compat (env-var vs compose-file precedence; service discovery). The agent reads gauge (podman-compose logs showing expected-vs-actual network name + service-discovery failure), a ticketvector tracker, and an empty slack channel, then fixes /app/repo. Graded by the upstream PR's own pytest suite. nop=0, oracle=1."
+
+[metadata]
+category = "observability"
+source_repo = "containers/podman-compose"
+apex_task = "Observability/containers-podman-compose-2-1238-observability"
+apex_origin = "mercor/APEX-SWE (exact task, re-platformed onto abundant clones)"
+failure_mode = "healthcheck-arg-formatting"
+tags = ["apex-swe", "observability", "clones", "multi-service", "sre", "ticketvector", "gauge", "python"]
+
+[agent]
+timeout_sec = 2400
+
+[verifier]
+timeout_sec = 1200
+user = "root"
+
+[environment]
+allow_internet = true
+build_timeout_sec = 2400
+cpus = 2
+memory_mb = 4096
+storage_mb = 20480
+gpus = 0
+workdir = "/app/repo"
+
+[[environment.mcp_servers]]
+name = "slack"
+transport = "stdio"
+command = "slack-mcp"
+
+[[environment.mcp_servers]]
+name = "grafana"
+transport = "stdio"
+command = "mcp-grafana"

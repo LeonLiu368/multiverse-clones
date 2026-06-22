@@ -108,7 +108,7 @@ our git light, these are **fetched from the public dataset at build**, not commi
   exact F2P/P2P node ids and runs the upstream test command. golden = product-only, test = tests-only.
 
 Only `solution/`, `tests/`, `environment/` (Dockerfile, compose, seed/) and `task.toml` live in
-git. See `tasks/paperless-ngx-10195-10196/` as the reference.
+git. See `tasks/paperless-ngx-10555/` as the reference.
 
 ## Per-task local gate (before Oddish)
 
@@ -143,8 +143,8 @@ pre-check (step 4) harder or skip.
 ## Batching the remaining ~24 Observability tasks
 
 Both pilots (paperless = Python/Django, bor = Go/go-ethereum) are proven, so the per-task work
-is now mostly filling knobs. For each task, copy `tasks/paperless-ngx-10195-10196/` (Python) or
-`tasks/bor-1710/` (Go) and set:
+is now mostly filling knobs. For each task, copy `tasks/paperless-ngx-10555/` (Python; for a Go
+task use the same shape with a `go build`/`go test` Dockerfile + verifier) and set:
 
 - **Dockerfile**: language base image + repo build (`uv sync` vs `go mod download && go build`),
   and `ARG APEX_TASK=Observability/<task-dir>`.
