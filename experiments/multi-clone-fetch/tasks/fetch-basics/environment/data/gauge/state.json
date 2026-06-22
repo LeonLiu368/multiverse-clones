@@ -1,0 +1,36 @@
+{
+  "meta": { "workspace": "acme", "now": "2026-05-20T18:11:00Z" },
+  "users": [ { "id": "u-agent", "login": "agent", "name": "Agent User" } ],
+  "datasources": [
+    { "uid": "loki-default", "name": "export-service Loki", "type": "loki", "mode": "embedded", "health": "ok" },
+    { "uid": "prom-default", "name": "export-service Prometheus", "type": "prometheus", "mode": "embedded", "health": "ok" }
+  ],
+  "dashboards": [
+    {
+      "uid": "dash-export-service", "title": "export-service", "folder": "Services",
+      "tags": ["export-service"], "variables": [],
+      "panels": [
+        { "id": 1, "title": "export-service logs", "type": "logs", "datasource_uid": "loki-default",
+          "targets": [ { "datasource_uid": "loki-default", "expr": "{service=\"export-service\"}" } ] }
+      ]
+    }
+  ],
+  "alerts": [],
+  "metrics": { "queries": {} },
+  "logs": {
+    "queries": {
+      "{service=\"export-service\"}": {
+        "entries": [
+          { "ts": "2026-05-20T18:09:50Z", "labels": { "service": "export-service", "level": "info" },
+            "line": "export job started job_id=exp-7741 format=csv" },
+          { "ts": "2026-05-20T18:10:10Z", "labels": { "service": "export-service", "level": "info" },
+            "line": "export job finished job_id=exp-7741 rows=4096 batch_size=512 duration_ms=1840 status=ok" }
+        ]
+      }
+    }
+  },
+  "alert_instances": [],
+  "alert_state_history": [],
+  "annotations": [],
+  "mutation_log": []
+}

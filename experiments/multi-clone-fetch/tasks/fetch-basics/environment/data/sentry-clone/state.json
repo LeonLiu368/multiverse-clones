@@ -1,0 +1,53 @@
+{
+  "meta": { "organization": "acme", "now": "2026-05-20T18:15:00Z" },
+  "activity": [],
+  "comments": [],
+  "teams": [
+    { "id": "team-reporting", "slug": "reporting", "name": "Reporting" }
+  ],
+  "projects": [
+    { "id": "proj-export", "slug": "reporting-export", "name": "Reporting Export", "platform": "python", "team_slug": "reporting" }
+  ],
+  "events": [
+    {
+      "breadcrumbs": [],
+      "exception": {
+        "type": "TypeError",
+        "value": "cannot serialize NaN in CSV writer"
+      },
+      "id": "evt-exp-501",
+      "issue_id": "EXP-501",
+      "message": "TypeError: cannot serialize NaN in CSV writer",
+      "project_slug": "reporting-export",
+      "stacktrace": {
+        "frames": [
+          { "filename": "reporting_export/writer.py", "function": "to_csv", "in_app": true, "lineno": 14 }
+        ]
+      },
+      "tags": { "environment": "production", "ticket": "WEB-100" },
+      "timestamp": "2026-05-20T18:12:30Z"
+    }
+  ],
+  "issues": [
+    {
+      "assignedTo": null,
+      "count": 5,
+      "firstSeen": "2026-05-20T18:00:00Z",
+      "id": "EXP-501",
+      "shortId": "EXP-501",
+      "project_slug": "reporting-export",
+      "lastSeen": "2026-05-20T18:12:30Z",
+      "level": "error",
+      "metadata": { "filename": "reporting_export/writer.py", "function": "to_csv" },
+      "project": { "slug": "reporting-export" },
+      "status": "unresolved",
+      "title": "TypeError: cannot serialize NaN in CSV writer"
+    }
+  ],
+  "releases": [],
+  "ownership_rules": [],
+  "mutation_log": [],
+  "deploys": [],
+  "commits": [],
+  "users": []
+}

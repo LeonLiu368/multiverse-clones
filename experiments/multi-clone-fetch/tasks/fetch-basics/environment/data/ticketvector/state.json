@@ -1,0 +1,47 @@
+{
+  "base_url": "https://jira.local/acme",
+  "project": { "archived": false, "id": "proj-web", "key": "WEB", "name": "Web" },
+  "projects": [ { "archived": false, "id": "proj-web", "key": "WEB", "name": "Web" } ],
+  "states": [
+    { "category": "backlog",   "id": "state-backlog",  "name": "Backlog" },
+    { "category": "unstarted", "id": "state-todo",     "name": "Todo" },
+    { "category": "started",   "id": "state-progress", "name": "In Progress" },
+    { "category": "started",   "id": "state-review",   "name": "In Review" },
+    { "category": "completed", "id": "state-done",     "name": "Done" }
+  ],
+  "users": [
+    { "handle": "agent",    "id": "user-agent", "name": "Agent User" },
+    { "handle": "dana.kim", "id": "user-dana",  "name": "Dana Kim" }
+  ],
+  "labels": [
+    { "id": "label-feature", "name": "feature" },
+    { "id": "label-export",  "name": "export" }
+  ],
+  "cycles": [],
+  "modules": [],
+  "issues": [
+    {
+      "identifier": "WEB-100",
+      "id": "issue-web-100",
+      "title": "Add CSV export to the reporting dashboard",
+      "description": "Let users download the reporting dashboard as a CSV file. The rollout is gated behind a feature flag announced in #engineering; see the reporting-export repo and the export-service logs for the batch behaviour.",
+      "state": { "category": "started", "id": "state-progress", "name": "In Progress" },
+      "assignees": [ { "handle": "agent", "id": "user-agent", "name": "Agent User" } ],
+      "labels": [ { "id": "label-feature", "name": "feature" }, { "id": "label-export", "name": "export" } ],
+      "priority": 2,
+      "project": { "archived": false, "id": "proj-web", "key": "WEB", "name": "Web" },
+      "links": [],
+      "relations": [],
+      "comments_count": 0,
+      "attachments_count": 0,
+      "created_at": "2026-05-20T10:00:00Z",
+      "updated_at": "2026-05-20T10:00:00Z",
+      "url": "https://jira.local/acme/browse/WEB-100"
+    }
+  ],
+  "comments": {},
+  "links": {},
+  "relations": {},
+  "history": {},
+  "attachments": {}
+}

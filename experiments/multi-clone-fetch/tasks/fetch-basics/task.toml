@@ -1,0 +1,24 @@
+schema_version = "1.2"
+name = "multi-clone-fetch/fetch-basics"
+description = "Very basic multi-clone retrieval task. No code to fix: the agent fetches seven simple facts from five service clones — Slack (prod-v1, a planted #engineering feature-flag message + the prod #general channel id), Jira (prod-v1, seeded WEB-100 + prod ENG-13), GitHub (an open issue title in a seeded open-source-style repo), Gauge (a batch_size value in synthetic export-service logs), and Sentry (a synthetic issue title) — and writes them to /app/report.json. The verifier re-reads every fact through the same tools/APIs and compares. Exercises tool discovery + retrieval-under-distraction (prod corpus) with no SWE work. nop=0, oracle=1."
+
+[metadata]
+category = "observability"
+failure_mode = "tool-retrieval"
+tags = ["multi-clone", "multi-tool", "slack", "jira", "github", "gauge", "sentry", "observability", "retrieval", "prod-v1"]
+
+[agent]
+timeout_sec = 1800
+
+[verifier]
+timeout_sec = 300
+
+[environment]
+custom_docker_compose = true
+cpus = 2
+memory_mb = 6144
+storage_mb = 20480
+gpus = 0
+allow_internet = true
+workdir = "/app"
+build_timeout_sec = 2400
