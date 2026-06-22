@@ -1,0 +1,27 @@
+schema_version = "1.2"
+name = "figma-ios/figma-ios-header-prominence"
+description = "Real2sim task on the iOS and iPadOS 26 (Community) Figma corpus. The agent must use the figma tool to read the \"Header\" component set and implement header_prominence_levels() to return its variant values (the part after Size=/Type=/etc). Values exist only in the design. Hidden grader pins them (order-insensitive). Runs on :empty (mounted slice) or :prod-v1 (baked full corpus). nop=0, oracle=1."
+
+[metadata]
+category = "observability"
+source = "Figma Community: iOS and iPadOS 26 (Community), file R1jno9FuCgYkNXayz8zglW"
+failure_mode = "info-in-design-only"
+tags = ["figma", "figma-clone", "real2sim", "observability", "components", "variant-axis"]
+
+[agent]
+timeout_sec = 1200
+[verifier]
+timeout_sec = 180
+[environment]
+cpus = 2
+memory_mb = 4096
+storage_mb = 12288
+gpus = 0
+allow_internet = true
+workdir = "/app"
+build_timeout_sec = 2400
+
+[[environment.mcp_servers]]
+name = "figma"
+transport = "stdio"
+command = "figma-mcp"
