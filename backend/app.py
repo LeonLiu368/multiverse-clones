@@ -17,6 +17,7 @@ from pydantic import BaseModel
 
 from adapters.base import CloneAdapter
 from adapters.echo import EchoAdapter
+from adapters.figma import FigmaAdapter
 from adapters.gauge import GaugeAdapter
 from adapters.github import GithubAdapter
 from adapters.jira import JiraAdapter
@@ -25,7 +26,8 @@ from adapters.slack import SlackAdapter
 
 # --- registry: the one place clones are wired in -----------------------------
 ADAPTERS: dict[str, CloneAdapter] = {a.id: a for a in [
-    SlackAdapter(), JiraAdapter(), GaugeAdapter(), SentryAdapter(), GithubAdapter(), EchoAdapter(),
+    SlackAdapter(), JiraAdapter(), FigmaAdapter(), GaugeAdapter(), SentryAdapter(),
+    GithubAdapter(), EchoAdapter(),
 ]}
 
 app = FastAPI(title="seed-dashboard")

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { api, AppInfo } from "./api";
 import { SlackApp } from "./apps/slack/SlackApp";
 import { JiraApp } from "./apps/jira/JiraApp";
+import { FigmaApp } from "./apps/figma/FigmaApp";
 import { GaugeApp } from "./apps/gauge/GaugeApp";
 import { SentryApp } from "./apps/sentry/SentryApp";
 import { GithubApp } from "./apps/github/GithubApp";
@@ -11,6 +12,7 @@ import { GenericApp } from "./apps/GenericApp";
 const APP_META: Record<string, { glyph: string; color: string; blurb: string }> = {
   slack: { glyph: "S", color: "#4a154b", blurb: "Slack workspace (base + overlay)" },
   jira: { glyph: "J", color: "#0052cc", blurb: "Jira issues (state.json base + overlay)" },
+  figma: { glyph: "F", color: "#0d99ff", blurb: "Design file (fixture.json node tree)" },
   gauge: { glyph: "G", color: "#f46800", blurb: "Logs & dashboards (gauge state.json)" },
   sentry: { glyph: "S", color: "#362d59", blurb: "Issues & events (Sentry state.json)" },
   github: { glyph: "G", color: "#24292f", blurb: "Repos/issues/PRs (gh seed.sh)" },
@@ -73,6 +75,8 @@ export default function App() {
           <SlackApp appId={open.id} />
         ) : open.ui_module === "jira" ? (
           <JiraApp appId={open.id} />
+        ) : open.ui_module === "figma" ? (
+          <FigmaApp appId={open.id} />
         ) : open.ui_module === "gauge" ? (
           <GaugeApp appId={open.id} />
         ) : open.ui_module === "sentry" ? (

@@ -56,6 +56,10 @@ rendered as the agent's tools would. Each is one adapter (subclassing `FileSeedA
 they expose the parsed seed through a generic `GET /api/{app}/view` instead of the chat/issue API.
 Pick a bundled sample (under `samples/`) or **upload** any seed file (`POST /api/{app}/load_file`).
 
+- **Figma** (`fixture.json`) — a `{team, projects, files}` workspace where each file is a Figma
+  document node tree. Renders a Figma-like **canvas** (nodes positioned by `absoluteBoundingBox`,
+  `fills`, `cornerRadius`, `characters`), a **layers** tree, an **inspector** (geometry + fill
+  swatches + font), and the file's **comments** (each links to its node).
 - **gauge** (`gauge.state.json`) — Loki/Grafana shape: a dark **log explorer** (pick a LogQL selector
   → level-colored log lines), plus dashboards (panels + exprs) and datasources.
 - **Sentry** (`sentry.state.json`) — an **issue list + detail** with events and **stack traces**

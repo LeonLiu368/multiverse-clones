@@ -267,6 +267,50 @@ button { font-family: inherit; cursor: pointer; }
 .jd-add-comment input { flex: 1; padding: 7px 9px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; }
 .ghost-btn.danger { color: #a3260b; }
 
+/* ---------------- figma (design file) ---------------- */
+.fig { display: flex; flex-direction: column; height: 100vh; }
+.fig-body { flex: 1; display: flex; min-height: 0; }
+.fig-left { width: 240px; background: #fff; border-right: 1px solid var(--border); overflow-y: auto; padding-bottom: 12px; }
+.fig-fileselect { width: calc(100% - 16px); margin: 8px; padding: 6px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; }
+.fig-section { padding: 12px 12px 4px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+.fig-page { padding: 6px 12px; font-size: 13px; cursor: pointer; }
+.fig-page:hover { background: #f4f5f7; } .fig-page.active { background: #e6f0ff; color: #0d6efd; font-weight: 600; }
+.fig-layers { font-size: 13px; }
+.fig-layer { display: flex; align-items: center; gap: 4px; padding: 3px 8px; cursor: pointer; white-space: nowrap; overflow: hidden; }
+.fig-layer:hover { background: #f4f5f7; } .fig-layer.sel { background: #e6f0ff; }
+.fig-caret { width: 12px; color: var(--muted); font-size: 9px; flex-shrink: 0; }
+.fig-icon { width: 14px; text-align: center; color: var(--muted); font-size: 11px; flex-shrink: 0; }
+.fig-layer-name { overflow: hidden; text-overflow: ellipsis; }
+
+.fig-canvas-wrap { flex: 1; overflow: auto; background: #e5e5e5; display: flex; align-items: flex-start; justify-content: center; padding: 40px; }
+.fig-canvas { position: relative; background: #fff; box-shadow: 0 1px 8px rgba(0,0,0,.15); flex-shrink: 0; }
+.fig-node { position: absolute; box-sizing: border-box; overflow: hidden; cursor: pointer; }
+.fig-text { padding: 0 1px; line-height: 1.1; white-space: pre-wrap; }
+
+.fig-right { width: 280px; background: #fff; border-left: 1px solid var(--border); overflow-y: auto; }
+.fig-tabs { display: flex; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: #fff; }
+.fig-tabs button { flex: 1; padding: 10px; border: none; background: none; font-size: 13px; color: var(--muted); border-bottom: 2px solid transparent; }
+.fig-tabs button.active { color: var(--text); font-weight: 700; border-bottom-color: #0d99ff; }
+.fig-inspect { padding: 14px; }
+.fig-i-type { font-size: 12px; color: var(--muted); font-weight: 700; }
+.fig-i-name { font-weight: 800; font-size: 15px; margin: 2px 0; }
+.fig-i-id { font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: var(--muted); margin-bottom: 12px; }
+.fig-i-grid { display: grid; grid-template-columns: auto 1fr auto 1fr; gap: 6px 8px; align-items: center; margin-bottom: 10px; }
+.fig-i-grid span, .fig-i-row span { color: var(--muted); font-size: 12px; }
+.fig-i-grid b, .fig-i-row b { font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; }
+.fig-i-row { display: flex; justify-content: space-between; padding: 4px 0; border-top: 1px solid #f0f0f0; }
+.fig-i-text { background: #f4f5f7; border-radius: 6px; padding: 8px 10px; font-size: 13px; margin: 10px 0; }
+.fig-i-label { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--muted); margin: 10px 0 6px; }
+.fig-swatch { display: flex; align-items: center; gap: 8px; font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; padding: 3px 0; }
+.fig-chip { width: 18px; height: 18px; border-radius: 4px; border: 1px solid rgba(0,0,0,.15); }
+.fig-muted { color: var(--muted); }
+.fig-comments { padding: 8px; }
+.fig-comment { padding: 10px; border-radius: 8px; cursor: pointer; }
+.fig-comment:hover { background: #f4f5f7; }
+.fig-comment-h { display: flex; gap: 8px; align-items: center; font-size: 13px; margin-bottom: 3px; }
+.fig-node-ref { font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #0d6efd; background: #e6f0ff; padding: 1px 5px; border-radius: 4px; margin-left: auto; }
+.fig-comment-b { font-size: 13px; color: #444; line-height: 1.4; }
+
 /* ---------------- gauge (logs/dashboards) ---------------- */
 .gauge { display: flex; flex-direction: column; height: 100vh; background: #0e1117; color: #c9d1d9; }
 .gauge .empty-state { color: #8b949e; }

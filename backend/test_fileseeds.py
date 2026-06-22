@@ -14,9 +14,9 @@ def _load_sample(app_id: str):
     return client.get(f"/api/{app_id}/view").json()
 
 
-def test_all_three_registered_active():
+def test_fileseed_clones_registered_active():
     apps = {a["id"]: a for a in client.get("/api/apps").json()}
-    for cid in ("gauge", "sentry", "github"):
+    for cid in ("figma", "gauge", "sentry", "github"):
         assert apps[cid]["status"] == "active" and apps[cid]["ui_module"] == cid
 
 
@@ -38,6 +38,25 @@ def test_sentry_parses_issues_and_stacktrace():
     assert v["stats"]["issues"] == 2 and v["stats"]["events"] == 2
     iss = v["issues"][0]
     assert iss["events"][0]["exception"]["stacktrace"][0]["filename"].endswith(".py")
+
+
+def test_figma_parses_workspace_and_node_tree():
+    v = _load_sample("figma")
+    assert v["stats"]["files"] == 1 and v["stats"]["nodes"] >= 8
+    doc = v["files"][0]["document"]
+    assert doc["type"] == "DOCUMENT"
+    # the tree reaches a TEXT node with characters + an absoluteBoundingBox
+    seen = []
+
+    def walk(n):
+        seen.append(n)
+        for c in n.get("children", []):
+            walk(c)
+
+    walk(doc)
+    text = next(n for n in seen if n["type"] == "TEXT")
+    assert text.get("characters") and text.get("absoluteBoundingBox")
+    assert any(n.get("cornerRadius") for n in seen)  # the CTA frame
 
 
 def test_github_parses_seed_script():
