@@ -282,6 +282,13 @@ button { font-family: inherit; cursor: pointer; }
 .fig-icon { width: 14px; text-align: center; color: var(--muted); font-size: 11px; flex-shrink: 0; }
 .fig-layer-name { overflow: hidden; text-overflow: ellipsis; }
 
+.fig-center { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.fig-modebar { display: flex; align-items: center; gap: 8px; padding: 8px 14px; border-bottom: 1px solid var(--border); background: #fafafa; }
+.fig-modebar button { padding: 5px 12px; border: 1px solid var(--border); border-radius: 6px; background: #fff; font-size: 12.5px; }
+.fig-modebar button.active { background: #0d99ff; color: #fff; border-color: #0d99ff; font-weight: 700; }
+.fig-trunc { font-size: 12px; color: var(--muted); margin-left: auto; }
+.fig-thumb-wrap { flex: 1; overflow: auto; background: #e5e5e5; display: flex; align-items: flex-start; justify-content: center; padding: 32px; }
+.fig-thumb { max-width: 100%; height: auto; background: #fff; box-shadow: 0 2px 16px rgba(0,0,0,.18); border-radius: 4px; }
 .fig-canvas-wrap { flex: 1; overflow: auto; background: #e5e5e5; display: flex; align-items: flex-start; justify-content: center; padding: 40px; }
 .fig-canvas { position: relative; background: #fff; box-shadow: 0 1px 8px rgba(0,0,0,.15); flex-shrink: 0; }
 .fig-node { position: absolute; box-sizing: border-box; overflow: hidden; cursor: pointer; }

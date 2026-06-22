@@ -7,27 +7,34 @@ export function SeedFileBar({
   appId,
   accept,
   onLoaded,
+  allowPull = false,
+  pullHint = "",
 }: {
   appId: string;
   accept: string;
   onLoaded: () => Promise<void> | void;
+  allowPull?: boolean;
+  pullHint?: string;
 }) {
   const [bases, setBases] = useState<Base[]>([]);
   const [baseId, setBaseId] = useState("");
   const [fileName, setFileName] = useState("");
+  const [pullRef, setPullRef] = useState("");
   const [busy, setBusy] = useState("");
   const [err, setErr] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
 
+  async function loadBases(selectId?: string) {
+    const b = await api.bases(appId);
+    setBases(b);
+    setBaseId(selectId ?? (b[0]?.id || ""));
+  }
   useEffect(() => {
-    api
-      .bases(appId)
-      .then((b) => {
-        setBases(b);
-        if (b[0]) setBaseId(b[0].id);
-      })
-      .catch((e) => setErr(String(e)));
+    loadBases().catch((e) => setErr(String(e)));
   }, [appId]);
+
+  const images = bases.filter((b) => b.kind === "image");
+  const others = bases.filter((b) => b.kind !== "image");
 
   async function run(label: string, fn: () => Promise<any>) {
     setErr("");
@@ -49,16 +56,45 @@ export function SeedFileBar({
     run(`Uploading ${f.name}…`, () => api.loadFile(appId, f));
   }
 
+  async function doPull() {
+    const ref = pullRef.trim();
+    if (!ref) return;
+    setErr("");
+    setBusy(`Pulling ${ref} (amd64)…`);
+    try {
+      const b = await api.pull(appId, ref);
+      await loadBases(b.id);
+      setPullRef("");
+    } catch (e) {
+      setErr(String(e));
+    } finally {
+      setBusy("");
+    }
+  }
+
   return (
     <div className="seedbar">
       <div className="seedbar-row">
-        <span className="field-label">Sample</span>
-        <select className="base-select" value={baseId} onChange={(e) => setBaseId(e.target.value)}>
-          {bases.map((b) => (
-            <option key={b.id} value={b.id}>
-              {b.label}
-            </option>
-          ))}
+        <span className="field-label">{allowPull ? "Base" : "Sample"}</span>
+        <select className="base-select" value={baseId} onChange={(e) => setBaseId(e.target.value)} title={baseId}>
+          {images.length > 0 && (
+            <optgroup label="Images">
+              {images.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.label.replace(/^ghcr\.io\/abundant-ai\//, "")}
+                </option>
+              ))}
+            </optgroup>
+          )}
+          {others.length > 0 && (
+            <optgroup label="Samples">
+              {others.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.label}
+                </option>
+              ))}
+            </optgroup>
+          )}
           {!bases.length && <option value="">(none — upload a file →)</option>}
         </select>
         <button
@@ -80,6 +116,21 @@ export function SeedFileBar({
           {err && <span className="err">⚠ {err}</span>}
         </div>
       </div>
+      {allowPull && (
+        <div className="seedbar-row sub">
+          <span className="field-label muted">Pull</span>
+          <input
+            className="pull-input"
+            value={pullRef}
+            placeholder={pullHint}
+            onChange={(e) => setPullRef(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && doPull()}
+          />
+          <button onClick={doPull} disabled={!pullRef.trim() || !!busy}>
+            Pull from GHCR
+          </button>
+        </div>
+      )}
     </div>
   );
 }

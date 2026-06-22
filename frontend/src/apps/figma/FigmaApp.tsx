@@ -14,7 +14,7 @@ type Node = {
   style?: { fontSize?: number; fontWeight?: number; fontFamily?: string; textAlignHorizontal?: string };
   absoluteBoundingBox?: { x: number; y: number; width: number; height: number };
 };
-type FigmaFile = { key: string; name: string; document: Node; comments?: any[] };
+type FigmaFile = { key: string; name: string; document: Node; comments?: any[]; thumbnailUrl?: string; images?: Record<string, string> };
 type FigmaView = { team: any; projects: any[]; files: FigmaFile[] };
 
 const NODE_ICON: Record<string, string> = {
@@ -47,6 +47,7 @@ export function FigmaApp({ appId }: { appId: string }) {
   const [canvasId, setCanvasId] = useState("");
   const [selId, setSelId] = useState("");
   const [tab, setTab] = useState<"inspect" | "comments">("inspect");
+  const [mode, setMode] = useState<"thumbnail" | "canvas">("canvas");
 
   async function load() {
     const data: FigmaView = await api.view(appId);
@@ -56,22 +57,31 @@ export function FigmaApp({ appId }: { appId: string }) {
     const cv = (f?.document.children || []).find((c) => c.type === "CANVAS");
     setCanvasId(cv?.id ?? "");
     setSelId("");
+    // big real corpora carry a live thumbnail image and are too large to draw faithfully as boxes —
+    // default to the thumbnail; small fixtures (placeholder thumb) default to the canvas render.
+    setMode(String(f?.thumbnailUrl || "").startsWith("http") ? "thumbnail" : "canvas");
   }
 
   const file = v?.files.find((f) => f.key === fileKey) ?? null;
   const canvases = (file?.document.children || []).filter((c) => c.type === "CANVAS");
   const canvas = canvases.find((c) => c.id === canvasId) ?? canvases[0] ?? null;
+  const NODE_CAP = 1500;
 
-  const { nodes, bounds } = useMemo(() => {
-    if (!canvas) return { nodes: [] as Node[], bounds: null as any };
-    const ns = descendants(canvas).filter((n) => n.absoluteBoundingBox);
-    if (!ns.length) return { nodes: ns, bounds: null };
-    const xs = ns.map((n) => n.absoluteBoundingBox!);
-    const minX = Math.min(...xs.map((b) => b.x));
-    const minY = Math.min(...xs.map((b) => b.y));
-    const maxX = Math.max(...xs.map((b) => b.x + b.width));
-    const maxY = Math.max(...xs.map((b) => b.y + b.height));
-    return { nodes: ns, bounds: { minX, minY, w: maxX - minX, h: maxY - minY } };
+  const { nodes, bounds, truncated } = useMemo(() => {
+    if (!canvas) return { nodes: [] as Node[], bounds: null as any, truncated: 0 };
+    let ns = descendants(canvas).filter((n) => n.absoluteBoundingBox);
+    const truncated = Math.max(0, ns.length - NODE_CAP);
+    ns = ns.slice(0, NODE_CAP);
+    if (!ns.length) return { nodes: ns, bounds: null, truncated };
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    for (const n of ns) {
+      const b = n.absoluteBoundingBox!;
+      if (b.x < minX) minX = b.x;
+      if (b.y < minY) minY = b.y;
+      if (b.x + b.width > maxX) maxX = b.x + b.width;
+      if (b.y + b.height > maxY) maxY = b.y + b.height;
+    }
+    return { nodes: ns, bounds: { minX, minY, w: maxX - minX, h: maxY - minY }, truncated };
   }, [canvas]);
 
   const scale = bounds ? Math.min(1, 880 / bounds.w) : 1;
@@ -84,7 +94,13 @@ export function FigmaApp({ appId }: { appId: string }) {
 
   return (
     <div className="fig">
-      <SeedFileBar appId={appId} accept=".json,application/json" onLoaded={load} />
+      <SeedFileBar
+        appId={appId}
+        accept=".json,application/json"
+        onLoaded={load}
+        allowPull
+        pullHint="ghcr.io/abundant-ai/figma-service:prod-v1"
+      />
       {!v ? (
         <div className="empty-state">
           Load a Figma <b>fixture.json</b> to inspect the file's canvas, layers and node tree.
@@ -123,8 +139,36 @@ export function FigmaApp({ appId }: { appId: string }) {
             </div>
           </aside>
 
-          {/* middle: canvas */}
-          <main className="fig-canvas-wrap" onClick={() => setSelId("")}>
+          {/* middle: canvas / thumbnail */}
+          <main className="fig-center">
+            <div className="fig-modebar">
+              <button className={mode === "canvas" ? "active" : ""} onClick={() => setMode("canvas")}>
+                Canvas
+              </button>
+              <button className={mode === "thumbnail" ? "active" : ""} onClick={() => setMode("thumbnail")}>
+                Thumbnail
+              </button>
+              {mode === "canvas" && truncated > 0 && (
+                <span className="fig-trunc">showing {nodes.length} of {nodes.length + truncated} nodes</span>
+              )}
+            </div>
+            {mode === "thumbnail" ? (
+              <div className="fig-thumb-wrap">
+                {file?.thumbnailUrl ? (
+                  <img
+                    className="fig-thumb"
+                    src={file.thumbnailUrl}
+                    alt={file.name}
+                    onError={(e) => ((e.currentTarget.style.display = "none"),
+                      e.currentTarget.insertAdjacentHTML("afterend",
+                        '<div class="hint">Thumbnail image unavailable (URL expired or service-relative).</div>'))}
+                  />
+                ) : (
+                  <div className="hint">This file has no thumbnail.</div>
+                )}
+              </div>
+            ) : (
+            <div className="fig-canvas-wrap" onClick={() => setSelId("")}>
             {bounds ? (
               <div className="fig-canvas" style={{ width: bounds.w * scale, height: bounds.h * scale }}>
                 {nodes.map((n) => {
@@ -169,6 +213,8 @@ export function FigmaApp({ appId }: { appId: string }) {
               </div>
             ) : (
               <div className="hint">This page has no positioned nodes.</div>
+            )}
+            </div>
             )}
           </main>
 

@@ -1,15 +1,20 @@
 """Read-only file-seed clones (gauge / sentry / github) — load a bundled sample + view()."""
+import pytest
 from fastapi.testclient import TestClient
 
+import dockerutil
 from app import app
 
 client = TestClient(app)
+FIGMA_PROD = "ghcr.io/abundant-ai/figma-service:prod-v1"
 
 
 def _load_sample(app_id: str):
     bases = client.get(f"/api/{app_id}/bases").json()
-    assert bases, f"{app_id} has no bundled sample"
-    r = client.post(f"/api/{app_id}/load", json={"base_id": bases[0]["id"]})
+    # prefer the bundled file sample (figma also lists docker images, which come first)
+    sample = next((b for b in bases if b["kind"] != "image"), None)
+    assert sample, f"{app_id} has no bundled sample"
+    r = client.post(f"/api/{app_id}/load", json={"base_id": sample["id"]})
     assert r.status_code == 200, r.text
     return client.get(f"/api/{app_id}/view").json()
 
@@ -57,6 +62,17 @@ def test_figma_parses_workspace_and_node_tree():
     text = next(n for n in seen if n["type"] == "TEXT")
     assert text.get("characters") and text.get("absoluteBoundingBox")
     assert any(n.get("cornerRadius") for n in seen)  # the CTA frame
+
+
+@pytest.mark.skipif(not dockerutil.image_exists(FIGMA_PROD),
+                    reason="needs local figma-service:prod-v1 image")
+def test_figma_loads_baked_corpus_from_image():
+    r = client.post("/api/figma/load", json={"base_id": FIGMA_PROD})
+    assert r.status_code == 200, r.text
+    assert r.json()["stats"]["nodes"] > 1000  # the real imported corpus
+    f = client.get("/api/figma/view").json()["files"][0]
+    assert f["thumbnailUrl"].startswith("http")  # a real rendered thumbnail image
+    assert f["document"]["type"] == "DOCUMENT"
 
 
 def test_github_parses_seed_script():

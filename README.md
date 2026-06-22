@@ -56,10 +56,13 @@ rendered as the agent's tools would. Each is one adapter (subclassing `FileSeedA
 they expose the parsed seed through a generic `GET /api/{app}/view` instead of the chat/issue API.
 Pick a bundled sample (under `samples/`) or **upload** any seed file (`POST /api/{app}/load_file`).
 
-- **Figma** (`fixture.json`) — a `{team, projects, files}` workspace where each file is a Figma
-  document node tree. Renders a Figma-like **canvas** (nodes positioned by `absoluteBoundingBox`,
-  `fills`, `cornerRadius`, `characters`), a **layers** tree, an **inspector** (geometry + fill
-  swatches + font), and the file's **comments** (each links to its node).
+- **Figma** (`fixture.json` **or** the `figma-service` image) — a `{team, projects, files}` workspace
+  where each file is a Figma document node tree. Renders a Figma-like **canvas** (nodes positioned by
+  `absoluteBoundingBox`, `fills`, `cornerRadius`, `characters`; capped for huge files), a **layers**
+  tree, an **inspector** (geometry + fill swatches + font), the file's **comments** (each links to its
+  node), and a **Thumbnail** view of the file's rendered image. Besides a local `fixture.json`, it can
+  **Pull from GHCR** / load the upstream **`figma-service:prod-v1`** image — extracting its baked
+  `/srv/figma.db` corpus (read with stdlib sqlite3) and showing the real Figma thumbnail.
 - **gauge** (`gauge.state.json`) — Loki/Grafana shape: a dark **log explorer** (pick a LogQL selector
   → level-colored log lines), plus dashboards (panels + exprs) and datasources.
 - **Sentry** (`sentry.state.json`) — an **issue list + detail** with events and **stack traces**
