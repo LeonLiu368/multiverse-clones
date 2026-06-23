@@ -35,6 +35,8 @@ RUN mkdir -p /app && cp -a "/tmp/apex/${APEX_TASK}/repo" /app/repo && rm -rf /tm
 WORKDIR /app/repo
 ENV UV_PROJECT_ENVIRONMENT=/usr/local
 RUN uv sync --all-groups || uv sync || true
+# the slack CLI (copied from slack-service) imports slack_sdk — install it into the env
+RUN pip install --no-cache-dir slack_sdk
 RUN git init -q && git config user.email agent@example.local && git config user.name "Agent User" \
  && git add -A && git commit -q -m "snapshot" || true
 
