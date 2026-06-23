@@ -3,7 +3,7 @@ name = "paperless-clones-datefix-internetblock/paperless-ngx-9784"
 description = ""
 [metadata]
 category = "observability"
-tags = ["apex-swe", "observability", "clones", "multi-service", "sre", "ticketvector", "slack", "gauge", "python", "django"]
+tags = ["v2", "apex-swe", "observability", "clones", "multi-service", "sre", "ticketvector", "slack", "gauge", "python", "django"]
 
 [agent]
 timeout_sec = 2700
@@ -12,7 +12,7 @@ timeout_sec = 2700
 timeout_sec = 1800
 
 [environment]
-allow_internet = true
+allow_internet = false
 build_timeout_sec = 3000
 cpus = 4
 memory_mb = 8192
