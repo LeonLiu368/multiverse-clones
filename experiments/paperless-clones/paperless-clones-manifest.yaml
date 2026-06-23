@@ -1,13 +1,14 @@
 metadata:
-  name: apex-paperless
+  name: paperless-clones
   enable_image_push: true
+  oddish_only: true
   description: |
     The 6 APEX-SWE paperless-ngx Observability tasks on the per-repo apex-paperless corpora, seeded
     DIRECTLY: jira-gateway:apex-paperless (shared 2262-issue tracker) + slack-gateway:apex-paperless
     (shared 11.4k-msg community chat) baked + reused across all 6; each task mounts only its own gauge
     incident overlay (real app-<n>.log) merged onto the baked gauge baseline. Agent fixes /app/repo;
     graded by each upstream PR's pytest. No apex-seed converter.
-  task_path: experiments/apex-paperless-poc/tasks
+  task_path: experiments/paperless-clones/tasks
   n_trials: 1
   skip_trajectory_analysis: false
 tasks:
@@ -24,7 +25,7 @@ agents:
     model_name: anthropic/claude-opus-4-8
     n_trials: 3
   - name: codex
-    model_name: openai/gpt-5.5-codex
+    model_name: openai/gpt-5.5
     n_trials: 3
   - name: gemini-cli
     model_name: gemini/gemini-3.1-pro-preview

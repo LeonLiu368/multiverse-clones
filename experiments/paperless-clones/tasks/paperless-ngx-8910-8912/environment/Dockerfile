@@ -36,9 +36,15 @@ RUN mkdir -p /app && cp -a "/tmp/apex/${APEX_TASK}/repo" /app/repo && rm -rf /tm
 WORKDIR /app/repo
 ENV UV_PROJECT_ENVIRONMENT=/usr/local
 RUN uv sync --all-groups || uv sync || true
-RUN pipenv install --dev --skip-lock 2>/dev/null || pipenv install --skip-lock 2>/dev/null || true
+# Honor Pipfile.lock (NOT --skip-lock): --skip-lock resolved an incompatible
+# concurrent-log-handler missing the `.queue` submodule paperless imports at startup,
+# which aborted pytest collection (all tests "missing" -> reward 0). sync = exact lock pins.
+RUN pipenv sync --dev 2>/dev/null || pipenv install --dev 2>/dev/null || pipenv install --skip-lock 2>/dev/null || true
+# belt-and-suspenders: ensure the .queue-providing release is present in the pipenv venv
+RUN pipenv run pip install --no-cache-dir 'concurrent-log-handler>=0.9.25' 2>/dev/null || true
 # the slack CLI (copied from slack-service) imports slack_sdk — install it into the env
 RUN pip install --no-cache-dir slack_sdk
+RUN pipenv run pip install --no-cache-dir slack_sdk 2>/dev/null || true
 RUN git init -q && git config user.email agent@example.local && git config user.name "Agent User" \
  && git add -A && git commit -q -m "snapshot" || true
 

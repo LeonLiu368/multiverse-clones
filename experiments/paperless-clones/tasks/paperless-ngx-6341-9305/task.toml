@@ -1,5 +1,5 @@
 schema_version = "1.2"
-name = "apex-paperless-poc/paperless-ngx-5228-10559"
+name = "paperless-clones/paperless-ngx-6341-9305"
 description = "PROOF OF CONCEPT: APEX paperless-ngx #10555 (webhook SSRF hardening) on the per-repo apex-paperless corpora, SEEDED DIRECTLY. jira/slack/gauge sidecars are baked :apex-paperless images (shared paperless tracker + community chat + a baked log baseline); the per-task incident logs mount as a gauge overlay merged at boot. Agent investigates via linear/jira + slack + gcx, fixes /app/repo; graded by the upstream pytest. No apex-seed container. nop=0, oracle=1."
 
 [metadata]
