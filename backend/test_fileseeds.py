@@ -7,6 +7,7 @@ from app import app
 
 client = TestClient(app)
 FIGMA_PROD = "ghcr.io/abundant-ai/figma-service:prod-v1"
+GAUGE_IMG = "ghcr.io/abundant-ai/gauge-gateway:apex-paperless"
 
 
 def _load_sample(app_id: str):
@@ -62,6 +63,17 @@ def test_figma_parses_workspace_and_node_tree():
     text = next(n for n in seen if n["type"] == "TEXT")
     assert text.get("characters") and text.get("absoluteBoundingBox")
     assert any(n.get("cornerRadius") for n in seen)  # the CTA frame
+
+
+@pytest.mark.skipif(not dockerutil.image_exists(GAUGE_IMG),
+                    reason="needs local gauge-gateway:apex-paperless image")
+def test_gauge_loads_baked_state_from_image():
+    r = client.post("/api/gauge/load", json={"base_id": GAUGE_IMG})
+    assert r.status_code == 200, r.text
+    assert r.json()["stats"]["log_lines"] > 1  # the corpus stores {"entries":[...]}, must normalize
+    v = client.get("/api/gauge/view").json()
+    stream = next(iter(v["log_queries"]))
+    assert isinstance(v["log_queries"][stream], list)  # normalized to a flat line list
 
 
 @pytest.mark.skipif(not dockerutil.image_exists(FIGMA_PROD),

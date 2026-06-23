@@ -14,10 +14,35 @@ class GaugeAdapter(FileSeedAdapter):
     status = "active"
     ui_module = "gauge"
     sample_files = ("gauge.state.json",)
+    # gauge-gateway:<dataset> bakes its seed at GAUGE_STATE_FILE; the runtime copy lives at the
+    # other path. Either is the same gauge state.json this adapter parses.
+    image_substrings = ("gauge-gateway", "gauge-service", "gauge-seed")
+    image_state_paths = ("/data/gauge/state.json", "/var/lib/gauge/state.json")
+
+    def _norm_lines(self, val: Any) -> list[dict]:
+        """A LogQL query value -> a flat list of {ts, labels, line}. The seed varies: the sample
+        stores a plain list, the real corpus stores {"entries": [...]}, and raw Loki uses
+        {"values": [[ts, line], ...]}."""
+        items = val if isinstance(val, list) else None
+        if items is None and isinstance(val, dict):
+            for k in ("entries", "values", "lines", "results", "data"):
+                if isinstance(val.get(k), list):
+                    items = val[k]
+                    break
+        out: list[dict] = []
+        for it in items or []:
+            if isinstance(it, dict):
+                out.append({"ts": it.get("ts") or it.get("timestamp") or "",
+                            "labels": it.get("labels") or {},
+                            "line": it.get("line") or it.get("message") or ""})
+            elif isinstance(it, (list, tuple)) and len(it) >= 2:
+                out.append({"ts": str(it[0]), "labels": {}, "line": str(it[1])})
+        return out
 
     def _parse(self, raw: str, path: str) -> dict[str, Any]:
         d = json.loads(raw)
-        log_queries = (d.get("logs") or {}).get("queries") or {}
+        raw_q = (d.get("logs") or {}).get("queries") or {}
+        log_queries = {sel: self._norm_lines(val) for sel, val in raw_q.items()}
         metric_queries = (d.get("metrics") or {}).get("queries") or {}
         return {
             "meta": d.get("meta") or {},
