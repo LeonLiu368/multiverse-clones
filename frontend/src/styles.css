@@ -346,6 +346,8 @@ button { font-family: inherit; cursor: pointer; }
 .g-line.lv-warn { border-left: 3px solid #d29922; } .g-line.lv-warn .g-lvl { color: #d29922; }
 .g-line.lv-info { border-left: 3px solid #2f81f7; } .g-line.lv-info .g-lvl { color: #58a6ff; }
 .g-line.lv-debug { border-left: 3px solid #6e7681; } .g-line.lv-debug .g-lvl { color: #8b949e; }
+.g-line.g-overlay { background: #15321f; }
+.g-ovtag { margin-left: auto; font-size: 10px; font-weight: 800; text-transform: uppercase; color: #3fb950; align-self: center; }
 .g-dash { padding: 18px; }
 .g-title { margin: 0 0 2px; } .g-sub { color: #8b949e; font-size: 13px; margin-bottom: 16px; }
 .g-panel { background: #161b22; border: 1px solid #21262d; border-radius: 8px; padding: 12px; margin-bottom: 12px; }

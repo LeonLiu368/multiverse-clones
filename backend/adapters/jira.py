@@ -12,13 +12,25 @@ import glob
 import json
 import os
 import shutil
+import sys
 import tempfile
 import uuid
+from functools import lru_cache
 from typing import Any, Optional
 
 import dockerutil
 from adapters.base import BaseOption, CloneAdapter, LoadResult
 from clone_bridge import jira_data_base, load_jira_clone
+
+
+@lru_cache(maxsize=1)
+def _applier():
+    """The Jira clone's apply_state_patch module (apply_overlay) — for zero-drift overlay merges."""
+    base = os.path.join(jira_data_base(), "selfcontained", "base")
+    if base not in sys.path:
+        sys.path.insert(0, base)
+    import apply_state_patch  # type: ignore
+    return apply_state_patch
 
 # state.json top-level fields by container type — used to normalize sparse/variant task states so
 # FakePlaneBackend._load (which indexes data["modules"] etc.) and update_issue (history.setdefault)
@@ -153,6 +165,20 @@ class JiraAdapter(CloneAdapter):
                 data = _normalize_state(json.load(open(extracted)))
             except Exception:
                 data = _empty_state()  # e.g. jira-gateway:empty has no baked state
+
+        # optional overlay: additively merge a (partial) state.json onto the base — the clone's own
+        # state-overlay model (apply_state_patch --overlay). Overlay rows are flagged origin=overlay
+        # but counted as part of the loaded baseline, so they don't pollute the edit patch.
+        overlay_ids: set = set()
+        overlay_comment_ids: set = set()
+        if overlay_path:
+            ov = json.load(open(os.path.abspath(os.path.expanduser(overlay_path))))
+            present = {i.get("identifier") for i in data.get("issues", [])}
+            overlay_ids = {i["identifier"] for i in ov.get("issues", [])
+                           if i.get("identifier") and i["identifier"] not in present}
+            overlay_comment_ids = {c.get("id") for lst in (ov.get("comments") or {}).values()
+                                   for c in lst if c.get("id")}
+            _applier().apply_overlay(data, ov)
         json.dump(data, open(state_path, "w"))
 
         backend = FakePlaneBackend(state_file=state_path)
@@ -172,11 +198,14 @@ class JiraAdapter(CloneAdapter):
             "base_issue_ids": base_issue_ids,
             "base_issue_by_id": base_issue_by_id,
             "base_comment_ids": base_comment_ids,
+            "overlay_ids": overlay_ids,
+            "overlay_comment_ids": overlay_comment_ids,
         }
         self._current = session_id
         stats = {"issues": len(backend.issues), "comments": len(base_comment_ids),
-                 "users": len(backend.users)}
-        return LoadResult(session_id=session_id, base=base_id, overlay=None, stats=stats)
+                 "users": len(backend.users), "overlay_issues": len(overlay_ids)}
+        return LoadResult(session_id=session_id, base=base_id,
+                          overlay=overlay_path, stats=stats)
 
     # ---- session helpers ----------------------------------------------------
     def _sess(self, session_id: Optional[str] = None) -> dict[str, Any]:
@@ -189,13 +218,15 @@ class JiraAdapter(CloneAdapter):
         issue = copy.deepcopy(issue)
         ident = issue["identifier"]
         base_i = s["base_issue_by_id"].get(ident)
-        issue["origin"] = "base" if base_i else "overlay"
-        issue["edited"] = bool(base_i) and bool(_issue_changes(base_i, issue))
+        # overlay-loaded rows + UI-added rows are both 'overlay'; only prod rows are 'base'
+        issue["origin"] = "overlay" if (ident in s.get("overlay_ids", set()) or not base_i) else "base"
+        issue["edited"] = bool(base_i) and ident not in s.get("overlay_ids", set()) and bool(_issue_changes(base_i, issue))
         return issue
 
     def _decorate_comment(self, s: dict[str, Any], c: dict) -> dict:
         c = copy.deepcopy(c)
-        c["origin"] = "base" if c["id"] in s["base_comment_ids"] else "overlay"
+        overlay = c["id"] in s.get("overlay_comment_ids", set()) or c["id"] not in s["base_comment_ids"]
+        c["origin"] = "overlay" if overlay else "base"
         return c
 
     # ---- normalized reads ---------------------------------------------------

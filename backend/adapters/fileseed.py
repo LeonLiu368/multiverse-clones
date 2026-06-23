@@ -72,6 +72,9 @@ class FileSeedAdapter(CloneAdapter):
             src, raw = base_id, open(dest, encoding="utf-8", errors="replace").read()
 
         parsed = self._parse(raw, src)
+        if overlay_path:  # optional overlay file, merged by the clone-specific _merge
+            ov_path = os.path.abspath(os.path.expanduser(overlay_path))
+            parsed = self._merge(parsed, self._parse(open(ov_path, encoding="utf-8", errors="replace").read(), ov_path))
         session_id = uuid.uuid4().hex[:12]
         self._sessions[session_id] = {"path": src, "raw": raw, "parsed": parsed}
         self._current = session_id
@@ -94,3 +97,7 @@ class FileSeedAdapter(CloneAdapter):
     # subclasses implement: parse raw seed text -> a JSON-able payload (include a "stats" dict)
     def _parse(self, raw: str, path: str) -> dict[str, Any]:
         raise NotImplementedError
+
+    # clones that support an overlay file override this to merge it onto the parsed base
+    def _merge(self, base: dict[str, Any], overlay: dict[str, Any]) -> dict[str, Any]:
+        raise RuntimeError(f"{self.id} does not support an overlay")

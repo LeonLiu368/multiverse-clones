@@ -1,0 +1,30 @@
+{
+  "_note": "A per-task Jira overlay (apply_state_patch --overlay shape). Additively merged onto a base state.json — e.g. load tasks/jira-assignee-count/.../state.json (WEB) as base, then this overlay.",
+  "issues": [
+    {
+      "id": "issue-web-100",
+      "identifier": "WEB-100",
+      "title": "OVERLAY: dark-mode toggle flickers on first paint",
+      "description": "Planted via state-overlay.json. Reproduces only on Safari cold load.",
+      "state": { "id": "state-progress", "name": "In Progress", "category": "started" },
+      "assignees": [ { "handle": "priya.singh", "id": "user-priya", "name": "Priya Singh" } ],
+      "labels": [ { "id": "label-bug", "name": "bug" } ],
+      "priority": "high",
+      "project": { "id": "proj-web", "key": "WEB", "name": "Web Frontend" },
+      "created_at": "2026-06-21T10:00:00Z",
+      "updated_at": "2026-06-21T10:00:00Z"
+    }
+  ],
+  "comments": {
+    "WEB-100": [
+      {
+        "id": "comment-web-100-1",
+        "issue": "WEB-100",
+        "author": { "id": "user-diego", "handle": "diego.brooks", "name": "Diego Brooks" },
+        "body": "overlay comment: confirmed on Safari 17, fine on Chrome.",
+        "created_at": "2026-06-21T11:00:00Z",
+        "order_id": 1
+      }
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "_note": "A per-task gauge overlay: union'd onto a base gauge state. Adds a datasource, an extra line to the base {service=\"web\"} stream, and a brand-new stream.",
+  "datasources": [ { "uid": "loki-overlay", "name": "overlay Loki", "type": "loki", "mode": "embedded", "health": "ok" } ],
+  "dashboards": [],
+  "logs": {
+    "queries": {
+      "{service=\"web\"}": [
+        { "ts": "2026-06-20T16:31:00Z", "labels": { "service": "web", "level": "error" }, "line": "OVERLAY planted: read timeout must be 30s, not 5s — confirmed with infra" }
+      ],
+      "{service=\"overlay-svc\"}": [
+        { "ts": "2026-06-20T17:00:00Z", "labels": { "service": "overlay-svc", "level": "warn" }, "line": "OVERLAY new stream: degraded mode entered" }
+      ]
+    }
+  }
+}

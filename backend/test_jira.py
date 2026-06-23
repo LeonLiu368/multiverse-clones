@@ -64,6 +64,20 @@ def test_overlay_ops_and_provenance():
 
 
 @need
+def test_overlay_merge_flags_added_issues_and_stays_out_of_patch():
+    overlay = os.path.join(os.path.dirname(__file__), "..", "samples", "jira.overlay.json")
+    with open(overlay, "rb") as fh:
+        r = client.post("/api/jira/load_overlay", data={"base_id": f"file:{WEB}"},
+                        files={"overlay": ("jira.overlay.json", fh, "application/json")})
+    assert r.status_code == 200, r.text
+    assert r.json()["stats"]["overlay_issues"] == 1
+    issues = {i["identifier"]: i for i in client.get("/api/jira/messages", params={"container": "WEB"}).json()}
+    assert "WEB-100" in issues and issues["WEB-100"]["origin"] == "overlay"
+    # overlay rows are part of the baseline -> the edit patch is empty until you edit something
+    assert client.get("/api/jira/overlay/patch").json()["ops"] == []
+
+
+@need
 def test_export_is_a_patch_that_applies_back():
     client.post("/api/jira/load", json={"base_id": f"file:{WEB}"})
 

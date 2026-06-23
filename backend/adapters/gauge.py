@@ -39,6 +39,26 @@ class GaugeAdapter(FileSeedAdapter):
                 out.append({"ts": str(it[0]), "labels": {}, "line": str(it[1])})
         return out
 
+    def _merge(self, base: dict[str, Any], ov: dict[str, Any]) -> dict[str, Any]:
+        """Overlay a second gauge state onto the base: union datasources/dashboards by uid, and
+        concat each overlay log stream onto the base (overlay lines tagged origin='overlay')."""
+        ds = {d.get("uid"): d for d in base["datasources"]}
+        for d in ov["datasources"]:
+            ds.setdefault(d.get("uid"), d)
+        dash = {d.get("uid"): d for d in base["dashboards"]}
+        for d in ov["dashboards"]:
+            dash.setdefault(d.get("uid"), d)
+        lq = {sel: list(lines) for sel, lines in base["log_queries"].items()}
+        for sel, lines in ov["log_queries"].items():
+            lq.setdefault(sel, []).extend({**ln, "origin": "overlay"} for ln in lines)
+            lq[sel].sort(key=lambda x: x.get("ts", ""))
+        return {
+            **base, "datasources": list(ds.values()), "dashboards": list(dash.values()),
+            "log_queries": lq,
+            "stats": {"datasources": len(ds), "dashboards": len(dash), "log_streams": len(lq),
+                      "log_lines": sum(len(v) for v in lq.values())},
+        }
+
     def _parse(self, raw: str, path: str) -> dict[str, Any]:
         d = json.loads(raw)
         raw_q = (d.get("logs") or {}).get("queries") or {}

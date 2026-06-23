@@ -43,6 +43,11 @@ a ticketvector **`state.json`** (the format `abundant-jira-clone` ships) and ren
   add/update/delete issues + add/delete comments — applied onto the base (`jira-gateway:prod-v1`) at
   task standup. (Extended the clone's `apply_state_patch.py` to support issue-add and comment-delete
   so one patch fully reproduces the edits.)
+- **Overlay:** load a base **+ an overlay file** (`+ overlay`) — a partial `state.json` additively
+  merged via the clone's `apply_state_patch --overlay` (adds new issues/comments; base wins on id).
+  Overlay-added rows carry the `overlay` badge but stay out of the edit patch (they ship as their own
+  artifact). gauge has the same `+ overlay` option — its overlay unions datasources/dashboards and
+  concatenates log streams (overlay lines tagged).
 
 Adding it required only: one adapter (`backend/adapters/jira.py`) + a bridge function + one frontend
 view (`frontend/src/apps/jira/`) + registry/launcher entries + one generic route

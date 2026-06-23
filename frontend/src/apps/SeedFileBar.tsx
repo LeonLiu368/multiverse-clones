@@ -9,20 +9,24 @@ export function SeedFileBar({
   onLoaded,
   allowPull = false,
   pullHint = "",
+  allowOverlay = false,
 }: {
   appId: string;
   accept: string;
   onLoaded: () => Promise<void> | void;
   allowPull?: boolean;
   pullHint?: string;
+  allowOverlay?: boolean;
 }) {
   const [bases, setBases] = useState<Base[]>([]);
   const [baseId, setBaseId] = useState("");
   const [fileName, setFileName] = useState("");
+  const [overlayFile, setOverlayFile] = useState<File | null>(null);
   const [pullRef, setPullRef] = useState("");
   const [busy, setBusy] = useState("");
   const [err, setErr] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
+  const overlayRef = useRef<HTMLInputElement>(null);
 
   async function loadBases(selectId?: string) {
     const b = await api.bases(appId);
@@ -100,10 +104,35 @@ export function SeedFileBar({
         <button
           className="primary"
           disabled={!baseId || !!busy}
-          onClick={() => run("Loading…", () => api.load(appId, baseId))}
+          onClick={() =>
+            run("Loading…", () =>
+              overlayFile ? api.loadOverlay(appId, baseId, overlayFile) : api.load(appId, baseId)
+            )
+          }
         >
           Load
         </button>
+
+        {allowOverlay && (
+          <>
+            <span className="field-label muted">+ overlay</span>
+            <input
+              ref={overlayRef}
+              type="file"
+              accept={accept}
+              className="overlay-file-hidden"
+              onChange={(e) => setOverlayFile(e.target.files?.[0] ?? null)}
+            />
+            <button className="overlay-pick" disabled={!!busy} onClick={() => overlayRef.current?.click()}>
+              {overlayFile ? `📄 ${overlayFile.name}` : "Overlay file…"}
+            </button>
+            {overlayFile && (
+              <button className="icon-btn" title="clear overlay" onClick={() => setOverlayFile(null)}>
+                ✕
+              </button>
+            )}
+          </>
+        )}
 
         <span className="field-label muted">or upload</span>
         <input ref={fileRef} type="file" accept={accept} className="overlay-file-hidden" onChange={onPick} />

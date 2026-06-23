@@ -7,7 +7,7 @@ type GaugeView = {
   datasources: any[];
   dashboards: any[];
   alerts: any[];
-  log_queries: Record<string, { ts: string; labels?: Record<string, string>; line: string }[]>;
+  log_queries: Record<string, { ts: string; labels?: Record<string, string>; line: string; origin?: string }[]>;
   metric_queries: Record<string, any>;
 };
 
@@ -36,6 +36,7 @@ export function GaugeApp({ appId }: { appId: string }) {
         accept=".json,application/json"
         onLoaded={load}
         allowPull
+        allowOverlay
         pullHint="ghcr.io/abundant-ai/gauge-gateway:<dataset>"
       />
       {!v ? (
@@ -102,10 +103,11 @@ export function GaugeApp({ appId }: { appId: string }) {
                   <span className="g-muted">{(v.log_queries[sel] || []).length} lines</span>
                 </div>
                 {(v.log_queries[sel] || []).map((l, i) => (
-                  <div className={`g-line ${levelClass(l.labels?.level)}`} key={i}>
+                  <div className={`g-line ${levelClass(l.labels?.level)} ${l.origin === "overlay" ? "g-overlay" : ""}`} key={i}>
                     <span className="g-ts">{l.ts}</span>
                     <span className="g-lvl">{l.labels?.level ?? ""}</span>
                     <span className="g-text">{l.line}</span>
+                    {l.origin === "overlay" && <span className="g-ovtag">overlay</span>}
                   </div>
                 ))}
                 {!(v.log_queries[sel] || []).length && <div className="hint">No log lines.</div>}

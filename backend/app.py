@@ -110,6 +110,18 @@ async def load_upload(
     return _guard(lambda: a.load(base_id, overlay_dir).__dict__)
 
 
+@app.post("/api/{app_id}/load_overlay")
+async def load_overlay(app_id: str, base_id: str = Form(...), overlay: UploadFile = File(...)):
+    """Load a base + an uploaded overlay file, merged by the adapter (Jira: additive state merge;
+    gauge: union datasources/dashboards + concat log streams)."""
+    a = _adapter(app_id)
+    tmp = tempfile.mkdtemp(prefix="seedview-overlay-")
+    dest = os.path.join(tmp, os.path.basename(overlay.filename or "overlay"))
+    with open(dest, "wb") as out:
+        out.write(await overlay.read())
+    return _guard(lambda: a.load(base_id, dest).__dict__)
+
+
 @app.post("/api/{app_id}/load_file")
 async def load_file(app_id: str, file: UploadFile = File(...)):
     """Load a single uploaded seed file (gauge/sentry state.json, github seed.sh). The file is

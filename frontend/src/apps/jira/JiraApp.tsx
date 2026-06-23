@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   api,
   Base,
@@ -278,9 +278,11 @@ function JiraSeedBar({
   const [bases, setBases] = useState<Base[]>([]);
   const [extra, setExtra] = useState<Base[]>([]);
   const [baseId, setBaseId] = useState("");
+  const [overlayFile, setOverlayFile] = useState<File | null>(null);
   const [pullRef, setPullRef] = useState("");
   const [busy, setBusy] = useState("");
   const [err, setErr] = useState("");
+  const overlayRef = useRef<HTMLInputElement>(null);
 
   async function loadBases() {
     const b = await api.bases(appId);
@@ -302,7 +304,8 @@ function JiraSeedBar({
     setErr("");
     setBusy("Loading…");
     try {
-      await api.load(appId, baseId);
+      if (overlayFile) await api.loadOverlay(appId, baseId, overlayFile);
+      else await api.load(appId, baseId);
       await onLoaded();
     } catch (e) {
       setErr(String(e));
@@ -354,6 +357,22 @@ function JiraSeedBar({
         <button className="primary" onClick={doLoad} disabled={!baseId || !!busy}>
           Load
         </button>
+        <span className="field-label muted">+ overlay</span>
+        <input
+          ref={overlayRef}
+          type="file"
+          accept=".json,application/json"
+          className="overlay-file-hidden"
+          onChange={(e) => setOverlayFile(e.target.files?.[0] ?? null)}
+        />
+        <button className="overlay-pick" disabled={!!busy} onClick={() => overlayRef.current?.click()}>
+          {overlayFile ? `📄 ${overlayFile.name}` : "Overlay file…"}
+        </button>
+        {overlayFile && (
+          <button className="icon-btn" title="clear overlay" onClick={() => setOverlayFile(null)}>
+            ✕
+          </button>
+        )}
         <button className="ghost-btn" title="Download the task diff as an apply_state_patch op-list" onClick={onDownload}>
           ⬇ patch.json
         </button>

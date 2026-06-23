@@ -39,6 +39,22 @@ def test_gauge_parses_logs_dashboards_datasources():
     assert any("read timeout" in ln["line"] for ln in v["log_queries"][stream])
 
 
+def test_gauge_overlay_merges_streams_and_datasources():
+    import os
+
+    samples = os.path.join(os.path.dirname(__file__), "..", "samples")
+    base = next(b for b in client.get("/api/gauge/bases").json() if b["kind"] != "image")["id"]
+    with open(os.path.join(samples, "gauge.overlay.json"), "rb") as fh:
+        r = client.post("/api/gauge/load_overlay", data={"base_id": base},
+                        files={"overlay": ("gauge.overlay.json", fh, "application/json")})
+    assert r.status_code == 200, r.text
+    v = client.get("/api/gauge/view").json()
+    assert v["stats"]["datasources"] == 3  # base 2 + overlay loki
+    assert '{service="overlay-svc"}' in v["log_queries"]  # new stream from the overlay
+    web = v["log_queries"]['{service="web"}']
+    assert any(ln.get("origin") == "overlay" for ln in web)  # overlay line tagged + concatenated
+
+
 def test_sentry_parses_issues_and_stacktrace():
     v = _load_sample("sentry")
     assert v["stats"]["issues"] == 2 and v["stats"]["events"] == 2

@@ -134,6 +134,12 @@ export const api = {
     fd.append("file", file);
     return fetch(`/api/${app}/load_file`, { method: "POST", body: fd }).then(j<any>);
   },
+  loadOverlay: (app: string, base_id: string, overlay: File) => {
+    const fd = new FormData();
+    fd.append("base_id", base_id);
+    fd.append("overlay", overlay);
+    return fetch(`/api/${app}/load_overlay`, { method: "POST", body: fd }).then(j<any>);
+  },
   containers: (app: string) => fetch(`/api/${app}/containers`).then(j<Channel[]>),
   entities: (app: string) => fetch(`/api/${app}/entities`).then(j<User[]>),
   messages: (app: string, container: string, limit = 100) =>
