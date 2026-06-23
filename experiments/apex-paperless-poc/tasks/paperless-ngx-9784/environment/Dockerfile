@@ -11,9 +11,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
         git build-essential curl jq ca-certificates \
         libpoppler-cpp-dev poppler-utils ghostscript imagemagick optipng \
-        unpaper qpdf tesseract-ocr tesseract-ocr-eng \
+        unpaper qpdf tesseract-ocr tesseract-ocr-eng redis-server redis-tools \
     && rm -rf /var/lib/apt/lists/*
-RUN pip install --no-cache-dir uv "huggingface_hub>=0.25"
+RUN pip install --no-cache-dir uv pipenv "huggingface_hub>=0.25"
 
 # Issue tracker CLI (linear/jira), team chat (slack + slack-mcp), observability (gcx + mcp-grafana).
 COPY --from=tv-tools /usr/local/bin/linear /usr/local/bin/jira /usr/local/bin/
@@ -36,6 +36,7 @@ RUN mkdir -p /app && cp -a "/tmp/apex/${APEX_TASK}/repo" /app/repo && rm -rf /tm
 WORKDIR /app/repo
 ENV UV_PROJECT_ENVIRONMENT=/usr/local
 RUN uv sync --all-groups || uv sync || true
+RUN pipenv install --dev --skip-lock 2>/dev/null || pipenv install --skip-lock 2>/dev/null || true
 # the slack CLI (copied from slack-service) imports slack_sdk — install it into the env
 RUN pip install --no-cache-dir slack_sdk
 RUN git init -q && git config user.email agent@example.local && git config user.name "Agent User" \
