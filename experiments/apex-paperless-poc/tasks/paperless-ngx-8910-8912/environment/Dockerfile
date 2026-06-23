@@ -26,7 +26,7 @@ RUN chmod +x /usr/local/bin/linear /usr/local/bin/jira /usr/local/bin/slack \
              /usr/local/bin/slack-mcp /usr/local/bin/gcx /usr/local/bin/mcp-grafana
 
 # Fetch the upstream repo snapshot from the APEX dataset, then build it.
-ARG APEX_TASK=Observability/paperless-ngx-paperless-ngx-10555-observability
+ARG APEX_TASK=Observability/paperless-ngx-paperless-ngx-8910-8912-observability
 RUN python - <<PY
 from huggingface_hub import snapshot_download
 snapshot_download(repo_id="mercor/APEX-SWE", repo_type="dataset",

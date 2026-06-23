@@ -1,0 +1,78 @@
+# PROOF OF CONCEPT — the per-repo "apex-paperless" model, seeded DIRECTLY (no apex-seed container):
+#   jira  — jira-gateway:apex-paperless  : the BAKED paperless issue tracker (2262 issues), shared
+#   slack — slack-gateway:apex-paperless : the BAKED paperless community chat (11.4k msgs), shared
+#   gauge — gauge-gateway:apex-paperless : the BAKED baseline + a per-task INCIDENT overlay (mounted),
+#           merged at boot into one {service="paperless-ngx"} stream
+#   main  — the agent (CLIs only, repo at /app/repo); reaches all three over HTTP.
+# Corpus data lives only in the sidecars. Graded by the upstream PR's pytest. Sidecars pinned by
+# digest (the cloud caches tags). custom_docker_compose = true; NO networks: block; linux/amd64.
+services:
+  main:
+    build: { context: ., dockerfile: Dockerfile }
+    image: ${MAIN_IMAGE_NAME:-apex-paperless-poc-main:local}
+    platform: linux/amd64
+    working_dir: /app/repo
+    command: ["sleep", "infinity"]
+    environment:
+      WORLD_ISSUES_BACKEND: remote
+      WORLD_ISSUES_AGENT_MODE: "1"
+      WORLD_ISSUES_OUTPUT: json
+      WORLD_ISSUES_ACTOR: agent
+      WORLD_ISSUES_DEFAULT_PROJECT: PAP
+      PLANE_BASE_URL: http://jira:8765
+      SLACK_API_URL: http://slack
+      SLACK_BOT_TOKEN: test-token-meridian-eval
+      GRAFANA_URL: http://gauge
+      GRAFANA_TOKEN: test-token-meridian-eval
+    depends_on:
+      jira: { condition: service_healthy }
+      slack: { condition: service_healthy }
+      gauge: { condition: service_healthy }
+
+  jira:
+    image: ${JIRA_GATEWAY_IMAGE:-ghcr.io/abundant-ai/jira-gateway:apex-paperless@sha256:a038302136049d9b701d838d91ed69a6f636891afdd267561fa4a8b898047553}
+    hostname: jira
+    platform: linux/amd64
+    environment:
+      WORLD_ISSUES_STATE_FILE: /var/lib/ticketvector/state.json
+      WORLD_ISSUES_BIND_HOST: 0.0.0.0
+      WORLD_ISSUES_PORT: "8765"
+      WORLD_ISSUES_ACTOR: agent
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8765/health')\" || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 15s
+
+  slack:
+    image: ${SLACK_GATEWAY_IMAGE:-ghcr.io/abundant-ai/slack-gateway:apex-paperless@sha256:32dcf6ea24b8665e17d30e401bcd9b40ad6ae54df7673ab715368624b90fab91}
+    hostname: slack
+    platform: linux/amd64
+    environment:
+      SLACK_BOT_TOKEN: test-token-meridian-eval
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:80/api/auth.test >/dev/null || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 40s
+
+  gauge:
+    image: ${GAUGE_GATEWAY_IMAGE:-ghcr.io/abundant-ai/gauge-gateway:apex-paperless@sha256:23e85fe8f5989fb641a7641c0e85c55a7d9247cec2b533aaa4c3ea4d026e1239}
+    hostname: gauge
+    platform: linux/amd64
+    volumes:
+      - ./data/gauge-overlay.json:/data/gauge-overlay.json:ro
+      - gauge-runtime:/var/lib/gauge
+    environment:
+      GAUGE_RUNTIME_STATE_FILE: /var/lib/gauge/state.json
+      GRAFANA_TOKEN: test-token-meridian-eval
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost/api/healthz', timeout=1)\" || exit 1"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+
+volumes:
+  gauge-runtime:

@@ -1,0 +1,77 @@
+diff --git a/src/documents/serialisers.py b/src/documents/serialisers.py
+index 3b9b2062a..d0770bada 100644
+--- a/src/documents/serialisers.py
++++ b/src/documents/serialisers.py
+@@ -1189,7 +1189,6 @@ class SavedViewSerializer(OwnedObjectSerializer):
+             "owner",
+             "permissions",
+             "user_can_change",
+-            "set_permissions",
+         ]
+
+     def validate(self, attrs):
+@@ -1754,6 +1753,8 @@ class StoragePathSerializer(MatchingModelSerializer, OwnedObjectSerializer):
+
+
+ class UiSettingsViewSerializer(serializers.ModelSerializer):
++    settings = serializers.DictField(required=False, allow_null=True)
++
+     class Meta:
+         model = UiSettings
+         depth = 1
+@@ -2020,8 +2021,9 @@ class WorkflowTriggerSerializer(serializers.ModelSerializer):
+         ):
+             attrs["filter_path"] = None
+
++        trigger_type = attrs.get("type", getattr(self.instance, "type", None))
+         if (
+-            attrs["type"] == WorkflowTrigger.WorkflowTriggerType.CONSUMPTION
++            trigger_type == WorkflowTrigger.WorkflowTriggerType.CONSUMPTION
+             and "filter_mailrule" not in attrs
+             and ("filter_filename" not in attrs or attrs["filter_filename"] is None)
+             and ("filter_path" not in attrs or attrs["filter_path"] is None)
+diff --git a/src/paperless/views.py b/src/paperless/views.py
+index 4d102029f..8cb394c8e 100644
+--- a/src/paperless/views.py
++++ b/src/paperless/views.py
+@@ -342,6 +342,10 @@ class ApplicationConfigurationViewSet(ModelViewSet):
+     serializer_class = ApplicationConfigurationSerializer
+     permission_classes = (IsAuthenticated, DjangoModelPermissions)
+
++    @extend_schema(exclude=True)
++    def create(self, request, *args, **kwargs):
++        return Response(status=405)  # Not Allowed
++
+
+ @extend_schema_view(
+     post=extend_schema(
+diff --git a/src/paperless_mail/serialisers.py b/src/paperless_mail/serialisers.py
+index c7a20acbf..402a53c3b 100644
+--- a/src/paperless_mail/serialisers.py
++++ b/src/paperless_mail/serialisers.py
+@@ -108,18 +108,20 @@ class MailRuleSerializer(OwnedObjectSerializer):
+         return instance
+
+     def create(self, validated_data):
+-        if "assign_tags" in validated_data:
+-            assign_tags = validated_data.pop("assign_tags")
++        assign_tags = validated_data.pop("assign_tags", [])
+         mail_rule = super().create(validated_data)
+         if assign_tags:
+             mail_rule.assign_tags.set(assign_tags)
+         return mail_rule
+
+     def validate(self, attrs):
++        action = attrs.get("action")
++        action_parameter = attrs.get("action_parameter")
++
+         if (
+-            attrs["action"] == MailRule.MailAction.TAG
+-            or attrs["action"] == MailRule.MailAction.MOVE
+-        ) and attrs["action_parameter"] is None:
++            action in [MailRule.MailAction.TAG, MailRule.MailAction.MOVE]
++            and not action_parameter
++        ):
+             raise serializers.ValidationError("An action parameter is required.")
+
+         return attrs

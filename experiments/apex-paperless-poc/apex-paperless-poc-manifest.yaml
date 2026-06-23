@@ -1,22 +1,31 @@
 metadata:
-  name: apex-paperless-poc
+  name: apex-paperless
   enable_image_push: true
   description: |
-    Proof of concept for the per-repo "apex-paperless" corpus model, seeded DIRECTLY (no apex-seed
-    converter at standup). The APEX paperless-ngx #10555 task (webhook SSRF) runs against three baked
-    :apex-paperless sidecars — jira-gateway (2262-issue tracker), slack-gateway (11.4k-msg community
-    chat), gauge-gateway (baked log baseline) — with only the per-task gauge incident overlay mounted
-    and merged at boot. The shared corpora are reused across all paperless tasks; only the incident +
-    repo + tests are per-task. Graded by the upstream PR's pytest. nop=0, oracle=1.
+    The 6 APEX-SWE paperless-ngx Observability tasks on the per-repo apex-paperless corpora, seeded
+    DIRECTLY: jira-gateway:apex-paperless (shared 2262-issue tracker) + slack-gateway:apex-paperless
+    (shared 11.4k-msg community chat) baked + reused across all 6; each task mounts only its own gauge
+    incident overlay (real app-<n>.log) merged onto the baked gauge baseline. Agent fixes /app/repo;
+    graded by each upstream PR's pytest. No apex-seed converter.
   task_path: experiments/apex-paperless-poc/tasks
   n_trials: 1
   skip_trajectory_analysis: false
 tasks:
+  - paperless-ngx-10195-10196
   - paperless-ngx-10555
+  - paperless-ngx-5228-10559
+  - paperless-ngx-6341-9305
+  - paperless-ngx-8910-8912
+  - paperless-ngx-9784
 agents:
   - name: nop
   - name: oracle
-  - name: gemini-cli
-    model_name: gemini/gemini-3.1-pro-preview
   - name: claude-code
     model_name: anthropic/claude-opus-4-7
+    n_trials: 3
+  - name: codex
+    model_name: openai/gpt-5.2-codex
+    n_trials: 3
+  - name: gemini-cli
+    model_name: gemini/gemini-3.1-pro-preview
+    n_trials: 3

@@ -1,0 +1,158 @@
+diff --git a/src-ui/messages.xlf b/src-ui/messages.xlf
+index cd1a97950..1649d6100 100644
+--- a/src-ui/messages.xlf
++++ b/src-ui/messages.xlf
+@@ -3246,18 +3246,25 @@
+           <context context-type="linenumber">24</context>
+         </context-group>
+       </trans-unit>
++      <trans-unit id="2710430925353472741" datatype="html">
++        <source>Try to include archive version in merge for non-PDF files</source>
++        <context-group purpose="location">
++          <context context-type="sourcefile">src/app/components/common/confirm-dialog/merge-confirm-dialog/merge-confirm-dialog.component.html</context>
++          <context context-type="linenumber">32</context>
++        </context-group>
++      </trans-unit>
+       <trans-unit id="5612366187076076264" datatype="html">
+         <source>Delete original documents after successful merge</source>
+         <context-group purpose="location">
+           <context context-type="sourcefile">src/app/components/common/confirm-dialog/merge-confirm-dialog/merge-confirm-dialog.component.html</context>
+-          <context context-type="linenumber">32</context>
++          <context context-type="linenumber">36</context>
+         </context-group>
+       </trans-unit>
+       <trans-unit id="5138283234724909648" datatype="html">
+         <source>Note that only PDFs will be included.</source>
+         <context-group purpose="location">
+           <context context-type="sourcefile">src/app/components/common/confirm-dialog/merge-confirm-dialog/merge-confirm-dialog.component.html</context>
+-          <context context-type="linenumber">34</context>
++          <context context-type="linenumber">39</context>
+         </context-group>
+       </trans-unit>
+       <trans-unit id="8157388568390631653" datatype="html">
+@@ -7431,21 +7438,21 @@
+         <source>Merged document will be queued for consumption.</source>
+         <context-group purpose="location">
+           <context context-type="sourcefile">src/app/components/document-list/bulk-editor/bulk-editor.component.ts</context>
+-          <context context-type="linenumber">863</context>
++          <context context-type="linenumber">866</context>
+         </context-group>
+       </trans-unit>
+       <trans-unit id="476913782630693351" datatype="html">
+         <source>Custom fields updated.</source>
+         <context-group purpose="location">
+           <context context-type="sourcefile">src/app/components/document-list/bulk-editor/bulk-editor.component.ts</context>
+-          <context context-type="linenumber">885</context>
++          <context context-type="linenumber">888</context>
+         </context-group>
+       </trans-unit>
+       <trans-unit id="3873496751167944011" datatype="html">
+         <source>Error updating custom fields.</source>
+         <context-group purpose="location">
+           <context context-type="sourcefile">src/app/components/document-list/bulk-editor/bulk-editor.component.ts</context>
+-          <context context-type="linenumber">894</context>
++          <context context-type="linenumber">897</context>
+         </context-group>
+       </trans-unit>
+       <trans-unit id="6307402210351946694" datatype="html">
+diff --git a/src-ui/src/app/components/common/confirm-dialog/merge-confirm-dialog/merge-confirm-dialog.component.html b/src-ui/src/app/components/common/confirm-dialog/merge-confirm-dialog/merge-confirm-dialog.component.html
+index 576861ff2..da57feca7 100644
+--- a/src-ui/src/app/components/common/confirm-dialog/merge-confirm-dialog/merge-confirm-dialog.component.html
++++ b/src-ui/src/app/components/common/confirm-dialog/merge-confirm-dialog/merge-confirm-dialog.component.html
+@@ -28,10 +28,16 @@
+         </select>
+     </div>
+     <div class="form-check form-switch mt-4">
++      <input class="form-check-input" type="checkbox" role="switch" id="archiveFallbackSwitch" [(ngModel)]="archiveFallback">
++      <label class="form-check-label" for="archiveFallbackSwitch" i18n>Try to include archive version in merge for non-PDF files</label>
++    </div>
++    <div class="form-check form-switch mt-2">
+       <input class="form-check-input" type="checkbox" role="switch" id="deleteOriginalsSwitch" [(ngModel)]="deleteOriginals" [disabled]="!userOwnsAllDocuments">
+       <label class="form-check-label" for="deleteOriginalsSwitch" i18n>Delete original documents after successful merge</label>
+     </div>
+-    <p class="small text-muted fst-italic mt-4" i18n>Note that only PDFs will be included.</p>
++    @if (!archiveFallback) {
++      <p class="small text-muted fst-italic mt-4" i18n>Note that only PDFs will be included.</p>
++    }
+ </div>
+ <div class="modal-footer">
+     <button type="button" class="btn" [class]="cancelBtnClass" (click)="cancel()" [disabled]="!buttonsEnabled">
+diff --git a/src-ui/src/app/components/common/confirm-dialog/merge-confirm-dialog/merge-confirm-dialog.component.ts b/src-ui/src/app/components/common/confirm-dialog/merge-confirm-dialog/merge-confirm-dialog.component.ts
+index 9359e4099..0438a33e7 100644
+--- a/src-ui/src/app/components/common/confirm-dialog/merge-confirm-dialog/merge-confirm-dialog.component.ts
++++ b/src-ui/src/app/components/common/confirm-dialog/merge-confirm-dialog/merge-confirm-dialog.component.ts
+@@ -29,6 +29,7 @@ export class MergeConfirmDialogComponent
+   implements OnInit
+ {
+   public documentIDs: number[] = []
++  public archiveFallback: boolean = false
+   public deleteOriginals: boolean = false
+   private _documents: Document[] = []
+   get documents(): Document[] {
+diff --git a/src-ui/src/app/components/document-list/bulk-editor/bulk-editor.component.ts b/src-ui/src/app/components/document-list/bulk-editor/bulk-editor.component.ts
+index 9864761fa..aa32497f3 100644
+--- a/src-ui/src/app/components/document-list/bulk-editor/bulk-editor.component.ts
++++ b/src-ui/src/app/components/document-list/bulk-editor/bulk-editor.component.ts
+@@ -857,6 +857,9 @@ export class BulkEditorComponent
+         if (mergeDialog.deleteOriginals) {
+           args['delete_originals'] = true
+         }
++        if (mergeDialog.archiveFallback) {
++          args['archive_fallback'] = true
++        }
+         mergeDialog.buttonsEnabled = false
+         this.executeBulkOperation(modal, 'merge', args, mergeDialog.documentIDs)
+         this.toastService.showInfo(
+diff --git a/src/documents/bulk_edit.py b/src/documents/bulk_edit.py
+index be4608e36..b8e76f7c8 100644
+--- a/src/documents/bulk_edit.py
++++ b/src/documents/bulk_edit.py
+@@ -318,6 +318,7 @@ def merge(
+     *,
+     metadata_document_id: int | None = None,
+     delete_originals: bool = False,
++    archive_fallback: bool = False,
+     user: User | None = None,
+ ) -> Literal["OK"]:
+     logger.info(
+@@ -333,7 +334,14 @@ def merge(
+     for doc_id in doc_ids:
+         doc = qs.get(id=doc_id)
+         try:
+-            with pikepdf.open(str(doc.source_path)) as pdf:
++            doc_path = (
++                doc.archive_path
++                if archive_fallback
++                and doc.mime_type != "application/pdf"
++                and doc.has_archive_version
++                else doc.source_path
++            )
++            with pikepdf.open(str(doc_path)) as pdf:
+                 version = max(version, pdf.pdf_version)
+                 merged_pdf.pages.extend(pdf.pages)
+             affected_docs.append(doc.id)
+@@ -349,7 +357,7 @@ def merge(
+         Path(
+             tempfile.mkdtemp(dir=settings.SCRATCH_DIR),
+         )
+-        / f"{'_'.join([str(doc_id) for doc_id in doc_ids])[:100]}_merged.pdf"
++        / f"{'_'.join([str(doc_id) for doc_id in affected_docs])[:100]}_merged.pdf"
+     )
+     merged_pdf.remove_unreferenced_resources()
+     merged_pdf.save(filepath, min_version=version)
+diff --git a/src/documents/serialisers.py b/src/documents/serialisers.py
+index 38053baee..a67673efc 100644
+--- a/src/documents/serialisers.py
++++ b/src/documents/serialisers.py
+@@ -1446,6 +1446,11 @@ class BulkEditSerializer(
+                 raise serializers.ValidationError("delete_originals must be a boolean")
+         else:
+             parameters["delete_originals"] = False
++        if "archive_fallback" in parameters:
++            if not isinstance(parameters["archive_fallback"], bool):
++                raise serializers.ValidationError("archive_fallback must be a boolean")
++        else:
++            parameters["archive_fallback"] = False
+
+     def validate(self, attrs):
+         method = attrs["method"]

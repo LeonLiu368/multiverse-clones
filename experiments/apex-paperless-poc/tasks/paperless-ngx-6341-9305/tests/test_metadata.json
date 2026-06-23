@@ -1,0 +1,15 @@
+{
+  "test_framework": "pytest",
+  "test_command": "cd /app/repo && python -m pytest src/documents/tests/test_bulk_edit.py -k 'test_merge_with_archive_fallback' -v --tb=short",
+  "test_files": [
+    "src-ui/src/app/components/document-list/bulk-editor/bulk-editor.component.spec.ts",
+    "src/documents/tests/conftest.py",
+    "src/documents/tests/test_bulk_edit.py"
+  ],
+  "num_test_files": 3,
+  "language": "python",
+  "FAIL_TO_PASS": [
+    "src.documents.tests.test_bulk_edit.TestPDFActions::test_merge_with_archive_fallback"
+  ],
+  "PASS_TO_PASS": []
+}
