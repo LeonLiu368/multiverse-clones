@@ -30,13 +30,18 @@ def test_view_requires_session():
     assert client.get("/api/gauge/view").status_code == 400
 
 
-def test_gauge_parses_logs_dashboards_datasources():
+def test_gauge_parses_logs_metrics_dashboards_datasources():
     v = _load_sample("gauge")
     assert v["stats"]["datasources"] == 2 and v["stats"]["dashboards"] == 1
-    assert v["stats"]["log_lines"] == 3
+    # Loki logs
+    assert v["stats"]["log_streams"] >= 1 and v["stats"]["log_lines"] >= 1
     stream = next(iter(v["log_queries"]))
-    assert "service" in stream  # a LogQL selector
-    assert any("read timeout" in ln["line"] for ln in v["log_queries"][stream])
+    assert "service" in stream and isinstance(v["log_queries"][stream], list)
+    # Prometheus metrics — each query -> series with [ts, value] points
+    assert v["stats"]["metric_queries"] >= 1
+    expr = next(iter(v["metric_queries"]))
+    series = v["metric_queries"][expr]
+    assert series and "metric" in series[0] and len(series[0]["values"]) >= 1
 
 
 def test_gauge_overlay_merges_streams_and_datasources():

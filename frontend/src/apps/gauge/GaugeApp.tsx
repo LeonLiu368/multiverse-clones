@@ -2,32 +2,56 @@ import { useState } from "react";
 import { api } from "../../api";
 import { SeedFileBar } from "../SeedFileBar";
 
+type LogLine = { ts: string; labels?: Record<string, string>; line: string; origin?: string };
+type Series = { metric: Record<string, string>; values: [string | number, number | string][] };
 type GaugeView = {
   meta: any;
   datasources: any[];
   dashboards: any[];
   alerts: any[];
-  log_queries: Record<string, { ts: string; labels?: Record<string, string>; line: string; origin?: string }[]>;
-  metric_queries: Record<string, any>;
+  log_queries: Record<string, LogLine[]>;
+  metric_queries: Record<string, Series[]>;
 };
+type Sel = { kind: "log" | "metric" | "dash"; key: string };
 
 const levelClass = (lvl?: string) =>
   ({ error: "lv-error", warn: "lv-warn", warning: "lv-warn", info: "lv-info", debug: "lv-debug" }[
     (lvl || "").toLowerCase()
   ] ?? "lv-info");
 
+function metricLabel(m: Record<string, string>) {
+  const name = m.__name__ || "";
+  const rest = Object.entries(m).filter(([k]) => k !== "__name__");
+  return name + (rest.length ? `{${rest.map(([k, val]) => `${k}="${val}"`).join(", ")}}` : "");
+}
+
+function Sparkline({ values }: { values: [string | number, number | string][] }) {
+  const nums = values.map((v) => Number(v[1])).filter((n) => Number.isFinite(n));
+  if (nums.length < 2) return <span className="g-muted">{nums.length ? nums[0] : "—"}</span>;
+  const W = 240, H = 36, min = Math.min(...nums), max = Math.max(...nums), span = max - min || 1;
+  const pts = nums
+    .map((n, i) => `${(i / (nums.length - 1)) * W},${H - ((n - min) / span) * (H - 4) - 2}`)
+    .join(" ");
+  return (
+    <svg className="g-spark" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none">
+      <polyline points={pts} fill="none" stroke="#e6522c" strokeWidth="1.5" />
+    </svg>
+  );
+}
+
 export function GaugeApp({ appId }: { appId: string }) {
   const [v, setV] = useState<GaugeView | null>(null);
-  const [sel, setSel] = useState<string>("");
-  const [dash, setDash] = useState<any | null>(null);
+  const [sel, setSel] = useState<Sel | null>(null);
 
   async function load() {
     const data: GaugeView = await api.view(appId);
     setV(data);
-    const first = Object.keys(data.log_queries)[0] ?? "";
-    setSel(first);
-    setDash(null);
+    const log0 = Object.keys(data.log_queries)[0];
+    const metric0 = Object.keys(data.metric_queries)[0];
+    setSel(log0 ? { kind: "log", key: log0 } : metric0 ? { kind: "metric", key: metric0 } : null);
   }
+
+  const dash = sel?.kind === "dash" ? v?.dashboards.find((d) => d.uid === sel.key) : null;
 
   return (
     <div className="gauge">
@@ -40,7 +64,7 @@ export function GaugeApp({ appId }: { appId: string }) {
         pullHint="ghcr.io/abundant-ai/gauge-gateway:<dataset>"
       />
       {!v ? (
-        <div className="empty-state">Load a gauge <b>state.json</b> to inspect its log streams, dashboards and datasources.</div>
+        <div className="empty-state">Load a gauge <b>state.json</b> to inspect its logs (Loki), metrics (Prometheus), dashboards and datasources.</div>
       ) : (
         <div className="gauge-body">
           <aside className="g-side">
@@ -53,26 +77,45 @@ export function GaugeApp({ appId }: { appId: string }) {
                 </li>
               ))}
             </ul>
-            <div className="g-section">Log streams</div>
+
+            <div className="g-section">Log streams (Loki)</div>
             <ul className="g-list">
               {Object.entries(v.log_queries).map(([q, lines]) => (
                 <li
                   key={q}
-                  className={`g-item ${!dash && sel === q ? "active" : ""}`}
-                  onClick={() => {
-                    setSel(q);
-                    setDash(null);
-                  }}
+                  className={`g-item ${sel?.kind === "log" && sel.key === q ? "active" : ""}`}
+                  onClick={() => setSel({ kind: "log", key: q })}
                 >
                   <code className="g-q">{q}</code>
                   <span className="count">{lines.length}</span>
                 </li>
               ))}
+              {!Object.keys(v.log_queries).length && <li className="g-empty">none</li>}
             </ul>
+
+            <div className="g-section">Metrics (Prometheus)</div>
+            <ul className="g-list">
+              {Object.entries(v.metric_queries).map(([expr, series]) => (
+                <li
+                  key={expr}
+                  className={`g-item ${sel?.kind === "metric" && sel.key === expr ? "active" : ""}`}
+                  onClick={() => setSel({ kind: "metric", key: expr })}
+                >
+                  <code className="g-q g-promql">{expr}</code>
+                  <span className="count">{series.length}</span>
+                </li>
+              ))}
+              {!Object.keys(v.metric_queries).length && <li className="g-empty">none</li>}
+            </ul>
+
             <div className="g-section">Dashboards</div>
             <ul className="g-list">
               {v.dashboards.map((d) => (
-                <li key={d.uid} className={`g-item ${dash === d ? "active" : ""}`} onClick={() => setDash(d)}>
+                <li
+                  key={d.uid}
+                  className={`g-item ${sel?.kind === "dash" && sel.key === d.uid ? "active" : ""}`}
+                  onClick={() => setSel({ kind: "dash", key: d.uid })}
+                >
                   📊 {d.title}
                   <span className="count">{(d.panels || []).length}</span>
                 </li>
@@ -81,7 +124,7 @@ export function GaugeApp({ appId }: { appId: string }) {
           </aside>
 
           <main className="g-main">
-            {dash ? (
+            {sel?.kind === "dash" && dash ? (
               <div className="g-dash">
                 <h2 className="g-title">📊 {dash.title}</h2>
                 <div className="g-sub">{dash.folder} · {(dash.tags || []).join(", ")}</div>
@@ -96,13 +139,44 @@ export function GaugeApp({ appId }: { appId: string }) {
                   </div>
                 ))}
               </div>
-            ) : (
+            ) : sel?.kind === "metric" ? (
+              <div className="g-metrics">
+                <div className="g-logs-head">
+                  <code className="g-q g-promql">{sel.key}</code>
+                  <span className="g-muted">{(v.metric_queries[sel.key] || []).length} series</span>
+                </div>
+                {(v.metric_queries[sel.key] || []).map((s, i) => {
+                  const nums = s.values.map((x) => Number(x[1])).filter(Number.isFinite);
+                  const last = nums.length ? nums[nums.length - 1] : null;
+                  return (
+                    <div className="g-series" key={i}>
+                      <div className="g-series-h">
+                        <code className="g-metric-label">{metricLabel(s.metric)}</code>
+                        <Sparkline values={s.values} />
+                        <span className="g-series-stat">
+                          last <b>{last ?? "—"}</b>
+                          {nums.length ? <> · min {Math.min(...nums)} · max {Math.max(...nums)}</> : null}
+                        </span>
+                      </div>
+                      <div className="g-points">
+                        {s.values.map((pt, j) => (
+                          <span className="g-point" key={j}>
+                            <span className="g-pt-ts">{String(pt[0])}</span> {String(pt[1])}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+                {!(v.metric_queries[sel.key] || []).length && <div className="hint">No series.</div>}
+              </div>
+            ) : sel?.kind === "log" ? (
               <div className="g-logs">
                 <div className="g-logs-head">
-                  <code className="g-q">{sel}</code>
-                  <span className="g-muted">{(v.log_queries[sel] || []).length} lines</span>
+                  <code className="g-q">{sel.key}</code>
+                  <span className="g-muted">{(v.log_queries[sel.key] || []).length} lines</span>
                 </div>
-                {(v.log_queries[sel] || []).map((l, i) => (
+                {(v.log_queries[sel.key] || []).map((l, i) => (
                   <div className={`g-line ${levelClass(l.labels?.level)} ${l.origin === "overlay" ? "g-overlay" : ""}`} key={i}>
                     <span className="g-ts">{l.ts}</span>
                     <span className="g-lvl">{l.labels?.level ?? ""}</span>
@@ -110,8 +184,10 @@ export function GaugeApp({ appId }: { appId: string }) {
                     {l.origin === "overlay" && <span className="g-ovtag">overlay</span>}
                   </div>
                 ))}
-                {!(v.log_queries[sel] || []).length && <div className="hint">No log lines.</div>}
+                {!(v.log_queries[sel.key] || []).length && <div className="hint">No log lines.</div>}
               </div>
+            ) : (
+              <div className="hint" style={{ padding: 20 }}>Select a log stream, metric or dashboard.</div>
             )}
           </main>
         </div>

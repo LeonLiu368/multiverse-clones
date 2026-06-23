@@ -1,36 +1,171 @@
 {
-  "meta": { "workspace": "acme", "now": "2026-06-20T17:05:00Z" },
-  "users": [ { "id": "u-agent", "login": "agent", "name": "Agent User" } ],
+  "meta": {
+    "workspace": "acme",
+    "now": "2026-06-07T12:00:00Z"
+  },
+  "users": [
+    {
+      "id": 1,
+      "login": "agent",
+      "name": "Agent User",
+      "role": "Editor"
+    }
+  ],
   "datasources": [
-    { "uid": "loki-default", "name": "web Loki", "type": "loki", "mode": "embedded", "health": "ok" },
-    { "uid": "prom-default", "name": "web Prometheus", "type": "prometheus", "mode": "embedded", "health": "ok" }
+    {
+      "uid": "prom-payments",
+      "name": "Payments Prometheus",
+      "type": "prometheus",
+      "mode": "embedded",
+      "health": "ok"
+    },
+    {
+      "uid": "loki-payments",
+      "name": "Payments Loki",
+      "type": "loki",
+      "mode": "embedded",
+      "health": "ok"
+    }
   ],
   "dashboards": [
     {
-      "uid": "dash-web", "title": "web incident", "folder": "Incidents",
-      "tags": ["incident", "web"], "variables": [],
+      "uid": "dash-payment-webhooks",
+      "title": "Payment Webhook Reliability",
+      "folder": "Payments",
+      "tags": ["payments", "webhooks", "oncall"],
+      "variables": [
+        {
+          "name": "service",
+          "label": "Service",
+          "query": "payments",
+          "current": {"text": "payments", "value": "payments"}
+        }
+      ],
       "panels": [
-        { "id": 1, "title": "web logs", "type": "logs", "datasource_uid": "loki-default",
-          "targets": [ { "datasource_uid": "loki-default", "expr": "{service=\"web\"}" } ] }
+        {
+          "id": 1,
+          "title": "Gateway responses by status",
+          "type": "timeseries",
+          "datasource_uid": "prom-payments",
+          "query": "sum by (status_code)(increase(payment_gateway_responses_total{service=\"payments\"}[5m]))"
+        },
+        {
+          "id": 2,
+          "title": "Payment lock conflict logs",
+          "type": "logs",
+          "datasource_uid": "loki-payments",
+          "query": "{service=\"payments\"} |= \"lock_conflict\""
+        }
       ]
     }
   ],
-  "alerts": [],
-  "metrics": { "queries": {} },
-  "logs": {
+  "alerts": [
+    {
+      "uid": "alert-payment-retry-burn",
+      "name": "Payment webhook retry error budget burn",
+      "state": "firing",
+      "health": "ok",
+      "dashboard_uid": "dash-payment-webhooks",
+      "panel_id": 1,
+      "query": "sum(rate(payment_webhook_failures_total[5m]))",
+      "labels": {
+        "service": "payments",
+        "severity": "page"
+      }
+    },
+    {
+      "uid": "alert-payment-latency-watch",
+      "name": "Payment webhook latency watch",
+      "state": "normal",
+      "health": "ok",
+      "dashboard_uid": "dash-payment-webhooks",
+      "panel_id": 1,
+      "query": "histogram_quantile(0.95, rate(payment_webhook_latency_seconds_bucket[5m]))",
+      "labels": {
+        "service": "payments",
+        "severity": "ticket"
+      }
+    }
+  ],
+  "metrics": {
     "queries": {
-      "{service=\"web\"}": [
-        { "ts": "2026-06-20T16:29:50Z", "labels": { "service": "web", "level": "info" },
-          "line": "GET /checkout 200 in 412ms" },
-        { "ts": "2026-06-20T16:30:10Z", "labels": { "service": "web", "level": "error" },
-          "line": "upstream read timeout after 5s calling payments; deadline exceeded" },
-        { "ts": "2026-06-20T16:30:12Z", "labels": { "service": "web", "level": "error" },
-          "line": "checkout retry failed: context deadline exceeded (read timeout=5s)" }
-      ]
+      "sum by (status_code)(increase(payment_gateway_responses_total{service=\"payments\"}[5m]))": {
+        "resultType": "matrix",
+        "series": [
+          {
+            "metric": {"status_code": "425"},
+            "values": [["2026-06-07T10:00:00Z", 3], ["2026-06-07T11:55:00Z", 31]]
+          },
+          {
+            "metric": {"status_code": "409"},
+            "values": [["2026-06-07T11:55:00Z", 18]]
+          }
+        ]
+      },
+      "sum(rate(payment_webhook_failures_total[5m]))": {
+        "resultType": "matrix",
+        "series": [
+          {
+            "metric": {"service": "payments"},
+            "values": [["2026-06-07T11:55:00Z", 0.12]]
+          }
+        ]
+      }
     }
   },
-  "alert_instances": [],
-  "alert_state_history": [],
+  "logs": {
+    "queries": {
+      "{service=\"payments\"} |= \"lock_conflict\"": {
+        "entries": [
+          {
+            "ts": "2026-06-07T11:57:10Z",
+            "labels": {"service": "payments", "level": "warn"},
+            "line": "gateway 409 lock_conflict idempotent=true event=evt_001"
+          }
+        ]
+      },
+      "{service=\"payments\",level=\"warn\"} |= \"retry\"": {
+        "entries": [
+          {
+            "ts": "2026-06-07T11:58:02Z",
+            "labels": {"service": "payments", "level": "warn"},
+            "line": "retry scheduled for lock_conflict event=evt_001 delay_ms=250"
+          }
+        ]
+      }
+    }
+  },
+  "alert_instances": [
+    {
+      "uid": "inst-payment-retry-burn-payments-page",
+      "rule_uid": "alert-payment-retry-burn",
+      "state": "firing",
+      "labels": {
+        "service": "payments",
+        "severity": "page"
+      },
+      "startsAt": "2026-06-07T11:54:00Z"
+    },
+    {
+      "uid": "inst-payment-latency-watch",
+      "rule_uid": "alert-payment-latency-watch",
+      "state": "normal",
+      "labels": {
+        "service": "payments",
+        "severity": "ticket"
+      },
+      "startsAt": "2026-06-07T11:10:00Z"
+    }
+  ],
+  "alert_state_history": [
+    {
+      "rule_uid": "alert-payment-retry-burn",
+      "from": "normal",
+      "to": "firing",
+      "ts": "2026-06-07T11:54:00Z",
+      "reason": "retry burn crossed page threshold"
+    }
+  ],
   "annotations": [],
   "mutation_log": []
 }

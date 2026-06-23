@@ -69,8 +69,9 @@ Pick a bundled sample (under `samples/`) or **upload** any seed file (`POST /api
   **Pull from GHCR** / load the upstream **`figma-service:prod-v1`** image — extracting its baked
   `/srv/figma.db` corpus (read with stdlib sqlite3) and showing the real Figma thumbnail.
 - **gauge** (`gauge.state.json` **or** a `gauge-gateway` image) — Loki/Grafana shape: a dark **log
-  explorer** (pick a LogQL selector
-  → level-colored log lines), plus dashboards (panels + exprs) and datasources.
+  explorer** (LogQL selector → level-colored lines), a **metrics explorer** (PromQL query → series
+  with sparklines + min/max/last + data points), plus dashboards (panels + exprs) and datasources
+  (Loki + Prometheus).
 - **Sentry** (`sentry.state.json`) — an **issue list + detail** with events and **stack traces**
   (frames + code context).
 - **GitHub** (`seed.sh`) — parses the `gh` API calls into a **preview** of repos / issues / PRs (with
