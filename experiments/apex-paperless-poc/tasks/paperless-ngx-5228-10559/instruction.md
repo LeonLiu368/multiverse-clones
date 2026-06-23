@@ -4,7 +4,7 @@ I'm organizing documents with filepath templates in Paperless NGX and I need a w
 
 ## Available Tools
 This is an observability task — use the observability + collaboration tools. The repo is at `/app/repo`.
-- Logs (Grafana/Loki): `gcx logs query '{{service="paperless-ngx"}}'` (filter with `|= "500"` etc.), `gcx dashboards list`
+- Logs (Grafana/Loki): `gcx logs query '{service="paperless-ngx"}'` (filter with `|= "500"` etc.), `gcx dashboards list`
 - Issue tracker: `linear issue list`, `linear issue search "<term>"` (or the `jira` CLI)
 - Team chat: `slack channels list`, `slack messages search "<term>"`
 Correlate these, then fix the root cause in `/app/repo`. Do not modify the test suite.
