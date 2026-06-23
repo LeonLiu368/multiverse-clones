@@ -1,0 +1,41 @@
+services:
+  main:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${MAIN_IMAGE_NAME}
+    working_dir: /app/repo
+    environment:
+      APEX_INCIDENT_ID: TV-770
+      WORLD_ISSUES_AGENT_MODE: "1"
+      WORLD_ISSUES_BACKEND: remote
+      WORLD_ISSUES_OUTPUT: json
+      WORLD_ISSUES_ACTOR: agent
+      PLANE_BASE_URL: http://ticketvector:8765
+    depends_on:
+      ticketvector:
+        condition: service_healthy
+    volumes:
+      - ./shared/variant-ethereum-optimism-op-geth-770-observability/ticketvector-state.json:/var/lib/ticketvector/state.json:ro
+    networks:
+      - observability
+
+  ticketvector:
+    build:
+      context: ./shared/variant-ethereum-optimism-op-geth-770-observability
+      dockerfile: ticketvector-service.Dockerfile
+    image: hb-variant-ethereum-optimism-op-geth-770-observability-ticketvector:local
+    environment:
+      WORLD_ISSUES_BACKEND: fake
+      WORLD_ISSUES_OUTPUT: json
+      WORLD_ISSUES_ACTOR: agent
+      WORLD_ISSUES_STATE_FILE: /var/lib/ticketvector/state.json
+      WORLD_ISSUES_BIND_HOST: 0.0.0.0
+      WORLD_ISSUES_PORT: "8765"
+    volumes:
+      - ./shared/variant-ethereum-optimism-op-geth-770-observability/ticketvector-state.json:/var/lib/ticketvector/state.json
+    networks:
+      - observability
+networks:
+  observability:
+    driver: bridge

@@ -1,0 +1,27 @@
+metadata:
+  name: ethereum-clones
+  description: |
+    Ethereum (Optimism op-geth) APEX-SWE-style observability/devops incident re-platformed onto
+    abundant-ai's service clones. The agent discovers the production issue via the local
+    ticketvector (linear/jira) tracker, fixes the root cause in /app/repo (op-geth), and closes
+    the primary ticket (TV-770) with investigation/commit/PR evidence.
+      - op-geth-770 : OP-Mainnet genesis block was rejected by Optimism extraData validation;
+                      fix adds ChainConfig.IsOptimismGenesisBlock and exempts the genesis block.
+    Graded clone-independently by the upstream PR's own Go test (go test ./params ->
+    TestIsOptimismGenesisBlock, a deterministic table-driven config test) PLUS a ticketvector
+    state-evidence check (primary ticket In Review by agent, comment + commit link + PR receipt,
+    distractor tickets untouched). Vendored op-geth snapshot + world_issues ticketvector runtime;
+    self-contained (no HF fetch / GHCR pull at build). Local gate: oracle=1 (PASS x3), nop=0
+    (build fails without the golden symbols). See README.md.
+  task_path: experiments/ethereum-clones/tasks
+  n_trials: 1
+  skip_trajectory_analysis: false
+
+tasks:
+  - op-geth-770
+
+agents:
+  - name: oracle
+  - name: nop
+  - name: gemini-cli
+    model_name: gemini/gemini-3.1-pro-preview
