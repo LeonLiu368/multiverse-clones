@@ -159,20 +159,30 @@ _ABS_TS_RE = re.compile(r"(\d{4}-\d{2}-\d{2})[ T](\d{2}:\d{2}:\d{2})")
 
 
 def convert_loki_log(text, *, workspace, datasource_uid, service_hint):
-    """Raw APEX data/loki/*.log (one log line per row) -> gauge state.json. Synthesizes
-    {service,level} labels per line so gauge's filter engine serves {service="x"} |= "..."
-    queries. Absolute timestamps are parsed when present (e.g. Django logs); otherwise
-    lines get a deterministic sequential ts so the default time window includes them."""
+    """Raw APEX data/loki/*.log -> gauge state.json. Synthesizes {service,level} labels so
+    gauge's filter engine serves {service="x"} |= "..." queries. Absolute timestamps are
+    parsed when present (e.g. Django logs); otherwise lines get a deterministic sequential ts
+    so the default time window includes them.
+
+    Multi-line records (tracebacks, multi-line messages) are folded into their parent entry:
+    a line without a leading timestamp is treated as a CONTINUATION of the preceding
+    real-timestamped record (inheriting its ts/level), not a new entry. Without this, a
+    traceback gets shredded into N separate entries each stamped with the synthetic `base`
+    date, stranding them months away from the error they belong to."""
     lines = [ln.rstrip("\n") for ln in text.splitlines() if ln.strip()]
     base = datetime(2026, 1, 1, 12, 0, 0, tzinfo=timezone.utc)
     entries = []
     last_ts = None
+    fold_into = None  # index of the current real-timestamped entry to fold continuations into
     for i, line in enumerate(lines):
         head = line[:48]
+        m = _ABS_TS_RE.search(head)
+        if m is None and fold_into is not None:
+            entries[fold_into]["line"] += "\n" + line
+            continue
         lvl = _LEVEL_RE.search(head)
         level = (lvl.group(1).upper() if lvl else "INFO")
         level = {"WARN": "WARNING", "CRIT": "CRITICAL"}.get(level, level)
-        m = _ABS_TS_RE.search(head)
         if m:
             ts = f"{m.group(1)}T{m.group(2)}Z"
         else:
@@ -181,6 +191,7 @@ def convert_loki_log(text, *, workspace, datasource_uid, service_hint):
             last_ts = ts
         entries.append({"ts": ts, "labels": {"service": service_hint, "level": level.lower()},
                         "line": line})
+        fold_into = (len(entries) - 1) if m else None
     selector = "{" + f'service="{service_hint}"' + "}"
     fixtures = {selector: {"entries": entries}}
     return _assemble_gauge(fixtures, last_ts, workspace=workspace,
