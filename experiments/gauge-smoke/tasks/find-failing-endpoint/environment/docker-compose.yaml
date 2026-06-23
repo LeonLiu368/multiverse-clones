@@ -1,7 +1,6 @@
 # Two-container smoke for the gauge agent/gateway split + boot-overlay merge.
 #   main  — the agent (gauge-agent CLIs copied in; NO log data on disk). Reaches gauge over HTTP.
-#   gauge — the gateway sidecar (gauge-gateway:empty): mounts a baseline log corpus + an incident
-#           overlay; the boot MERGES them so {service="checkout"} serves baseline + the 500 incident.
+#   gauge — the gateway sidecar (gauge-gateway:empty): serves the checkout logs (200s + a 500 incident).
 # custom_docker_compose = true; NO networks: block; linux/amd64.
 services:
   main:
@@ -20,8 +19,7 @@ services:
     hostname: gauge
     platform: linux/amd64
     volumes:
-      - ./data/gauge-baseline.json:/data/gauge/state.json:ro
-      - ./data/gauge-overlay.json:/data/gauge-overlay.json:ro
+      - ./data/gauge-state.json:/data/gauge/state.json:ro
     healthcheck:
       test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost/api/healthz', timeout=1)\" || exit 1"]
       interval: 2s

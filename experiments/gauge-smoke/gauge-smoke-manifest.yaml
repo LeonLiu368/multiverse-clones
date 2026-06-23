@@ -2,7 +2,7 @@ metadata:
   name: gauge-smoke
   enable_image_push: true
   description: |
-    Standalone smoke test for the gauge clone's agent/gateway split + boot-overlay merge (NOT an
+    Standalone smoke test for the gauge clone's agent/gateway split (NOT an
     APEX task). Two containers: a thin data-free gauge-agent (gcx CLI) as `main`, and a
     gauge-gateway:empty sidecar that mounts a baseline log corpus + an incident overlay and merges
     them at boot. The agent must use `gcx logs query` to find the endpoint returning 500s
