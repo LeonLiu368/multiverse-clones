@@ -1,0 +1,31 @@
+schema_version = "1.2"
+name = "paperless-clones-datefix-internetblock/paperless-ngx-9784"
+description = ""
+[metadata]
+category = "observability"
+tags = ["apex-swe", "observability", "clones", "multi-service", "sre", "ticketvector", "slack", "gauge", "python", "django"]
+
+[agent]
+timeout_sec = 2700
+
+[verifier]
+timeout_sec = 1800
+
+[environment]
+allow_internet = true
+build_timeout_sec = 3000
+cpus = 4
+memory_mb = 8192
+storage_mb = 40960
+gpus = 0
+workdir = "/app/repo"
+
+[[environment.mcp_servers]]
+name = "slack"
+transport = "stdio"
+command = "slack-mcp"
+
+[[environment.mcp_servers]]
+name = "grafana"
+transport = "stdio"
+command = "mcp-grafana"

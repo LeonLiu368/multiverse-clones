@@ -1,0 +1,28 @@
+metadata:
+  name: paperless-clones-datefix-internetblock
+  enable_image_push: true
+  oddish_only: true
+  description: |
+    Focused 2-task variant (paperless-ngx 9784 + 6341-9305) of paperless-clones, used to test the
+    date-fix + internet-block hardening: deterministic "now" for the gauge incident timestamps and
+    allow_internet=false at agent runtime so the agent cannot fetch the real upstream paperless diff.
+    Shared baked corpora (jira/slack gateways) + per-task gauge overlay; agent fixes /app/repo; graded
+    by each upstream PR's pytest.
+  task_path: experiments/paperless-clones-datefix-internetblock/tasks
+  n_trials: 1
+  skip_trajectory_analysis: false
+tasks:
+  - paperless-ngx-6341-9305
+  - paperless-ngx-9784
+agents:
+  - name: nop
+  - name: oracle
+  - name: claude-code
+    model_name: anthropic/claude-opus-4-8
+    n_trials: 3
+  - name: codex
+    model_name: openai/gpt-5.5
+    n_trials: 3
+  - name: gemini-cli
+    model_name: gemini/gemini-3.1-pro-preview
+    n_trials: 3

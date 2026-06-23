@@ -1,0 +1,261 @@
+diff --git a/docs/administration.md b/docs/administration.md
+index 0b9974def..4bb4b34cc 100644
+--- a/docs/administration.md
++++ b/docs/administration.md
+@@ -457,6 +457,22 @@ of the index and usually makes queries faster and also ensures that the
+ autocompletion works properly. This command is regularly invoked by the
+ task scheduler.
+
++### Clearing the database read cache
++
++If the database read cache is enabled, **you must run this command** after making any changes to the database outside the application context.
++This includes operations such as restoring a database backup or executing SQL statements like UPDATE, INSERT, DELETE, ALTER, CREATE, or DROP.
++
++Failing to invalidate the cache after such modifications can lead to stale data being served from the cache, and **may cause data corruption** or inconsistent behavior in the application.
++
++Use the following management command to clear the cache:
++
++```
++invalidate_cachalot
++```
++
++!!! info
++The database read cache is based on Django-Cachalot. You can refer to their [documentation](https://django-cachalot.readthedocs.io/en/latest/quickstart.html#manage-py-command).
++
+ ### Managing filenames {#renamer}
+
+ If you use paperless' feature to
+diff --git a/docs/configuration.md b/docs/configuration.md
+index 939adefeb..5da5b8e3e 100644
+--- a/docs/configuration.md
++++ b/docs/configuration.md
+@@ -159,6 +159,41 @@ Available options are `postgresql` and `mariadb`.
+
+     Defaults to unset, which uses Django’s built-in defaults.
+
++#### [`PAPERLESS_DB_READ_CACHE_ENABLED=<bool>`](#PAPERLESS_DB_READ_CACHE_ENABLED) {#PAPERLESS_DB_READ_CACHE_ENABLED}
++
++: Caches the database read query results into Redis. This can significantly improve application response times by caching database queries, at the cost of slightly increased memory usage.
++
++    Defaults to `false`.
++
++    !!! danger
++
++    **Do not modify the database outside the application while it is running.**
++    This includes actions such as restoring a backup, upgrading the database, or performing manual inserts. All external modifications must be done **only when the application is stopped**.
++    After making any such changes, you **must invalidate the DB read cache** using the `invalidate_cachalot` management command.
++
++#### [`PAPERLESS_READ_CACHE_TTL=<int>`](#PAPERLESS_READ_CACHE_TTL) {#PAPERLESS_READ_CACHE_TTL}
++
++: Specifies how long (in seconds) read data should be cached.
++
++    Allowed values are between `1` (one second) and `31536000` (one year). Defaults to `3600` (one hour).
++
++    !!! warning
++
++    A high TTL increases memory usage over time. Memory may be used until end of TTL, even if the cache is invalidated with the `invalidate_cachalot` command.
++
++In case of an out-of-memory (OOM) situation, Redis may stop accepting new data — including cache entries, scheduled tasks, and documents to consume.
++If your system has limited RAM, consider configuring a dedicated Redis instance for the read cache, with a memory limit and the eviction policy set to `allkeys-lru`.
++For more details, refer to the [Redis eviction policy documentation](https://redis.io/docs/latest/develop/reference/eviction/), and see the `PAPERLESS_READ_CACHE_REDIS_URL` setting to specify a separate Redis broker.
++
++#### [`PAPERLESS_READ_CACHE_REDIS_URL=<url>`](#PAPERLESS_READ_CACHE_REDIS_URL) {#PAPERLESS_READ_CACHE_REDIS_URL}
++
++: Defines the Redis instance used for the read cache.
++
++    Defaults to `None`.
++
++    !!! Note
++    If this value is not set, the same Redis instance used for scheduled tasks will be used for caching as well.
++
+ ## Optional Services
+
+ ### Tika {#tika}
+diff --git a/pyproject.toml b/pyproject.toml
+index dc7d4f601..1b49675be 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -26,6 +26,7 @@ dependencies = [
+   "django~=5.1.7",
+   "django-allauth[socialaccount,mfa]~=65.4.0",
+   "django-auditlog~=3.1.2",
++  "django-cachalot~=2.8.0",
+   "django-celery-results~=2.6.0",
+   "django-compression-middleware~=0.5.0",
+   "django-cors-headers~=4.7.0",
+diff --git a/src/paperless/db_cache.py b/src/paperless/db_cache.py
+new file mode 100644
+index 000000000..b8268b5c0
+--- /dev/null
++++ b/src/paperless/db_cache.py
+@@ -0,0 +1,17 @@
++from cachalot.api import invalidate as cachalot_invalidate
++from cachalot.utils import get_query_cache_key
++from cachalot.utils import get_table_cache_key
++
++PREFIX = "pngx_cachalot_"
++
++
++def custom_get_query_cache_key(compiler):
++    return PREFIX + get_query_cache_key(compiler)
++
++
++def custom_get_table_cache_key(db_alias, table):
++    return PREFIX + get_table_cache_key(db_alias, table)
++
++
++def invalidate_db_cache():
++    return cachalot_invalidate(cache_alias="read-cache")
+diff --git a/src/paperless/settings.py b/src/paperless/settings.py
+index 07fba9314..b140bc17e 100644
+--- a/src/paperless/settings.py
++++ b/src/paperless/settings.py
+@@ -433,6 +433,7 @@ STORAGES = {
+ _CELERY_REDIS_URL, _CHANNELS_REDIS_URL = _parse_redis_url(
+     os.getenv("PAPERLESS_REDIS", None),
+ )
++_REDIS_KEY_PREFIX = os.getenv("PAPERLESS_REDIS_PREFIX", "")
+
+ TEMPLATES = [
+     {
+@@ -458,7 +459,7 @@ CHANNEL_LAYERS = {
+             "hosts": [_CHANNELS_REDIS_URL],
+             "capacity": 2000,  # default 100
+             "expiry": 15,  # default 60
+-            "prefix": os.getenv("PAPERLESS_REDIS_PREFIX", ""),
++            "prefix": _REDIS_KEY_PREFIX,
+         },
+     },
+ }
+@@ -882,7 +883,7 @@ CELERY_SEND_TASK_SENT_EVENT = True
+ CELERY_BROKER_CONNECTION_RETRY = True
+ CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+ CELERY_BROKER_TRANSPORT_OPTIONS = {
+-    "global_keyprefix": os.getenv("PAPERLESS_REDIS_PREFIX", ""),
++    "global_keyprefix": _REDIS_KEY_PREFIX,
+ }
+
+ CELERY_TASK_TRACK_STARTED = True
+@@ -903,22 +904,69 @@ CELERY_BEAT_SCHEDULE = _parse_beat_schedule()
+ # https://docs.celeryq.dev/en/stable/userguide/configuration.html#beat-schedule-filename
+ CELERY_BEAT_SCHEDULE_FILENAME = str(DATA_DIR / "celerybeat-schedule.db")
+
+-# django setting.
+-CACHES = {
+-    "default": {
+-        "BACKEND": os.environ.get(
+-            "PAPERLESS_CACHE_BACKEND",
+-            "django.core.cache.backends.redis.RedisCache",
+-        ),
+-        "LOCATION": _CHANNELS_REDIS_URL,
+-        "KEY_PREFIX": os.getenv("PAPERLESS_REDIS_PREFIX", ""),
+-    },
+-}
+
+-if DEBUG and os.getenv("PAPERLESS_CACHE_BACKEND") is None:
+-    CACHES["default"]["BACKEND"] = (
+-        "django.core.cache.backends.locmem.LocMemCache"  # pragma: no cover
++# Cachalot: Database read cache.
++def _parse_cachalot_settings():
++    global INSTALLED_APPS
++    ttl = __get_int("PAPERLESS_READ_CACHE_TTL", 3600)
++    ttl = min(ttl, 31536000) if ttl > 0 else 3600
++    _, redis_url = _parse_redis_url(
++        os.getenv("PAPERLESS_READ_CACHE_REDIS_URL", None),
+     )
++    result = {
++        "CACHALOT_CACHE": "read-cache",
++        "CACHALOT_ENABLED": __get_boolean(
++            "PAPERLESS_DB_READ_CACHE_ENABLED",
++            default="no",
++        ),
++        "CACHALOT_FINAL_SQL_CHECK": True,
++        "CACHALOT_QUERY_KEYGEN": "paperless.db_cache.custom_get_query_cache_key",
++        "CACHALOT_TABLE_KEYGEN": "paperless.db_cache.custom_get_table_cache_key",
++        "CACHALOT_REDIS_URL": redis_url,
++        "CACHALOT_TIMEOUT": ttl,
++    }
++    if result["CACHALOT_ENABLED"]:
++        INSTALLED_APPS.append("cachalot")
++    return result
++
++
++_cachalot_settings = _parse_cachalot_settings()
++CACHALOT_ENABLED = _cachalot_settings["CACHALOT_ENABLED"]
++CACHALOT_CACHE = _cachalot_settings["CACHALOT_CACHE"]
++CACHALOT_TIMEOUT = _cachalot_settings["CACHALOT_TIMEOUT"]
++CACHALOT_QUERY_KEYGEN = _cachalot_settings["CACHALOT_QUERY_KEYGEN"]
++CACHALOT_TABLE_KEYGEN = _cachalot_settings["CACHALOT_TABLE_KEYGEN"]
++CACHALOT_FINAL_SQL_CHECK = _cachalot_settings["CACHALOT_FINAL_SQL_CHECK"]
++
++
++# Django default & Cachalot cache configuration
++_CACHE_BACKEND = os.environ.get(
++    "PAPERLESS_CACHE_BACKEND",
++    "django.core.cache.backends.locmem.LocMemCache"
++    if DEBUG
++    else "django.core.cache.backends.redis.RedisCache",
++)
++
++
++def _parse_caches():
++    return {
++        "default": {
++            "BACKEND": _CACHE_BACKEND,
++            "LOCATION": _CHANNELS_REDIS_URL,
++            "KEY_PREFIX": _REDIS_KEY_PREFIX,
++        },
++        "read-cache": {
++            "BACKEND": _CACHE_BACKEND,
++            "LOCATION": _parse_cachalot_settings()["CACHALOT_REDIS_URL"],
++            "KEY_PREFIX": _REDIS_KEY_PREFIX,
++        },
++    }
++
++
++CACHES = _parse_caches()
++
++
++del _cachalot_settings
+
+
+ def default_threads_per_worker(task_workers) -> int:
+diff --git a/uv.lock b/uv.lock
+index 842b0fb12..958a66668 100644
+--- a/uv.lock
++++ b/uv.lock
+@@ -671,6 +671,18 @@ wheels = [
+     { url = "https://files.pythonhosted.org/packages/af/34/47edd758abcb4426953b5ff2fa4dd9956c2304e96160ab1b95c3a1ab6e61/django_auditlog-3.1.2-py3-none-any.whl", hash = "sha256:6432a83fdf4397a726488d101fedcb62daafd6d4b825a0fc4c50e3657f5883cd", size = 37312, upload-time = "2025-04-26T11:01:16.776Z" },
+ ]
+
++[[package]]
++name = "django-cachalot"
++version = "2.8.0"
++source = { registry = "https://pypi.org/simple" }
++dependencies = [
++    { name = "django", marker = "sys_platform == 'darwin' or sys_platform == 'linux'" },
++]
++sdist = { url = "https://files.pythonhosted.org/packages/f5/53/1f781e58028a43028d6c799f2eab15eff65e841e3e288d6f2953e36f01a4/django_cachalot-2.8.0.tar.gz", hash = "sha256:30456720ac9f3fabeb90ce898530fe01130c25a1eca911cd016cfaeab251d627", size = 74673 }
++wheels = [
++    { url = "https://files.pythonhosted.org/packages/9a/05/f5846fd186189ac0a1deddb9c67450c838e5c8ceceb35b5260c61f622599/django_cachalot-2.8.0-py3-none-any.whl", hash = "sha256:315da766a5356c7968318326f7b0579f64571ad909f64cad0601f38153ca4e16", size = 55671 },
++]
++
+ [[package]]
+ name = "django-celery-results"
+ version = "2.6.0"
+@@ -1892,6 +1904,7 @@ dependencies = [
+     { name = "django", marker = "sys_platform == 'darwin' or sys_platform == 'linux'" },
+     { name = "django-allauth", extra = ["mfa", "socialaccount"], marker = "sys_platform == 'darwin' or sys_platform == 'linux'" },
+     { name = "django-auditlog", marker = "sys_platform == 'darwin' or sys_platform == 'linux'" },
++    { name = "django-cachalot", marker = "sys_platform == 'darwin' or sys_platform == 'linux'" },
+     { name = "django-celery-results", marker = "sys_platform == 'darwin' or sys_platform == 'linux'" },
+     { name = "django-compression-middleware", marker = "sys_platform == 'darwin' or sys_platform == 'linux'" },
+     { name = "django-cors-headers", marker = "sys_platform == 'darwin' or sys_platform == 'linux'" },
+@@ -2022,6 +2035,7 @@ requires-dist = [
+     { name = "django", specifier = "~=5.1.7" },
+     { name = "django-allauth", extras = ["socialaccount", "mfa"], specifier = "~=65.4.0" },
+     { name = "django-auditlog", specifier = "~=3.1.2" },
++    { name = "django-cachalot", specifier = "~=2.8.0" },
+     { name = "django-celery-results", specifier = "~=2.6.0" },
+     { name = "django-compression-middleware", specifier = "~=0.5.0" },
+     { name = "django-cors-headers", specifier = "~=4.7.0" },
