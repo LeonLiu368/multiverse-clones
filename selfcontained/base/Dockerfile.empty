@@ -17,4 +17,13 @@ RUN rm -f /var/lib/ticketvector/state.json
 ENV WORLD_ISSUES_STATE_FILE=/var/lib/ticketvector/state.json \
     WORLD_ISSUES_BIND_HOST=0.0.0.0 \
     WORLD_ISSUES_PORT=8765
-# ENTRYPOINT/CMD inherited from ticketvector-service (python -m world_issues.server on :8765).
+
+# Boot pre-processor (same as the prod gateway): a task mounts its own full state.json
+# at /var/lib/ticketvector/state.json (becomes SRC) and may ALSO mount a
+# /data/state-overlay.json (additive merge) and/or /data/state-patch.json (op-list).
+# The runtime copy is served, so a mounted read-only state still allows boot-time
+# overlay/patch. See docs/PROD-OVERLAY.md.
+COPY jira-boot.sh apply_state_patch.py /opt/
+RUN chmod +x /opt/jira-boot.sh /opt/apply_state_patch.py
+ENTRYPOINT ["/opt/jira-boot.sh"]
+CMD []
