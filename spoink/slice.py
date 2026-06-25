@@ -109,6 +109,64 @@ def slice_export(in_dir: str, out_dir: str, cutoff: float) -> Dict[str, Any]:
     }
 
 
+def _ts_epoch(iso: Optional[str]) -> Optional[float]:
+    if not iso:
+        return None
+    try:
+        return datetime.fromisoformat(iso.replace("Z", "+00:00")).timestamp()
+    except ValueError:
+        return None
+
+
+def _iso_z(epoch: float) -> str:
+    return datetime.fromtimestamp(epoch, tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def slice_tracker(state: Dict[str, Any], cutoff: float) -> Dict[str, Any]:
+    """Creation-cut a ticketvector / abundant-jira-clone state.json to <= cutoff (epoch s),
+    in place: keep issues + comments created at-or-before T, drop later ones, recompute
+    comments_count, and prune relations/links/attachments for dropped issues. `updated_at`
+    is clamped to T so issues don't look edited in the future.
+
+    NOTE: this is a CREATION-cut — kept issues still show their CURRENT state/labels/title.
+    Faithful as-of-T field *state* needs the per-issue change log (Linear issueHistory),
+    the same replay GitHub's --as-of does via the timeline; that's the follow-on.
+    """
+    kept, dropped = [], 0
+    for i in state.get("issues", []):
+        c = _ts_epoch(i.get("created_at"))
+        if c is None or c <= cutoff:
+            u = _ts_epoch(i.get("updated_at"))
+            if u and u > cutoff:
+                i["updated_at"] = _iso_z(cutoff)
+            kept.append(i)
+        else:
+            dropped += 1
+    kept_idents = {i["identifier"] for i in kept}
+
+    out_comments: Dict[str, list] = {}
+    c_kept = c_drop = 0
+    for ident, lst in (state.get("comments") or {}).items():
+        if ident not in kept_idents:
+            c_drop += len(lst)
+            continue
+        keep = [c for c in lst if (_ts_epoch(c.get("created_at")) or 0) <= cutoff]
+        c_kept += len(keep)
+        c_drop += len(lst) - len(keep)
+        if keep:
+            out_comments[ident] = keep
+    for i in kept:
+        i["comments_count"] = len(out_comments.get(i["identifier"], []))
+
+    state["issues"] = kept
+    state["comments"] = out_comments
+    for coll in ("relations", "links", "attachments"):
+        if isinstance(state.get(coll), dict):
+            state[coll] = {k: v for k, v in state[coll].items() if k in kept_idents}
+    return {"issues_kept": len(kept), "issues_dropped": dropped,
+            "comments_kept": c_kept, "comments_dropped": c_drop}
+
+
 def _fmt(m: Optional[Dict[str, Any]]) -> str:
     if not m:
         return "—"
@@ -117,18 +175,26 @@ def _fmt(m: Optional[Dict[str, Any]]) -> str:
 
 
 def main(argv: Optional[list] = None) -> int:
-    ap = argparse.ArgumentParser(prog="spoink.slice", description="Slice a Slack export as of a point in time.")
-    ap.add_argument("--in", dest="in_dir", required=True, help="captured export dir")
+    ap = argparse.ArgumentParser(prog="spoink.slice", description="Slice a captured corpus as of a point in time.")
+    ap.add_argument("--kind", choices=["slack", "tracker"], default="slack",
+                    help="slack = export dir; tracker = jira-clone state.json")
+    ap.add_argument("--in", dest="in_dir", required=True, help="export dir (slack) or state.json (tracker)")
     ap.add_argument("--as-of", required=True, help="epoch | ISO w/ offset | 'YYYY-MM-DD HH:MM' (+ --tz)")
     ap.add_argument("--tz", default=None, help="offset for a tz-naive --as-of, e.g. -7 (PDT) or -8 (PST)")
-    ap.add_argument("--out", required=True, help="output (sliced) export dir")
+    ap.add_argument("--out", required=True, help="output (sliced) export dir or state.json")
     args = ap.parse_args(argv)
 
+    import sys
     cutoff = parse_cutoff(args.as_of, args.tz)
+    if args.kind == "tracker":
+        state = json.load(open(args.in_dir))
+        res = slice_tracker(state, cutoff)
+        json.dump(state, open(args.out, "w"), indent=2, ensure_ascii=False)
+        print(json.dumps({"out": args.out, "cutoff_utc": _iso_z(cutoff), **res}))
+        return 0
     res = slice_export(args.in_dir, args.out, cutoff)
     print(json.dumps({"out": args.out, "cutoff_utc": res["cutoff_utc"],
                       "kept": res["kept"], "dropped": res["dropped"]}))
-    import sys
     print(f"cutoff:        {res['cutoff_utc']}", file=sys.stderr)
     print(f"last kept:     {_fmt(res['last_kept'])}", file=sys.stderr)
     print(f"first dropped: {_fmt(res['first_dropped'])}", file=sys.stderr)

@@ -42,3 +42,23 @@ def test_slice_filters_by_cutoff(tmp_path):
     assert (tmp_path / "out" / "channels.json").exists()
     kept = [m for f in (tmp_path / "out" / "general").glob("*.json") for m in json.load(open(f))]
     assert len(kept) == 2
+
+
+def test_slice_tracker_creation_cut():
+    from spoink.slice import slice_tracker, parse_cutoff
+    state = {
+        "issues": [
+            {"identifier": "T-1", "created_at": "2026-06-01T00:00:00Z", "updated_at": "2026-06-30T00:00:00Z", "comments_count": 2},
+            {"identifier": "T-2", "created_at": "2026-06-20T00:00:00Z", "updated_at": "2026-06-20T00:00:00Z", "comments_count": 0},
+        ],
+        "comments": {"T-1": [{"id": "c1", "created_at": "2026-06-02T00:00:00Z"},
+                             {"id": "c2", "created_at": "2026-06-25T00:00:00Z"}]},
+        "relations": {"T-2": [{"x": 1}]}, "links": {}, "attachments": {},
+    }
+    res = slice_tracker(state, parse_cutoff("2026-06-15 00:00", "+0"))
+    assert res["issues_kept"] == 1 and res["issues_dropped"] == 1
+    assert [i["identifier"] for i in state["issues"]] == ["T-1"]            # T-2 (created after T) dropped
+    assert state["comments"]["T-1"] == [{"id": "c1", "created_at": "2026-06-02T00:00:00Z"}]  # c2 dropped
+    assert state["issues"][0]["comments_count"] == 1                       # recomputed
+    assert state["issues"][0]["updated_at"] == "2026-06-15T00:00:00Z"      # clamped to T (was 06-30)
+    assert state["relations"] == {}                                        # pruned for dropped T-2
