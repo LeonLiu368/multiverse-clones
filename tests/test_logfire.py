@@ -19,11 +19,33 @@ class FakeLF:
     def query(self, sql, min_ts, max_ts=None, limit=10000):
         return OVERVIEW if "GROUP BY" in sql else INCIDENT
 
+    def query_paged(self, cols, where, min_ts, max_ts, page=10000):
+        return INCIDENT  # incident pull is cursor-paged in fetch()
+
 
 def test_level_names_and_host():
     assert _lvl(9) == "info" and _lvl(13) == "warn" and _lvl(17) == "error"
     assert _host("pylf_v1_us_x").endswith("logfire-us.pydantic.dev/v2/query")
     assert "logfire-eu" in _host("pylf_v1_eu_x")
+
+
+def test_query_paged_lifts_cap_and_dedups_boundaries():
+    import re
+    from spoink.logfire_export import LogfireClient
+    # synthetic dataset incl. a same-timestamp tie at a page boundary
+    recs = [{"start_timestamp": t, "span_id": s} for t, s in
+            [("t1", "a"), ("t2", "b"), ("t2", "c"), ("t3", "d"), ("t4", "e")]]
+
+    class Paged:
+        query_paged = LogfireClient.query_paged
+        def query(self, sql, min_ts, max_ts=None, limit=10000):
+            cur = (re.search(r">= '([^']+)'", sql) or [None, min_ts])[1]
+            return [r for r in recs if r["start_timestamp"] >= cur][:limit]
+
+    out = Paged().query_paged("start_timestamp, span_id", "1=1", "t0", "t9", page=3)
+    # all 5 unique rows returned across pages, no boundary duplicates
+    assert len(out) == 5
+    assert {(r["start_timestamp"], r["span_id"]) for r in out} == {(r["start_timestamp"], r["span_id"]) for r in recs}
 
 
 def test_fetch_shapes_incident_and_overview():

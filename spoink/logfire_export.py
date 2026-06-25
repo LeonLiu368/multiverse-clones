@@ -58,6 +58,27 @@ class LogfireClient:
             raise LogfireError(f"{r.status_code}: {r.text[:200]}")
         return r.json().get("data", [])
 
+    def query_paged(self, cols: str, where: str, min_ts: str, max_ts: str, page: int = 10000) -> List[Dict[str, Any]]:
+        """Lift the 10k/request cap: cursor-paginate by start_timestamp. `cols` must include
+        start_timestamp + span_id (used to de-dup the same-microsecond page boundary)."""
+        out: List[Dict[str, Any]] = []
+        cursor, boundary = min_ts, set()
+        while True:
+            sql = (f"SELECT {cols} FROM records WHERE ({where}) AND start_timestamp >= '{cursor}' "
+                   f"ORDER BY start_timestamp LIMIT {page}")
+            raw = self.query(sql, min_ts, max_ts, limit=page)
+            if not raw:
+                break
+            out.extend(r for r in raw if (r.get("start_timestamp"), r.get("span_id")) not in boundary)
+            if len(raw) < page:        # last page decided on RAW size, not post-dedup
+                break
+            last_ts = raw[-1]["start_timestamp"]   # advance from the raw page, not the deduped slice
+            if raw[0]["start_timestamp"] == last_ts:
+                break  # a full page sharing one timestamp can't advance by cursor (≈impossible at µs precision)
+            boundary = {(r["start_timestamp"], r.get("span_id")) for r in raw if r["start_timestamp"] == last_ts}
+            cursor = last_ts
+        return out
+
 
 def _lvl(n: Optional[int]) -> str:
     return LEVEL_NAMES.get(n or 0, str(n))
@@ -66,12 +87,9 @@ def _lvl(n: Optional[int]) -> str:
 # --------------------------------------------------------------------------- fetch
 
 
-INCIDENT_SQL = """
-SELECT start_timestamp, service_name, level, message, span_name,
-       is_exception, exception_type, exception_message, trace_id
-FROM records WHERE level >= 13
-ORDER BY start_timestamp
-"""
+INCIDENT_COLS = ("start_timestamp, span_id, service_name, level, message, span_name, "
+                 "is_exception, exception_type, exception_message, trace_id")
+INCIDENT_WHERE = "level >= 13"
 
 OVERVIEW_SQL = """
 SELECT message, service_name, count(*) AS n, max(level) AS level,
@@ -85,7 +103,7 @@ ORDER BY n DESC
 
 
 def fetch(client: LogfireClient, incident_min: str, cutoff: str, period_min: str) -> Dict[str, Any]:
-    incident = client.query(INCIDENT_SQL, incident_min, cutoff)
+    incident = client.query_paged(INCIDENT_COLS, INCIDENT_WHERE, incident_min, cutoff)  # cursor-paged: no 10k cap
     overview = client.query(OVERVIEW_SQL, period_min, cutoff, limit=10000)
     for r in incident:
         r["level_name"] = _lvl(r.get("level"))
