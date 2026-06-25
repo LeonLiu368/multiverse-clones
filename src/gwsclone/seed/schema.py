@@ -28,13 +28,15 @@ DOC_MIME = "application/vnd.google-apps.document"
 
 
 def empty() -> dict[str, Any]:
-    return {"drive": [], "documents": []}
+    return {"drive": [], "documents": [], "calendar": [], "gmail": []}
 
 
 def normalize(seed: dict[str, Any]) -> dict[str, Any]:
     out = empty()
     out["drive"] = [_norm_file(f) for f in seed.get("drive", [])]
     out["documents"] = [_norm_doc(d) for d in seed.get("documents", [])]
+    out["calendar"] = [_norm_event(e) for e in seed.get("calendar", [])]
+    out["gmail"] = [_norm_message(m) for m in seed.get("gmail", [])]
     # ensure every document has a backing Drive file (Docs are Drive files)
     drive_ids = {f["id"] for f in out["drive"]}
     for d in out["documents"]:
@@ -72,6 +74,38 @@ def _norm_doc(d: dict) -> dict:
     }
 
 
+def _norm_event(e: dict) -> dict:
+    return {
+        "id": e["id"],
+        "calendarId": e.get("calendarId", "primary"),
+        "summary": e.get("summary", ""),
+        "description": e.get("description", ""),
+        "location": e.get("location", ""),
+        "status": e.get("status", "confirmed"),
+        "start": e.get("start") or {},
+        "end": e.get("end") or {},
+        "attendees": e.get("attendees", []) or [],
+        "organizer": e.get("organizer") or {},
+        "created": e.get("created", ""),
+        "updated": e.get("updated", ""),
+    }
+
+
+def _norm_message(m: dict) -> dict:
+    return {
+        "id": m["id"],
+        "threadId": m.get("threadId", m["id"]),
+        "labelIds": m.get("labelIds", []) or [],
+        "from": m.get("from", ""),
+        "to": m.get("to", ""),
+        "subject": m.get("subject", ""),
+        "date": m.get("date", ""),
+        "internalDate": str(m.get("internalDate", "")),
+        "snippet": m.get("snippet", ""),
+        "body": m.get("body", ""),
+    }
+
+
 def to_json(seed: dict[str, Any]) -> str:
     return json.dumps(seed, indent=2)
 
@@ -93,3 +127,29 @@ def paragraph(text: str, style: str = "NORMAL_TEXT") -> dict:
 def make_body(*blocks: dict) -> dict:
     # Google docs always start with an empty sectionBreak-ish element index; keep it simple.
     return {"content": [{"sectionBreak": {}}, *blocks]}
+
+
+def event(event_id: str, summary: str, start: str, end: str | None = None,
+          *, location: str = "", description: str = "", calendar_id: str = "primary",
+          organizer: dict | None = None, attendees: list | None = None,
+          status: str = "confirmed") -> dict:
+    """Build a Calendar event. `start`/`end` are RFC-3339 dateTimes (or YYYY-MM-DD)."""
+    def _when(v: str) -> dict:
+        return {"date": v} if len(v) == 10 else {"dateTime": v}
+    return {
+        "id": event_id, "calendarId": calendar_id, "summary": summary,
+        "description": description, "location": location, "status": status,
+        "start": _when(start), "end": _when(end or start),
+        "organizer": organizer or {}, "attendees": attendees or [],
+    }
+
+
+def message(msg_id: str, subject: str, body: str, *, frm: str = "", to: str = "",
+            thread_id: str | None = None, date: str = "", internal_date: str = "",
+            labels: list | None = None, snippet: str = "") -> dict:
+    """Build a Gmail message. `thread_id` groups a conversation (defaults to id)."""
+    return {
+        "id": msg_id, "threadId": thread_id or msg_id, "labelIds": labels or ["INBOX"],
+        "from": frm, "to": to, "subject": subject, "date": date,
+        "internalDate": internal_date, "snippet": snippet or body[:120], "body": body,
+    }

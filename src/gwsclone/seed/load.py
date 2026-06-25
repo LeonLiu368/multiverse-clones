@@ -20,8 +20,13 @@ def load_seed_into_engine(seed: dict[str, Any], engine: Engine) -> dict[str, int
             store.upsert_file(s, f)
         for d in seed["documents"]:
             store.upsert_document(s, d)
+        for e in seed.get("calendar", []):
+            store.upsert_event(s, e)
+        for m in seed.get("gmail", []):
+            store.upsert_message(s, m)
         s.commit()
-    return {"drive": len(seed["drive"]), "documents": len(seed["documents"])}
+    return {"drive": len(seed["drive"]), "documents": len(seed["documents"]),
+            "calendar": len(seed.get("calendar", [])), "gmail": len(seed.get("gmail", []))}
 
 
 def load_seed(seed: dict[str, Any], db_path: str) -> dict[str, int]:

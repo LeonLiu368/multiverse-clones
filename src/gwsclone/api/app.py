@@ -1,11 +1,17 @@
 """FastAPI app implementing a subset of the Google Workspace REST APIs.
 
-Drive v3 and Docs v1, served from one host (the clients are pointed here):
+Drive v3, Docs v1, Calendar v3, and Gmail v1, served from one host (the clients
+are pointed here):
 
-  GET /drive/v3/files                  → {kind:"drive#fileList", files:[...]}  (?q=, ?pageSize=)
-  GET /drive/v3/files/{fileId}         → a Drive file resource
-  GET /v1/documents/{documentId}       → a Docs document (body = structural-element tree)
-  GET /health                          ; token-gated /_control/*
+  GET /drive/v3/files                          → {kind:"drive#fileList", files:[...]}  (?q=, ?pageSize=)
+  GET /drive/v3/files/{fileId}                 → a Drive file resource
+  GET /v1/documents/{documentId}               → a Docs document (body = structural-element tree)
+  GET /calendar/v3/calendars/{calId}/events    → {kind:"calendar#events", items:[...]}  (?q=, ?timeMin=, ?timeMax=)
+  GET /calendar/v3/calendars/{calId}/events/{eventId} → a Calendar event
+  GET /gmail/v1/users/{userId}/messages        → {messages:[{id, threadId}], ...}  (?q=)
+  GET /gmail/v1/users/{userId}/messages/{id}   → a Gmail message (payload.headers + base64url body)
+  GET /gmail/v1/users/{userId}/threads/{id}    → a Gmail thread (its messages, chronological)
+  GET /health                                  ; token-gated /_control/*
 
 Auth mirrors Google's OAuth bearer: requests must carry a non-empty
 ``Authorization: Bearer …`` (or ``access_token`` / ``key`` query). Errors mirror
@@ -102,6 +108,51 @@ def create_app(db_path: str | None = None) -> FastAPI:
             if not d:
                 raise GoogleError(404, f"Requested entity was not found.")
             return store.document_resource(d)
+
+    # ----- Calendar v3 -----
+    @app.get("/calendar/v3/calendars/{calendar_id}/events")
+    def events_list(calendar_id: str, q: str | None = None, timeMin: str | None = None,
+                    timeMax: str | None = None, maxResults: str | None = None,
+                    _tok: str = Depends(auth)) -> dict:
+        with Session() as s:
+            items = store.list_events(s, calendar_id, q, timeMin, timeMax)
+        items = items[: _int(maxResults, 250)]
+        return {"kind": "calendar#events", "summary": calendar_id, "items": items}
+
+    @app.get("/calendar/v3/calendars/{calendar_id}/events/{event_id}")
+    def events_get(calendar_id: str, event_id: str, _tok: str = Depends(auth)) -> dict:
+        with Session() as s:
+            e = store.get_event(s, event_id)
+            if not e or (calendar_id and e.calendar_id != calendar_id):
+                raise GoogleError(404, "Not Found")
+            return store.event_resource(e)
+
+    # ----- Gmail v1 -----
+    @app.get("/gmail/v1/users/{user_id}/messages")
+    def messages_list(user_id: str, q: str | None = None, maxResults: str | None = None,
+                      _tok: str = Depends(auth)) -> dict:
+        with Session() as s:
+            msgs = store.list_messages(s, q, _int(maxResults, 100))
+            refs = [{"id": m.id, "threadId": m.thread_id} for m in msgs]
+        return {"messages": refs, "resultSizeEstimate": len(refs)}
+
+    @app.get("/gmail/v1/users/{user_id}/messages/{message_id}")
+    def messages_get(user_id: str, message_id: str, format: str = "full",
+                     _tok: str = Depends(auth)) -> dict:
+        with Session() as s:
+            m = store.get_message(s, message_id)
+            if not m:
+                raise GoogleError(404, "Not Found")
+            return store.message_resource(m, format)
+
+    @app.get("/gmail/v1/users/{user_id}/threads/{thread_id}")
+    def threads_get(user_id: str, thread_id: str, format: str = "full",
+                    _tok: str = Depends(auth)) -> dict:
+        with Session() as s:
+            msgs = store.thread_messages(s, thread_id)
+            if not msgs:
+                raise GoogleError(404, "Not Found")
+            return {"id": thread_id, "messages": [store.message_resource(m, format) for m in msgs]}
 
     return app
 

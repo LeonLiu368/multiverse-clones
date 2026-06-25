@@ -66,7 +66,49 @@ def build_server() -> FastMCP:
         ql = query.lower()
         return [{"style": st, "text": t.strip()} for st, t in iter_paragraphs(body) if ql in t.lower()]
 
+    # ----- Calendar -----
+    @mcp.tool()
+    async def gws_list_events(calendar_id: str = "primary", q: str | None = None,
+                              time_min: str | None = None, time_max: str | None = None) -> dict:
+        """List Calendar events. Optional free-text `q` and RFC-3339 `time_min`/`time_max` on the start."""
+        return await _get(f"/calendar/v3/calendars/{calendar_id}/events",
+                          q=q, timeMin=time_min, timeMax=time_max)
+
+    @mcp.tool()
+    async def gws_get_event(event_id: str, calendar_id: str = "primary") -> dict:
+        """Get a single Calendar event."""
+        return await _get(f"/calendar/v3/calendars/{calendar_id}/events/{event_id}")
+
+    # ----- Gmail -----
+    @mcp.tool()
+    async def gws_search_messages(q: str | None = None, user_id: str = "me") -> dict:
+        """Search Gmail. `q` supports from:/to:/subject:/label: + free-text (e.g. \"from:bob launch\")."""
+        return await _get(f"/gmail/v1/users/{user_id}/messages", q=q)
+
+    @mcp.tool()
+    async def gws_get_message(message_id: str, user_id: str = "me") -> dict:
+        """Get a Gmail message (headers + decoded plaintext body)."""
+        m = await _get(f"/gmail/v1/users/{user_id}/messages/{message_id}")
+        m["bodyText"] = _decode_gmail_body(m)
+        return m
+
+    @mcp.tool()
+    async def gws_get_thread(thread_id: str, user_id: str = "me") -> dict:
+        """Get a Gmail thread (all messages, chronological, with decoded bodies)."""
+        t = await _get(f"/gmail/v1/users/{user_id}/threads/{thread_id}")
+        for m in t.get("messages", []):
+            m["bodyText"] = _decode_gmail_body(m)
+        return t
+
     return mcp
+
+
+def _decode_gmail_body(message: dict) -> str:
+    import base64
+    data = (message.get("payload", {}).get("body", {}) or {}).get("data", "")
+    if not data:
+        return message.get("snippet", "")
+    return base64.urlsafe_b64decode(data.encode()).decode(errors="replace")
 
 
 def main() -> None:

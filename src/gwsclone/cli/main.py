@@ -20,9 +20,13 @@ from ..store import document_text, iter_paragraphs
 app = typer.Typer(no_args_is_help=True, help="Google Workspace clone CLI")
 drive_app = typer.Typer(no_args_is_help=True, help="drive: ls / get")
 docs_app = typer.Typer(no_args_is_help=True, help="docs: get / text / search")
+cal_app = typer.Typer(no_args_is_help=True, help="calendar: events / get")
+gmail_app = typer.Typer(no_args_is_help=True, help="gmail: search / get / thread")
 seed_app = typer.Typer(no_args_is_help=True, help="seed: load / import-real")
 app.add_typer(drive_app, name="drive")
 app.add_typer(docs_app, name="docs")
+app.add_typer(cal_app, name="calendar")
+app.add_typer(gmail_app, name="gmail")
 app.add_typer(seed_app, name="seed")
 
 
@@ -89,6 +93,70 @@ def docs_search(document_id: str, query: str) -> None:
     q = query.lower()
     out = [{"style": st, "text": t.strip()} for st, t in iter_paragraphs(body) if q in t.lower()]
     _emit(out)
+
+
+# ---------------- calendar ----------------
+@cal_app.command("events")
+def cal_events(calendar: str = typer.Option("primary", "--calendar", "-c"),
+               query: str = typer.Option(None, "--query", "-q", help="free-text over summary/desc/location"),
+               time_min: str = typer.Option(None, "--time-min", help="RFC-3339 lower bound on start"),
+               time_max: str = typer.Option(None, "--time-max", help="RFC-3339 upper bound on start"),
+               fmt: str = typer.Option("json", "--format")) -> None:
+    data = get(f"/calendar/v3/calendars/{calendar}/events", q=query, timeMin=time_min, timeMax=time_max)
+    if fmt == "markdown":
+        for e in data["items"]:
+            when = e["start"].get("dateTime") or e["start"].get("date") or "?"
+            typer.echo(f"{e['id']}  {when}  {e['summary']}")
+    else:
+        _emit(data)
+
+
+@cal_app.command("get")
+def cal_get(event_id: str, calendar: str = typer.Option("primary", "--calendar", "-c")) -> None:
+    _emit(get(f"/calendar/v3/calendars/{calendar}/events/{event_id}"))
+
+
+# ---------------- gmail ----------------
+@gmail_app.command("search")
+def gmail_search(query: str = typer.Argument(None, help="Gmail query, e.g. \"from:bob subject:launch\""),
+                 user: str = typer.Option("me", "--user", "-u"),
+                 fmt: str = typer.Option("json", "--format")) -> None:
+    data = get(f"/gmail/v1/users/{user}/messages", q=query)
+    if fmt == "markdown":
+        for r in data["messages"]:
+            typer.echo(f"{r['id']}  thread={r['threadId']}")
+    else:
+        _emit(data)
+
+
+@gmail_app.command("get")
+def gmail_get(message_id: str, user: str = typer.Option("me", "--user", "-u"),
+              text: bool = typer.Option(False, "--text", help="print just the decoded body")) -> None:
+    data = get(f"/gmail/v1/users/{user}/messages/{message_id}")
+    if text:
+        typer.echo(_gmail_body_text(data))
+    else:
+        _emit(data)
+
+
+@gmail_app.command("thread")
+def gmail_thread(thread_id: str, user: str = typer.Option("me", "--user", "-u"),
+                 text: bool = typer.Option(False, "--text", help="print each message's headers + body")) -> None:
+    data = get(f"/gmail/v1/users/{user}/threads/{thread_id}")
+    if text:
+        for m in data["messages"]:
+            h = {x["name"]: x["value"] for x in m["payload"]["headers"]}
+            typer.echo(f"From: {h.get('From','')}\nSubject: {h.get('Subject','')}\nDate: {h.get('Date','')}\n\n{_gmail_body_text(m)}\n{'-'*48}")
+    else:
+        _emit(data)
+
+
+def _gmail_body_text(message: dict) -> str:
+    import base64
+    data = (message.get("payload", {}).get("body", {}) or {}).get("data", "")
+    if not data:
+        return message.get("snippet", "")
+    return base64.urlsafe_b64decode(data.encode()).decode(errors="replace")
 
 
 # ---------------- seed (offline) ----------------
