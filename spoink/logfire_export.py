@@ -100,6 +100,74 @@ def fetch(client: LogfireClient, incident_min: str, cutoff: str, period_min: str
     }
 
 
+# ------------------------------------------------------------------- gauge state.json
+
+
+def _gts(ts: Optional[str]) -> str:
+    """Logfire ISO (microsecond precision) -> gauge's canonical second-precision ISO Z,
+    so gauge's time filter parses entry timestamps."""
+    if not ts:
+        return ""
+    try:
+        return datetime.fromisoformat(ts.replace("Z", "+00:00")).astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    except ValueError:
+        return ts
+
+
+def to_gauge_state(data: Dict[str, Any]) -> Dict[str, Any]:
+    """Map the Logfire capture into a gauge state.json (Loki-log shape gcx serves).
+
+    Incident records -> per-service {service="..."} log streams; the overview signatures
+    -> a {view="error-signatures"} stream. meta.now is anchored at the cutoff so a default
+    `gcx logs query ... --since` surfaces the incident. Matches gauge validate_state.
+    """
+    cutoff = _gts(data["meta"]["now"])
+    fixtures: Dict[str, Dict[str, Any]] = {}
+
+    for r in data["incident"]:
+        svc = r.get("service_name") or "unknown"
+        sel = '{service="%s"}' % svc
+        line = r.get("message") or r.get("span_name") or ""
+        if r.get("is_exception") and r.get("exception_type"):
+            line = f"{line} | {r['exception_type']}: {r.get('exception_message') or ''}".strip()
+        fixtures.setdefault(sel, {"entries": []})["entries"].append({
+            "ts": _gts(r["start_timestamp"]), "labels": {"service": svc, "level": r["level_name"]}, "line": line,
+        })
+
+    ov_entries = []
+    for r in data["overview"]:
+        line = f"[{r['n']}x] {r.get('service_name')} {r['level_name']}"
+        if r.get("exception_type"):
+            line += f" {r['exception_type']}"
+        line += f": {r.get('message') or ''}"
+        ov_entries.append({"ts": _gts(r.get("last_seen")) or cutoff,
+                           "labels": {"service": "oddish", "view": "error-signatures", "level": r["level_name"]},
+                           "line": line})
+    if ov_entries:
+        fixtures['{service="oddish",view="error-signatures"}'] = {"entries": ov_entries}
+
+    for f in fixtures.values():
+        f["entries"].sort(key=lambda e: e["ts"])
+
+    return {
+        "meta": {"workspace": "oddish", "now": cutoff},
+        "users": [{"id": "u-agent", "login": "agent", "name": "Agent User"}],
+        "datasources": [
+            {"uid": "loki", "name": "oddish Loki", "type": "loki", "mode": "embedded", "health": "ok"},
+            {"uid": "prom-default", "name": "oddish Prometheus", "type": "prometheus", "mode": "embedded", "health": "ok"},
+        ],
+        "dashboards": [{
+            "uid": "dash-oddish", "title": "oddish incident", "folder": "Incidents",
+            "tags": ["incident", "oddish"], "variables": [],
+            "panels": [{"id": 1, "title": "oddish-backend logs", "type": "logs", "datasource_uid": "loki",
+                        "targets": [{"datasource_uid": "loki", "expr": '{service="oddish-backend"}'}]}],
+        }],
+        "alerts": [], "metrics": {"queries": {}},
+        "logs": {"queries": fixtures},
+        "alert_instances": [], "alert_state_history": [], "annotations": [], "mutation_log": [],
+    }
+
+
 # --------------------------------------------------------------------------- report
 
 
@@ -127,6 +195,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     ap.add_argument("--incident-hours", type=float, default=2.0, help="incident window length before cutoff")
     ap.add_argument("--period-days", type=float, default=365.0, help="overview look-back before cutoff (capped by retention)")
     ap.add_argument("--out", default="logfire.json")
+    ap.add_argument("--gauge-out", default=None, help="also write a gauge state.json (Loki-log shape)")
     ap.add_argument("--report", default=None)
     ap.add_argument("--token-env", default="LOGFIRE_READ_TOKEN")
     args = ap.parse_args(argv)
@@ -151,7 +220,10 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     from pathlib import Path
     Path(args.out).write_text(json.dumps(data, indent=2))
-    print(json.dumps({"out": args.out, "incident_records": rep["incident_records"],
+    if args.gauge_out:
+        Path(args.gauge_out).write_text(json.dumps(to_gauge_state(data), indent=2))
+    print(json.dumps({"out": args.out, "gauge_out": args.gauge_out,
+                      "incident_records": rep["incident_records"],
                       "overview_signatures": rep["overview_signatures"], "sufficient": rep["sufficient"]}))
     if args.report:
         md = args.report if args.report.endswith(".md") else args.report + ".md"
