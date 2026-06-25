@@ -1,0 +1,16 @@
+{
+  "drive": [
+    {"id":"DOC_Q3PLAN_0001","name":"Q3 Launch Plan","mimeType":"application/vnd.google-apps.document","parents":["root"],"modifiedTime":"2026-06-01T10:00:00Z","owners":[{"displayName":"Mira Devon","emailAddress":"mira@acme.example"}]},
+    {"id":"FILE_BUDGET_002","name":"Budget","mimeType":"application/vnd.google-apps.spreadsheet","parents":["root"],"modifiedTime":"2026-05-20T09:00:00Z"}
+  ],
+  "documents": [
+    {"documentId":"DOC_Q3PLAN_0001","title":"Q3 Launch Plan","revisionId":"7",
+     "body":{"content":[
+       {"sectionBreak":{}},
+       {"paragraph":{"paragraphStyle":{"namedStyleType":"HEADING_1"},"elements":[{"textRun":{"content":"Q3 Launch Plan\n"}}]}},
+       {"paragraph":{"paragraphStyle":{"namedStyleType":"NORMAL_TEXT"},"elements":[{"textRun":{"content":"Owner: Mira Devon\n"}}]}},
+       {"paragraph":{"paragraphStyle":{"namedStyleType":"NORMAL_TEXT"},"elements":[{"textRun":{"content":"Launch date: 2026-09-15\n"}}]}},
+       {"paragraph":{"paragraphStyle":{"namedStyleType":"NORMAL_TEXT"},"elements":[{"textRun":{"content":"Status: on track\n"}}]}}
+     ]}}
+  ]
+}
