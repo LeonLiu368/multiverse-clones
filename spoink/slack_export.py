@@ -100,11 +100,13 @@ def _norm_name(name: str) -> str:
 
 
 def fetch_workspace(
-    client: Any, target_channels: List[str], oldest: str
+    client: Any, target_channels: List[str], oldest: str, latest: Optional[str] = None
 ) -> Dict[str, Any]:
-    """Pull users, the requested channels, and their messages+threads since `oldest`.
+    """Pull users, the requested channels, and their messages+threads in the window
+    (`oldest`, `latest`] -- both epoch-second strings; `latest` None = up to now.
 
-    `client` only needs `ok_call` and `paginate` (so tests can inject a fake).
+    Uses Slack's own `oldest`/`latest` history params so the window is bounded at the
+    API (no fetch-all-then-slice). `client` only needs `ok_call` and `paginate`.
     Returns raw Slack objects (unmodified) bucketed for the export writer.
     """
     auth = client.ok_call("auth.test")
@@ -133,13 +135,14 @@ def fetch_workspace(
         except SlackError:
             ch.setdefault("members", [])
         seen: Dict[str, Dict[str, Any]] = {}
-        roots = list(client.paginate("conversations.history", "messages", channel=cid, oldest=oldest, limit=200))
+        roots = list(client.paginate("conversations.history", "messages", channel=cid, oldest=oldest, latest=latest, limit=200))
         for m in roots:
             seen[m["ts"]] = m
-        # pull each thread's replies (root is returned again; dedup by ts)
+        # pull each thread's replies (root is returned again; dedup by ts). Bound replies
+        # to the same window so a reply after `latest` never sneaks in via the thread.
         for m in roots:
             if m.get("thread_ts") == m.get("ts") and int(m.get("reply_count", 0) or 0) > 0:
-                for rep in client.paginate("conversations.replies", "messages", channel=cid, ts=m["ts"], oldest=oldest, limit=200):
+                for rep in client.paginate("conversations.replies", "messages", channel=cid, ts=m["ts"], oldest=oldest, latest=latest, limit=200):
                     seen[rep["ts"]] = rep
         messages_by_channel[cid] = sorted(seen.values(), key=lambda x: float(x["ts"]))
 
@@ -344,7 +347,9 @@ def parse_oldest(since: str) -> str:
 def main(argv: Optional[List[str]] = None) -> int:
     ap = argparse.ArgumentParser(prog="spoink.slack_export", description="Read-only Slack export via the Web API (xoxp).")
     ap.add_argument("--channels", required=True, help="comma-separated channel names, e.g. '#eng,#incidents'")
-    ap.add_argument("--since", default="90d", help="window: 90d | 12h | all | YYYY-MM-DD (default 90d)")
+    ap.add_argument("--since", default="90d", help="oldest bound: 90d | 12h | all | YYYY-MM-DD (default 90d)")
+    ap.add_argument("--latest", default=None, help="newest bound: epoch | ISO w/ offset | 'YYYY-MM-DD HH:MM' (+ --tz). default now")
+    ap.add_argument("--tz", default=None, help="offset for a tz-naive --latest, e.g. -7 (PDT) or -8 (PST)")
     ap.add_argument("--out", default="slack-export", help="export directory to write")
     ap.add_argument("--report", default=None, help="write sufficiency report (.md; .json alongside)")
     ap.add_argument("--token-env", default="SLACK_USER_TOKEN", help="env var holding the xoxp token")
@@ -359,9 +364,13 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     targets = [c for c in args.channels.split(",") if c.strip()]
     oldest = parse_oldest(args.since)
+    latest = None
+    if args.latest:
+        from .slice import parse_cutoff  # shared time parser (lazy import avoids cycle)
+        latest = f"{parse_cutoff(args.latest, args.tz):.6f}"
     client = SlackClient(token)
     try:
-        data = fetch_workspace(client, targets, oldest)
+        data = fetch_workspace(client, targets, oldest, latest)
         sample = data["channels"][0]["id"] if data["channels"] else None
         probe = run_probe(client, sample)
         counts = write_export_dir(args.out, data)
