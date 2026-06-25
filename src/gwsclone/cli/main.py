@@ -114,5 +114,21 @@ def seed_import_real(out: str = typer.Option("gws.db", "--out"),
     typer.echo(json.dumps({"db": out, **counts}))
 
 
+@seed_app.command("gen-corpus")
+def seed_gen_corpus(out: str = typer.Option("gws.db", "--out"),
+                    seed: int = typer.Option(42, "--seed"),
+                    filler: int = typer.Option(24, "--filler"),
+                    emit: str = typer.Option(None, "--emit", help="also write the corpus JSON")) -> None:
+    """Build the deterministic prod corpus (needle + decoys + filler) into a db."""
+    from ..seed import schema
+    from ..seed.corpus import build_corpus
+    from ..seed.load import load_seed
+    sd = build_corpus(seed=seed, filler=filler)
+    counts = load_seed(sd, out)
+    if emit:
+        open(emit, "w").write(schema.to_json(sd))
+    typer.echo(json.dumps({"db": out, "seed": seed, **counts}))
+
+
 if __name__ == "__main__":
     app()

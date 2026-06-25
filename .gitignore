@@ -7,3 +7,7 @@ __pycache__/
 # harbor local run artifacts
 jobs/
 **/jobs/
+
+# generated corpus artifacts (rebuilt by docker/build-prod-v1.sh)
+*.db
+docker/gws_corpus.db
