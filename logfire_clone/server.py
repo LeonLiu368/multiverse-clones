@@ -39,10 +39,12 @@ def _run(sql: str, mn: str, mx: str | None, limit: int):
         raise ValueError("only SELECT/WITH queries are allowed")  # read-only, like Logfire
     lo, hi = _ts_literal(mn), _ts_literal(mx or "2100-01-01T00:00:00Z")
     # scope `records` to [min,max] like Logfire (start_timestamp is VARCHAR ISO -> cast), then run the agent's SQL
+    # start_timestamp may be inferred as VARCHAR or TIMESTAMP depending on the duckdb version;
+    # CAST->VARCHAR->strip Z->TIMESTAMP handles both uniformly.
+    col = "CAST(replace(CAST(start_timestamp AS VARCHAR),'Z','') AS TIMESTAMP)"
     _con.execute(
         "CREATE OR REPLACE TEMP VIEW records AS SELECT * FROM base_records WHERE "
-        f"CAST(replace(start_timestamp,'Z','') AS TIMESTAMP) >= TIMESTAMP '{lo}' AND "
-        f"CAST(replace(start_timestamp,'Z','') AS TIMESTAMP) <= TIMESTAMP '{hi}'"
+        f"{col} >= TIMESTAMP '{lo}' AND {col} <= TIMESTAMP '{hi}'"
     )
     cur = _con.execute(f"SELECT * FROM ({sql}) AS _q LIMIT {int(limit)}")
     cols = [d[0] for d in cur.description]
