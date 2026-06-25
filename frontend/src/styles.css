@@ -152,6 +152,8 @@ button { font-family: inherit; cursor: pointer; }
 .msg-channel { color: var(--muted); font-size: 12px; }
 .msg-reply-tag { color: var(--muted); font-size: 12px; }
 .msg-text { white-space: pre-wrap; line-height: 1.46; }
+.msg-text-thread { cursor: pointer; border-radius: 4px; }
+.msg-text-thread:hover { background: var(--hover, #f6f6f6); box-shadow: -6px 0 0 var(--hover, #f6f6f6); }
 .msg-del, .msg-act { background: none; border: none; opacity: 0; font-size: 12px; padding: 0 4px; cursor: pointer; }
 .msg:hover .msg-del, .msg:hover .msg-act { opacity: .55; }
 .msg-del:hover, .msg-act:hover { opacity: 1; }

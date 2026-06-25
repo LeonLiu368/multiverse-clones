@@ -100,6 +100,12 @@ channels with overlay content are flagged in the sidebar. Hover a message's **au
 to see a profile card (real name, @username, email, timezone, base/overlay origin, user id). **Pull
 GHCR** fetches a registry tag on demand.
 
+**Threads.** A message that has replies is clickable (or use its **💬 N replies** link) — it opens
+a **thread panel** with the parent + replies. The reply count is **derived from the thread
+children in the corpus**, so threads stay discoverable even when a scraped/adapted export recorded
+replies (`thread_ts`) without a parent `reply_count`. If a corpus stored only the count and not the
+reply bodies, the panel says so instead of showing a silently empty thread.
+
 ### Editing the overlay
 
 Slack uses a **two-artifact** model: bulk adds ship as a Slack-export overlay; edits/deletes of the

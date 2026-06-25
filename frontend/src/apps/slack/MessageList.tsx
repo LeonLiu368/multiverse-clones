@@ -58,6 +58,7 @@ export function MessageList({
         const u = userMap[m.user];
         const name = displayName(u, m.user);
         const isReply = m.thread_ts && m.thread_ts !== m.ts;
+        const hasThread = !!m.reply_count && m.reply_count > 0;
         return (
           <li
             key={`${m.channel_id}:${m.ts}:${i}`}
@@ -98,6 +99,14 @@ export function MessageList({
               </div>
               {m.subtype === "channel_join" ? (
                 <div className="msg-system">{renderText(m.text, userMap)}</div>
+              ) : hasThread ? (
+                <div
+                  className="msg-text msg-text-thread"
+                  title="Show replies"
+                  onClick={() => onOpenThread(m)}
+                >
+                  {renderText(m.text, userMap)}
+                </div>
               ) : (
                 <div className="msg-text">{renderText(m.text, userMap)}</div>
               )}

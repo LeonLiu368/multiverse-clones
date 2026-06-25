@@ -222,3 +222,45 @@ def test_gateway_sidecar_auto_merges_its_baked_overlay():
     assert r.json()["stats"].get("overlay"), "baked overlay should have been detected + merged"
     hits = client.get("/api/slack/search", params={"q": "testing"}).json()
     assert any(m["origin"] == "overlay" for m in hits)
+
+
+@pytest.mark.skipif(not have_clone, reason="needs SLACK_CLONE_BASE clone checkout")
+def test_reply_count_derived_from_thread_children(tmp_path):
+    """A parent message whose source omits reply_count is still shown as a thread: the adapter
+    derives the count from the thread_ts children present in the corpus, and thread() returns the
+    replies. (Scraped/adapted exports routinely carry replies without a parent reply_count.)"""
+    import json
+
+    exp = tmp_path / "export"
+    (exp / "general").mkdir(parents=True)
+    (exp / "channels.json").write_text(json.dumps(
+        [{"id": "C1", "name": "general", "created": 1, "creator": "U1", "members": ["U1", "U2"]}]))
+    (exp / "users.json").write_text(json.dumps([
+        {"id": "U1", "name": "ada", "real_name": "Ada"},
+        {"id": "U2", "name": "bo", "real_name": "Bo"},
+    ]))
+    # parent has NO reply_count; two replies point at it via thread_ts
+    (exp / "general" / "2026-01-01.json").write_text(json.dumps([
+        {"type": "message", "user": "U1", "text": "deploy is failing", "ts": "100.000100"},
+        {"type": "message", "user": "U2", "text": "looking now", "ts": "100.000200",
+         "thread_ts": "100.000100"},
+        {"type": "message", "user": "U1", "text": "fixed it", "ts": "100.000300",
+         "thread_ts": "100.000100"},
+        {"type": "message", "user": "U2", "text": "unrelated later message", "ts": "200.000000"},
+    ]))
+
+    r = client.post("/api/slack/load", json={"base_id": f"dir:{exp}"})
+    assert r.status_code == 200, r.text
+
+    msgs = client.get("/api/slack/messages", params={"container": "general"}).json()
+    # history excludes the replies (only the 2 top-level messages show)
+    by_ts = {m["ts"]: m for m in msgs}
+    assert set(by_ts) == {"100.000100", "200.000000"}
+    # the parent's reply_count was derived from its two children
+    assert by_ts["100.000100"]["reply_count"] == 2
+    assert by_ts["200.000000"].get("reply_count", 0) == 0
+
+    # thread() returns the parent + both replies, in order
+    thread = client.get("/api/slack/thread",
+                        params={"container": "general", "root_ts": "100.000100"}).json()
+    assert [m["text"] for m in thread] == ["deploy is failing", "looking now", "fixed it"]

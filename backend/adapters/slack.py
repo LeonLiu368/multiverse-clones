@@ -279,7 +279,24 @@ class SlackAdapter(CloneAdapter):
         if not ch:
             return []
         rows = s["store"].history(ch["id"], limit=limit)
-        return [self._decorate_msg(s, m) for m in rows]
+        # Derive reply_count from the thread children present in the corpus, so a parent's thread is
+        # discoverable (and clickable) even when the source export omitted reply_count on the parent
+        # — scraped/adapted corpora (Matrix/Discord) routinely carry thread_ts replies but no count.
+        counts: dict[str, int] = {}
+        for tts, n in s["store"].conn.execute(
+            """SELECT thread_ts, COUNT(*) FROM messages
+               WHERE channel_id = ? AND thread_ts != '' AND thread_ts != ts
+               GROUP BY thread_ts""",
+            (ch["id"],),
+        ):
+            counts[str(tts)] = n
+        out = []
+        for m in rows:
+            m = self._decorate_msg(s, m)
+            if not m.get("reply_count"):
+                m["reply_count"] = counts.get(str(m.get("ts")), 0)
+            out.append(m)
+        return out
 
     def thread(self, container_id: str, root_ts: str,
                session_id: Optional[str] = None) -> list[dict[str, Any]]:
