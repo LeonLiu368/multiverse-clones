@@ -26,6 +26,8 @@ import hashlib
 import mailbox
 import pathlib
 import re
+import xml.etree.ElementTree as ET
+import zipfile
 from email.header import decode_header, make_header
 from html.parser import HTMLParser
 from typing import Any
@@ -206,6 +208,53 @@ def _strip_html(html: str) -> str:
     return re.sub(r"\n{3,}", "\n\n", "".join(p.parts)).strip()
 
 
+# OOXML (.docx/.pptx) are zipped XML — extract text with stdlib, no python-docx.
+_W = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
+_A = "{http://schemas.openxmlformats.org/drawingml/2006/main}"
+
+
+def _docx_paragraphs(path: pathlib.Path) -> list[str]:
+    """Paragraph lines from a Word/Docs-export .docx (each <w:p> → one line)."""
+    with zipfile.ZipFile(path) as z:
+        root = ET.fromstring(z.read("word/document.xml"))
+    out: list[str] = []
+    for p in root.iter(_W + "p"):
+        line = "".join(t.text or "" for t in p.iter(_W + "t"))
+        if line.strip():
+            out.append(line)
+    return out
+
+
+def _pptx_paragraphs(path: pathlib.Path) -> list[str]:
+    """One line per slide of concatenated text from a .pptx."""
+    out: list[str] = []
+    with zipfile.ZipFile(path) as z:
+        slides = sorted(n for n in z.namelist()
+                        if re.fullmatch(r"ppt/slides/slide\d+\.xml", n))
+        for n in slides:
+            root = ET.fromstring(z.read(n))
+            line = " ".join(t.text for t in root.iter(_A + "t") if t.text and t.text.strip())
+            if line.strip():
+                out.append(line)
+    return out
+
+
+def _extract_paragraphs(path: pathlib.Path, ext: str) -> list[str] | None:
+    """Best-effort paragraph lines for doc-like files; None if not extractable."""
+    try:
+        if ext in (".html", ".htm"):
+            return [l for l in _strip_html(path.read_text(errors="replace")).splitlines() if l.strip()]
+        if ext == ".txt":
+            return [l for l in path.read_text(errors="replace").splitlines() if l.strip()]
+        if ext == ".docx":
+            return _docx_paragraphs(path)
+        if ext == ".pptx":
+            return _pptx_paragraphs(path)
+    except Exception:
+        return None
+    return None
+
+
 _MIME = {
     ".pdf": "application/pdf", ".csv": "text/csv", ".txt": "text/plain",
     ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -213,7 +262,8 @@ _MIME = {
     ".pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
     ".png": "image/png", ".jpg": "image/jpeg", ".json": "application/json",
 }
-_DOC_EXTS = {".html", ".htm", ".txt"}  # exts we can turn into a Docs body
+# exts we can turn into a readable Docs body (Google Docs/Slides export this way)
+_DOC_EXTS = {".html", ".htm", ".txt", ".docx", ".pptx"}
 
 
 def parse_drive_dir(root: str, limit: int | None = None) -> tuple[list[dict], list[dict]]:
@@ -222,7 +272,8 @@ def parse_drive_dir(root: str, limit: int | None = None) -> tuple[list[dict], li
     documents: list[dict] = []
     n = 0
     for path in sorted(base.rglob("*")):
-        if path.is_dir() or path.name.endswith("-metadata.json"):
+        # skip dirs and Takeout's per-doc comment/metadata sidecars
+        if path.is_dir() or path.name.endswith(("-metadata.json", "-comments.html")):
             continue
         if limit is not None and n >= limit:
             break
@@ -230,20 +281,20 @@ def parse_drive_dir(root: str, limit: int | None = None) -> tuple[list[dict], li
         rel = path.relative_to(base)
         ext = path.suffix.lower()
         fid = _stable_id("FILE", str(rel))
-        mime = _MIME.get(ext, DOC_MIME if ext in _DOC_EXTS else "application/octet-stream")
+        doclike = ext in _DOC_EXTS
+        mime = _MIME.get(ext, DOC_MIME if doclike else "application/octet-stream")
         parents = ["root"] if rel.parent == pathlib.Path(".") else [_stable_id("FOLDER", str(rel.parent))]
         drive.append({
-            "id": fid, "name": path.stem if ext in _DOC_EXTS else path.name,
+            "id": fid, "name": path.stem if doclike else path.name,
             "mimeType": mime, "parents": parents,
             "modifiedTime": "", "size": str(path.stat().st_size),
         })
-        if ext in _DOC_EXTS:
-            raw = path.read_text(errors="replace")
-            text = _strip_html(raw) if ext in (".html", ".htm") else raw
-            blocks = [schema.paragraph(line + "\n")
-                      for line in text.splitlines() if line.strip()]
-            documents.append({"documentId": fid, "title": path.stem,
-                              "body": schema.make_body(*blocks)})
+        if doclike:
+            lines = _extract_paragraphs(path, ext)
+            if lines:  # only attach a body if extraction succeeded
+                blocks = [schema.paragraph(line + "\n") for line in lines]
+                documents.append({"documentId": fid, "title": path.stem,
+                                  "body": schema.make_body(*blocks)})
     return drive, documents
 
 
