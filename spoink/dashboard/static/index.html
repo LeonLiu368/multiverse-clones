@@ -3,34 +3,71 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>spoink · capture / slice</title>
+  <title>spoink</title>
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
   <header>
-    <h1>spoink<span class="sub">capture · slice · view</span></h1>
+    <div class="brand">
+      <span class="logo">spoink</span>
+      <span class="tag">snapshot engine</span>
+    </div>
+    <nav class="tabs">
+      <button data-tab="sources" class="active">Sources</button>
+      <button data-tab="runs">Runs <span id="runBadge" class="badge" hidden>0</span></button>
+      <button data-tab="tasks">Task&nbsp;Creator</button>
+    </nav>
     <div class="t-global">
       <label>incident&nbsp;T</label>
-      <input id="globalT" type="text" spellcheck="false" />
-      <button id="applyT" class="ghost" title="push T into every source form">apply&nbsp;to&nbsp;forms</button>
+      <input id="globalT" type="datetime-local" step="60" />
+      <span class="utc">UTC</span>
     </div>
   </header>
 
   <main>
-    <section id="sources">
-      <h2>sources</h2>
-      <div id="sourceCards" class="cards"></div>
+    <!-- SOURCES -->
+    <section id="tab-sources" class="tab active">
+      <div class="lead">
+        <h2>Capture sources</h2>
+        <p>Pull a source as of <strong>T</strong>, then slice it on the Runs tab. Credentials are read
+           from <code>.env</code> — only their presence is shown here.</p>
+      </div>
+      <div id="sourceList" class="source-list"></div>
     </section>
 
-    <section id="runs">
-      <h2>runs <button id="refresh" class="ghost">refresh</button></h2>
-      <table id="runsTable">
-        <thead><tr>
-          <th>source</th><th>kind</th><th>status</th><th>label</th><th>artifacts</th><th>when</th><th>actions</th>
-        </tr></thead>
-        <tbody></tbody>
-      </table>
-      <p id="runsEmpty" class="muted">no runs yet — capture a source above.</p>
+    <!-- RUNS -->
+    <section id="tab-runs" class="tab">
+      <div class="lead"><h2>Runs</h2><button id="refresh" class="ghost sm">refresh</button></div>
+      <h3 class="grp">Running</h3>
+      <div id="running" class="runs"></div>
+      <p id="runningEmpty" class="muted sm">nothing running.</p>
+      <h3 class="grp">Completed</h3>
+      <div id="completed" class="runs"></div>
+      <p id="completedEmpty" class="muted sm">no completed runs yet.</p>
+    </section>
+
+    <!-- TASK CREATOR -->
+    <section id="tab-tasks" class="tab">
+      <div class="lead">
+        <h2>Task creator</h2>
+        <p>Bundle a set of sliced surfaces @ T into an agent-eval task. Pick the runs that belong to one
+           incident; the pipeline will (soon) bake overlays into <code>:empty</code> gateways, vendor the
+           SUT at the incident tip, and emit the task dir + manifest.</p>
+      </div>
+      <div class="task-grid">
+        <div class="panel">
+          <h3 class="grp">1 · pick surfaces @ T</h3>
+          <div id="taskRuns" class="picklist"></div>
+        </div>
+        <div class="panel">
+          <h3 class="grp">2 · code anchor</h3>
+          <div class="field"><label>SUT repo</label><input id="anchorRepo" placeholder="abundant-ai/oddish" /></div>
+          <div class="field"><label>incident-tip commit</label><input id="anchorSha" placeholder="16595d17… (main @ T)" /></div>
+          <div class="field"><label>resolution PR (for the verifier)</label><input id="anchorPr" placeholder="#468" /></div>
+          <button id="genPlan">generate plan</button>
+          <pre id="planOut" class="plan" hidden></pre>
+        </div>
+      </div>
     </section>
   </main>
 

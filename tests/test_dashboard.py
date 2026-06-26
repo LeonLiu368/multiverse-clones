@@ -32,7 +32,7 @@ def test_sources_reflect_env(tmp_path, monkeypatch):
     c = _client(tmp_path, monkeypatch)
     body = c.get("/api/sources").json()
     by_id = {s["id"]: s for s in body["sources"]}
-    assert set(by_id) == {"slack", "linear", "logfire"}
+    assert set(by_id) == {"slack", "linear", "logfire", "github"}
     assert by_id["slack"]["has_key"] is True            # SLACK_USER_TOKEN set
     assert by_id["linear"]["has_key"] is False           # LINEAR_API_KEY unset
     assert by_id["logfire"]["has_key"] is True

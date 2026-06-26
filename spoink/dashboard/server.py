@@ -64,6 +64,21 @@ def get_sources():
     return {"sources": source_summaries(), "default_t": DEFAULT_T}
 
 
+@app.get("/api/sources/{source_id}/options/{param}")
+def get_options(source_id: str, param: str):
+    """Discover selectable values for a param (Slack channels, Linear teams, …) so the UI can
+    pre-populate checkboxes instead of making the user type names. Hits the upstream live."""
+    src = SOURCES.get(source_id)
+    if not src or not src.options:
+        raise HTTPException(404, "no options for this source")
+    if not src.has_key():
+        raise HTTPException(400, f"{src.env_key} not set in .env")
+    try:
+        return src.options(param)
+    except Exception as e:  # noqa: BLE001 — surface upstream/credential errors cleanly
+        raise HTTPException(400, f"{type(e).__name__}: {e}")
+
+
 @app.get("/api/runs")
 def get_runs():
     return {"runs": store.list()}
