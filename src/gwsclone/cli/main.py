@@ -182,6 +182,25 @@ def seed_import_real(out: str = typer.Option("gws.db", "--out"),
     typer.echo(json.dumps({"db": out, **counts}))
 
 
+@seed_app.command("import-takeout")
+def seed_import_takeout(out: str = typer.Option("gws.db", "--out"),
+                        root: str = typer.Option(None, "--root", help="unzipped Takeout/ dir (auto-discovers Mail/Calendar/Drive)"),
+                        mbox: str = typer.Option(None, "--mbox", help="a single .mbox export"),
+                        ics: str = typer.Option(None, "--ics", help="a single .ics export"),
+                        drive: str = typer.Option(None, "--drive", help="a Drive export dir"),
+                        limit: int = typer.Option(None, "--limit", help="cap items per surface"),
+                        emit: str = typer.Option(None, "--emit", help="also write the seed JSON")) -> None:
+    """Ingest a Google Takeout export (Gmail .mbox / Calendar .ics / Drive tree)."""
+    from ..seed import schema
+    from ..seed.load import load_seed
+    from ..seed.takeout import import_takeout
+    sd = import_takeout(root=root, mbox=mbox, ics=ics, drive_dir=drive, limit=limit)
+    counts = load_seed(sd, out)
+    if emit:
+        open(emit, "w").write(schema.to_json(sd))
+    typer.echo(json.dumps({"db": out, **counts}))
+
+
 @seed_app.command("gen-corpus")
 def seed_gen_corpus(out: str = typer.Option("gws.db", "--out"),
                     seed: int = typer.Option(42, "--seed"),
