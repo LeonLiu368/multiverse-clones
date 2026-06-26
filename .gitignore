@@ -6,3 +6,6 @@ slack-export/
 *.egg-info/
 .pytest_cache/
 .env
+
+# spoink dashboard capture artifacts (real company data)
+runs/

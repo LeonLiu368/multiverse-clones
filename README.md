@@ -4,6 +4,13 @@ Goal: a **daily snapshot engine** that captures company state (Slack, GitHub, em
 so we can *time-travel* — slice the data back to the moment a task was created and
 turn Dobby-completed tasks into hardcoded eval tests.
 
+## Dashboard (capture / slice control plane)
+
+A web UI to kick off captures (keys from `.env`), time-align them to an incident **T**, and
+view the overlays in seed-dashboard — `pip install -e ".[dashboard]" && python -m spoink.dashboard`
+(http://localhost:8787). See [`spoink/dashboard/README.md`](spoink/dashboard/README.md). The
+modules below are the engine it drives.
+
 ## First module: `slack_export` (read-only)
 
 Pulls a few Slack channels over a recent window into the **standard Slack export

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>spoink · capture / slice</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header>
+    <h1>spoink<span class="sub">capture · slice · view</span></h1>
+    <div class="t-global">
+      <label>incident&nbsp;T</label>
+      <input id="globalT" type="text" spellcheck="false" />
+      <button id="applyT" class="ghost" title="push T into every source form">apply&nbsp;to&nbsp;forms</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="sources">
+      <h2>sources</h2>
+      <div id="sourceCards" class="cards"></div>
+    </section>
+
+    <section id="runs">
+      <h2>runs <button id="refresh" class="ghost">refresh</button></h2>
+      <table id="runsTable">
+        <thead><tr>
+          <th>source</th><th>kind</th><th>status</th><th>label</th><th>artifacts</th><th>when</th><th>actions</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+      <p id="runsEmpty" class="muted">no runs yet — capture a source above.</p>
+    </section>
+  </main>
+
+  <div id="toast"></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
