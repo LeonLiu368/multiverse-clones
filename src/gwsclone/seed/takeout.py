@@ -239,6 +239,23 @@ def _pptx_paragraphs(path: pathlib.Path) -> list[str]:
     return out
 
 
+def _pdf_paragraphs(path: pathlib.Path) -> list[str]:
+    """Text per page from a PDF (best-effort; needs pypdf). [] if image-only."""
+    try:
+        import logging
+        logging.getLogger("pypdf").setLevel(logging.ERROR)  # silence object-pointer noise
+        from pypdf import PdfReader
+    except ImportError:
+        return []  # pypdf not installed -> PDFs stay file-only
+    out: list[str] = []
+    reader = PdfReader(str(path))
+    for page in reader.pages:
+        txt = (page.extract_text() or "").strip()
+        if txt:
+            out.append(re.sub(r"\n{2,}", "\n", txt))
+    return out
+
+
 def _extract_paragraphs(path: pathlib.Path, ext: str) -> list[str] | None:
     """Best-effort paragraph lines for doc-like files; None if not extractable."""
     try:
@@ -250,6 +267,8 @@ def _extract_paragraphs(path: pathlib.Path, ext: str) -> list[str] | None:
             return _docx_paragraphs(path)
         if ext == ".pptx":
             return _pptx_paragraphs(path)
+        if ext == ".pdf":
+            return _pdf_paragraphs(path)
     except Exception:
         return None
     return None
@@ -262,8 +281,9 @@ _MIME = {
     ".pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
     ".png": "image/png", ".jpg": "image/jpeg", ".json": "application/json",
 }
-# exts we can turn into a readable Docs body (Google Docs/Slides export this way)
-_DOC_EXTS = {".html", ".htm", ".txt", ".docx", ".pptx"}
+# exts we can turn into a readable Docs body (Google Docs/Slides export this way;
+# PDFs need pypdf and stay file-only if it's missing or the PDF is image-only)
+_DOC_EXTS = {".html", ".htm", ".txt", ".docx", ".pptx", ".pdf"}
 
 
 def parse_drive_dir(root: str, limit: int | None = None) -> tuple[list[dict], list[dict]]:

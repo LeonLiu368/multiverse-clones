@@ -52,6 +52,23 @@ def get(path: str, **params: Any) -> dict:
     return data
 
 
+def get_text(path: str, **params: Any) -> str:
+    """GET an endpoint that returns plain text (e.g. files.export)."""
+    clean = {k: v for k, v in params.items() if v is not None}
+    try:
+        r = httpx.get(f"{_api()}{path}", params=clean,
+                      headers={"Authorization": f"Bearer {_token()}"}, timeout=30)
+    except Exception as e:
+        typer.secho(f"error: {e}", fg="red", err=True); raise typer.Exit(1)
+    if r.status_code >= 400:
+        try:
+            msg = r.json().get("error", {}).get("message", f"HTTP {r.status_code}")
+        except Exception:
+            msg = f"HTTP {r.status_code}"
+        typer.secho(f"error: {msg}", fg="red", err=True); raise typer.Exit(1)
+    return r.text
+
+
 def _emit(o: Any) -> None:
     typer.echo(json.dumps(o, indent=2))
 
@@ -71,6 +88,12 @@ def drive_ls(query: str = typer.Option(None, "--query", "-q", help="Drive q, e.g
 @drive_app.command("get")
 def drive_get(file_id: str) -> None:
     _emit(get(f"/drive/v3/files/{file_id}"))
+
+
+@drive_app.command("export")
+def drive_export(file_id: str) -> None:
+    """Print a file's text content (works for Docs, .docx/.pptx, .txt/.html, PDFs)."""
+    typer.echo(get_text(f"/drive/v3/files/{file_id}/export"))
 
 
 # ---------------- docs ----------------

@@ -3,8 +3,9 @@
 Drive v3, Docs v1, Calendar v3, and Gmail v1, served from one host (the clients
 are pointed here):
 
-  GET /drive/v3/files                          → {kind:"drive#fileList", files:[...]}  (?q=, ?pageSize=)
-  GET /drive/v3/files/{fileId}                 → a Drive file resource
+  GET /drive/v3/files                          → {kind:"drive#fileList", files:[...]}  (?q= full grammar, ?pageSize=)
+  GET /drive/v3/files/{fileId}                 → a Drive file resource (?alt=media → text content)
+  GET /drive/v3/files/{fileId}/export          → the file's content as text (?mimeType=)
   GET /v1/documents/{documentId}               → a Docs document (body = structural-element tree)
   GET /calendar/v3/calendars/{calId}/events    → {kind:"calendar#events", items:[...]}  (?q=, ?timeMin=, ?timeMax=)
   GET /calendar/v3/calendars/{calId}/events/{eventId} → a Calendar event
@@ -25,9 +26,10 @@ import os
 from typing import Any
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, PlainTextResponse
 
 from .. import store
+from ..store import QueryError
 from ..db import get_engine, init_db, session_factory
 
 _STATUS = {400: "INVALID_ARGUMENT", 401: "UNAUTHENTICATED", 403: "PERMISSION_DENIED",
@@ -89,16 +91,40 @@ def create_app(db_path: str | None = None) -> FastAPI:
     def files_list(q: str | None = None, pageSize: str | None = None,
                    fields: str | None = None, _tok: str = Depends(auth)) -> dict:
         with Session() as s:
-            files = store.list_files(s, q, _int(pageSize, 100))
+            try:
+                files = store.list_files(s, q, _int(pageSize, 100))
+            except QueryError as e:
+                raise GoogleError(400, f"Invalid query: {e}")
         return {"kind": "drive#fileList", "incompleteSearch": False, "files": files}
 
     @app.get("/drive/v3/files/{file_id}")
-    def files_get(file_id: str, fields: str | None = None, _tok: str = Depends(auth)) -> dict:
+    def files_get(file_id: str, alt: str | None = None, fields: str | None = None,
+                  _tok: str = Depends(auth)):
         with Session() as s:
             f = store.get_file(s, file_id)
             if not f:
                 raise GoogleError(404, f"File not found: {file_id}.")
+            if alt == "media":  # download the file's content (Drive files.get?alt=media)
+                text = store.file_text(s, file_id)
+                if text is None:
+                    raise GoogleError(400, "Only files with extractable text can be downloaded as media in this clone.")
+                return PlainTextResponse(text)
             return store.file_resource(f)
+
+    @app.get("/drive/v3/files/{file_id}/export")
+    def files_export(file_id: str, mimeType: str = "text/plain",
+                     _tok: str = Depends(auth)):
+        """Export a file's content as text (Drive files.export). Returns the
+        extracted plain text for any file we have a body for (Docs, .docx, .pptx,
+        .txt/.html, and PDFs when text was extractable)."""
+        with Session() as s:
+            f = store.get_file(s, file_id)
+            if not f:
+                raise GoogleError(404, f"File not found: {file_id}.")
+            text = store.file_text(s, file_id)
+            if text is None:
+                raise GoogleError(400, "This file has no extractable text to export.")
+            return PlainTextResponse(text)
 
     # ----- Docs v1 -----
     @app.get("/v1/documents/{document_id}")
@@ -132,7 +158,10 @@ def create_app(db_path: str | None = None) -> FastAPI:
     def messages_list(user_id: str, q: str | None = None, maxResults: str | None = None,
                       _tok: str = Depends(auth)) -> dict:
         with Session() as s:
-            msgs = store.list_messages(s, q, _int(maxResults, 100))
+            try:
+                msgs = store.list_messages(s, q, _int(maxResults, 100))
+            except QueryError as e:
+                raise GoogleError(400, f"Invalid query: {e}")
             refs = [{"id": m.id, "threadId": m.thread_id} for m in msgs]
         return {"messages": refs, "resultSizeEstimate": len(refs)}
 

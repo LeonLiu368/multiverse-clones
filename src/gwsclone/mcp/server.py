@@ -54,6 +54,21 @@ def build_server() -> FastMCP:
         return await _get(f"/v1/documents/{document_id}")
 
     @mcp.tool()
+    async def gws_get_file_text(file_id: str) -> str:
+        """Read a Drive file's text content (Docs, .docx/.pptx, .txt/.html, PDFs).
+
+        Use this for non-Google-Doc files where `gws_get_document_text` doesn't
+        apply — it exports the extracted plain text."""
+        async with _client() as c:
+            r = await c.get(f"/drive/v3/files/{file_id}/export")
+            if r.status_code >= 400:
+                try:
+                    return f"error: {r.json().get('error', {}).get('message', r.status_code)}"
+                except Exception:
+                    return f"error: HTTP {r.status_code}"
+            return r.text
+
+    @mcp.tool()
     async def gws_get_document_text(document_id: str) -> str:
         """Get a Google Doc's plain text content."""
         body = (await _get(f"/v1/documents/{document_id}")).get("body", {})

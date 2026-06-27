@@ -15,7 +15,8 @@ dependencies = [
 
 [project.optional-dependencies]
 mcp = ["mcp>=1.0"]
-dev = ["pytest>=8.0", "mcp>=1.0"]
+takeout = ["pypdf>=4.0"]  # PDF text extraction for `seed import-takeout`
+dev = ["pytest>=8.0", "mcp>=1.0", "pypdf>=4.0"]
 
 [project.scripts]
 gws-cli = "gwsclone.cli.main:app"

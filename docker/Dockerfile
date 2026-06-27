@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl jq \
 WORKDIR /opt/gwsclone
 COPY pyproject.toml README.md ./
 COPY src ./src
-RUN pip install --no-cache-dir ".[mcp]"
+RUN pip install --no-cache-dir ".[mcp,takeout]"
 
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh

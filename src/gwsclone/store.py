@@ -72,11 +72,29 @@ def file_resource(f: DriveFile) -> dict[str, Any]:
 
 
 def list_files(s: Session, q: str | None, page_size: int) -> list[dict[str, Any]]:
-    """`files.list` with a minimal subset of Drive's `q`: name contains/=, mimeType=, trashed=."""
+    """`files.list` with a faithful subset of Drive's `q` grammar.
+
+    Supports the real operators — ``name``/``fullText``/``mimeType`` with
+    ``contains``/``=``/``!=``, ``'<id>' in parents``, ``trashed = true|false`` —
+    combined with ``and`` / ``or`` / ``not`` and parentheses. ``fullText contains``
+    searches the file's CONTENT (its Doc body) plus its name, like real Drive. An
+    unrecognized clause raises :class:`QueryError` (the API returns 400), instead
+    of silently matching everything. Trashed files are excluded unless the query
+    mentions ``trashed``.
+    """
     rows = s.scalars(select(DriveFile).order_by(DriveFile.name)).all()
+    pred = _compile_bool(q, _drive_term)  # raises QueryError on a bad query
+    needs_text = bool(q) and "fulltext" in q.lower()
+    text_map: dict[str, str] = {}
+    if needs_text:
+        for d in s.scalars(select(Document)).all():
+            text_map[d.document_id] = document_text(d.body)
+    exclude_trashed = not q or "trashed" not in q.lower()
     out = []
     for f in rows:
-        if not _q_matches(q, f):
+        if exclude_trashed and f.trashed:
+            continue
+        if pred is not None and not pred(f, text_map.get(f.id, "")):
             continue
         out.append(file_resource(f))
         if len(out) >= page_size:
@@ -84,29 +102,160 @@ def list_files(s: Session, q: str | None, page_size: int) -> list[dict[str, Any]
     return out
 
 
-def _q_matches(q: str | None, f: DriveFile) -> bool:
-    if not q:
-        return f.trashed is False  # Drive default excludes trashed
-    ok = True
-    for clause in re.split(r"\s+and\s+", q.strip(), flags=re.I):
-        c = clause.strip()
-        m = re.match(r"name\s+contains\s+'(.*)'", c, re.I)
+class QueryError(ValueError):
+    """Malformed search query — surfaced by the API as HTTP 400 (like Google)."""
+
+
+# ---- a small boolean query engine, shared by Drive `q` and Gmail `q` ----------
+# Predicates are callables (obj, text) -> bool. `_compile_bool` builds the
+# and/or/not/paren tree; per-surface `*_term` functions compile a single clause.
+
+
+def _tokenize_bool(q: str) -> list:
+    toks: list = []
+    i, n = 0, len(q)
+    while i < n:
+        c = q[i]
+        if c.isspace():
+            i += 1; continue
+        if c in "()":
+            toks.append(c); i += 1; continue
+        m = re.match(r"(and|or|not)\b", q[i:], re.I)
         if m:
-            ok = ok and (m.group(1).lower() in f.name.lower()); continue
-        m = re.match(r"name\s*=\s*'(.*)'", c, re.I)
-        if m:
-            ok = ok and (f.name == m.group(1)); continue
-        m = re.match(r"mimeType\s*=\s*'(.*)'", c, re.I)
-        if m:
-            ok = ok and (f.mime_type == m.group(1)); continue
-        m = re.match(r"'(.*)'\s+in\s+parents", c, re.I)
-        if m:
-            ok = ok and (m.group(1) in (f.parents or [])); continue
-        m = re.match(r"trashed\s*=\s*(true|false)", c, re.I)
-        if m:
-            ok = ok and (f.trashed == (m.group(1).lower() == "true")); continue
-        # unknown clause -> ignore (lenient)
-    return ok
+            toks.append(m.group(1).upper()); i += m.end(); continue
+        j, buf = i, []
+        while j < n:
+            cj = q[j]
+            if cj == "'":                      # consume a quoted string whole
+                buf.append(cj); j += 1
+                while j < n and q[j] != "'":
+                    buf.append(q[j]); j += 1
+                if j < n:
+                    buf.append(q[j]); j += 1
+                continue
+            if cj in "()" or re.match(r"\s+(and|or|not)\b", q[j:], re.I):
+                break
+            buf.append(cj); j += 1
+        toks.append(("TERM", "".join(buf).strip()))
+        i = j
+    return toks
+
+
+def _tokenize_gmail(q: str) -> list:
+    """Gmail tokenizer: atoms are whitespace-separated (space == implicit AND);
+    ``OR``/``NOT`` and parens are operators; quotes group a phrase into one atom."""
+    toks: list = []
+    i, n = 0, len(q)
+    while i < n:
+        c = q[i]
+        if c.isspace():
+            i += 1; continue
+        if c in "()":
+            toks.append(c); i += 1; continue
+        j, buf = i, []
+        while j < n and not q[j].isspace() and q[j] not in "()":
+            if q[j] in "'\"":
+                qc = q[j]; buf.append(q[j]); j += 1
+                while j < n and q[j] != qc:
+                    buf.append(q[j]); j += 1
+                if j < n:
+                    buf.append(q[j]); j += 1
+                continue
+            buf.append(q[j]); j += 1
+        atom = "".join(buf)
+        toks.append(atom.upper() if atom.upper() in ("AND", "OR", "NOT") else ("TERM", atom))
+        i = j
+    return toks
+
+
+def _compile_bool(q: str | None, compile_term, tokenizer=_tokenize_bool):
+    """Compile a boolean query string to a predicate, or None for an empty query."""
+    if not q or not q.strip():
+        return None
+    tokens = tokenizer(q)
+    pos = 0
+
+    def peek():
+        return tokens[pos] if pos < len(tokens) else None
+
+    def primary():
+        nonlocal pos
+        t = peek()
+        if t == "(":
+            pos += 1
+            node = parse_or()
+            if peek() != ")":
+                raise QueryError("unbalanced parentheses")
+            pos += 1
+            return node
+        if t == "NOT":
+            pos += 1
+            inner = primary()
+            return lambda o, x: not inner(o, x)
+        if isinstance(t, tuple) and t[0] == "TERM":
+            pos += 1
+            return compile_term(t[1])
+        raise QueryError(f"unexpected token: {t!r}")
+
+    def parse_and():
+        node = primary()
+        while True:
+            t = peek()
+            if t == "AND":
+                pos_advance()
+                rhs = primary()
+            elif (isinstance(t, tuple) and t[0] == "TERM") or t in ("(", "NOT"):
+                rhs = primary()  # implicit AND (Gmail: space == AND)
+            else:
+                break
+            node = (lambda a, b: (lambda o, x: a(o, x) and b(o, x)))(node, rhs)
+        return node
+
+    def pos_advance():
+        nonlocal pos
+        pos += 1
+
+    def parse_or():
+        node = parse_and()
+        while peek() == "OR":
+            pos_advance()
+            rhs = parse_and()
+            node = (lambda a, b: (lambda o, x: a(o, x) or b(o, x)))(node, rhs)
+        return node
+
+    tree = parse_or()
+    if pos != len(tokens):
+        raise QueryError(f"trailing tokens at {peek()!r}")
+    return tree
+
+
+def _drive_term(term: str):
+    t = term.strip()
+    m = re.fullmatch(r"name\s+contains\s+'(.*)'", t, re.I)
+    if m:
+        v = m.group(1).lower(); return lambda f, x: v in f.name.lower()
+    m = re.fullmatch(r"name\s*=\s*'(.*)'", t, re.I)
+    if m:
+        v = m.group(1); return lambda f, x: f.name == v
+    m = re.fullmatch(r"name\s*!=\s*'(.*)'", t, re.I)
+    if m:
+        v = m.group(1); return lambda f, x: f.name != v
+    m = re.fullmatch(r"fullText\s+contains\s+'(.*)'", t, re.I)
+    if m:
+        v = m.group(1).lower(); return lambda f, x: v in x.lower() or v in f.name.lower()
+    m = re.fullmatch(r"mimeType\s*=\s*'(.*)'", t, re.I)
+    if m:
+        v = m.group(1); return lambda f, x: f.mime_type == v
+    m = re.fullmatch(r"mimeType\s*!=\s*'(.*)'", t, re.I)
+    if m:
+        v = m.group(1); return lambda f, x: f.mime_type != v
+    m = re.fullmatch(r"'(.*)'\s+in\s+parents", t, re.I)
+    if m:
+        v = m.group(1); return lambda f, x: v in (f.parents or [])
+    m = re.fullmatch(r"trashed\s*=\s*(true|false)", t, re.I)
+    if m:
+        val = m.group(1).lower() == "true"; return lambda f, x: bool(f.trashed) == val
+    raise QueryError(f"Invalid query term: {term!r}")
 
 
 # ----------------------------------------------------------------- Docs serialization
@@ -125,6 +274,12 @@ def document_resource(d: Document) -> dict[str, Any]:
         "namedStyles": d.named_styles or {},
         "inlineObjects": d.inline_objects or {},
     }
+
+
+def file_text(s: Session, file_id: str) -> str | None:
+    """Plain-text content of a file, if we have an extractable body (else None)."""
+    d = s.get(Document, file_id)
+    return document_text(d.body) if d else None
 
 
 # ----------------------------------------------------------------- Calendar serialization
@@ -205,8 +360,13 @@ def message_resource(m: GmailMessage, fmt: str = "full") -> dict[str, Any]:
 
 
 def list_messages(s: Session, q: str | None, page_size: int) -> list[GmailMessage]:
+    """`messages.list` — Gmail search: from:/to:/subject:/label: operators + bare
+    free-text (over from+to+subject+body), combined with implicit AND (space),
+    explicit ``OR``, and parentheses."""
+    pred = _compile_bool(q, _gmail_term, tokenizer=_tokenize_gmail)
     rows = s.scalars(select(GmailMessage)).all()
-    rows = [m for m in rows if _gmail_q_matches(q, m)]
+    if pred is not None:
+        rows = [m for m in rows if pred(m, "")]
     rows.sort(key=lambda m: m.internal_date or "", reverse=True)
     return rows[:page_size]
 
@@ -216,32 +376,20 @@ def thread_messages(s: Session, thread_id: str) -> list[GmailMessage]:
     return sorted(rows, key=lambda m: m.internal_date or "")
 
 
-def _gmail_q_matches(q: str | None, m: GmailMessage) -> bool:
-    """Gmail search subset: from:/to:/subject:/label: operators + free-text over
-    subject+body. Operators AND together; bare terms must all appear."""
-    if not q:
-        return True
-    hay = f"{m.from_addr} {m.to_addr} {m.subject} {m.body_text}".lower()
-    for tok in q.split():
-        low = tok.lower()
-        if low.startswith("from:"):
-            if low[5:] not in m.from_addr.lower():
-                return False
-        elif low.startswith("to:"):
-            if low[3:] not in m.to_addr.lower():
-                return False
-        elif low.startswith("subject:"):
-            if low[8:] not in m.subject.lower():
-                return False
-        elif low.startswith("label:"):
-            if low[6:].upper() not in [l.upper() for l in (m.label_ids or [])]:
-                return False
-        elif low.startswith("newer_than:") or low.startswith("older_than:"):
-            continue  # accepted but not enforced (lenient)
-        else:
-            if low not in hay:
-                return False
-    return True
+def _gmail_term(term: str):
+    t = term.strip()
+    low = t.lower()
+    for op, attr in (("from:", "from_addr"), ("to:", "to_addr"), ("subject:", "subject")):
+        if low.startswith(op):
+            v = t[len(op):].strip().strip("'\"").lower()
+            return lambda m, _x, attr=attr, v=v: v in (getattr(m, attr) or "").lower()
+    if low.startswith("label:"):
+        v = t[6:].strip().strip("'\"").upper()
+        return lambda m, _x, v=v: v in [l.upper() for l in (m.label_ids or [])]
+    if low.split(":", 1)[0] in ("newer_than", "older_than", "after", "before", "in", "has", "is"):
+        return lambda m, _x: True  # accepted but not enforced
+    v = t.strip("'\"").lower()
+    return lambda m, _x, v=v: v in f"{m.from_addr} {m.to_addr} {m.subject} {m.body_text}".lower()
 
 
 # ----------------------------------------------------------------- seed upserts
