@@ -1,0 +1,100 @@
+"""TaskSpec — the recipe a generated task is built from.
+
+A spec names: the incident moment T, the evidence SURFACES (each a captured/sliced overlay +
+the gateway image that serves it), the optional code ANCHOR (the SUT as a git bundle at the
+incident tip), the agent INSTRUCTION, and the VERIFIER strategy. `generate_task(spec, out)`
+turns it into a runnable task dir + manifest (see generate.py)."""
+from __future__ import annotations
+
+import json
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+DEFAULT_T = "2026-06-25T00:34:00Z"
+
+
+@dataclass
+class Surface:
+    """One evidence sidecar: a clone gateway serving a captured overlay."""
+    source: str                       # slack | linear | logfire | gauge | github
+    overlay: str                      # path to the run artifact (export dir / state.json / records.json / snapshots)
+    gateway_image: str                # the baked per-incident gateway image (don't consolidate — bake)
+    hostname: str = ""                # defaults to a sensible per-source name
+
+    def __post_init__(self):
+        self.hostname = self.hostname or {"linear": "jira"}.get(self.source, self.source)
+
+
+@dataclass
+class Anchor:
+    """The SUT: a git bundle sliced to the incident tip (history up to T, fix excluded)."""
+    bundle: str                       # path to codebase.bundle
+    commit: str                       # the incident-tip sha to check out
+    backend_subdir: str = "backend"   # where the app (uv sync target) lives inside the repo
+    workdir: str = "/app"
+
+
+@dataclass
+class VerifierSpec:
+    """How reward is computed. Two idioms (clone-task-builder):
+      * observability code-fix  -> run a test suite (F2P/P2P derived from the resolution PR),
+        or a bespoke `module_check` smoke when the PR shipped no test.
+      * integration             -> read final state back through the clone CLIs (`readback`)."""
+    kind: str                         # "pytest_pr" | "module_check" | "readback"
+    # pytest_pr: tests that must pass at head (fail at base). Derived by verifier.derive_pr_verifier.
+    f2p: List[str] = field(default_factory=list)
+    p2p: List[str] = field(default_factory=list)
+    test_cmd: str = "python -m pytest -q"
+    # module_check: a standalone grader script (path) copied into tests/ and run in the SUT venv.
+    grader_script: str = ""
+    # readback: assertions run through the agent's CLIs; each {cli, expect_substr|expect_json}
+    checks: List[Dict[str, Any]] = field(default_factory=list)
+
+
+@dataclass
+class TaskSpec:
+    name: str                         # "oddish-incident/preview-500s"
+    kind: str                         # "observability" | "integration"
+    incident_t: str
+    instruction: str
+    surfaces: List[Surface]
+    verifier: VerifierSpec
+    anchor: Optional[Anchor] = None
+    source_repo: str = ""
+    fixed_by_pr: str = ""
+    broke_in_pr: str = ""
+    agents: List[Dict[str, Any]] = field(default_factory=lambda: [
+        {"name": "nop"}, {"name": "oracle"},
+        {"name": "gemini-cli", "model_name": "google/gemini-3.1-pro-preview", "n_trials": 2},
+        {"name": "codex", "model_name": "openai/gpt-5.5", "n_trials": 2},
+    ])
+    # the oracle's actions: a shell snippet that fixes the code / drives the tools (the agent has the same CLIs)
+    oracle_steps: str = ""
+
+    def slug(self) -> str:
+        return self.name.split("/")[-1]
+
+
+def spec_from_runs(name: str, kind: str, incident_t: str, instruction: str,
+                   runs: List[Dict[str, Any]], gateway_for: Dict[str, str],
+                   verifier: VerifierSpec, anchor: Optional[Anchor] = None,
+                   **meta) -> TaskSpec:
+    """Build a TaskSpec from dashboard run records. `runs` are the run dicts (with .source and a
+    resolved overlay path); `gateway_for` maps a source -> its baked gateway image tag."""
+    surfaces = []
+    for r in runs:
+        src = r["source"]
+        surfaces.append(Surface(source=src, overlay=r["overlay"],
+                                 gateway_image=gateway_for[src]))
+    return TaskSpec(name=name, kind=kind, incident_t=incident_t, instruction=instruction,
+                    surfaces=surfaces, verifier=verifier, anchor=anchor, **meta)
+
+
+def load_spec(path: str) -> TaskSpec:
+    d = json.loads(Path(path).read_text())
+    d["surfaces"] = [Surface(**s) for s in d.get("surfaces", [])]
+    d["verifier"] = VerifierSpec(**d["verifier"])
+    if d.get("anchor"):
+        d["anchor"] = Anchor(**d["anchor"])
+    return TaskSpec(**d)

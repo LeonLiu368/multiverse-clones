@@ -195,6 +195,62 @@ def task_plan(job_id: str):
     return plan_task_from_run(job.to_dict(), store.run_dir(job_id))
 
 
+class SpecBody(BaseModel):
+    run_ids: list[str]
+    name: str = "incident/new-task"
+    kind: str = "observability"
+    incident_t: str = DEFAULT_T
+    instruction: str = ""
+    anchor_repo: str = ""
+    anchor_commit: str = ""
+    resolution_pr: str = ""
+    verifier_kind: str = ""
+
+
+@app.post("/api/tasks/spec")
+def task_spec(body: SpecBody):
+    """Assemble a runnable pipeline spec.json from picked runs + a code anchor. TODO fields
+    (baked gateway tags, the SUT bundle, the verifier detail) are marked — fill them, then
+    `python -m spoink.pipeline spec.json`. This is the dashboard -> pipeline seam."""
+    slug = body.incident_t.replace(":", "").replace("-", "")[:13]
+    surfaces = []
+    for rid in body.run_ids:
+        j = store.get(rid)
+        if not j or j.status != "done":
+            continue
+        art = j.report.get("artifact") or SOURCES.get(j.source, None) and SOURCES[j.source].artifact
+        surfaces.append({
+            "source": j.source,
+            "overlay": str((store.run_dir(rid) / art).resolve()) if art else str(store.run_dir(rid)),
+            "gateway_image": f"ghcr.io/abundant-ai/{ 'jira' if j.source=='linear' else j.source }-gateway:TODO-bake-{slug}",
+        })
+    vkind = body.verifier_kind or ("pytest_pr" if body.resolution_pr else
+                                   "readback" if body.kind == "integration" else "module_check")
+    verifier = {"kind": vkind}
+    if vkind == "pytest_pr":
+        verifier.update({"f2p": ["TODO: derive via spoink.pipeline.verifier.derive_pr_verifier"], "p2p": []})
+    elif vkind == "module_check":
+        verifier["grader_script"] = "TODO: path to a bespoke grader (e.g. configure_mappers smoke)"
+    elif vkind == "readback":
+        verifier["checks"] = [{"cmd": "TODO: a clone CLI read", "expect_substr": "TODO"}]
+    spec = {
+        "name": body.name, "kind": body.kind, "incident_t": body.incident_t,
+        "instruction": body.instruction or "TODO: symptom-level prompt (name the tools, not the answer)",
+        "surfaces": surfaces, "verifier": verifier,
+        "anchor": ({"bundle": "TODO: git bundle sliced to the incident tip",
+                    "commit": body.anchor_commit or "TODO: incident-tip sha",
+                    "backend_subdir": "backend"} if body.anchor_repo else None),
+        "source_repo": body.anchor_repo, "fixed_by_pr": body.resolution_pr,
+    }
+    todos = [f"surface[{i}].gateway_image — bake {s['source']} overlay into a gateway image"
+             for i, s in enumerate(surfaces)]
+    if spec["anchor"]:
+        todos.append("anchor.bundle — produce a git bundle of the SUT sliced to the incident tip")
+    todos.append(f"verifier ({vkind}) — fill in per the comments")
+    return {"spec": spec, "todos": todos,
+            "next": "save as spec.json, complete the TODOs, then: python -m spoink.pipeline spec.json --out generated-tasks/"}
+
+
 # ----------------------------------------------------------------- static frontend
 @app.get("/")
 def index():

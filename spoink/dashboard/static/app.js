@@ -232,14 +232,23 @@ $("#genPlan").onclick = async () => {
   const ids = $$("#taskRuns input:checked").map((c) => c.value);
   if (!ids.length) return toast("pick at least one run", true);
   try {
-    const plans = await Promise.all(ids.map((id) => api(`/api/runs/${id}/task_plan`)));
-    const out = {
-      incident_T: $("#globalT").value + ":00Z",
-      code_anchor: { repo: $("#anchorRepo").value, commit: $("#anchorSha").value, resolution_pr: $("#anchorPr").value },
-      surfaces: plans.map((p) => ({ source: p.source, artifacts: p.artifacts, would_bundle: p.would_bundle })),
-      status: "preview — pipeline not wired yet",
-    };
-    const o = $("#planOut"); o.hidden = false; o.textContent = JSON.stringify(out, null, 2);
+    const r = await api("/api/tasks/spec", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        run_ids: ids,
+        name: ($("#anchorRepo").value.split("/").pop() || "incident") + "/new-task",
+        kind: "observability",
+        incident_t: inputToIso($("#globalT").value),
+        anchor_repo: $("#anchorRepo").value,
+        anchor_commit: $("#anchorSha").value,
+        resolution_pr: $("#anchorPr").value,
+      }),
+    });
+    const o = $("#planOut"); o.hidden = false;
+    o.textContent = "// spec.json — complete the TODOs, then:\n"
+      + "// python -m spoink.pipeline spec.json --out generated-tasks/\n\n"
+      + JSON.stringify(r.spec, null, 2)
+      + "\n\n// TODO before generating:\n" + r.todos.map((t) => "//  · " + t).join("\n");
   } catch (e) { toast(e.message, true); }
 };
 
