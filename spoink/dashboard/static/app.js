@@ -49,10 +49,12 @@ async function loadSources() {
 function sourceCard(s) {
   const body = el("div", { className: "src-body" });
   const inputs = {}, loaders = [];
+  // scalar sibling values (e.g. github `org`) passed to dependent discovery lookups
+  const deps = () => { const o = {}; for (const [k, g] of Object.entries(inputs)) { const v = g(); if (typeof v === "string" && v) o[k] = v; } return o; };
   for (const p of s.params) {
     const f = el("div", { className: "field" });
     f.append(el("label", { textContent: p.label + (p.required ? " *" : "") }));
-    if (p.discover && p.kind === "multiselect") inputs[p.name] = multiselect(f, s, p, loaders);
+    if (p.discover && p.kind === "multiselect") inputs[p.name] = multiselect(f, s, p, loaders, deps);
     else if (p.discover && p.kind === "select") inputs[p.name] = discoverSelect(f, s, p, loaders);
     else if (p.kind === "datetime") {
       const i = el("input", { type: "datetime-local", step: "60", value: isoToInput(p.default || DEFAULT_T) });
@@ -83,8 +85,9 @@ function sourceCard(s) {
   return card;
 }
 
-// discovery-backed multi-select (Slack channels): lazy-load on first open, search + checkboxes
-function multiselect(field, s, p, loaders) {
+// discovery-backed multi-select (Slack channels, GitHub repos): search + checkboxes.
+// getDeps() supplies sibling-field values (e.g. the org for GitHub repo discovery).
+function multiselect(field, s, p, loaders, getDeps) {
   const chosen = new Set();
   const list = el("div", { className: "ms-list" }, el("div", { className: "ms-empty", textContent: "loading…" }));
   const search = el("input", { placeholder: "filter…" });
@@ -114,13 +117,16 @@ function multiselect(field, s, p, loaders) {
   const load = async () => {
     list.innerHTML = ""; list.append(el("div", { className: "ms-empty", textContent: "loading…" }));
     try {
-      const key = `${s.id}:${p.discover}`;
-      opts = OPTCACHE[key] || (OPTCACHE[key] = (await api(`/api/sources/${s.id}/options/${p.discover}`)).options);
+      const q = new URLSearchParams(getDeps ? getDeps() : {}).toString();
+      const key = `${s.id}:${p.discover}:${q}`;
+      const resp = OPTCACHE[key] || (OPTCACHE[key] = await api(`/api/sources/${s.id}/options/${p.discover}${q ? "?" + q : ""}`));
+      opts = resp.options || [];
+      if (!opts.length && resp.note) { list.innerHTML = ""; list.append(el("div", { className: "ms-empty", textContent: resp.note })); return; }
       render();
     } catch (e) { list.innerHTML = ""; list.append(el("div", { className: "ms-empty", textContent: "load failed: " + e.message })); }
   };
   search.oninput = render;
-  reload.onclick = () => { delete OPTCACHE[`${s.id}:${p.discover}`]; opts = []; load(); };
+  reload.onclick = () => { Object.keys(OPTCACHE).filter((k) => k.startsWith(`${s.id}:${p.discover}:`)).forEach((k) => delete OPTCACHE[k]); opts = []; load(); };
   loaders.push(() => { if (!opts.length) load(); });
   return () => [...chosen];
 }

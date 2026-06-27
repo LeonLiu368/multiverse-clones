@@ -102,7 +102,7 @@ def _slice_slack(run_dir: str, artifact: str, cutoff: float) -> Dict[str, Any]:
             "last_kept": res.get("last_kept"), "report": res}
 
 
-def _options_slack(param: str) -> Dict[str, Any]:
+def _options_slack(param: str, **_) -> Dict[str, Any]:
     from .. import slack_export as sx
     if param != "channels":
         return {"kind": "multiselect", "options": []}
@@ -149,7 +149,7 @@ def _slice_linear(run_dir: str, artifact: str, cutoff: float) -> Dict[str, Any]:
     return {"artifact": "state@T.json", **res}
 
 
-def _options_linear(param: str) -> Dict[str, Any]:
+def _options_linear(param: str, **_) -> Dict[str, Any]:
     from .. import linear_export as lx
     if param != "team":
         return {"kind": "select", "options": []}
@@ -192,31 +192,86 @@ def _capture_logfire(run_dir: str, params: Dict[str, Any]) -> Dict[str, Any]:
 
 
 # =========================================================================== GitHub (ghc snapshot)
+def _gh_token() -> str:
+    tok = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+    if not tok:
+        raise CaptureError("github: set GITHUB_TOKEN (or GH_TOKEN) in .env")
+    return tok
+
+
+def _list_org_repos(org: str, token: str) -> List[Dict[str, Any]]:
+    """All repos under an org (or user) via the GitHub REST API, paginated."""
+    import httpx
+    out: List[Dict[str, Any]] = []
+    headers = {"Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json"}
+    with httpx.Client(timeout=30, headers=headers) as c:
+        for base in (f"https://api.github.com/orgs/{org}/repos",
+                     f"https://api.github.com/users/{org}/repos"):
+            page = 1
+            ok = False
+            while True:
+                r = c.get(base, params={"per_page": 100, "page": page, "type": "all", "sort": "pushed"})
+                if r.status_code == 404:
+                    break              # not an org -> try the users endpoint
+                r.raise_for_status()
+                ok = True
+                batch = r.json()
+                if not batch:
+                    break
+                out.extend(batch)
+                page += 1
+            if ok:
+                break
+    return out
+
+
+def _options_github(param: str, **kw) -> Dict[str, Any]:
+    if param != "repos":
+        return {"kind": "multiselect", "options": []}
+    org = (kw.get("org") or "").strip()
+    if not org:
+        return {"kind": "multiselect", "options": [], "note": "enter an org/owner to list repos"}
+    repos = _list_org_repos(org, _gh_token())
+    opts = [{"value": r["name"], "label": r["name"],
+             "private": bool(r.get("private")), "archived": bool(r.get("archived")),
+             "count": (r.get("pushed_at") or "")[:10]} for r in repos]
+    opts.sort(key=lambda o: (o["archived"], o["label"].lower()))
+    return {"kind": "multiselect", "options": opts}
+
+
 def _capture_github(run_dir: str, params: Dict[str, Any]) -> Dict[str, Any]:
-    """Freeze a GitHub repo to a snapshot artifact via the clone's `ghc-hydrate snapshot`.
-    T-alignment is deferred to bake time (`ghc-hydrate apply --as-of T`), so there is no
-    separate slice step here. Requires `ghc-hydrate` on PATH (or $GHC_HYDRATE_BIN) and a
-    GitHub token in $GITHUB_TOKEN/$GH_TOKEN."""
-    repo = (params.get("repo") or "").strip()
-    if "/" not in repo:
-        raise CaptureError("github: repo must be 'owner/name'")
+    """Freeze one OR MANY GitHub repos to a snapshot artifact via `ghc-hydrate snapshot` — i.e.
+    a whole org's GitHub state. T-alignment is deferred to bake time (`apply --as-of T` per repo
+    into one Forgejo), so there's no separate slice. Needs `ghc-hydrate` on PATH (or
+    $GHC_HYDRATE_BIN) + GITHUB_TOKEN. Empty repo selection = ALL repos in the org."""
+    org = (params.get("org") or "").strip()
+    repos = _as_list(params.get("repos"))
+    if not org and not repos:
+        raise CaptureError("github: set an org/owner (and optionally pick repos)")
     ghc = os.environ.get("GHC_HYDRATE_BIN") or shutil.which("ghc-hydrate")
     if not ghc:
         raise CaptureError("github: ghc-hydrate not found (set $GHC_HYDRATE_BIN or install gh-cli-clone)")
-    if not (os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")):
-        raise CaptureError("github: set GITHUB_TOKEN (or GH_TOKEN) in .env")
-    snap = str(Path(run_dir) / "snapshot")
-    p = subprocess.run([ghc, "snapshot", repo, "--out", snap],
-                       capture_output=True, text=True, timeout=1800)
-    if p.returncode != 0:
-        raise CaptureError(f"ghc-hydrate snapshot failed: {(p.stderr or p.stdout)[-400:]}")
-    manifest = {}
-    mf = Path(snap) / "repo.json"
-    if mf.exists():
-        manifest = json.loads(mf.read_text())
-    return {"artifact": "snapshot", "repo": repo,
-            "default_branch": manifest.get("default_branch"),
-            "note": "T-aligned at bake via `apply --as-of T`", "stdout": p.stdout[-400:]}
+    token = _gh_token()
+    if not repos:                                   # empty selection -> snapshot the whole org
+        repos = [r["name"] for r in _list_org_repos(org, token)]
+        if not repos:
+            raise CaptureError(f"github: no repos found for {org!r}")
+    snaps = Path(run_dir) / "snapshots"
+    snaps.mkdir(parents=True, exist_ok=True)
+    done, failed = [], []
+    for r in repos:
+        full = r if "/" in r else f"{org}/{r}"
+        out = snaps / full.replace("/", "__")
+        p = subprocess.run([ghc, "snapshot", full, "--out", str(out), "--token", token],
+                           capture_output=True, text=True, timeout=3600)
+        (done if p.returncode == 0 else failed).append(
+            full if p.returncode == 0 else {"repo": full, "err": (p.stderr or p.stdout)[-200:]})
+    manifest = {"org": org, "repos": done, "failed": failed, "count": len(done)}
+    (snaps / "manifest.json").write_text(json.dumps(manifest, indent=2))
+    if not done:
+        raise CaptureError(f"github: all {len(repos)} snapshots failed; first: {failed[:1]}")
+    return {"artifact": "snapshots", "org": org, "repos": len(done),
+            "failed": len(failed), "note": "apply each --as-of T into one Forgejo at bake"}
 
 
 # =========================================================================== helpers + registry
@@ -262,11 +317,13 @@ SOURCES: Dict[str, Source] = {
     ),
     "github": Source(
         id="github", label="GitHub", env_key="GITHUB_TOKEN", kind="ghc-snapshot",
-        view_app="github", can_slice=False, artifact="snapshot",
-        capture=_capture_github, slice=None,
-        note="ghc-hydrate snapshot; T-aligned at bake via apply --as-of (needs ghc-hydrate + GITHUB_TOKEN)",
+        view_app="github", can_slice=False, artifact="snapshots",
+        capture=_capture_github, slice=None, options=_options_github,
+        note="snapshot one or many repos (a whole org); T-aligned at bake (needs ghc-hydrate + GITHUB_TOKEN)",
         params=[
-            Param("repo", "Repo", "text", required=True, help="owner/name, e.g. abundant-ai/oddish"),
+            Param("org", "Org / owner", "text", required=True, help="e.g. abundant-ai"),
+            Param("repos", "Repos", "multiselect", discover="repos",
+                  help="pick repos to freeze; leave empty = ALL repos in the org"),
         ],
     ),
 }

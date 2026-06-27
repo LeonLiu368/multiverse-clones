@@ -63,3 +63,29 @@ def test_capture_guards(tmp_path, monkeypatch):
 def test_slice_guards(tmp_path, monkeypatch):
     c = _client(tmp_path, monkeypatch)
     assert c.post("/api/slice", json={"run_id": "missing"}).status_code == 400
+
+
+def test_github_multi_repo_capture(tmp_path, monkeypatch):
+    """The whole point: snapshot MANY repos in one run (loop over ghc-hydrate snapshot)."""
+    import json as _json
+    monkeypatch.setenv("SPOINK_SKIP_DOTENV", "1")
+    monkeypatch.setenv("GITHUB_TOKEN", "ghp_test")
+    fake = tmp_path / "ghc"                       # stand in for ghc-hydrate snapshot
+    fake.write_text("#!/usr/bin/env python3\n"
+                    "import sys, os\n"
+                    "a = sys.argv; out = a[a.index('--out') + 1]\n"
+                    "os.makedirs(out, exist_ok=True)\n"
+                    "open(os.path.join(out, 'repo.json'), 'w').write('{}')\n")
+    fake.chmod(0o755)
+    monkeypatch.setenv("GHC_HYDRATE_BIN", str(fake))
+    for m in list(sys.modules):
+        if m.startswith("spoink.dashboard"):
+            del sys.modules[m]
+    from spoink.dashboard import sources
+    run = tmp_path / "run"; run.mkdir()
+    rep = sources._capture_github(str(run), {"org": "acme", "repos": ["a", "b", "acme/c"]})
+    assert rep["repos"] == 3 and rep["failed"] == 0
+    man = _json.loads((run / "snapshots" / "manifest.json").read_text())
+    assert man["org"] == "acme" and set(man["repos"]) == {"acme/a", "acme/b", "acme/c"}
+    # each repo got its own snapshot dir
+    assert (run / "snapshots" / "acme__a" / "repo.json").exists()
