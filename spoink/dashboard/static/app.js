@@ -26,6 +26,16 @@ const ago = (s) => {
 const isoToInput = (iso) => (iso || "").replace("Z", "").slice(0, 16);
 const inputToIso = (v) => (v ? v.slice(0, 16) + ":00Z" : "");
 
+// small monochrome line icons per source (match the sidebar nav style)
+const _svg = (p) => `<svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+const SRC_ICON = {
+  slack: _svg('<path d="M5.6 2 4.2 14M11.8 2 10.4 14M2.4 5.6h11.2M1.9 10.4h11.2"/>'),
+  linear: _svg('<rect x="2.4" y="2.4" width="11.2" height="11.2" rx="2.6"/><path d="M5.5 8.2 7.1 9.9 11 5.9"/>'),
+  logfire: _svg('<rect x="2" y="2.9" width="12" height="10.2" rx="2"/><path d="M4.9 6.3 6.8 8 4.9 9.7M8.5 9.8H11"/>'),
+  gauge: _svg('<path d="M2.7 11.4a5.3 5.3 0 1 1 10.6 0"/><path d="M8 11.4 11 7.7"/>'),
+  github: _svg('<circle cx="4.3" cy="3.9" r="1.5"/><circle cx="4.3" cy="12.1" r="1.5"/><circle cx="11.7" cy="5.4" r="1.5"/><path d="M4.3 5.4v5.2M4.3 9.1c0-2.3.7-2.9 3.4-3.3"/>'),
+};
+
 let SOURCES = [], DEFAULT_T = "", OPTCACHE = {};
 const globalIso = () => inputToIso($("#globalT").value);
 
@@ -72,11 +82,14 @@ function sourceCard(s) {
   if (s.note) body.prepend(el("div", { className: "src-note", textContent: s.note }));  // context shown on expand
 
   const KIND = { slack: "messages", linear: "issues", logfire: "logs", gauge: "logs", github: "code" };
+  const key = el("span", { className: "key " + (s.has_key ? "ok" : "no") });
+  key.append(el("i", { className: "tick", textContent: s.has_key ? "✓" : "✗" }), " " + s.env_key);
   const head = el("div", { className: "src-head" }, [
     el("span", { className: "chev", textContent: "›" }),
+    el("span", { className: "src-icon", innerHTML: SRC_ICON[s.id] || "" }),
     el("span", { className: "src-name", textContent: s.label }),
     el("span", { className: "src-kind", textContent: KIND[s.id] || s.kind }),
-    el("span", { className: "key " + (s.has_key ? "ok" : "no"), textContent: (s.has_key ? "✓ " : "✗ ") + s.env_key }),
+    key,
   ]);
   const card = el("div", { className: "src" }, [head, body]);
   let loaded = false;
