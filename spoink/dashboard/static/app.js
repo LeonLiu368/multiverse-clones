@@ -69,11 +69,11 @@ function sourceCard(s) {
   const btn = el("button", { textContent: `Capture ${s.label}`, disabled: !s.has_key });
   btn.onclick = () => capture(s, inputs, btn);
   body.append(btn);
+  if (s.note) body.prepend(el("div", { className: "src-note", textContent: s.note }));  // context shown on expand
 
   const head = el("div", { className: "src-head" }, [
     el("span", { className: "chev", textContent: "›" }),
     el("span", { className: "src-name", textContent: s.label }),
-    s.note ? el("span", { className: "src-note", textContent: s.note }) : "",
     el("span", { className: "key " + (s.has_key ? "ok" : "no"), textContent: (s.has_key ? "✓ " : "✗ ") + s.env_key }),
   ]);
   const card = el("div", { className: "src" }, [head, body]);

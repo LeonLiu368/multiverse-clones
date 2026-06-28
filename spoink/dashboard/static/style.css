@@ -36,9 +36,7 @@
 html, body { height: 100%; }
 body {
   margin: 0;
-  background:
-    radial-gradient(1200px 600px at 50% -200px, #131a26 0%, transparent 70%),
-    var(--bg);
+  background: var(--bg);
   color: var(--fg);
   font: 14px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -113,12 +111,10 @@ main { max-width: 1060px; margin: 0 auto; padding: 32px 24px 72px; }
 .tab.active { display: block; animation: fade .22s ease; }
 @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 
-.lead { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 24px; }
-.lead h2 { margin: 0; font-size: 19px; font-weight: 650; letter-spacing: -.2px; }
-.lead p {
-  flex-basis: 100%; margin: 6px 0 0; color: var(--muted);
-  font-size: 13px; line-height: 1.6; max-width: 680px;
-}
+.hint { color: var(--muted); font-size: 13px; line-height: 1.6; margin: 0 0 22px; }
+.hint strong { color: var(--fg); font-weight: 600; }
+.grp-row { display: flex; align-items: center; justify-content: space-between; margin: 2px 0 12px; }
+.grp-row .grp { margin: 0; }
 h3.grp {
   font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
   color: var(--faint); margin: 26px 0 12px;
@@ -142,7 +138,7 @@ code {
 }
 .src-head:hover { background: var(--panel2); }
 .src-name { font-size: 14.5px; font-weight: 600; letter-spacing: -.1px; }
-.src-note { color: var(--faint); font-size: 12px; margin-left: 2px; }
+.src-note { color: var(--faint); font-size: 12px; line-height: 1.5; margin: 10px 0 0; }
 .chev {
   color: var(--faint); font-size: 16px; line-height: 1; width: 14px;
   text-align: center; transition: transform .18s ease, color .14s ease;

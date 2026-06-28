@@ -27,33 +27,26 @@
   <main>
     <!-- SOURCES -->
     <section id="tab-sources" class="tab active">
-      <div class="lead">
-        <h2>Capture sources</h2>
-        <p>Pull a source as of <strong>T</strong>, then slice it on the Runs tab. Credentials are read
-           from <code>.env</code> — only their presence is shown here.</p>
-      </div>
+      <p class="hint">Capture a source as of <strong>T</strong>. Credentials come from <code>.env</code>.</p>
       <div id="sourceList" class="source-list"></div>
     </section>
 
     <!-- RUNS -->
     <section id="tab-runs" class="tab">
-      <div class="lead"><h2>Runs</h2><button id="refresh" class="ghost sm">refresh</button></div>
-      <h3 class="grp">Running</h3>
+      <div class="grp-row">
+        <h3 class="grp">Running</h3>
+        <button id="refresh" class="ghost sm">refresh</button>
+      </div>
       <div id="running" class="runs"></div>
-      <p id="runningEmpty" class="muted sm">nothing running.</p>
+      <p id="runningEmpty" class="muted sm">Nothing running.</p>
       <h3 class="grp">Completed</h3>
       <div id="completed" class="runs"></div>
-      <p id="completedEmpty" class="muted sm">no completed runs yet.</p>
+      <p id="completedEmpty" class="muted sm">No completed runs yet — capture a source.</p>
     </section>
 
     <!-- TASK CREATOR -->
     <section id="tab-tasks" class="tab">
-      <div class="lead">
-        <h2>Task creator</h2>
-        <p>Bundle a set of sliced surfaces @ T into an agent-eval task. Pick the runs that belong to one
-           incident; the pipeline will (soon) bake overlays into <code>:empty</code> gateways, vendor the
-           SUT at the incident tip, and emit the task dir + manifest.</p>
-      </div>
+      <p class="hint">Bundle sliced surfaces @ <strong>T</strong> into an agent-eval task.</p>
       <div class="task-grid">
         <div class="panel">
           <h3 class="grp">1 · pick surfaces @ T</h3>

@@ -43,6 +43,15 @@ SEED_DASHBOARD_URL = os.environ.get("SEED_DASHBOARD_URL", "http://localhost:8000
 HERE = Path(__file__).resolve().parent
 
 app = FastAPI(title="spoink dashboard")
+
+
+@app.middleware("http")
+async def _no_store(request, call_next):
+    # local dev tool — never cache the UI assets, so edits always show on reload
+    resp = await call_next(request)
+    if request.url.path == "/" or request.url.path.startswith("/static"):
+        resp.headers["Cache-Control"] = "no-store"
+    return resp
 store = JobStore(RUNS_DIR)
 
 
