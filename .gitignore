@@ -9,3 +9,4 @@ slack-export/
 
 # spoink dashboard capture artifacts (real company data)
 runs/
+.gstack/
