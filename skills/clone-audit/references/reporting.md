@@ -7,7 +7,8 @@ Goal: two artifacts that close the loop — a human-readable `audit-report.md` a
 Fill every section. The parts that matter most for the loop:
 - **What it handles well** — be specific and fair; the creator needs to know what *not* to break.
 - **Scorecard** — R1–R6 with `pass|partial|fail` and one evidence cell each.
-- **Canon parity grid** — a–i as ✅/⚠️/❌.
+- **Canon + seeding parity grid** — a–i (canon) plus **j–k (GHCR image DB seeding: `:prod-v1`
+  baked-DB mount-free boot, multi-arch, no leak)** as ✅/⚠️/❌.
 - **Coverage-matrix audit** — the table built in Phase 2.
 - **Action items** — ordered, **gating first**, each file-scoped with an acceptance check.
 - **Reproduction** — the commands you ran, so the result is re-runnable.
@@ -23,7 +24,7 @@ The structured twin of the report. Populate:
 ```
 meets_standard = (every gating requirement result == "pass")
 ```
-Gating = R1, R2.a–g, R3, R4, R5, R6. A single gating `fail` ⇒ `meets_standard = false`. There is no
+Gating = R1, R2.a–g + j–k, R3, R4, R5, R6. A single gating `fail` ⇒ `meets_standard = false`. There is no
 partial credit on the verdict bit — a clone that boots beautifully but has a CLI/MCP parity gap, <5
 assessment-grade endpoints, or untested surfaces **does not meet the standard**. Say so plainly and
 put those gaps at the top of the action list.

@@ -17,16 +17,18 @@ most important action item.
 | Req | Area | Result | Evidence | Action item (if not full pass) |
 |---|---|---|---|---|
 | R1 | Setup & run (Harbor) | pass/partial/fail | `nop=0.0 oracle=1.0`, boot log | … |
-| R2 | Architecture canon a–g | pass/partial/fail | parity grid below | … |
+| R2 | Architecture canon a–g + seeding j–k | pass/partial/fail | parity grid below | … |
 | R3 | CLI + MCP parity | pass/partial/fail | parity test output | … |
 | R4 | Functional coverage | pass/partial/fail | `docs/COVERAGE.md` ✓/✗ | … |
 | R5 | Assessment-grade endpoints | pass/partial/fail | N labelled, round-trip demo | … |
 | R6 | Unit tests all surfaces | pass/partial/fail | `<n>` passed / `<m>` total | … |
 
-### Canon parity grid (R2 detail)
-| a | b | c | d | e | f | g | h | i |
-|---|---|---|---|---|---|---|---|---|
-| ✅ | ✅ | ✅ | ⚠️ | ❌ | ✅ | ✅ | ⚠️ | ✅ |
+### Canon + seeding parity grid (R2 detail) — a–i canon, j–k GHCR image DB seeding
+| a | b | c | d | e | f | g | h | i | j | k |
+|---|---|---|---|---|---|---|---|---|---|---|
+| ✅ | ✅ | ✅ | ⚠️ | ❌ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ⚠️ |
+
+*(j = `:prod-v1` bakes the corpus DB and serves it mount-free, pulled from GHCR; k = multi-arch publish + no answer leak in the agent.)*
 
 ### Coverage matrix audit (R4/R5 detail)
 | Capability | Endpoint | CLI | MCP | Envelope OK | Assessment-grade | Tested |

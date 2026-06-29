@@ -12,35 +12,80 @@ requirements the canon leaves implicit, so a creator/auditor loop can run withou
 
 ---
 
+## The runtime model everything centers on: **agent + gateway**
+
+Every clone runs as exactly **two containers** in a Harbor task:
+
+- **agent** (`main`) — the thing under test. Harbor **always builds** it from
+  `environment/Dockerfile`; it carries the per-task codebase + the clone's CLI/MCP tools on a
+  **neutral base** (e.g. `python:slim`), and holds **no service data**. It reaches state only by
+  calling the gateway over HTTP by service name (`http://<svc>:<port>`).
+- **gateway** — the service sidecar: the clone's HTTP API + CLI/MCP thin clients + seeder, the single
+  source of truth. Harbor does **not** build it (only `main` is force-built); the gateway is a
+  **pulled image** (or a `build:`+`image:` service that builds locally and tags the pullable name).
+
+The gateway is realized by an **image trio** (canon, R2): `<svc>-service` (base, no data) →
+`<svc>-service:prod-v1` (corpus **DB baked in**) + `<svc>-service:empty` (no data, a mount target).
+*(Some clones tag these `<svc>-gateway:{prod-v1,empty}`; the role is "gateway" either way.)*
+
 ## R1 — Setup & run, Harbor-style  (Gating)
 
 A fresh checkout stands up and runs with **no manual steps beyond documented env vars**.
 
-- **R1.1 (G)** Two-container Harbor shape: `main` (agent, `build: FROM <svc>-agent` + task codebase)
-  and the service sidecar (`image: <svc>-gateway:prod-v1` or `:empty`), `depends_on` a **healthcheck**.
+- **R1.1 (G)** Two-container **agent + gateway** Harbor shape: `main` (agent, built from
+  `environment/Dockerfile`, neutral base, data-free) and the gateway sidecar
+  (`image: ghcr.io/<org>/<svc>-service:{prod-v1|empty}`, optionally with a `build:` that tags the same
+  name), wired by `depends_on` on a gateway **healthcheck**.
 - **R1.2 (G)** Cold boot is clean: `docker compose up` reaches healthy with **zero hand-editing**;
-  the service answers a health endpoint; the agent container can reach it by service name over HTTP.
+  the gateway answers a health endpoint; the agent reaches it by service name over HTTP.
 - **R1.3 (G)** `tests/test.sh` is the entrypoint and writes `/logs/verifier/reward.txt`;
   `solution/solve.sh` is the oracle. **nop = 0.0, oracle = 1.0** on at least one bundled task.
 - **R1.4 (G)** No `networks:` block (Harbor injects `network_mode`) **unless** a documented isolation
   exception (e.g. pinned-subnet IP isolation) is recorded in the clone's `docs/`.
-- **R1.5 (A)** Determinism: rebuild from the same seed → byte-identical ids/names.
+- **R1.5 (G)** **Gateway resolves without registry creds**: either the `:prod-v1`/`:empty` image is
+  public on GHCR, or the gateway service carries both `build:` and `image:` so `compose build` builds
+  and tags it locally (no `unauthorized` pull). A task that only works with private-registry auth
+  fails portability.
+- **R1.6 (A)** Determinism: rebuild from the same seed → byte-identical ids/names.
 
-## R2 — Architecture canon (parity grid a–i)  (Gating a–g, Advisory h–i)
+## R2 — Agent + Gateway architecture & image seeding  (Gating a–g + j–k, Advisory h–i)
 
-Score the clone against the converged-canon parity checklist verbatim:
+Score the clone against the converged-canon parity checklist, **plus** the GHCR image-DB-seeding
+gates (j, k) that make the gateway portable:
 
 | Key | Property | Gate |
 |---|---|---|
-| a | base `<svc>-service` image, published | G |
-| b | `:prod-v1` + `:empty` pair both exist | G |
-| c | thin `<svc>-agent`, **data-free** (smoke test asserts no seed on disk) | G |
-| d | per-task data by **mount**, never a per-task gateway image / `COPY data` | G |
+| a | base `<svc>-service` gateway image, published | G |
+| b | `:prod-v1` + `:empty` pair both exist (the gateway image trio) | G |
+| c | thin **agent**, **data-free** on a neutral base (smoke test asserts no seed on disk) | G |
+| d | per-task data by **mount** into the gateway, never a per-task gateway image / `COPY data` | G |
 | e | bulk = native format, mutations = shared op-list | G |
-| f | Harbor 2-container, test.sh→reward.txt (or documented isolation exception) | G |
-| g | **agent/operator boundary**: world-building (import/seed/hydrate) is a separate entrypoint the agent can never call | G |
+| f | Harbor 2-container agent+gateway, test.sh→reward.txt (or documented isolation exception) | G |
+| g | **agent/operator boundary**: world-building (import/seed/hydrate) is a gateway-only entrypoint the agent can never call | G |
 | h | identity registry wired (people resolve through `abundant-identity`) | A |
 | i | skill + catalog + PROD-OVERLAY doc present | A |
+| **j** | **GHCR image DB seeding**: `:prod-v1` bakes the corpus DB into the image and boots healthy **with no mount**, pulled as-is from GHCR (or build-tagged to the GHCR name) | **G** |
+| **k** | **image hygiene**: gateway published **multi-arch** (`linux/amd64,linux/arm64`); agent on a neutral base; task answers **not greppable** in the gateway source baked into the agent | G |
+
+### The two seeding paths (set per task, both required to exist)
+
+The gateway carries data one of two ways — a clone must support **both** so any task family can run:
+
+| Path | Image | Data delivery | Use when |
+|---|---|---|---|
+| **Baked-DB (GHCR)** | `<svc>-service:prod-v1` | corpus **DB baked into the image** (`COPY <corpus>.db → $…_DB`); served as-is, **mount ignored** | prod/realistic tasks that share one big corpus — layers cache across tasks (this is "ghcr image db seeding") |
+| **Empty + mount** | `<svc>-service:empty` | base API, **no data**; per-task fixture **mounted** into the gateway (or pushed via the token-gated control plane) | tasks needing a custom/small workspace |
+
+- **R2.j is gating.** The `:prod-v1` image must exist, bake the DB, and serve the full corpus from a
+  cold `docker compose up` **without any fixture mount**. Switching a task `empty ↔ prod-v1` is the
+  **image tag alone**. Verify by booting `:prod-v1` with no mount and querying seeded data.
+- **GHCR publish contract:** CI builds the gateway on push-to-main, `permissions: packages: write`
+  with the built-in `GITHUB_TOKEN`, tags `:latest`/`:<sha>`/`:prod-v1`/`:empty`, **multi-arch**. The
+  package is public **or** the task uses the `build:`+`image:` dual so it never needs a pull (R1.5).
+- **Leak rule (R2.k):** because the agent's tools ship `FROM <svc>-service` (or copy its source), the
+  baked corpus/seed generator lives in the agent container — so a task answer must **not** be a value
+  reproducible from that source. Check: `docker run --rm <agent-image> grep -rs '<answer>' /opt /app
+  /usr/local` finds nothing.
 
 ## R3 — Tool surface: CLI **and** MCP, in parity  (Gating)
 
@@ -123,7 +168,9 @@ recorded in the clone spec and justified against the assessment-grade requiremen
 
 ## The verdict in one line
 
-> **A clone meets Clone Standard v1 when:** it cold-boots Harbor-style (R1), satisfies canon gates
-> a–g (R2), exposes CLI **and** MCP in parity over one HTTP API (R3), documents and matches the real
-> agent-used surface (R4) with ≥5 labelled assessment-grade capabilities (R5), and ships unit tests
-> covering every endpoint/CLI/MCP surface including parity + isolation (R6).
+> **A clone meets Clone Standard v1 when:** it runs as a two-container **agent + gateway** task that
+> cold-boots Harbor-style (R1), satisfies canon gates a–g **and** GHCR image-DB-seeding gates j–k —
+> `:prod-v1` bakes the corpus DB and serves it mount-free, published multi-arch (R2), exposes CLI
+> **and** MCP in parity over one HTTP API (R3), documents and matches the real agent-used surface (R4)
+> with ≥5 labelled assessment-grade capabilities (R5), and ships unit tests covering every
+> endpoint/CLI/MCP surface including parity + isolation (R6).

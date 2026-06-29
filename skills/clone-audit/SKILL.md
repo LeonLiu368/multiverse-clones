@@ -34,11 +34,13 @@ an ordered, file-scoped action list the creator can act on. Your output is a fee
 
 ## The audit, in four phases
 
-Run in order. Phases 1→3 gather evidence; phase 4 compiles it. Each maps to standard requirements.
+Run in order; each maps to standard requirements. The clone runs as **two containers: agent + gateway**
+(the agent is built and under test; the gateway is the pulled/seeded service sidecar). Phases 1→3
+gather evidence; phase 4 compiles it.
 
 | Phase | You verify | Produces | Standard |
 |---|---|---|---|
-| 1. Stand up & run | the clone cold-boots Harbor-style and the verifier scores nop=0/oracle=1 | a live environment + boot evidence | R1, R2(c/d/f/g) |
+| 1. Stand up & run | agent+gateway cold-boots Harbor-style; `:prod-v1` serves its baked DB mount-free; verifier scores nop=0/oracle=1 | a live environment + boot evidence | R1, R2(c/d/f/g/j/k) |
 | 2. Functional coverage | CLI **and** MCP cover the real agent-used surface, in parity, with ≥5 assessment-grade endpoints | an audited coverage matrix | R3, R4, R5 |
 | 3. Unit-test every surface | each endpoint / CLI command / MCP tool passes happy + error paths; parity + isolation hold | a test run (counts, failures) | R6 |
 | 4. Report & verdict | meets-standard decision + action items | `audit-report.md` + `audit-verdict.json` | R7 |
@@ -46,19 +48,23 @@ Run in order. Phases 1→3 gather evidence; phase 4 compiles it. Each maps to st
 Read the matching reference when you reach a phase: `references/setup-and-run.md`,
 `references/functional-coverage.md`, `references/unit-tests.md`, `references/reporting.md`.
 
-### Phase 1 — Stand up & run (Harbor-style)  → `references/setup-and-run.md`
-1. Locate the clone's images and compose (service / `:prod-v1` / `:empty` / agent). Confirm the
-   **two-container Harbor shape** and a **healthcheck** (R1.1).
+### Phase 1 — Stand up & run (agent + gateway, Harbor-style)  → `references/setup-and-run.md`
+1. Identify the **two containers**: the **agent** (`main`, built from `environment/Dockerfile`) and
+   the **gateway** sidecar (`image: ghcr.io/<org>/<svc>-service:{prod-v1|empty}`, maybe `build:`+`image:`).
+   Confirm the gateway **healthcheck** and `depends_on` wiring (R1.1).
 2. **Cold boot**: `docker compose up` from a clean state with only documented env vars. It must reach
-   healthy with zero hand-editing, and the agent container must reach the service by name over HTTP
-   (R1.2). Record the exact commands and the boot log in the report's Reproduction section.
-3. Run the bundled verifier: confirm `tests/test.sh` writes `/logs/verifier/reward.txt`, then measure
-   **nop (empty solution) = 0.0** and **oracle (`solution/solve.sh`) = 1.0** (R1.3). A clone whose
-   oracle ≠ 1 or nop ≠ 0 fails R1 regardless of anything else.
-4. Spot-check canon gates that only show at runtime: **agent has no seed on disk** (`[ ! -e <state> ]`,
-   R2.g/c), **per-task data arrives by mount** not a baked image (R2.d), **no `networks:` block**
-   unless a documented exception (R1.4/R2.f).
-5. Use `assets/audit_harness.sh` to automate standup → health-probe → teardown.
+   healthy with zero hand-editing; the gateway must resolve **without registry creds** (public GHCR or
+   `build:`+`image:` local tag — R1.5); and the agent must reach the gateway by name over HTTP (R1.2).
+   Record commands + boot log for Reproduction.
+3. **GHCR image DB seeding (R2.j):** boot the **`:prod-v1`** gateway with **no fixture mount** and query
+   seeded data — it must serve the full baked corpus out of the box. Then confirm the **`:empty` + mount**
+   path also stands up. Switching the two is the **image tag alone**.
+4. Run the bundled verifier: confirm `tests/test.sh` writes `/logs/verifier/reward.txt`, then measure
+   **nop = 0.0** and **oracle (`solution/solve.sh`) = 1.0** (R1.3). Oracle ≠ 1 or nop ≠ 0 fails R1.
+5. Spot-check runtime canon gates: **agent has no seed on disk** (`[ ! -e <state> ]`, R2.g/c); **agent on
+   a neutral base** with the answer **not greppable** in baked gateway source (R2.k leak check); **no
+   `networks:`** unless a documented exception (R1.4/R2.f); gateway published **multi-arch** (R2.k).
+6. Use `assets/audit_harness.sh` to automate standup → health-probe → seed-probe → teardown.
 
 ### Phase 2 — Functional coverage: CLI + MCP vs the real API  → `references/functional-coverage.md`
 1. **Establish the target surface.** From the clone's `docs/COVERAGE.md` (R4.1) — or, if missing,
@@ -103,7 +109,7 @@ Read the matching reference when you reach a phase: `references/setup-and-run.md
 ## Scoring rules (don't fudge these)
 - `pass` = verified working with evidence. `partial` = works but with a gap that has a clear fix.
   `fail` = absent, broken, or unverifiable.
-- **Gating** requirements (R1, R2.a–g, R3, R4, R5, R6) must all be `pass` for `meets_standard`.
+- **Gating** requirements (R1, R2.a–g + j–k, R3, R4, R5, R6) must all be `pass` for `meets_standard`.
   Advisories (R1.5, R2.h–i, R3.4, R4.4, R5.3, R6.5) only generate action items.
 - One `fail` on any gate ⇒ `meets_standard = false`. No partial credit on the verdict bit.
 

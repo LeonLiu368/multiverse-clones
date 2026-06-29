@@ -62,18 +62,36 @@ agent-used surface is small, you need determinism/leanness/single-container isol
 OSS exists (Slack gateway, Figma, Sentry, Gauge, Logfire). Either way you still own the **translation
 layer** + CLI + MCP; OSS only replaces the engine.
 
-### Decision 4 — The build shape (R1, R2) — follow the canon, don't improvise
-Commit to the converged canon up front:
-- **Three images + thin agent**: `<svc>-service` (engine+tools, no data) → `:prod-v1` (corpus baked)
-  + `:empty` (mount target); `<svc>-agent` (thin, data-free).
-- **Per-task data by mount**, never a per-task gateway image. Bulk = native format; mutations = shared
-  op-list.
-- **Agent/operator boundary**: import/seed/hydrate is a separate entrypoint the agent can never call —
-  and you will assert it in a smoke test.
-- **Harbor two-container** task with `tests/test.sh` → `reward.txt`, `solution/solve.sh` oracle, no
-  `networks:` block (or a documented isolation exception).
-Building the agent per-task or baking task data into an image is the canonical anti-pattern (gh-clone's
-gap) — it fails R2.d/b. Don't start there.
+### Decision 4 — The build shape: **agent + gateway** (R1, R2) — follow the canon, don't improvise
+Everything centers on **two runtime containers**:
+- **agent** (`main`) — Harbor **always builds** it from `environment/Dockerfile`; **neutral base**
+  (`python:slim`), carries the per-task codebase + CLI/MCP tools, **no service data**. Reaches the
+  gateway only over HTTP by name.
+- **gateway** — the service sidecar (your HTTP API + CLI/MCP thin clients + seeder). Harbor does
+  **not** build it; it's a **pulled image** (or `build:`+`image:` so it builds locally and tags the
+  pullable GHCR name — needs no registry creds, R1.5).
+
+The gateway ships as the **image trio**: `<svc>-service` (base, no data) → `:prod-v1` (corpus **DB
+baked in**) + `:empty` (mount target). Two seeding paths, **both required**:
+- **GHCR image DB seeding (R2.j)** — `:prod-v1` bakes the corpus into the image
+  (`COPY <corpus>.db → $…_DB`) and serves it **mount-free**; published to GHCR, pulled as-is. This is
+  the path the standard makes you prove: boot `:prod-v1` with no mount → seeded reads work.
+- **Empty + mount** — `:empty` + a per-task fixture mounted **into the gateway** (or control-plane
+  seed). Bulk = native format; mutations = shared op-list. Switching paths = the **image tag alone**.
+
+Also fixed up front:
+- **Agent/operator boundary**: import/seed/hydrate is a **gateway-only** entrypoint the agent can never
+  call — asserted in a smoke test.
+- **Harbor two-container** task: `tests/test.sh` → `reward.txt`, `solution/solve.sh` oracle, **no
+  `networks:` block** (or a documented isolation exception).
+- **GHCR publish contract (CI):** build the gateway on push-to-main with the built-in `GITHUB_TOKEN`
+  (`permissions: packages: write`), tag `:latest`/`:<sha>`/`:prod-v1`/`:empty`, **multi-arch**
+  (`linux/amd64,linux/arm64`). Make the package public or rely on `build:`+`image:`.
+- **Leak rule (R2.k):** the agent ships the gateway's source/baked corpus (`FROM <svc>-service`), so a
+  task answer must **not** be greppable from it — pick task data disjoint from the clone's seed/source.
+
+Baking task data into a per-task gateway image, building the agent per-task, or shipping an amd64-only
+gateway are the canonical anti-patterns (gh-clone's gap; the figma multi-arch bug) — they fail R2.d/b/j/k.
 
 ### Decision 5 — CLI **and** MCP, in parity (R3) — the part people skip
 Both surfaces ship, both are **thin clients of one HTTP API**, both expose every covered capability
@@ -94,7 +112,7 @@ Follow `service-clone-builder`'s phases 0–7, but gated by the standard:
 | 2 | canonical seed model + control-plane seeding (operator-only) | R2.e/g |
 | 3 | the HTTP API — real envelopes, real errors, query grammar where assessment needs it | R4.3, R5 |
 | 4 | CLI **and** MCP over the shared client, in parity (Decision 5) | R3 |
-| 5 | three images + thin agent + Harbor task (Decision 4) | R1, R2.a–d/f |
+| 5 | gateway image trio (`:prod-v1` bakes the DB) + thin agent + Harbor task + multi-arch GHCR publish (Decision 4) | R1, R2.a–d/f/j/k |
 | 6 | unit tests: every endpoint/CLI/MCP + parity + isolation (mirror `clone-audit/assets/test_clone_template.py`) | R6 |
 | 7 | write the **clone spec** manifest + `docs/PROD-OVERLAY.md` + catalog | R7 input, R2.i |
 | 8 | self-run `clone-audit` locally; fix P0s before handing off | converged |

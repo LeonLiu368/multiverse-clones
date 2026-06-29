@@ -31,8 +31,10 @@ clone-creation  ──emits──►  clone + clone-spec.yaml
                                   yes ──► eval-ready (loop converged)
 ```
 
-- **Contract:** `_shared/clone-standard.md` (R1 setup/run · R2 canon · R3 CLI+MCP parity · R4 coverage
-  · R5 assessment-grade endpoints · R6 unit tests · R7 report). Gating reqs must all pass to "meet" it.
+- **Contract:** `_shared/clone-standard.md` (R1 setup/run · R2 **agent+gateway** canon + **GHCR image
+  DB seeding** · R3 CLI+MCP parity · R4 coverage · R5 assessment-grade endpoints · R6 unit tests · R7
+  report). Every clone runs as two containers — a built **agent** + a pulled/seeded **gateway** whose
+  `:prod-v1` image bakes the corpus DB. Gating reqs must all pass to "meet" it.
 - **Builder:** `clone-creation` builds *to* the standard and emits a `clone-spec.yaml`.
 - **Auditor:** `clone-audit` boots the clone, audits CLI+MCP coverage, unit-tests every surface, and
   emits a report + verdict whose `action_items` feed the next build.
