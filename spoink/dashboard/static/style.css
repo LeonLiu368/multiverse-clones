@@ -166,7 +166,7 @@ code {
 .key.ok .tick { color: var(--ok); }
 .key.no { color: var(--err); }
 .key.no .tick { color: var(--err); }
-.src-icon { display: inline-flex; color: var(--muted); opacity: .75; }
+.src-icon { display: inline-flex; color: var(--fg); opacity: .82; }
 .src.open .src-icon, .src-head:hover .src-icon { opacity: 1; }
 
 .src-body { display: none; padding: 6px 18px 20px; border-top: 1px solid var(--line); }
@@ -226,7 +226,20 @@ button.sm { padding: 5px 11px; font-size: 12px; }
   cursor: pointer; transition: background .12s ease;
 }
 .ms-item:hover { background: var(--panel3); }
-.ms-item input { width: auto; accent-color: var(--accent); }
+/* custom square checkbox (the global input width:100% otherwise stretches the native box) */
+.ms-item input[type="checkbox"], .picklist input[type="checkbox"] {
+  appearance: none; -webkit-appearance: none; flex-shrink: 0; margin: 0;
+  width: 15px; height: 15px; min-width: 15px; border: 1px solid var(--line2);
+  border-radius: 4px; background: var(--panel2); cursor: pointer; position: relative;
+  transition: background .12s ease, border-color .12s ease;
+}
+.ms-item input[type="checkbox"]:checked, .picklist input[type="checkbox"]:checked {
+  background: var(--accent); border-color: var(--accent);
+}
+.ms-item input[type="checkbox"]:checked::after, .picklist input[type="checkbox"]:checked::after {
+  content: ""; position: absolute; left: 4.5px; top: 1.5px; width: 3.5px; height: 7px;
+  border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg);
+}
 .ms-item .nm { font-size: 13px; color: var(--fg); }
 .ms-item .meta { margin-left: auto; display: flex; gap: 7px; align-items: center; }
 .ms-item .mb {
