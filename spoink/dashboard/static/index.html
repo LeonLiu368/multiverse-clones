@@ -33,8 +33,9 @@
         <label for="globalT">incident T</label>
         <div class="side-t-in">
           <input id="globalT" type="datetime-local" step="60" />
-          <span class="utc">UTC</span>
+          <select id="tzSelect" class="tzsel" aria-label="time zone"></select>
         </div>
+        <div id="tzEcho" class="tz-echo"></div>
       </div>
 
       <div class="side-foot">capture · slice · build</div>

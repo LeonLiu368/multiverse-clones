@@ -22,9 +22,57 @@ const ago = (s) => {
   const d = Math.max(0, Date.now() / 1000 - s);
   return d < 60 ? `${d | 0}s` : d < 3600 ? `${(d / 60) | 0}m` : d < 86400 ? `${(d / 3600) | 0}h` : `${(d / 86400) | 0}d`;
 };
-// datetime-local <-> ISO-Z, treating the picker value as UTC wall-clock (no tz math, predictable).
-const isoToInput = (iso) => (iso || "").replace("Z", "").slice(0, 16);
-const inputToIso = (v) => (v ? v.slice(0, 16) + ":00Z" : "");
+// ---- timezone-aware incident T -------------------------------------------------
+// A datetime-local picker shows wall-clock in the selected zone; the canonical value
+// stored/sent to the backend is always UTC ISO (…Z). The dashboard picks the browser's
+// zone by default so entering an incident time is natural.
+const ZONES = [["UTC", "UTC"], ["America/Los_Angeles", "PT"], ["America/Denver", "MT"],
+  ["America/Chicago", "CT"], ["America/New_York", "ET"], ["Europe/London", "London"],
+  ["Europe/Berlin", "CET"], ["Asia/Kolkata", "IST"], ["Asia/Tokyo", "JST"]];
+const _localZone = (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone; } catch { return "UTC"; } })();
+if (_localZone && !ZONES.some((z) => z[0] === _localZone)) ZONES.unshift([_localZone, _localZone.split("/").pop().replace(/_/g, " ")]);
+let TZ = ZONES.some((z) => z[0] === _localZone) ? _localZone : "UTC";
+const ZONED = [];   // datetime inputs to re-display when the zone changes
+
+const _parts = (inst, zone) => {
+  const f = new Intl.DateTimeFormat("en-CA", { timeZone: zone, hour12: false,
+    year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" });
+  const p = {}; for (const x of f.formatToParts(inst)) p[x.type] = x.value;
+  if (p.hour === "24") p.hour = "00";
+  return p;
+};
+const _offset = (inst, zone) => {
+  const p = _parts(inst, zone);
+  return Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute, +p.second) - inst.getTime();
+};
+const isoToWall = (iso, zone) => {            // UTC ISO -> "YYYY-MM-DDTHH:MM" in zone
+  if (!iso) return "";
+  if (zone === "UTC") return iso.replace("Z", "").slice(0, 16);
+  const p = _parts(new Date(iso), zone);
+  return `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}`;
+};
+const wallToIso = (wall, zone) => {           // wall-clock in zone -> UTC ISO Z
+  if (!wall) return "";
+  if (zone === "UTC") return wall.slice(0, 16) + ":00Z";
+  const naive = new Date(wall.slice(0, 16) + ":00Z");
+  let inst = new Date(naive - _offset(naive, zone));
+  inst = new Date(naive - _offset(inst, zone));   // refine once for DST edges
+  return inst.toISOString().slice(0, 19) + "Z";
+};
+// bind a datetime-local input to a canonical UTC ISO, displayed in TZ; returns a getter
+function zonedInput(input, iso) {
+  input._iso = iso || "";
+  input.value = isoToWall(input._iso, TZ);
+  const sync = () => { input._iso = wallToIso(input.value, TZ); updateEcho(); };
+  input.addEventListener("input", sync); input.addEventListener("change", sync);
+  ZONED.push(input);
+  return () => input._iso;
+}
+function updateEcho() {
+  const e = $("#tzEcho"), g = $("#globalT");
+  if (e && g) e.textContent = g._iso ? "= " + g._iso.replace("T", " ").replace("Z", "") + " UTC" : "";
+}
+function setZone(z) { TZ = z; for (const i of ZONED) i.value = isoToWall(i._iso, TZ); updateEcho(); }
 
 // small monochrome line icons per source (match the sidebar nav style)
 const _svg = (p) => `<svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
@@ -37,7 +85,7 @@ const SRC_ICON = {
 };
 
 let SOURCES = [], DEFAULT_T = "", OPTCACHE = {};
-const globalIso = () => inputToIso($("#globalT").value);
+const globalIso = () => $("#globalT")._iso || wallToIso($("#globalT").value, TZ);
 
 // ---------------------------------------------------------------- tabs
 $$(".tabs button").forEach((b) => (b.onclick = () => {
@@ -51,9 +99,20 @@ $$(".tabs button").forEach((b) => (b.onclick = () => {
 async function loadSources() {
   const { sources, default_t } = await api("/api/sources");
   SOURCES = sources; DEFAULT_T = default_t;
-  $("#globalT").value = isoToInput(default_t);
+  setupTz(default_t);
   const wrap = $("#sourceList"); wrap.innerHTML = "";
   for (const s of sources) wrap.append(sourceCard(s));
+}
+
+function setupTz(defaultIso) {
+  const sel = $("#tzSelect");
+  if (sel && !sel.options.length) {
+    for (const [id, label] of ZONES) sel.append(el("option", { value: id, textContent: label }));
+    sel.value = TZ;
+    sel.onchange = () => setZone(sel.value);
+  }
+  if (!$("#globalT")._iso) zonedInput($("#globalT"), defaultIso);
+  updateEcho();
 }
 
 function sourceCard(s) {
@@ -67,8 +126,8 @@ function sourceCard(s) {
     if (p.discover && p.kind === "multiselect") inputs[p.name] = multiselect(f, s, p, loaders, deps);
     else if (p.discover && p.kind === "select") inputs[p.name] = discoverSelect(f, s, p, loaders);
     else if (p.kind === "datetime") {
-      const i = el("input", { type: "datetime-local", step: "60", value: isoToInput(p.default || DEFAULT_T) });
-      f.append(i); inputs[p.name] = () => inputToIso(i.value);
+      const i = el("input", { type: "datetime-local", step: "60" });
+      f.append(i); inputs[p.name] = zonedInput(i, p.default || DEFAULT_T);
     } else {
       const i = el("input", { type: p.kind === "number" ? "number" : "text", value: p.default || "", placeholder: p.help || "" });
       f.append(i); inputs[p.name] = () => i.value;
@@ -253,7 +312,7 @@ $("#genPlan").onclick = async () => {
         run_ids: ids,
         name: ($("#anchorRepo").value.split("/").pop() || "incident") + "/new-task",
         kind: "observability",
-        incident_t: inputToIso($("#globalT").value),
+        incident_t: globalIso(),
         anchor_repo: $("#anchorRepo").value,
         anchor_commit: $("#anchorSha").value,
         resolution_pr: $("#anchorPr").value,

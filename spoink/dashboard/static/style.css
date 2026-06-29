@@ -89,9 +89,13 @@ body {
 
 .side-t { margin-top: auto; padding: 14px 11px 6px; }
 .side-t label { display: block; color: var(--faint); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .7px; margin-bottom: 6px; }
-.side-t-in { display: flex; align-items: center; gap: 6px; }
+.side-t-in { display: flex; flex-direction: column; align-items: stretch; gap: 6px; }
 .side-t-in input { width: 100%; padding: 6px 8px; font-size: 12px; background: var(--panel2); border-color: var(--line2); }
-.side-t-in .utc { color: var(--faint); font: 600 9px var(--mono); border: 1px solid var(--line2); padding: 3px 5px; border-radius: 4px; }
+.tzsel {
+  align-self: flex-start; width: auto; padding: 5px 7px; font: 600 10px var(--mono); color: var(--muted);
+  background: var(--panel2); border: 1px solid var(--line2); border-radius: 5px; cursor: pointer;
+}
+.tz-echo { margin-top: 6px; color: var(--faint); font: 10px var(--mono); letter-spacing: .2px; }
 .side-foot { margin-top: 12px; padding: 12px 11px 2px; border-top: 1px solid var(--line); color: var(--faint); font: 10px var(--mono); letter-spacing: .4px; }
 
 /* ------------------------------------------------------------ layout */
@@ -113,7 +117,9 @@ main { flex: 1; min-width: 0; max-width: 940px; padding: 36px 44px 72px; }
   .tabs button { width: auto; }
   .side-t { margin: 0 0 0 auto; padding: 0; display: flex; align-items: center; gap: 8px; }
   .side-t label { margin: 0; }
+  .side-t-in { flex-direction: row; align-items: center; }
   .side-t-in input { width: auto; }
+  .tz-echo { display: none; }
   .side-foot { display: none; }
   main { padding: 24px 16px 60px; max-width: none; }
 }
