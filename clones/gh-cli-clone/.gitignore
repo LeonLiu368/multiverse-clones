@@ -1,0 +1,23 @@
+__pycache__/
+*.pyc
+.venv/
+dist/
+build/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# local forge state (Forgejo data volume, generated tokens)
+docker/forgejo/data/
+docker/forgejo/.runner
+.ghc/
+ghc-token.txt
+*.local.env
+harbor-task/
+jobs/
+logs/
+selfcontained/ghclone/
+examples/oddish-tasks/*/environment/ghclone/
+examples/tasks/*/environment/ghclone/
+.secrets.local
+selfcontained/isolated/ghclone/

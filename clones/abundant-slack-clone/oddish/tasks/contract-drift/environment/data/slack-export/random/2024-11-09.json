@@ -1,0 +1,98 @@
+[
+  {
+    "user": "U88FA846E5F",
+    "type": "message",
+    "ts": "1731154260.000000",
+    "client_msg_id": "a899827990ad95888e",
+    "text": "Thunderstorm outside, cozy day \u26c8\ufe0f",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "victor",
+      "real_name": "Victor",
+      "display_name": "victor",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1731159180.000000",
+    "client_msg_id": "345a17e4ee7a8a0454",
+    "text": "Highly recommend the lunch special today",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U0AA1C221CA",
+    "type": "message",
+    "ts": "1731163140.000000",
+    "client_msg_id": "971ae7d2033a47925a",
+    "text": "Free snacks in the kitchen (thanks carol!)",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "trent",
+      "real_name": "Trent",
+      "display_name": "trent",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U1BEEF78000",
+    "type": "message",
+    "ts": "1731166500.000000",
+    "client_msg_id": "d005ecda62fc570bca",
+    "text": "Thunderstorm outside, cozy day \u26c8\ufe0f",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "mallory",
+      "real_name": "Mallory",
+      "display_name": "mallory",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UB5382301BB",
+    "type": "message",
+    "ts": "1731170460.000000",
+    "client_msg_id": "98fe8b41d15acb6897",
+    "text": "Coffee machine broken AGAIN",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "peggy",
+      "real_name": "Peggy",
+      "display_name": "peggy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1731171120.000000",
+    "client_msg_id": "e7bdc5e7be84c1adcc",
+    "text": "\ud83c\udf89 Work anniversary for frank today!",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

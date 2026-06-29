@@ -1,0 +1,16 @@
+FROM python:3.11-slim
+LABEL org.opencontainers.image.source=https://github.com/abundant-ai/gh-cli-clone
+RUN apt-get update && apt-get install -y --no-install-recommends git curl ca-certificates libcap2-bin && rm -rf /var/lib/apt/lists/*
+RUN useradd -m -u 1000 git
+RUN pip install --no-cache-dir httpx typer rich pydantic platformdirs jq
+COPY --from=codeberg.org/forgejo/forgejo:11 /app/gitea/gitea /usr/local/bin/forgejo
+# Bind port 80 as the non-root git user, so the backend has NO :3000 (Gitea's
+# default) tell — the agent only ever sees http://10.88.0.2/... like any host.
+RUN setcap 'cap_net_bind_service=+ep' /usr/local/bin/forgejo
+COPY ghclone /opt/ghclone
+ENV PYTHONPATH=/opt
+RUN printf '#!/bin/sh\nexec python -m ghclone.cli.main "$@"\n' >/usr/local/bin/gh && chmod +x /usr/local/bin/gh
+COPY forge-entrypoint.sh /usr/local/bin/forge-entrypoint.sh
+COPY seed.sh /usr/local/bin/task-seed.sh
+RUN chmod +x /usr/local/bin/forge-entrypoint.sh /usr/local/bin/task-seed.sh
+CMD ["/usr/local/bin/forge-entrypoint.sh"]

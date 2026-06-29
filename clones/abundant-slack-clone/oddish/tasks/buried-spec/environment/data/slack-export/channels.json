@@ -1,0 +1,254 @@
+[
+  {
+    "id": "C754A08DDF8",
+    "name": "backend",
+    "created": 1747647060,
+    "creator": "U522B276A35",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "U522B276A35",
+      "U48181ACD22",
+      "U28B92B56EE",
+      "UBFCDF3E6CA",
+      "U86A8C2DA85",
+      "UFD1CF5E271",
+      "U3ECA10F300",
+      "U3E9AFE235A",
+      "U596727C8A0",
+      "U44844B8AA9",
+      "U3C5E7EAB99",
+      "U21AAB516D6",
+      "U1DB01D43E0",
+      "U5CC9DC7FA7",
+      "U4B8373D016",
+      "UDCA6211FB8"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "#backend",
+      "creator": "U522B276A35",
+      "last_set": 1747647060
+    }
+  },
+  {
+    "id": "C72917EF6C1",
+    "name": "engineering",
+    "created": 1747652520,
+    "creator": "U522B276A35",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "U522B276A35",
+      "U48181ACD22",
+      "U28B92B56EE",
+      "UBFCDF3E6CA",
+      "U86A8C2DA85",
+      "UFD1CF5E271",
+      "U3ECA10F300",
+      "U3E9AFE235A",
+      "U596727C8A0",
+      "U44844B8AA9",
+      "U3C5E7EAB99",
+      "U21AAB516D6",
+      "U1DB01D43E0",
+      "U5CC9DC7FA7",
+      "U4B8373D016",
+      "UDCA6211FB8"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "#engineering",
+      "creator": "U522B276A35",
+      "last_set": 1747652520
+    }
+  },
+  {
+    "id": "CDFE2DB7497",
+    "name": "general",
+    "created": 1747646280,
+    "creator": "U522B276A35",
+    "is_archived": false,
+    "is_general": true,
+    "members": [
+      "U522B276A35",
+      "U48181ACD22",
+      "U28B92B56EE",
+      "UBFCDF3E6CA",
+      "U86A8C2DA85",
+      "UFD1CF5E271",
+      "U3ECA10F300",
+      "U3E9AFE235A",
+      "U596727C8A0",
+      "U44844B8AA9",
+      "U3C5E7EAB99",
+      "U21AAB516D6",
+      "U1DB01D43E0",
+      "U5CC9DC7FA7",
+      "U4B8373D016",
+      "UDCA6211FB8"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "#general",
+      "creator": "U522B276A35",
+      "last_set": 1747646280
+    }
+  },
+  {
+    "id": "CFE281BA3BC",
+    "name": "incidents",
+    "created": 1747827840,
+    "creator": "U522B276A35",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "U522B276A35",
+      "U48181ACD22",
+      "U28B92B56EE",
+      "UBFCDF3E6CA",
+      "U86A8C2DA85",
+      "UFD1CF5E271",
+      "U3ECA10F300",
+      "U3E9AFE235A",
+      "U596727C8A0",
+      "U44844B8AA9",
+      "U3C5E7EAB99",
+      "U21AAB516D6",
+      "U1DB01D43E0",
+      "U5CC9DC7FA7",
+      "U4B8373D016",
+      "UDCA6211FB8"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "#incidents",
+      "creator": "U522B276A35",
+      "last_set": 1747827840
+    }
+  },
+  {
+    "id": "C5F1A2F54F9",
+    "name": "platform-infra",
+    "created": 1747825800,
+    "creator": "U522B276A35",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "U522B276A35",
+      "U48181ACD22",
+      "U28B92B56EE",
+      "UBFCDF3E6CA",
+      "U86A8C2DA85",
+      "UFD1CF5E271",
+      "U3ECA10F300",
+      "U3E9AFE235A",
+      "U596727C8A0",
+      "U44844B8AA9",
+      "U3C5E7EAB99",
+      "U21AAB516D6",
+      "U1DB01D43E0",
+      "U5CC9DC7FA7",
+      "U4B8373D016",
+      "UDCA6211FB8"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "Rate limiter + platform infra decisions",
+      "creator": "U522B276A35",
+      "last_set": 1747825800
+    }
+  },
+  {
+    "id": "C38A007151A",
+    "name": "product",
+    "created": 1747645260,
+    "creator": "U522B276A35",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "U522B276A35",
+      "U48181ACD22",
+      "U28B92B56EE",
+      "UBFCDF3E6CA",
+      "U86A8C2DA85",
+      "UFD1CF5E271",
+      "U3ECA10F300",
+      "U3E9AFE235A",
+      "U596727C8A0",
+      "U44844B8AA9",
+      "U3C5E7EAB99",
+      "U21AAB516D6",
+      "U1DB01D43E0",
+      "U5CC9DC7FA7",
+      "U4B8373D016",
+      "UDCA6211FB8"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "#product",
+      "creator": "U522B276A35",
+      "last_set": 1747645260
+    }
+  },
+  {
+    "id": "CA415AB5CC1",
+    "name": "random",
+    "created": 1747656960,
+    "creator": "U522B276A35",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "U522B276A35",
+      "U48181ACD22",
+      "U28B92B56EE",
+      "UBFCDF3E6CA",
+      "U86A8C2DA85",
+      "UFD1CF5E271",
+      "U3ECA10F300",
+      "U3E9AFE235A",
+      "U596727C8A0",
+      "U44844B8AA9",
+      "U3C5E7EAB99",
+      "U21AAB516D6",
+      "U1DB01D43E0",
+      "U5CC9DC7FA7",
+      "U4B8373D016",
+      "UDCA6211FB8"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "#random",
+      "creator": "U522B276A35",
+      "last_set": 1747656960
+    }
+  }
+]

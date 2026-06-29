@@ -1,0 +1,268 @@
+{
+  "meta": {
+    "organization": "acme",
+    "now": "2026-06-07T12:00:00Z"
+  },
+  "users": [
+    {
+      "id": "u-agent",
+      "email": "agent@example.local",
+      "name": "Agent User"
+    }
+  ],
+  "teams": [
+    {
+      "id": "team-payments",
+      "slug": "payments",
+      "name": "Payments"
+    }
+  ],
+  "projects": [
+    {
+      "id": "proj-payments",
+      "slug": "payments-api",
+      "name": "Payments API",
+      "platform": "python",
+      "team_slug": "payments"
+    }
+  ],
+  "releases": [
+    {
+      "version": "payments-api@2026.06.07.1",
+      "project_slug": "payments-api",
+      "dateCreated": "2026-06-07T11:43:00Z",
+      "lastDeploy": {
+        "environment": "production",
+        "dateFinished": "2026-06-07T11:45:00Z",
+        "commit": "abc1234"
+      },
+      "commits": [
+        {
+          "id": "abc1234",
+          "repository": "acme/payments-api",
+          "message": "Tighten webhook retry handling",
+          "author": "dev@example.local",
+          "files": ["payments/retry_policy.py"]
+        }
+      ]
+    },
+    {
+      "version": "payments-api@2026.06.06.3",
+      "project_slug": "payments-api",
+      "dateCreated": "2026-06-06T22:10:00Z",
+      "lastDeploy": {
+        "environment": "production",
+        "dateFinished": "2026-06-06T22:14:00Z",
+        "commit": "old4321"
+      },
+      "commits": [
+        {
+          "id": "old4321",
+          "repository": "acme/payments-api",
+          "message": "Previous stable deploy",
+          "author": "dev@example.local",
+          "files": ["payments/worker.py"]
+        }
+      ]
+    }
+  ],
+  "issues": [
+    {
+      "id": "1001",
+      "shortId": "PAYMENTS-501",
+      "project_slug": "payments-api",
+      "title": "RuntimeError: unsafe retry for validation conflict",
+      "culprit": "payments.retry_policy in should_retry_event",
+      "level": "error",
+      "status": "unresolved",
+      "substatus": "new",
+      "priority": "high",
+      "type": "error",
+      "firstSeen": "2026-06-07T11:54:00Z",
+      "lastSeen": "2026-06-07T11:59:00Z",
+      "count": 37,
+      "userCount": 12,
+      "environment": "production",
+      "tags": {
+        "service": "payments",
+        "route": "/webhooks",
+        "status_code": "409",
+        "error_type": "validation_conflict",
+        "release": "payments-api@2026.06.07.1",
+        "environment": "production"
+      },
+      "assignedTo": null,
+      "owner": {
+        "type": "team",
+        "slug": "payments"
+      },
+      "suspectCommits": [
+        {
+          "id": "abc1234",
+          "repository": "acme/payments-api",
+          "message": "Tighten webhook retry handling",
+          "author": "dev@example.local",
+          "files": ["payments/retry_policy.py"]
+        }
+      ],
+      "latestEventId": "evt-1001-latest"
+    },
+    {
+      "id": "1000",
+      "shortId": "PAYMENTS-487",
+      "project_slug": "payments-api",
+      "title": "ValueError: expired replay token",
+      "culprit": "payments.replay in parse_token",
+      "level": "error",
+      "status": "resolved",
+      "substatus": "resolved",
+      "priority": "low",
+      "type": "error",
+      "firstSeen": "2026-06-05T09:00:00Z",
+      "lastSeen": "2026-06-05T10:00:00Z",
+      "count": 4,
+      "userCount": 1,
+      "environment": "production",
+      "tags": {
+        "service": "payments",
+        "error_type": "expired_token",
+        "release": "payments-api@2026.06.06.3",
+        "environment": "production"
+      },
+      "assignedTo": {
+        "type": "team",
+        "slug": "payments"
+      },
+      "owner": {
+        "type": "team",
+        "slug": "payments"
+      },
+      "suspectCommits": [],
+      "latestEventId": "evt-1000-latest",
+      "resolvedInRelease": "payments-api@2026.06.06.3"
+    }
+  ],
+  "events": [
+    {
+      "id": "evt-1001-latest",
+      "issue_id": "1001",
+      "project_slug": "payments-api",
+      "timestamp": "2026-06-07T11:59:15Z",
+      "message": "RuntimeError: unsafe retry for validation conflict",
+      "exception": {
+        "type": "RuntimeError",
+        "value": "unsafe retry for validation conflict",
+        "mechanism": {
+          "handled": false
+        }
+      },
+      "stacktrace": {
+        "frames": [
+          {
+            "filename": "payments/retry_policy.py",
+            "function": "should_retry_event",
+            "lineno": 42,
+            "context_line": "return status in RETRYABLE_STATUSES",
+            "in_app": true
+          },
+          {
+            "filename": "payments/worker.py",
+            "function": "schedule_retry",
+            "lineno": 88,
+            "context_line": "policy = retry_plan(event)",
+            "in_app": true
+          }
+        ]
+      },
+      "breadcrumbs": [
+        {
+          "timestamp": "2026-06-07T11:59:10Z",
+          "category": "gateway.response",
+          "level": "info",
+          "message": "provider returned 409 validation_conflict"
+        },
+        {
+          "timestamp": "2026-06-07T11:59:12Z",
+          "category": "retry.scheduler",
+          "level": "warning",
+          "message": "retry scheduled for non-lock conflict"
+        }
+      ],
+      "contexts": {
+        "runtime": {
+          "name": "CPython",
+          "version": "3.11"
+        },
+        "trace": {
+          "trace_id": "tr-501",
+          "span_id": "sp-1"
+        }
+      },
+      "user": {
+        "id": "cust-123",
+        "email": "redacted@example.local"
+      },
+      "tags": {
+        "release": "payments-api@2026.06.07.1",
+        "environment": "production",
+        "error_type": "validation_conflict",
+        "status_code": "409"
+      }
+    },
+    {
+      "id": "evt-1000-latest",
+      "issue_id": "1000",
+      "project_slug": "payments-api",
+      "timestamp": "2026-06-05T10:00:15Z",
+      "message": "ValueError: expired replay token",
+      "exception": {
+        "type": "ValueError",
+        "value": "expired replay token",
+        "mechanism": {
+          "handled": false
+        }
+      },
+      "stacktrace": {
+        "frames": [
+          {
+            "filename": "payments/replay.py",
+            "function": "parse_token",
+            "lineno": 25,
+            "context_line": "raise ValueError(\"expired replay token\")",
+            "in_app": true
+          }
+        ]
+      },
+      "breadcrumbs": [
+        {
+          "timestamp": "2026-06-05T10:00:10Z",
+          "category": "replay",
+          "level": "info",
+          "message": "token age exceeded replay ttl"
+        }
+      ],
+      "contexts": {},
+      "user": {
+        "id": "cust-456",
+        "email": "redacted@example.local"
+      },
+      "tags": {
+        "release": "payments-api@2026.06.06.3",
+        "environment": "production",
+        "error_type": "expired_token"
+      }
+    }
+  ],
+  "ownership_rules": [
+    {
+      "project_slug": "payments-api",
+      "match": "payments/**",
+      "owner": "team:payments"
+    }
+  ],
+  "comments": [],
+  "activity": [],
+  "mutation_log": [],
+  "deploys": [],
+  "commits": []
+}

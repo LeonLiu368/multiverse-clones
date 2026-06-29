@@ -1,0 +1,36 @@
+[project]
+name = "gh-cli-clone"
+version = "0.0.1"
+description = "A gh-compatible CLI + MCP server backed by a self-hosted Forgejo forge. Runs offline."
+requires-python = ">=3.11"
+dependencies = [
+    "httpx>=0.27",
+    "typer>=0.12",
+    "rich>=13.7",
+    "pydantic>=2.7",
+    "platformdirs>=4.2",
+    "jq>=1.6",
+    "mcp>=1.2",
+]
+
+[project.scripts]
+# Installs as `ghc` so it never shadows a real `gh` on PATH during dev.
+# (Set up an alias `gh=ghc` once you trust it.)
+ghc = "ghclone.cli.main:_main"
+ghc-mcp = "ghclone.mcp.server:main"
+# Operator-only world-building (hydrate/migrate). Kept out of `ghc` so the agent
+# under test can't reach it through the gh surface.
+ghc-hydrate = "ghclone.cli.admin:_main"
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pytest-asyncio>=0.23", "ruff>=0.5"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["ghclone"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"

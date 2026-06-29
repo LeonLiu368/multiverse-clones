@@ -1,0 +1,52 @@
+{
+  "vendored_at": "2026-06-29",
+  "org": "abundant-ai",
+  "strategy": "vendored-full-source",
+  "clones": {
+    "abundant-jira-clone": {
+      "repo": "https://github.com/abundant-ai/abundant-jira-clone",
+      "branch": "main",
+      "commit": "af6e2e306361b0012eb771e60dafee8036a75c4b"
+    },
+    "abundant-logfire-clone": {
+      "repo": "https://github.com/abundant-ai/abundant-logfire-clone",
+      "branch": "main",
+      "commit": "043b980f887033a58d3093a2a8a730196b3c7a6a"
+    },
+    "abundant-slack-clone": {
+      "repo": "https://github.com/abundant-ai/abundant-slack-clone",
+      "branch": "main",
+      "commit": "9216e3287544d41690f8869b9422e3d70b32d510"
+    },
+    "aws-clone": {
+      "repo": "https://github.com/abundant-ai/aws-clone",
+      "branch": "main",
+      "commit": "28cd716097f48c0eea5917a3a9c448efc5dbe5ce"
+    },
+    "figma-clone": {
+      "repo": "https://github.com/abundant-ai/figma-clone",
+      "branch": "main",
+      "commit": "3f54f708ade43e6b2d71deb7cdd67d4b9503e6e0"
+    },
+    "gauge": {
+      "repo": "https://github.com/abundant-ai/gauge",
+      "branch": "main",
+      "commit": "4d6cefe1890b00f8614d8e6b19f56be4d14f3633"
+    },
+    "gh-cli-clone": {
+      "repo": "https://github.com/abundant-ai/gh-cli-clone",
+      "branch": "main",
+      "commit": "506dad198ec1461a87a3d6848d2bb432d30c706c"
+    },
+    "google-workspace-clone": {
+      "repo": "https://github.com/abundant-ai/google-workspace-clone",
+      "branch": "main",
+      "commit": "8b3d3427d13f07f5c1bed8810b8741de6afd843c"
+    },
+    "sentry-clone": {
+      "repo": "https://github.com/abundant-ai/sentry-clone",
+      "branch": "main",
+      "commit": "e31c0822d585175a3b59b4f72706943e3e327353"
+    }
+  }
+}

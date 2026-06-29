@@ -1,0 +1,66 @@
+[
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1731837840.000000",
+    "client_msg_id": "32c44ba41f92441a07",
+    "text": "Lunch order by noon please.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U0FEBC363B6",
+    "type": "message",
+    "ts": "1731838380.000000",
+    "client_msg_id": "5a92b177c814fe38ca",
+    "text": "Welcome to the new folks joining this week! \ud83d\udc4b",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "heidi",
+      "real_name": "Heidi",
+      "display_name": "heidi",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U38FC8CAEA6",
+    "type": "message",
+    "ts": "1731839940.000000",
+    "client_msg_id": "b4aecbb60676307825",
+    "text": "Reminder: Q4 planning docs due Friday.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "judy",
+      "real_name": "Judy",
+      "display_name": "judy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1731853560.000000",
+    "client_msg_id": "b596167de84a494505",
+    "text": "New hire onboarding doc is in Notion.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

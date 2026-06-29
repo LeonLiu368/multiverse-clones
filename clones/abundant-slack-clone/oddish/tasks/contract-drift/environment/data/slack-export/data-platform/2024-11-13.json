@@ -1,0 +1,18 @@
+[
+  {
+    "user": "U2A4B17B116",
+    "type": "message",
+    "ts": "1731504480.000000",
+    "client_msg_id": "9318dc06d660f7591a",
+    "text": "PSA: rotate your API tokens this sprint.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "erin",
+      "real_name": "Erin",
+      "display_name": "erin",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

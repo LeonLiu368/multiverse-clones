@@ -1,0 +1,20 @@
+FROM python:3.11-slim AS build
+RUN apt-get update && apt-get install -y --no-install-recommends binutils && rm -rf /var/lib/apt/lists/*
+RUN pip install --no-cache-dir pyinstaller httpx typer rich pydantic platformdirs jq
+COPY ghclone /src/ghclone
+RUN printf 'from ghclone.cli.main import _main\nif __name__=="__main__":\n    _main()\n' >/src/ghentry.py
+# --collect-all jq bundles the embedded jq engine into the binary (gh --jq works
+# with no external jq, like real gh's gojq).
+RUN cd /src && PYTHONPATH=/src pyinstaller --onefile -n gh --collect-submodules ghclone --collect-all jq ghentry.py >/tmp/pi.log 2>&1 || (tail -20 /tmp/pi.log; exit 1)
+
+FROM python:3.11-slim
+# jq binary is a fallback for --jq if the bundled engine ever fails to load.
+RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates jq && rm -rf /var/lib/apt/lists/*
+COPY --from=build /src/dist/gh /usr/local/bin/gh
+LABEL org.opencontainers.image.source=https://github.com/abundant-ai/gh-cli-clone
+ENV GH_HOST=http://10.88.0.2
+RUN git config --system user.email agent@local && git config --system user.name agent
+COPY main-entrypoint.sh /usr/local/bin/main-entrypoint.sh
+RUN chmod +x /usr/local/bin/main-entrypoint.sh
+WORKDIR /app
+CMD ["/usr/local/bin/main-entrypoint.sh"]

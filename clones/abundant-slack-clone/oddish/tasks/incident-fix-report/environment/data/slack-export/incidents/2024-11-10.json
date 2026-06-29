@@ -1,0 +1,114 @@
+[
+  {
+    "user": "UFD1CF5E271",
+    "type": "message",
+    "ts": "1731230760.000000",
+    "client_msg_id": "64447720993bcb34a1",
+    "text": "checkout latency back to normal",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "grace",
+      "real_name": "Grace",
+      "display_name": "grace",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1731234900.000000",
+    "client_msg_id": "8ee639e023fa8a0bae",
+    "text": "cdn cache purge completed",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UB5382301BB",
+    "type": "message",
+    "ts": "1731241560.000000",
+    "client_msg_id": "443ab882c6bea1aa08",
+    "text": "db failover completed successfully",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "peggy",
+      "real_name": "Peggy",
+      "display_name": "peggy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1731246720.000000",
+    "client_msg_id": "16dde1252f032419d9",
+    "text": "load balancer config rolled back",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U0AA1C221CA",
+    "type": "message",
+    "ts": "1731247980.000000",
+    "client_msg_id": "0d666d420c1a1d80ad",
+    "text": "memory leak patched and deployed",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "trent",
+      "real_name": "Trent",
+      "display_name": "trent",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U252C17A453",
+    "type": "message",
+    "ts": "1731254880.000000",
+    "client_msg_id": "53d3c2cde0aee8d46d",
+    "text": "[auto] heartbeat check passed",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "ci-bot",
+      "real_name": "Ci-bot",
+      "display_name": "ci-bot",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UB5382301BB",
+    "type": "message",
+    "ts": "1731260340.000000",
+    "client_msg_id": "60351cb3cd1ddaffff",
+    "text": "[resolved] elevated 5xx 14:02-14:18 UTC",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "peggy",
+      "real_name": "Peggy",
+      "display_name": "peggy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

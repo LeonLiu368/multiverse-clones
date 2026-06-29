@@ -1,0 +1,50 @@
+[
+  {
+    "user": "U44844B8AA9",
+    "type": "message",
+    "ts": "1747995360.000000",
+    "client_msg_id": "a681c7bac6096e51c4",
+    "text": "sure, will start after the config ships",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "kate",
+      "real_name": "Kate",
+      "display_name": "kate",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U44844B8AA9",
+    "type": "message",
+    "ts": "1747995600.000000",
+    "client_msg_id": "04d26b667398a970b3",
+    "text": "after the constants are settled, we should add proper integration tests",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "kate",
+      "real_name": "Kate",
+      "display_name": "kate",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1747995840.000000",
+    "client_msg_id": "58a11b0f9f4644df79",
+    "text": "agreed, want to take that on?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

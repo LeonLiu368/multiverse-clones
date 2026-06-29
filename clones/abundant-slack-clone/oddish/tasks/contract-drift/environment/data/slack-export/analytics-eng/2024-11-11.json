@@ -1,0 +1,130 @@
+[
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1731324300.000000",
+    "client_msg_id": "3f7ad2df41f9551ada",
+    "text": "pipeline keeps rejecting our events \u2014 probably still on v1 format",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UA15F8B81A1",
+    "type": "message",
+    "ts": "1731325200.000000",
+    "client_msg_id": "e496f6cf5872291348",
+    "text": "pipeline keeps rejecting our events \u2014 probably still on v1 format",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "ivan",
+      "real_name": "Ivan",
+      "display_name": "ivan",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1731328680.000000",
+    "client_msg_id": "e2529fcda6b0ee30b8",
+    "text": "we're emitting: {\"name\": \"checkout\", \"user_id\": \"u99\", \"data\": {}, \"timestamp\": 1700000000.0, \"schema_version\": \"1\"} \u2014 is that still ok?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U0FEBC363B6",
+    "type": "message",
+    "ts": "1731332280.000000",
+    "client_msg_id": "0a8130a9bf6bc07eab",
+    "text": "shipping page_view events with the old schema for now \u2014 will update when we have more info",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "heidi",
+      "real_name": "Heidi",
+      "display_name": "heidi",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U2A4B17B116",
+    "type": "message",
+    "ts": "1731333180.000000",
+    "client_msg_id": "dd9f0168374cce140d",
+    "text": "migrating the login event first since it's highest volume",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "erin",
+      "real_name": "Erin",
+      "display_name": "erin",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U2A4B17B116",
+    "type": "message",
+    "ts": "1731336900.000000",
+    "client_msg_id": "089caa5a738cb2582e",
+    "text": "our team has 3 publishers to migrate, ETA end of sprint",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "erin",
+      "real_name": "Erin",
+      "display_name": "erin",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UA15F8B81A1",
+    "type": "message",
+    "ts": "1731341280.000000",
+    "client_msg_id": "5d03234753bff3ce62",
+    "text": "our team has 3 publishers to migrate, ETA end of sprint",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "ivan",
+      "real_name": "Ivan",
+      "display_name": "ivan",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U1BEEF78000",
+    "type": "message",
+    "ts": "1731345480.000000",
+    "client_msg_id": "648544996a9b89c6d3",
+    "text": "the pipeline validator rejects string schema_version \u2014 must be integer",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "mallory",
+      "real_name": "Mallory",
+      "display_name": "mallory",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

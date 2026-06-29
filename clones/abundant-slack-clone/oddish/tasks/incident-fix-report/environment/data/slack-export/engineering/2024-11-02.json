@@ -1,0 +1,162 @@
+[
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1730538900.000000",
+    "client_msg_id": "78609f2d876dcd91e7",
+    "text": "rebased the auth PR, CI is green",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U0FEBC363B6",
+    "type": "message",
+    "ts": "1730540580.000000",
+    "client_msg_id": "e1f668832d04195557",
+    "text": "RFC: moving to gRPC for internal comms",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "heidi",
+      "real_name": "Heidi",
+      "display_name": "heidi",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U6525ABCCE7",
+    "type": "message",
+    "ts": "1730544240.000000",
+    "client_msg_id": "006c99dad601f40cf3",
+    "text": "updated the runbook for database failover",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "niaj",
+      "real_name": "Niaj",
+      "display_name": "niaj",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1730547780.000000",
+    "client_msg_id": "da215700bb801debd8",
+    "text": "rebased the auth PR, CI is green",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U38FC8CAEA6",
+    "type": "message",
+    "ts": "1730549880.000000",
+    "client_msg_id": "7ae8dc9db4f8043290",
+    "text": "RFC: moving to gRPC for internal comms",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "judy",
+      "real_name": "Judy",
+      "display_name": "judy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1730550060.000000",
+    "client_msg_id": "9628e3acfd23fea37d",
+    "text": "RFC: moving to gRPC for internal comms",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UFD1CF5E271",
+    "type": "message",
+    "ts": "1730552520.000000",
+    "client_msg_id": "e09693128b56e6cf95",
+    "text": "flaky test in the payment suite again",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "grace",
+      "real_name": "Grace",
+      "display_name": "grace",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U38FC8CAEA6",
+    "type": "message",
+    "ts": "1730557200.000000",
+    "client_msg_id": "655b7106b6f3a368e1",
+    "text": "updated the runbook for database failover",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "judy",
+      "real_name": "Judy",
+      "display_name": "judy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U0AA1C221CA",
+    "type": "message",
+    "ts": "1730562900.000000",
+    "client_msg_id": "9209ac6b7a980e7a05",
+    "text": "dependency audit done, 3 vulns patched",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "trent",
+      "real_name": "Trent",
+      "display_name": "trent",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1730564160.000000",
+    "client_msg_id": "75daddbb343ff619dd",
+    "text": "API deprecation schedule posted in wiki",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

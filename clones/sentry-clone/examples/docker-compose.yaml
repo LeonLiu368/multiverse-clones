@@ -1,0 +1,26 @@
+services:
+  sentry:
+    build:
+      context: ..
+      dockerfile: Dockerfile.service
+    image: sentry-clone-service:local
+    ports:
+      - "3000:80"
+    environment:
+      SENTRY_CLONE_STATE_FILE: /data/sentry-clone/state.json
+      SENTRY_CLONE_RUNTIME_STATE_FILE: /var/lib/sentry-clone/state.json
+      SENTRY_CLONE_ENABLE_ADMIN_API: "1"
+      SENTRY_CLONE_ADMIN_TOKEN: test-admin-token-acme-eval
+      SENTRY_AUTH_TOKEN: test-token-acme-eval
+      SENTRY_ORG: acme
+    volumes:
+      - ./data/sentry-clone/state.json:/data/sentry-clone/state.json:ro
+      - sentry-clone-runtime:/var/lib/sentry-clone
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost/api/healthz', timeout=1).read()\""]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+
+volumes:
+  sentry-clone-runtime:

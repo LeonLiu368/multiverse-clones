@@ -1,0 +1,82 @@
+[
+  {
+    "user": "UB5382301BB",
+    "type": "message",
+    "ts": "1731403380.000000",
+    "client_msg_id": "d70f133ad703acd756",
+    "text": "NPS survey going out this week.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "peggy",
+      "real_name": "Peggy",
+      "display_name": "peggy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U1BEEF78000",
+    "type": "message",
+    "ts": "1731406560.000000",
+    "client_msg_id": "93454c83a186a256fb",
+    "text": "Pricing page copy refresh \u2014 feedback welcome.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "mallory",
+      "real_name": "Mallory",
+      "display_name": "mallory",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U38FC8CAEA6",
+    "type": "message",
+    "ts": "1731407280.000001",
+    "client_msg_id": "78f4e4414303c2a07c",
+    "text": "Draft PRD for the analytics dashboard is in the Drive.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "judy",
+      "real_name": "Judy",
+      "display_name": "judy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UB5382301BB",
+    "type": "message",
+    "ts": "1731416280.000000",
+    "client_msg_id": "0d910fb7e4943d8732",
+    "text": "New feature flag for cohort analysis shipped to beta.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "peggy",
+      "real_name": "Peggy",
+      "display_name": "peggy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UFD1CF5E271",
+    "type": "message",
+    "ts": "1731426420.000000",
+    "client_msg_id": "b3d8d1788cfcf43d6e",
+    "text": "Competitive teardown doc updated.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "grace",
+      "real_name": "Grace",
+      "display_name": "grace",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

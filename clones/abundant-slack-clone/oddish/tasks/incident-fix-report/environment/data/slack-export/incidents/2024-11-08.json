@@ -1,0 +1,114 @@
+[
+  {
+    "user": "U5CC9DC7FA7",
+    "type": "message",
+    "ts": "1731063240.000000",
+    "client_msg_id": "6fd0792c7e1939434f",
+    "text": "[resolved] email provider degraded 2h window",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "olivia",
+      "real_name": "Olivia",
+      "display_name": "olivia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1731065640.000000",
+    "client_msg_id": "17c46e5df361dc72d6",
+    "text": "memory leak patched and deployed",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U1BEEF78000",
+    "type": "message",
+    "ts": "1731066540.000000",
+    "client_msg_id": "c7483b8eb7528f3204",
+    "text": "[auto] heartbeat check passed",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "mallory",
+      "real_name": "Mallory",
+      "display_name": "mallory",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U88FA846E5F",
+    "type": "message",
+    "ts": "1731077520.000000",
+    "client_msg_id": "e178903396e6d10a5b",
+    "text": "checkout latency back to normal",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "victor",
+      "real_name": "Victor",
+      "display_name": "victor",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1731079140.000000",
+    "client_msg_id": "807571b18a636939b9",
+    "text": "checkout latency back to normal",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U1BEEF78000",
+    "type": "message",
+    "ts": "1731082680.000000",
+    "client_msg_id": "9a34c36204f9b8b6e9",
+    "text": "upstream payment gateway timeout resolved",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "mallory",
+      "real_name": "Mallory",
+      "display_name": "mallory",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U1BEEF78000",
+    "type": "message",
+    "ts": "1731085980.000000",
+    "client_msg_id": "a26b62032027dc67e3",
+    "text": "[auto] heartbeat check passed",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "mallory",
+      "real_name": "Mallory",
+      "display_name": "mallory",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

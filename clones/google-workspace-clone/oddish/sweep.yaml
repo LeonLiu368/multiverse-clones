@@ -1,0 +1,12 @@
+# oddish run -c oddish/sweep.yaml   (controls + gemini x2)
+path: ./oddish/tasks/gws-launch-date
+agents:
+  - name: oracle
+    model_name: google/gemini-3.1-pro-preview
+    n_trials: 1
+  - name: nop
+    model_name: google/gemini-3.1-pro-preview
+    n_trials: 1
+  - name: gemini-cli
+    model_name: google/gemini-3.1-pro-preview
+    n_trials: 2

@@ -1,0 +1,66 @@
+[
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1747735920.000000",
+    "client_msg_id": "ebeca4f0d17fd12f2b",
+    "text": "ping me when the dashboard is prod-ready @grace",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UFD1CF5E271",
+    "type": "message",
+    "ts": "1747736700.000001",
+    "client_msg_id": "71fc980df4cdd40870",
+    "text": "should be ready by Thursday, finishing the chart drilldowns",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "grace",
+      "real_name": "Grace",
+      "display_name": "grace",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UDCA6211FB8",
+    "type": "message",
+    "ts": "1747750260.000000",
+    "client_msg_id": "1f37a44d7b5a959328",
+    "text": "reminder: sprint retro Friday 3pm",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "quinn",
+      "real_name": "Quinn",
+      "display_name": "quinn",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1747750260.000001",
+    "client_msg_id": "eb5fe9465cef0114a2",
+    "text": "thumbsup",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

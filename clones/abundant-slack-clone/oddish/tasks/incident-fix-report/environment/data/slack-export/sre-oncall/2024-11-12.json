@@ -1,0 +1,34 @@
+[
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1731434400.000000",
+    "client_msg_id": "92b26526d3d2edcbdd",
+    "text": "escalation policy updated in pagerduty",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1731445200.000000",
+    "client_msg_id": "12276b66ecda35aa64",
+    "text": "testing alert routing, ignore any test pages",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

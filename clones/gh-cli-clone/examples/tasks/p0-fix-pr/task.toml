@@ -1,0 +1,21 @@
+version = "1.0"
+[task]
+name = "ghc/p0-fix-pr"
+description = "Clone a repo, fix a bug, and open a pull request via gh (P0: repo clone + git + pr create)."
+[metadata]
+category = "tooling"
+difficulty = "medium"
+tags = ["gh","p0","pr","git"]
+build_strategy = "dockerfile_build"
+[verifier]
+timeout_sec = 300.0
+[agent]
+timeout_sec = 900.0
+[environment]
+build_timeout_sec = 1200.0
+cpus = 2
+memory_mb = 2048
+storage_mb = 10240
+gpus = 0
+allow_internet = true
+workdir = "/app"

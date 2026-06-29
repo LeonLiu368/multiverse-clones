@@ -1,0 +1,66 @@
+[
+  {
+    "user": "UB5382301BB",
+    "type": "message",
+    "ts": "1731493260.000000",
+    "client_msg_id": "62653edbbca6f879d0",
+    "text": "alert batching implementation in progress",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "peggy",
+      "real_name": "Peggy",
+      "display_name": "peggy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UFD1CF5E271",
+    "type": "message",
+    "ts": "1731496140.000000",
+    "client_msg_id": "3fd802226e3f509ed7",
+    "text": "alert batching implementation in progress",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "grace",
+      "real_name": "Grace",
+      "display_name": "grace",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U38FC8CAEA6",
+    "type": "message",
+    "ts": "1731513420.000000",
+    "client_msg_id": "a75b06da1fb52f69f5",
+    "text": "testing the error rate calculator",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "judy",
+      "real_name": "Judy",
+      "display_name": "judy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U88FA846E5F",
+    "type": "message",
+    "ts": "1731515520.000000",
+    "client_msg_id": "cc9d6182143955058a",
+    "text": "testing the error rate calculator",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "victor",
+      "real_name": "Victor",
+      "display_name": "victor",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

@@ -1,0 +1,85 @@
+[
+    {
+        "subtype": "channel_join",
+        "user": "U0BA42YAAGL",
+        "text": "<@U0BA42YAAGL> has joined the channel",
+        "type": "message",
+        "ts": "1781209352.618909"
+    },
+    {
+        "user": "U0BA42YAAGL",
+        "type": "message",
+        "ts": "1781209567.803229",
+        "client_msg_id": "2d02bff6-40c2-45ac-82b1-2195e1d6d16a",
+        "text": "testing",
+        "team": "T0B9U3B96DR",
+        "user_team": "T0B9U3B96DR",
+        "source_team": "T0B9U3B96DR",
+        "user_profile": {
+            "avatar_hash": "gfd378540443",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/fd378540443b73703bc45067760ddd51.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "leon",
+            "real_name": "leon",
+            "display_name": "",
+            "team": "T0B9U3B96DR",
+            "name": "leon",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Ia7mH",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "testing"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0BA42YAAGL",
+        "type": "message",
+        "ts": "1781209569.708459",
+        "client_msg_id": "6ccbd5d4-3e86-4640-9c95-ccc0bb64e690",
+        "text": "testing",
+        "team": "T0B9U3B96DR",
+        "user_team": "T0B9U3B96DR",
+        "source_team": "T0B9U3B96DR",
+        "user_profile": {
+            "avatar_hash": "gfd378540443",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/fd378540443b73703bc45067760ddd51.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "leon",
+            "real_name": "leon",
+            "display_name": "",
+            "team": "T0B9U3B96DR",
+            "name": "leon",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Ia7mH",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "testing"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

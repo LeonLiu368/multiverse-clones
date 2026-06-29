@@ -1,0 +1,39 @@
+## Offline forge for gh-cli-clone.
+##
+## `forgejo`     — the Git forge (GitHub stand-in). SQLite + local disk, no
+##                 external network needed once the image is pulled.
+## `act_runner`  — Forgejo Actions runner (P1: Actions/Workflows). Commented in;
+##                 enable once P0 lands. Needs the runner registration token.
+##
+## Bring up:  docker compose -f docker/docker-compose.yml up -d
+## Bootstrap: scripts/bootstrap.sh   (creates admin + API token, writes ghc-token.txt)
+services:
+  forgejo:
+    image: codeberg.org/forgejo/forgejo:11
+    container_name: ghc-forgejo
+    restart: unless-stopped
+    environment:
+      USER_UID: "1000"
+      USER_GID: "1000"
+      # Lock the installer so the instance boots fully configured & offline.
+      FORGEJO__security__INSTALL_LOCK: "true"
+      # host.docker.internal so Actions job containers can reach the forge's
+      # artifact API (they can't resolve localhost); the host CLI still uses
+      # localhost:3300 directly — ROOT_URL only changes the advertised base.
+      FORGEJO__server__ROOT_URL: "http://host.docker.internal:3300/"
+      FORGEJO__server__HTTP_PORT: "3000"
+      FORGEJO__server__SSH_PORT: "2222"
+      FORGEJO__database__DB_TYPE: "sqlite3"
+      # Allow local token-based API use; disable signups for a controlled fixture.
+      FORGEJO__service__DISABLE_REGISTRATION: "true"
+      FORGEJO__actions__ENABLED: "true"
+    volumes:
+      - ./forgejo/data:/data
+    ports:
+      - "3300:3000"   # HTTP API + web UI (3300 host; :3000 was taken by Polylayer)
+      - "2222:22"     # git over SSH
+
+  # Actions runner: started by scripts/start-runner.sh (and scripts/up.sh), NOT here,
+  # because registration needs a token minted from the running forge. The script
+  # registers + runs `code.forgejo.org/forgejo/runner:6` as container `ghc-runner`
+  # on this network with /var/run/docker.sock so workflows actually execute.

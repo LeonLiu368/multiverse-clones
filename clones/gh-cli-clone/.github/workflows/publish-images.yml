@@ -1,0 +1,86 @@
+name: Publish Service Image
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ghclone/**
+      - selfcontained/isolated/Dockerfile.forge-actions
+      - selfcontained/isolated/forge-entrypoint-actions.sh
+      - scripts/images.sh
+      - pyproject.toml
+      - README.md
+      - docs/task-integration.md
+      - .github/workflows/publish-images.yml
+  pull_request:
+    paths:
+      - ghclone/**
+      - selfcontained/isolated/Dockerfile.forge-actions
+      - selfcontained/isolated/forge-entrypoint-actions.sh
+      - scripts/images.sh
+      - pyproject.toml
+      - README.md
+      - docs/task-integration.md
+      - .github/workflows/publish-images.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  IMAGE_NAME: ghcr.io/abundant-ai/ghc-service
+
+jobs:
+  build:
+    name: Build ghc-service image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Log in to GHCR
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Prepare build context
+        run: |
+          rm -rf .image-build
+          mkdir -p .image-build
+          cp -R ghclone .image-build/ghclone
+          find .image-build/ghclone -name __pycache__ -type d -prune -exec rm -rf {} +
+          cp selfcontained/isolated/Dockerfile.forge-actions .image-build/Dockerfile
+          cp selfcontained/isolated/forge-entrypoint-actions.sh .image-build/forge-entrypoint.sh
+          printf '#!/usr/bin/env bash\n# no-op base seed - tasks override this file.\nexit 0\n' > .image-build/seed.sh
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ${{ env.IMAGE_NAME }}
+          tags: |
+            type=sha,prefix=sha-
+            type=ref,event=branch
+            type=raw,value=latest,enable={{is_default_branch}}
+          labels: |
+            org.opencontainers.image.title=ghc Service
+            org.opencontainers.image.description=GitHub-compatible Forgejo service with gh CLI and Actions runner for offline tasks
+
+      - name: Build image
+        uses: docker/build-push-action@v7
+        with:
+          context: .image-build
+          file: .image-build/Dockerfile
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

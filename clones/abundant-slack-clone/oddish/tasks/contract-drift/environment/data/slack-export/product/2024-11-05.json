@@ -1,0 +1,114 @@
+[
+  {
+    "user": "U1BEEF78000",
+    "type": "message",
+    "ts": "1730799000.000000",
+    "client_msg_id": "24dc97b721e77a67b2",
+    "text": "Draft PRD for the analytics dashboard is in the Drive.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "mallory",
+      "real_name": "Mallory",
+      "display_name": "mallory",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U5CC9DC7FA7",
+    "type": "message",
+    "ts": "1730806020.000000",
+    "client_msg_id": "a55db5fe1117f4f34a",
+    "text": "User research sessions scheduled for Thursday.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "olivia",
+      "real_name": "Olivia",
+      "display_name": "olivia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UA15F8B81A1",
+    "type": "message",
+    "ts": "1730810760.000000",
+    "client_msg_id": "ca1f42d340d4d90d1c",
+    "text": "Trial conversion analytics deck ready for review.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "ivan",
+      "real_name": "Ivan",
+      "display_name": "ivan",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1730811840.000000",
+    "client_msg_id": "7bf21ae6b0028ffa59",
+    "text": "Roadmap review next Tuesday.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UFD1CF5E271",
+    "type": "message",
+    "ts": "1730816040.000000",
+    "client_msg_id": "fc85ea2af03fd98dcf",
+    "text": "User research sessions scheduled for Thursday.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "grace",
+      "real_name": "Grace",
+      "display_name": "grace",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UA15F8B81A1",
+    "type": "message",
+    "ts": "1730820840.000000",
+    "client_msg_id": "c389c50ef9b435d7e2",
+    "text": "Pricing page copy refresh \u2014 feedback welcome.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "ivan",
+      "real_name": "Ivan",
+      "display_name": "ivan",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1730827680.000000",
+    "client_msg_id": "e13dd5d29a6d9018e0",
+    "text": "NPS survey going out this week.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

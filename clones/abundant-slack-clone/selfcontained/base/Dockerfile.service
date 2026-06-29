@@ -1,0 +1,48 @@
+# slack-service — THE single image we build + push (ghcr.io/abundant-ai/slack-service).
+# A lightweight, self-contained Slack mock: a SQLite-backed Slack Web API gateway (:80) seeded from
+# a REAL Slack export, plus the agent's tools — our `slack` CLI and the off-the-shelf korotovsky
+# `slack-mcp` server (retargeted at the gateway). No Mattermost, no Postgres. Tasks build FROM this
+# image and add only their codebase + seed export.
+
+# --- stage 1: build the korotovsky slack-mcp-server, patched to honor SLACK_MCP_API_URL ----------
+FROM golang:1.25-bookworm AS mcp-build
+ARG MCP_REF=b88c0de
+RUN git clone https://github.com/korotovsky/slack-mcp-server /src && \
+    cd /src && git checkout "$MCP_REF"
+COPY mcp/apply-patch.sh /tmp/apply-patch.sh
+RUN sh /tmp/apply-patch.sh /src
+RUN cd /src && CGO_ENABLED=0 go build -trimpath -o /out/slack-mcp-server ./cmd/slack-mcp-server
+
+# --- stage 2: lean runtime ----------------------------------------------------------------------
+FROM python:3.12-slim
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl jq git ca-certificates bash && \
+    pip3 install --no-cache-dir fastapi "uvicorn[standard]" httpx "slack_sdk>=3.27" pytest && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Gateway + store + importer + CLI tools.
+COPY slackgw /opt/slackgw
+COPY import_export.py /opt/import_export.py
+COPY slackcli /opt/slackcli
+COPY slack-boot.sh /usr/local/bin/slack-boot.sh
+COPY api-entrypoint.sh /usr/local/bin/api-entrypoint.sh
+COPY seed.sh /usr/local/bin/task-seed.sh
+
+# The korotovsky MCP binary + its stdio wrapper (named `slack-mcp` on PATH).
+COPY --from=mcp-build /out/slack-mcp-server /usr/local/bin/slack-mcp-server-bin
+COPY mcp/slack-mcp.sh /usr/local/bin/slack-mcp
+
+# Our `slack` CLI wrapper (sys.path injection so the stdio-stripped env can still import slackcli).
+RUN printf '#!/usr/bin/env python3\nimport sys; sys.path[:0] = ["/opt", "/opt/slackcli"]\nfrom slackcli.cli import main\nmain()\n' \
+        > /usr/local/bin/slack && \
+    chmod +x /usr/local/bin/slack /usr/local/bin/slack-mcp /usr/local/bin/slack-boot.sh \
+             /usr/local/bin/api-entrypoint.sh /usr/local/bin/task-seed.sh /usr/local/bin/slack-mcp-server-bin
+
+ENV PYTHONPATH=/opt:/opt/slackcli \
+    SLACK_DB=/tmp/slack.db \
+    SLACK_API_URL=http://localhost \
+    SLACK_BOT_TOKEN=xoxp-acme-eval-0001 \
+    HOME=/root \
+    DEBIAN_FRONTEND=noninteractive TZ=UTC
+EXPOSE 80
+ENTRYPOINT ["/bin/bash", "/usr/local/bin/api-entrypoint.sh"]

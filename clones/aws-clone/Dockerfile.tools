@@ -1,0 +1,17 @@
+FROM python:3.13-slim
+
+ENV AWS_ENDPOINT_URL=http://aws:4566 \
+    AWS_ACCESS_KEY_ID=test \
+    AWS_SECRET_ACCESS_KEY=test \
+    AWS_DEFAULT_REGION=us-east-1 \
+    PYTHONPATH=/opt/awscli
+
+RUN python -m pip install --no-cache-dir --target /opt/awscli \
+      awscli==1.31.13 \
+      boto3==1.33.13 \
+      botocore==1.33.13 \
+      awscli-local==0.22.0 && \
+    mkdir -p /opt/aws-clone
+
+COPY bin/aws bin/awslocal /usr/local/bin/
+RUN chmod +x /usr/local/bin/aws /usr/local/bin/awslocal

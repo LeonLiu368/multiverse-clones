@@ -1,0 +1,25 @@
+version = "1.0"
+[task]
+name = "ghc-world/ci-artifact"
+description = "Trigger a CI workflow, wait for it, download its artifact, and file the build code."
+[metadata]
+category = "swe"
+tags = ["gh","actions","artifacts","realistic","isolated","multi-container"]
+[verifier]
+timeout_sec = 300.0
+[agent]
+timeout_sec = 1200.0
+[environment]
+build_timeout_sec = 2400.0
+cpus = 2
+memory_mb = 4096
+storage_mb = 16384
+gpus = 0
+allow_internet = true
+workdir = "/app"
+[environment.healthcheck]
+command = "gh auth status"
+interval_sec = 5.0
+timeout_sec = 30.0
+start_period_sec = 15.0
+retries = 60

@@ -1,0 +1,35 @@
+# syntax=docker/dockerfile:1
+# jira-agent — the published THIN AGENT base image (analogue of slack-agent). Tools + runtime only,
+# NO service, NO data, NO state.json. Tasks build `main` FROM this and add just their codebase. The
+# Jira/ENG corpus lives in the separate `jira` sidecar; the agent reaches it ONLY over HTTP via the
+# `jira` (and `linear`) CLI in WORLD_ISSUES_BACKEND=remote mode, so it can't bypass the tools by
+# reading state.json off disk.
+FROM --platform=linux/amd64 python:3.12-slim
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl ca-certificates bash && \
+    pip3 install --no-cache-dir pytest && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Just the agent's tools + the world_issues package from the service image — the `jira`/`linear`
+# CLIs. No server module entrypoint is used, no data rides along. (world_issues.server is present in
+# the package but never started here; the agent only ever runs the CLI as a thin HTTP client.)
+COPY --from=ghcr.io/abundant-ai/ticketvector-service:latest \
+     /usr/local/bin/jira /usr/local/bin/linear /usr/local/bin/world-issues /usr/local/bin/
+COPY --from=ghcr.io/abundant-ai/ticketvector-service:latest /opt/ticketvector /opt/ticketvector
+
+COPY agent-entrypoint.sh /usr/local/bin/agent-entrypoint.sh
+RUN chmod +x /usr/local/bin/agent-entrypoint.sh /usr/local/bin/jira /usr/local/bin/linear /usr/local/bin/world-issues
+
+# remote backend → the CLI POSTs to the `jira` sidecar at PLANE_BASE_URL; agent_mode blocks the
+# admin/seed/runtime subcommands so the agent can only do normal issue workflow.
+ENV PYTHONPATH=/opt/ticketvector \
+    WORLD_ISSUES_BACKEND=remote \
+    WORLD_ISSUES_AGENT_MODE=1 \
+    WORLD_ISSUES_OUTPUT=json \
+    WORLD_ISSUES_ACTOR=agent \
+    WORLD_ISSUES_DEFAULT_PROJECT=ENG \
+    PLANE_BASE_URL=http://jira:8765 \
+    HOME=/root
+WORKDIR /workspace
+ENTRYPOINT ["/usr/local/bin/agent-entrypoint.sh"]

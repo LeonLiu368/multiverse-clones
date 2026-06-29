@@ -1,0 +1,82 @@
+[
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1730951520.000000",
+    "client_msg_id": "2aa407d632dd0ec779",
+    "text": "right, actor_id \u2014 was confused by my own early message \ud83d\ude05",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U88FA846E5F",
+    "type": "message",
+    "ts": "1730974260.000000",
+    "client_msg_id": "5b46bc1ffbb8969f59",
+    "text": "v1 to v2 migration effort tracked in JIRA-3310",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "victor",
+      "real_name": "Victor",
+      "display_name": "victor",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UA15F8B81A1",
+    "type": "message",
+    "ts": "1730976660.000000",
+    "client_msg_id": "10b7f0f025d97717b1",
+    "text": "does anyone have a snippet for the new publisher? still on v1 on our end",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "ivan",
+      "real_name": "Ivan",
+      "display_name": "ivan",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1730990100.000000",
+    "client_msg_id": "42de96ae48c8907fbe",
+    "text": "pipeline keeps rejecting our events \u2014 probably still on v1 format",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1730990580.000000",
+    "client_msg_id": "3b8f766e5cb919dbaf",
+    "text": "anyone hit issues with the recorded_at conversion? We were off by 1000x initially",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

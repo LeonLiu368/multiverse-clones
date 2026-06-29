@@ -1,0 +1,98 @@
+[
+  {
+    "user": "U1BEEF78000",
+    "type": "message",
+    "ts": "1730975460.000000",
+    "client_msg_id": "4bd2b92bcad62076eb",
+    "text": "Office closed on the 28th \u2014 public holiday.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "mallory",
+      "real_name": "Mallory",
+      "display_name": "mallory",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U0FEBC363B6",
+    "type": "message",
+    "ts": "1730982000.000000",
+    "client_msg_id": "701e71d9b9051a6002",
+    "text": "Kudos to support for clearing the backlog \ud83d\ude4c",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "heidi",
+      "real_name": "Heidi",
+      "display_name": "heidi",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1730987220.000000",
+    "client_msg_id": "8d4c34dd12c085c47a",
+    "text": "OOO today, ping bob for urgent stuff.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1730995800.000000",
+    "client_msg_id": "db88a01f778063ffbc",
+    "text": "Lunch order by noon please.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UFD1CF5E271",
+    "type": "message",
+    "ts": "1730998980.000000",
+    "client_msg_id": "c9708613a410863f1d",
+    "text": "Welcome to the new folks joining this week! \ud83d\udc4b",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "grace",
+      "real_name": "Grace",
+      "display_name": "grace",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U0AA1C221CA",
+    "type": "message",
+    "ts": "1731001380.000000",
+    "client_msg_id": "9249d6445c8e57a597",
+    "text": "Reminder: Q4 planning docs due Friday.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "trent",
+      "real_name": "Trent",
+      "display_name": "trent",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

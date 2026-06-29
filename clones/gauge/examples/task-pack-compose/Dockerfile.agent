@@ -1,0 +1,14 @@
+FROM gauge-service:local AS gauge-tools
+
+FROM python:3.10-slim
+
+RUN useradd --create-home --shell /bin/sh agent
+COPY --from=gauge-tools /usr/local/bin/gcx /usr/local/bin/mcp-grafana /usr/local/bin/
+COPY --from=gauge-tools /opt/gaugecli /opt/gaugecli
+
+ENV PYTHONPATH=/opt/gaugecli \
+    GRAFANA_URL=http://gauge
+
+USER agent
+WORKDIR /home/agent
+CMD ["sleep", "infinity"]

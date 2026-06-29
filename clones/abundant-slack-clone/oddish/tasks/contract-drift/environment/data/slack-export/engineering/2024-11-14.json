@@ -1,0 +1,18 @@
+[
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1731591360.000000",
+    "client_msg_id": "acc1e1ebb7cd818278",
+    "text": "Memory leak in the stream consumer, fix incoming.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

@@ -1,0 +1,101 @@
+name: build-service-image
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  IMAGE: ghcr.io/abundant-ai/sentry-clone-service
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.13"]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: python -m pip install -e ".[dev]"
+      - run: python -m pytest tests
+
+  image:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v6
+      - run: docker build -f Dockerfile.service -t sentry-clone-service:local .
+      - run: docker compose -f examples/docker-compose.yaml up -d --wait --wait-timeout 60
+      - run: curl --retry 10 --retry-all-errors --retry-delay 1 -sf http://localhost:3000/api/healthz
+      - run: SENTRY_URL=http://localhost:3000 SENTRY_AUTH_TOKEN=test-token-acme-eval bin/sentry whoami --json
+      - run: SENTRY_URL=http://localhost:3000 SENTRY_AUTH_TOKEN=test-token-acme-eval bin/sentry issues list --project payments-api --query 'is:unresolved' --json
+      - run: SENTRY_URL=http://localhost:3000 SENTRY_AUTH_TOKEN=test-token-acme-eval bin/sentry issues stacktrace PAYMENTS-501 --json
+      - run: SENTRY_URL=http://localhost:3000 SENTRY_AUTH_TOKEN=test-token-acme-eval bin/sentry issues breadcrumbs PAYMENTS-501 --json
+      - run: SENTRY_URL=http://localhost:3000 SENTRY_AUTH_TOKEN=test-token-acme-eval bin/sentry issues suspect-commits PAYMENTS-501 --json
+      - run: SENTRY_URL=http://localhost:3000 SENTRY_AUTH_TOKEN=test-token-acme-eval bin/sentry issues comment PAYMENTS-501 --text "ci smoke investigation" --json
+      - run: SENTRY_URL=http://localhost:3000 SENTRY_AUTH_TOKEN=test-token-acme-eval bin/sentry issues resolve PAYMENTS-501 --in-release payments-api@2026.06.07.2 --json
+      - run: SENTRY_URL=http://localhost:3000 SENTRY_CLONE_ADMIN_TOKEN=test-admin-token-acme-eval bin/sentry-clonectl mutations
+      - name: Dump example compose logs on failure
+        if: failure()
+        run: |
+          docker compose -f examples/docker-compose.yaml ps
+          docker compose -f examples/docker-compose.yaml logs --no-color sentry
+      - run: docker compose -f examples/docker-compose.yaml down -v
+        if: always()
+      - run: docker compose -f examples/task-pack-compose/docker-compose.yaml up -d --build --wait --wait-timeout 60
+      - run: docker compose -f examples/task-pack-compose/docker-compose.yaml exec -T agent test ! -e /data/sentry-clone/state.json
+      - run: docker compose -f examples/task-pack-compose/docker-compose.yaml exec -T agent sh -lc 'command -v sentry && command -v sentry-mcp && ! command -v sentry-clonectl'
+      - run: docker compose -f examples/task-pack-compose/docker-compose.yaml exec -T agent sentry issues list --project payments-api --query 'is:unresolved' --json
+      - run: docker compose -f examples/task-pack-compose/docker-compose.yaml exec -T agent sentry issues stacktrace PAYMENTS-501 --json
+      - run: docker compose -f examples/task-pack-compose/docker-compose.yaml exec -T agent sentry issues breadcrumbs PAYMENTS-501 --json
+      - run: docker compose -f examples/task-pack-compose/docker-compose.yaml exec -T agent sentry issues comment PAYMENTS-501 --text "task-pack smoke comment" --json
+      - run: docker compose -f examples/task-pack-compose/docker-compose.yaml exec -T -e SENTRY_URL=http://localhost -e SENTRY_CLONE_ADMIN_TOKEN=test-admin-token-acme-eval sentry sentry-clonectl mutations
+      - name: Dump task-pack compose logs on failure
+        if: failure()
+        run: |
+          docker compose -f examples/task-pack-compose/docker-compose.yaml ps
+          docker compose -f examples/task-pack-compose/docker-compose.yaml logs --no-color sentry agent
+      - run: docker compose -f examples/task-pack-compose/docker-compose.yaml down -v
+        if: always()
+      - name: Login to GHCR
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Extract image metadata
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ${{ env.IMAGE }}
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix=sha-
+          labels: |
+            org.opencontainers.image.title=Sentry Clone Service
+            org.opencontainers.image.description=Local Sentry-compatible error monitoring service for agent benchmarks
+
+      - name: Build and push service image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: Dockerfile.service
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

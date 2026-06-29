@@ -1,0 +1,66 @@
+[
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1730685600.000000",
+    "client_msg_id": "c4a7f154488dab979b",
+    "text": "updated the deployment runbook",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1730700000.000000",
+    "client_msg_id": "bb1a7f7aa391043fc5",
+    "text": "silenced the noisy disk alert on prod-03 for 24h",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U2A4B17B116",
+    "type": "message",
+    "ts": "1730714400.000000",
+    "client_msg_id": "abd84c6d725853dae6",
+    "text": "secondary oncall this week: erin",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "erin",
+      "real_name": "Erin",
+      "display_name": "erin",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1730728800.000000",
+    "client_msg_id": "8fc1feaa370c4d8704",
+    "text": "oncall rotation updated for December",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

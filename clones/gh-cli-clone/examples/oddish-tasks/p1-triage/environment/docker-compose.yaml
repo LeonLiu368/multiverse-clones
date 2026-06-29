@@ -1,0 +1,37 @@
+# Two-container isolation. The agent runs in `main`; the git host runs in a
+# sidecar the agent cannot read. The sidecar is reachable ONLY by static IP on a
+# private bridge — no "forge"/"github" service name appears in any URL the agent
+# sees (clone remotes, PR links, errors all show http://10.88.0.2/...). The
+# backend listens on port 80, so there's no :3000 (Gitea-default) tell either.
+services:
+  # Backend git host (sidecar). Neutral service name so reverse-DNS gives nothing
+  # away; the agent addresses it by IP and never resolves this name.
+  api:
+    build: { context: ., dockerfile: Dockerfile.forge }
+    volumes: [ "shared:/shared" ]
+    networks:
+      default:
+        ipv4_address: 10.88.0.2
+
+  main:
+    build: { context: ., dockerfile: Dockerfile.main }
+    depends_on: [ api ]
+    environment:
+      GH_HOST: "http://10.88.0.2"
+    # token delivered at the standard secrets path (not a tell-y /shared mount)
+    volumes: [ "shared:/run/secrets:ro" ]
+    networks:
+      default:
+        ipv4_address: 10.88.0.3
+
+# Configure the *default* compose network with a fixed subnet so we can pin
+# static IPs. Using the default network (not a custom-named one) means reverse
+# DNS looks like any stock compose project — no "isolation" tell.
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 10.88.0.0/24
+
+volumes:
+  shared:

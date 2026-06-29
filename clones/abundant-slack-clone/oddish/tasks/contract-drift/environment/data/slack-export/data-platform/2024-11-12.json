@@ -1,0 +1,98 @@
+[
+  {
+    "user": "U88FA846E5F",
+    "type": "message",
+    "ts": "1731403860.000000",
+    "client_msg_id": "970d88eb43964d1083",
+    "text": "WiFi flaky on floor 3, IT is aware.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "victor",
+      "real_name": "Victor",
+      "display_name": "victor",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U38FC8CAEA6",
+    "type": "message",
+    "ts": "1731407280.000000",
+    "client_msg_id": "23a1463bd589c5ea0d",
+    "text": "New hire onboarding doc is in Notion.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "judy",
+      "real_name": "Judy",
+      "display_name": "judy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U2A4B17B116",
+    "type": "message",
+    "ts": "1731421260.000000",
+    "client_msg_id": "15391fdcf82145cda9",
+    "text": "Standup in 5.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "erin",
+      "real_name": "Erin",
+      "display_name": "erin",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1731424380.000000",
+    "client_msg_id": "ba8bc2e1b87ad33d95",
+    "text": "All-hands moved to Thursday \u2014 see calendar invite.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1731428160.000000",
+    "client_msg_id": "02ffa28df7d0cc8ad3",
+    "text": "WiFi flaky on floor 3, IT is aware.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1731429780.000000",
+    "client_msg_id": "ed79861c19f0734f58",
+    "text": "WiFi flaky on floor 3, IT is aware.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

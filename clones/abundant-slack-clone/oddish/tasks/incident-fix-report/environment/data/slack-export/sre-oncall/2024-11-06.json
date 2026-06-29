@@ -1,0 +1,322 @@
+[
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1730920020.000000",
+    "client_msg_id": "ce1af0d004b7fb7da0",
+    "text": "hey team, we need to do the SLO threshold review I mentioned. we've been getting false-positive pages and the current thresholds are wrong",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1730920680.000000",
+    "client_msg_id": "2a6cfdecfc9558ed8b",
+    "text": "current code has: critical if error_rate > 0.10 or budget > 95%. this missed real incidents last month",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1730921280.000000",
+    "client_msg_id": "f7906040cdb8172227",
+    "text": "yeah I got paged 3 times last week and each time the service was actually fine. the 0.10 threshold is too high",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1730922420.000000",
+    "client_msg_id": "ad2fd1db1a6202fb35",
+    "text": "agreed. we had a real incident where error rate was 0.07 and we didn't get paged in time because threshold was 0.10",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1730922780.000000",
+    "client_msg_id": "9ce074f5bfb1e25e68",
+    "text": "also the budget threshold at 95% is way too late - by the time we're at 95% consumed we're already in trouble",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1730923200.000001",
+    "client_msg_id": "e1938d3904aecba8b7",
+    "text": "I think we should keep 0.10 as the threshold to avoid alert fatigue. lowering it will just mean more false positives",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1730923560.000000",
+    "client_msg_id": "8db9234af01fe7cefa",
+    "text": "frank - actually the opposite is happening. 0.10 is causing us to MISS incidents, not over-page. we need to go lower",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1730924100.000000",
+    "client_msg_id": "b32dce362a05628a3b",
+    "text": "fair point, but what about the noise? we'll get paged for every little blip",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1730924640.000000",
+    "client_msg_id": "304e06beaefa448515",
+    "text": "that's what the warning level is for. we're not removing thresholds, we're adding nuance",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1730925660.000000",
+    "client_msg_id": "b639d6573189d3d7ba",
+    "text": "so we need: critical threshold, warning threshold, and a paging condition that considers latency",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U2A4B17B116",
+    "type": "message",
+    "ts": "1730929800.000000",
+    "client_msg_id": "c689725de8bf91eb01",
+    "text": "what's the proposal for critical error rate threshold?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "erin",
+      "real_name": "Erin",
+      "display_name": "erin",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1730930280.000000",
+    "client_msg_id": "864c8e137bfff6bf82",
+    "text": "I propose 0.05 - that way we catch the incidents we were missing but still filter out genuine noise below 5%",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1730930940.000000",
+    "client_msg_id": "d16388d3a793eb3300",
+    "text": "0.05 sounds right to me. that's the industry standard for SLO alerting",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1730931240.000000",
+    "client_msg_id": "8c527c639e6087a75e",
+    "text": "agreed on 0.05 for critical error rate",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1730932140.000000",
+    "client_msg_id": "be2bcf959947a5c02d",
+    "text": "quick note: we should use >= 0.05, not > 0.05 \u2014 we want to catch exactly-at-threshold too",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1730933160.000000",
+    "client_msg_id": "f2281f22d902f430ef",
+    "text": "why does the >= vs > distinction matter here?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1730934240.000000",
+    "client_msg_id": "07d7a7e27c6d3162da",
+    "text": "because > 0.05 would miss a service running at exactly 5.0% error rate. >= catches it. this is important for the boundary cases in our SLO contract",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1730935380.000000",
+    "client_msg_id": "e0a6810da3153fbd0a",
+    "text": "good call. so: status = critical if error_rate >= 0.05",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1730936340.000000",
+    "client_msg_id": "409ee1068ef0712094",
+    "text": "now for budget threshold - what percentage budget consumed should trigger critical?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1730936880.000000",
+    "client_msg_id": "d0a4f98a96029a7021",
+    "text": "I was going to propose 95% but thinking about it more, that's too late. by 95% we've almost no budget left",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

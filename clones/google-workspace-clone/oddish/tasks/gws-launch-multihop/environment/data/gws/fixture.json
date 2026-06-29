@@ -1,0 +1,208 @@
+{
+  "drive": [],
+  "documents": [],
+  "calendar": [
+    {
+      "id": "EVT_ATLAS_GA",
+      "calendarId": "primary",
+      "summary": "Atlas Launch \u2014 GA",
+      "description": "General availability launch for Project Atlas.",
+      "location": "Launch War Room",
+      "status": "confirmed",
+      "start": {
+        "dateTime": "2026-10-06T09:00:00-07:00"
+      },
+      "end": {
+        "dateTime": "2026-10-06T11:00:00-07:00"
+      },
+      "attendees": [],
+      "organizer": {
+        "email": "mira@acme.example",
+        "displayName": "Mira Devon"
+      },
+      "created": "",
+      "updated": ""
+    },
+    {
+      "id": "EVT_ATLAS_TENT",
+      "calendarId": "primary",
+      "summary": "Atlas Launch (tentative)",
+      "description": "Tentative early target \u2014 superseded.",
+      "location": "",
+      "status": "tentative",
+      "start": {
+        "dateTime": "2026-09-10T09:00:00-07:00"
+      },
+      "end": {
+        "dateTime": "2026-09-10T10:00:00-07:00"
+      },
+      "attendees": [],
+      "organizer": {},
+      "created": "",
+      "updated": ""
+    },
+    {
+      "id": "EVT_ATLAS_OLD",
+      "calendarId": "primary",
+      "summary": "Atlas Launch (old date \u2014 do not use)",
+      "description": "Slipped; cancelled.",
+      "location": "",
+      "status": "cancelled",
+      "start": {
+        "dateTime": "2026-09-22T09:00:00-07:00"
+      },
+      "end": {
+        "dateTime": "2026-09-22T10:00:00-07:00"
+      },
+      "attendees": [],
+      "organizer": {},
+      "created": "",
+      "updated": ""
+    },
+    {
+      "id": "EVT_BEACON",
+      "calendarId": "primary",
+      "summary": "Beacon Launch",
+      "description": "Different project.",
+      "location": "",
+      "status": "confirmed",
+      "start": {
+        "dateTime": "2026-08-15T09:00:00-07:00"
+      },
+      "end": {
+        "dateTime": "2026-08-15T09:00:00-07:00"
+      },
+      "attendees": [],
+      "organizer": {},
+      "created": "",
+      "updated": ""
+    },
+    {
+      "id": "EVT_COMET",
+      "calendarId": "primary",
+      "summary": "Comet GA",
+      "description": "Different project.",
+      "location": "",
+      "status": "confirmed",
+      "start": {
+        "dateTime": "2026-11-30T09:00:00-07:00"
+      },
+      "end": {
+        "dateTime": "2026-11-30T09:00:00-07:00"
+      },
+      "attendees": [],
+      "organizer": {},
+      "created": "",
+      "updated": ""
+    },
+    {
+      "id": "EVT_STANDUP",
+      "calendarId": "primary",
+      "summary": "Eng Standup",
+      "description": "",
+      "location": "",
+      "status": "confirmed",
+      "start": {
+        "dateTime": "2026-09-01T16:30:00-07:00"
+      },
+      "end": {
+        "dateTime": "2026-09-01T16:30:00-07:00"
+      },
+      "attendees": [],
+      "organizer": {},
+      "created": "",
+      "updated": ""
+    },
+    {
+      "id": "EVT_ALLHANDS",
+      "calendarId": "primary",
+      "summary": "Q3 All-Hands",
+      "description": "",
+      "location": "",
+      "status": "confirmed",
+      "start": {
+        "dateTime": "2026-09-18T10:00:00-07:00"
+      },
+      "end": {
+        "dateTime": "2026-09-18T10:00:00-07:00"
+      },
+      "attendees": [],
+      "organizer": {},
+      "created": "",
+      "updated": ""
+    }
+  ],
+  "gmail": [
+    {
+      "id": "MSG_A1",
+      "threadId": "T_ATLAS",
+      "labelIds": [
+        "INBOX"
+      ],
+      "from": "pm@acme.example",
+      "to": "launch@acme.example",
+      "subject": "Atlas launch date",
+      "date": "",
+      "internalDate": "1758600000000",
+      "snippet": "Team \u2014 what's our ship date for Atlas? I see a few calendar holds.",
+      "body": "Team \u2014 what's our ship date for Atlas? I see a few calendar holds."
+    },
+    {
+      "id": "MSG_A2",
+      "threadId": "T_ATLAS",
+      "labelIds": [
+        "INBOX"
+      ],
+      "from": "dev@acme.example",
+      "to": "launch@acme.example",
+      "subject": "Re: Atlas launch date",
+      "date": "",
+      "internalDate": "1758700000000",
+      "snippet": "Let's pencil in Sept 10 for now (the tentative hold).",
+      "body": "Let's pencil in Sept 10 for now (the tentative hold)."
+    },
+    {
+      "id": "MSG_A3",
+      "threadId": "T_ATLAS",
+      "labelIds": [
+        "INBOX",
+        "IMPORTANT"
+      ],
+      "from": "mira@acme.example",
+      "to": "launch@acme.example",
+      "subject": "Re: Atlas launch date",
+      "date": "",
+      "internalDate": "1758900000000",
+      "snippet": "Final call from release management: we are shipping on the 'Atlas Launch \u2014 GA' calendar event. Please ignore the tentati",
+      "body": "Final call from release management: we are shipping on the 'Atlas Launch \u2014 GA' calendar event. Please ignore the tentative and the old/slipped holds. That GA event is the source of truth."
+    },
+    {
+      "id": "MSG_B1",
+      "threadId": "T_BEACON",
+      "labelIds": [
+        "INBOX"
+      ],
+      "from": "pm@acme.example",
+      "to": "launch@acme.example",
+      "subject": "Beacon launch is Aug 15",
+      "date": "",
+      "internalDate": "1755000000000",
+      "snippet": "Reminder: Beacon ships Aug 15.",
+      "body": "Reminder: Beacon ships Aug 15."
+    },
+    {
+      "id": "MSG_C1",
+      "threadId": "T_LUNCH",
+      "labelIds": [
+        "INBOX"
+      ],
+      "from": "dev@acme.example",
+      "to": "pm@acme.example",
+      "subject": "Lunch?",
+      "date": "",
+      "internalDate": "1758950000000",
+      "snippet": "Anyone up for lunch today?",
+      "body": "Anyone up for lunch today?"
+    }
+  ]
+}

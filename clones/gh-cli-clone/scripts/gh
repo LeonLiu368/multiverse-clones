@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Drop-in `gh` shim: forwards every invocation to `ghc` (our Forgejo-backed clone).
+#
+# Put this directory FIRST on PATH inside a task sandbox and any tooling/agent that
+# calls `gh ...` transparently hits the offline forge instead of github.com:
+#   export PATH="/path/to/gh-cli-clone/scripts:$PATH"
+#   export GHC_HOST=http://localhost:3300 GHC_TOKEN=...
+#
+# ghc's command tree + flags mirror gh (auth/repo/issue/pr/label/milestone/run/
+# workflow/api), so this is a straight passthrough. Differences are documented in
+# docs/COMMANDS.md.
+set -euo pipefail
+
+# Resolve ghc: prefer the repo venv, fall back to PATH.
+HERE="$(cd "$(dirname "$0")" && pwd)"
+if [ -x "$HERE/../.venv/bin/ghc" ]; then
+  GHC="$HERE/../.venv/bin/ghc"
+else
+  GHC="$(command -v ghc)"
+fi
+exec "$GHC" "$@"

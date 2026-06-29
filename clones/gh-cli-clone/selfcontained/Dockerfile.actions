@@ -1,0 +1,17 @@
+FROM python:3.11-slim
+RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates curl procps nodejs && rm -rf /var/lib/apt/lists/*
+RUN pip install --no-cache-dir httpx typer rich pydantic platformdirs
+RUN useradd -m -u 1000 git
+COPY ghclone /opt/ghclone
+ENV PYTHONPATH=/opt
+RUN printf '#!/bin/sh\n[ -f /etc/ghc/token ] && export GHC_TOKEN="$(cat /etc/ghc/token)"\nexec python -m ghclone.cli.main "$@"\n' >/usr/local/bin/ghc \
+ && chmod +x /usr/local/bin/ghc && cp /usr/local/bin/ghc /usr/local/bin/gh
+COPY --from=codeberg.org/forgejo/forgejo:11 /app/gitea/gitea /usr/local/bin/forgejo
+COPY --from=code.forgejo.org/forgejo/runner:6 /bin/forgejo-runner /usr/local/bin/forgejo-runner
+COPY forge-up-actions.sh /usr/local/bin/forge-up.sh
+COPY seed.sh /usr/local/bin/task-seed.sh
+RUN chmod +x /usr/local/bin/task-seed.sh
+RUN chmod +x /usr/local/bin/forge-up.sh
+ENV GHC_HOST=http://localhost:3300
+RUN git config --system user.email agent@local && git config --system user.name agent
+WORKDIR /app

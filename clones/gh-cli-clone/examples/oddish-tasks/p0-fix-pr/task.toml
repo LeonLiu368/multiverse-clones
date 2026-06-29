@@ -1,0 +1,25 @@
+version = "1.0"
+[task]
+name = "ghc-world/p0-fix-pr"
+description = "Clone a repo, fix a bug, and open a pull request via the gh CLI (self-hosted forge bundled)."
+[metadata]
+category = "tooling"
+tags = ["gh","p0","pr","git","isolated","multi-container"]
+[verifier]
+timeout_sec = 300.0
+[agent]
+timeout_sec = 900.0
+[environment]
+build_timeout_sec = 2400.0
+cpus = 2
+memory_mb = 3072
+storage_mb = 12288
+gpus = 0
+allow_internet = true
+workdir = "/app"
+[environment.healthcheck]
+command = "gh auth status"
+interval_sec = 5.0
+timeout_sec = 30.0
+start_period_sec = 15.0
+retries = 60

@@ -1,0 +1,88 @@
+{
+  "_comment": "Per-world GitHub Actions seed for the `gh run` / `gh workflow` / `gh pr checks` overlay. Point GH_ACTIONS_SEED (or GHC_ACTIONS_SEED) at a file like this, or drop it at /shared/actions-seed.json in the agent container. The CLI renders runs/jobs/steps/logs/check-runs from here byte-for-byte like real gh; everything except a repo key and a run id/number is optional and defaulted. See docs/ACTIONS-OVERLAY.md.",
+  "repos": {
+    "acme/payments-api": {
+      "workflows": [
+        {"id": 161335, "name": "CI", "path": ".github/workflows/ci.yml", "state": "active"},
+        {"id": 161336, "name": "Deploy", "path": ".github/workflows/deploy.yml", "state": "active"}
+      ],
+      "runs": [
+        {
+          "id": 1402100128,
+          "number": 128,
+          "workflow": "CI",
+          "title": "fix: make webhook retry idempotent",
+          "event": "pull_request",
+          "status": "completed",
+          "conclusion": "failure",
+          "branch": "fix/webhook-retry-idempotency",
+          "sha": "7d3c9af1e0b24a6c8f5e2a1d9b7c4e6f0a1b2c3d",
+          "actor": "priya-n",
+          "created_at": "2026-06-23T15:41:02Z",
+          "started_at": "2026-06-23T15:41:10Z",
+          "updated_at": "2026-06-23T15:44:58Z",
+          "url": "https://github.com/acme/payments-api/actions/runs/1402100128",
+          "annotations": [
+            {"level": "failure", "message": "Process completed with exit code 1.", "job": "test", "path": ".github", "line": 1}
+          ],
+          "jobs": [
+            {
+              "id": 4310091,
+              "name": "lint",
+              "conclusion": "success",
+              "started_at": "2026-06-23T15:41:12Z",
+              "completed_at": "2026-06-23T15:41:46Z",
+              "steps": [
+                {"name": "Set up job", "conclusion": "success"},
+                {"name": "Checkout", "conclusion": "success"},
+                {"name": "Run ruff", "conclusion": "success", "log": "All checks passed!\n"},
+                {"name": "Complete job", "conclusion": "success"}
+              ]
+            },
+            {
+              "id": 4310092,
+              "name": "test",
+              "conclusion": "failure",
+              "started_at": "2026-06-23T15:41:12Z",
+              "completed_at": "2026-06-23T15:44:50Z",
+              "required": true,
+              "steps": [
+                {"name": "Set up job", "conclusion": "success"},
+                {"name": "Checkout", "conclusion": "success"},
+                {"name": "Set up Python 3.11", "conclusion": "success"},
+                {"name": "Install dependencies", "conclusion": "success"},
+                {
+                  "name": "Run pytest",
+                  "conclusion": "failure",
+                  "log": "============================= test session starts ==============================\nplatform linux -- Python 3.11.9, pytest-8.2.0, pluggy-1.5.0\nrootdir: /home/runner/work/payments-api/payments-api\ncollected 214 items\n\ntests/test_webhooks.py ...............................F....               [ 38%]\n\n=================================== FAILURES ===================================\n_____________________ test_retry_is_idempotent_on_conflict _____________________\n\n    def test_retry_is_idempotent_on_conflict():\n        first = handler.process(event)\n        second = handler.process(event)\n>       assert second.status == \"skipped\"\nE       AssertionError: assert 'scheduled' == 'skipped'\nE        +  where 'scheduled' = Result(status='scheduled', event_id='evt_001').status\n\ntests/test_webhooks.py:142: AssertionError\n=========================== short test summary info ============================\nFAILED tests/test_webhooks.py::test_retry_is_idempotent_on_conflict - Assertion...\n========================= 1 failed, 213 passed in 41.20s =========================\n"
+                },
+                {"name": "Upload coverage", "conclusion": "skipped"},
+                {"name": "Complete job", "conclusion": "success"}
+              ]
+            }
+          ]
+        },
+        {
+          "id": 1402099980,
+          "number": 127,
+          "workflow": "CI",
+          "title": "chore: bump httpx to 0.27",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "branch": "main",
+          "sha": "a91f00bd2c7e4d18b6a3f5021e9c7d4b8e6f1a2c",
+          "actor": "deploy-bot",
+          "created_at": "2026-06-23T12:08:31Z",
+          "started_at": "2026-06-23T12:08:39Z",
+          "updated_at": "2026-06-23T12:12:05Z",
+          "url": "https://github.com/acme/payments-api/actions/runs/1402099980",
+          "jobs": [
+            {"id": 4309880, "name": "lint", "conclusion": "success", "started_at": "2026-06-23T12:08:41Z", "completed_at": "2026-06-23T12:09:10Z"},
+            {"id": 4309881, "name": "test", "conclusion": "success", "started_at": "2026-06-23T12:08:41Z", "completed_at": "2026-06-23T12:12:00Z"}
+          ]
+        }
+      ]
+    }
+  }
+}

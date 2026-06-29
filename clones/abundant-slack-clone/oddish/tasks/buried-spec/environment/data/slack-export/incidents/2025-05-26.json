@@ -1,0 +1,34 @@
+[
+  {
+    "user": "U1DB01D43E0",
+    "type": "message",
+    "ts": "1748254320.000000",
+    "client_msg_id": "a834979c17b4367afc",
+    "text": "also updated the on-call runbook with the new rate limiter config values for reference",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "noah",
+      "real_name": "Noah",
+      "display_name": "noah",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1748255100.000000",
+    "client_msg_id": "2c3fed1bba2ec79a7f",
+    "text": "perfect, thanks noah",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

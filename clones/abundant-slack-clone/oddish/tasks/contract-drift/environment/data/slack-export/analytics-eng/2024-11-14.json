@@ -1,0 +1,50 @@
+[
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1731588660.000000",
+    "client_msg_id": "d2674a75d2b97650d3",
+    "text": "how many services are still on v1? we show 11 in the dashboard",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U88FA846E5F",
+    "type": "message",
+    "ts": "1731606180.000000",
+    "client_msg_id": "941929c0993a156c70",
+    "text": "draft migration script is in the analytics-eng wiki",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "victor",
+      "real_name": "Victor",
+      "display_name": "victor",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1731606240.000000",
+    "client_msg_id": "9bf00bd0779cd702c5",
+    "text": "does anyone have a snippet for the new publisher? still on v1 on our end",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

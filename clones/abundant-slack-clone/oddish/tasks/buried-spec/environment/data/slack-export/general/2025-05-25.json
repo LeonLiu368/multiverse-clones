@@ -1,0 +1,50 @@
+[
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1748167680.000000",
+    "client_msg_id": "544de4cc0ca134a35e",
+    "text": "will do",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U1DB01D43E0",
+    "type": "message",
+    "ts": "1748168340.000000",
+    "client_msg_id": "10885d782bf8aed145",
+    "text": "quick reminder to rotate your API keys \u2014 security audit is next week",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "noah",
+      "real_name": "Noah",
+      "display_name": "noah",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1748168460.000000",
+    "client_msg_id": "0a596ddbca601875e9",
+    "text": "on it",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

@@ -1,0 +1,23 @@
+FROM python:3.13-slim
+
+ENV SENTRY_CLONE_STATE_FILE=/data/sentry-clone/state.json \
+    SENTRY_CLONE_RUNTIME_STATE_FILE=/var/lib/sentry-clone/state.json \
+    SENTRY_CLONE_ENABLE_ADMIN_API=0 \
+    SENTRY_CLONE_BIND_HOST=0.0.0.0 \
+    SENTRY_CLONE_PORT=80 \
+    SENTRY_URL=http://sentry \
+    SENTRY_AUTH_TOKEN=test-token-acme-eval \
+    SENTRY_ORG=acme \
+    PYTHONPATH=/opt/sentry-clone-cli
+
+WORKDIR /opt/sentry-clone-cli
+COPY sentry_clone ./sentry_clone
+COPY bin/sentry bin/sentry-mcp bin/sentry-clonectl /usr/local/bin/
+COPY entrypoint.sh /usr/local/bin/sentry-clone-entrypoint.sh
+RUN chmod +x /usr/local/bin/sentry /usr/local/bin/sentry-mcp /usr/local/bin/sentry-clonectl /usr/local/bin/sentry-clone-entrypoint.sh && \
+    mkdir -p /data/sentry-clone /var/lib/sentry-clone
+
+EXPOSE 80
+VOLUME ["/data/sentry-clone", "/var/lib/sentry-clone"]
+HEALTHCHECK --interval=2s --timeout=2s --retries=30 CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1/api/healthz', timeout=1).read()"
+ENTRYPOINT ["/usr/local/bin/sentry-clone-entrypoint.sh"]

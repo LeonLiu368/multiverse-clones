@@ -1,0 +1,66 @@
+[
+  {
+    "user": "U5CC9DC7FA7",
+    "type": "message",
+    "ts": "1748096160.000000",
+    "client_msg_id": "f80526aea0dd794e1d",
+    "text": "looks like a noisy neighbor in the k8s namespace, not rate limiting",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "olivia",
+      "real_name": "Olivia",
+      "display_name": "olivia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1748096340.000000",
+    "client_msg_id": "b858a9d07fb647940a",
+    "text": "P3 \u2014 slight uptick in latency on /api/v2/events. investigating",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1748097300.000000",
+    "client_msg_id": "a380ae4367db31bddb",
+    "text": "confirmed, throttling the noisy workload now",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1748097780.000000",
+    "client_msg_id": "be8a5313bdac7fb5ba",
+    "text": "resolved. unrelated to rate limiter",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

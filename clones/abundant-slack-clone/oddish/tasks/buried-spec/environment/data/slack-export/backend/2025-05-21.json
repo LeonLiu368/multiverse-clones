@@ -1,0 +1,82 @@
+[
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1747818660.000000",
+    "client_msg_id": "954bffaa5f92a54856",
+    "text": "load test harness is set up in /tests/load. run with locust -f locustfile.py",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1747819020.000000",
+    "client_msg_id": "1367f535506610b5a7",
+    "text": "nice, running it now",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1747825320.000000",
+    "client_msg_id": "4fc727c3c121f0ab5b",
+    "text": "first run results in #platform-infra",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1747825680.000000",
+    "client_msg_id": "55cdea754b8da4ede5",
+    "text": "ooh exciting, heading over there",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1747826160.000000",
+    "client_msg_id": "f08fce9f5a979e602d",
+    "text": "same, this has been blocking us for too long",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

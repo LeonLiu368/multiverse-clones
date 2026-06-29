@@ -1,0 +1,178 @@
+[
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1747825800.000001",
+    "client_msg_id": "bf8f2f7500885ba790",
+    "text": "results: at sustained 100 req/s, rejection rate hits 62%. way too high",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1747825980.000000",
+    "client_msg_id": "e3ac57f10b50992fcd",
+    "text": "load test results are in. sharing the key findings here",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1747825980.000001",
+    "client_msg_id": "8e7dafac88af70b656",
+    "text": "setup: locust, 50 workers, ramp from 10 to 200 req/s over 5 min, then sustained 100 req/s for 10 min",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1747826100.000000",
+    "client_msg_id": "5872ab1c2d770ca9c4",
+    "text": "that explains the partner A incident. those values are placeholder dev defaults, not prod-ready",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1747826340.000000",
+    "client_msg_id": "fa62e91c6b00dc4107",
+    "text": "current config: CAPACITY=50, REFILL_RATE=5.0 \u2014 this is what's in bucket.py right now",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1747826580.000000",
+    "client_msg_id": "4ccd473c3ab6a5655f",
+    "text": "bucket drains in under 0.5s at peak. refill at 5 tokens/s means clients wait ~9s for recovery",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1747826820.000000",
+    "client_msg_id": "341633bd690dbc0318",
+    "text": "so what do we actually need? partner A is ~80-100 req/s peak. partner B is lower, ~40 req/s",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1747827000.000000",
+    "client_msg_id": "19ee341b55659d938f",
+    "text": "yeah whoever set 50/5.0 must have just put in round numbers. not based on any real traffic data",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1747827480.000000",
+    "client_msg_id": "022006f9a07aece324",
+    "text": "we want the limiter to handle normal partner traffic without any rejections under steady load",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1747828200.000000",
+    "client_msg_id": "d3fa84b89d69cde650",
+    "text": "and we want burst tolerance \u2014 partners send a batch at job start then steady-state",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U5CC9DC7FA7",
+    "type": "message",
+    "ts": "1747828560.000000",
+    "client_msg_id": "9fcf0a86d47c48013d",
+    "text": "so CAPACITY needs to absorb a burst and REFILL_RATE needs to be high enough to recover quickly",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "olivia",
+      "real_name": "Olivia",
+      "display_name": "olivia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

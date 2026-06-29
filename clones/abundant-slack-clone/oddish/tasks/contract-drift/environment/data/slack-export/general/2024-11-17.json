@@ -1,0 +1,66 @@
+[
+  {
+    "user": "U0FEBC363B6",
+    "type": "message",
+    "ts": "1731840360.000001",
+    "client_msg_id": "7654e7dd0832bb2cc7",
+    "text": "Welcome to the new folks joining this week! \ud83d\udc4b",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "heidi",
+      "real_name": "Heidi",
+      "display_name": "heidi",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U88FA846E5F",
+    "type": "message",
+    "ts": "1731844560.000000",
+    "client_msg_id": "3611e85d3a8327c866",
+    "text": "Morning everyone \u2615",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "victor",
+      "real_name": "Victor",
+      "display_name": "victor",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UA15F8B81A1",
+    "type": "message",
+    "ts": "1731845700.000000",
+    "client_msg_id": "e65d2db75475dde9b1",
+    "text": "Welcome to the new folks joining this week! \ud83d\udc4b",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "ivan",
+      "real_name": "Ivan",
+      "display_name": "ivan",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UFD1CF5E271",
+    "type": "message",
+    "ts": "1731860220.000000",
+    "client_msg_id": "e2ffccb6f34fa69bef",
+    "text": "All-hands moved to Thursday \u2014 see calendar invite.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "grace",
+      "real_name": "Grace",
+      "display_name": "grace",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

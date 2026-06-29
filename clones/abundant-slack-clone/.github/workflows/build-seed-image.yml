@@ -1,0 +1,51 @@
+name: build-seed-image
+
+# Publish a `slack-seed:<dataset>` image — a tiny image carrying a PRE-BUILT SQLite DB for a Slack
+# export under selfcontained/seeds/<dataset>/export. Tasks then pull the ready DB at build time:
+#   COPY --from=ghcr.io/abundant-ai/slack-seed:<dataset> /slack.prebuilt.db /opt/slack.prebuilt.db
+# so a real-world export lives in ONE versioned image, not committed into every task.
+#
+# For LARGE / off-repo exports, build + push locally instead with selfcontained/base/build-seed.sh
+# (no need to commit the data). This CI path is for small, shared, committed datasets.
+on:
+  workflow_dispatch:
+    inputs:
+      dataset:
+        description: "seed dataset folder under selfcontained/seeds/<dataset>/export"
+        required: true
+        default: eng-2021q1
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  REGISTRY: ghcr.io/abundant-ai
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push seed image
+        run: |
+          DS="${{ inputs.dataset }}"
+          test -d "selfcontained/seeds/${DS}/export" || { echo "::error::no export at selfcontained/seeds/${DS}/export"; exit 1; }
+          docker buildx build \
+            --build-context "export=selfcontained/seeds/${DS}/export" \
+            --build-arg "SLACK_SERVICE=${REGISTRY}/slack-service:slack-mcp-oss" \
+            -f selfcontained/base/Dockerfile.seed \
+            -t "${REGISTRY}/slack-seed:${DS}" \
+            --platform linux/amd64 --push .
+          echo "pushed ${REGISTRY}/slack-seed:${DS}"
+
+# One-time: set the slack-seed package visibility to PUBLIC (org → Packages) so Oddish/Modal pull
+# it without credentials, same as slack-service.

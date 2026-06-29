@@ -1,0 +1,98 @@
+[
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1730715240.000000",
+    "client_msg_id": "3919b63d6693eea27a",
+    "text": "PSA: rotate your API tokens this sprint.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U0AA1C221CA",
+    "type": "message",
+    "ts": "1730718240.000000",
+    "client_msg_id": "b150fac7a93b387f29",
+    "text": "PSA: rotate your API tokens this sprint.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "trent",
+      "real_name": "Trent",
+      "display_name": "trent",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1730718780.000000",
+    "client_msg_id": "1966043e80bf87dccd",
+    "text": "Office closed on the 28th \u2014 public holiday.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U5CC9DC7FA7",
+    "type": "message",
+    "ts": "1730723340.000000",
+    "client_msg_id": "79bb84abd22895f80f",
+    "text": "Office closed on the 28th \u2014 public holiday.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "olivia",
+      "real_name": "Olivia",
+      "display_name": "olivia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U5CC9DC7FA7",
+    "type": "message",
+    "ts": "1730723580.000000",
+    "client_msg_id": "81e2b323549c88a1a5",
+    "text": "All-hands moved to Thursday \u2014 see calendar invite.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "olivia",
+      "real_name": "Olivia",
+      "display_name": "olivia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1730740320.000000",
+    "client_msg_id": "e8277d343fd6f5c638",
+    "text": "Morning everyone \u2615",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

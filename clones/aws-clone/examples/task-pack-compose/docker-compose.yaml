@@ -1,0 +1,38 @@
+services:
+  agent:
+    build:
+      context: ../..
+      dockerfile: examples/task-pack-compose/Dockerfile.agent
+    image: aws-clone-task-agent:local
+    depends_on:
+      aws:
+        condition: service_healthy
+    environment:
+      AWS_ENDPOINT_URL: http://aws:4566
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_DEFAULT_REGION: us-east-1
+
+  aws:
+    image: aws-clone-service:local
+    hostname: aws
+    environment:
+      AWS_CLONE_STATE_FILE: /data/aws-clone/state.json
+      AWS_CLONE_RUNTIME_STATE_FILE: /var/lib/aws-clone/state.json
+      AWS_CLONE_ENABLE_ADMIN_API: "1"
+      AWS_CLONE_ADMIN_TOKEN: test-admin-token-acme-eval
+      AWS_ENDPOINT_URL: http://localhost:4566
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_DEFAULT_REGION: us-east-1
+    volumes:
+      - ../data/aws-clone/state.json:/data/aws-clone/state.json:ro
+      - aws-clone-runtime:/var/lib/aws-clone
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:4566/_localstack/health', timeout=1).read(); urllib.request.urlopen('http://localhost/api/healthz', timeout=1).read()\""]
+      interval: 2s
+      timeout: 2s
+      retries: 60
+
+volumes:
+  aws-clone-runtime:

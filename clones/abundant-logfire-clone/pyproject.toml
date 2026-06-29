@@ -1,0 +1,8 @@
+[project]
+name = "logfire-clone"
+version = "0.0.1"
+description = "Thin Logfire Query API clone — POST /v2/query SQL over a records table (DuckDB), for agent-eval."
+requires-python = ">=3.9"
+dependencies = ["duckdb>=1.0"]
+[tool.hatch.build.targets.wheel]
+packages = ["logfire_clone"]

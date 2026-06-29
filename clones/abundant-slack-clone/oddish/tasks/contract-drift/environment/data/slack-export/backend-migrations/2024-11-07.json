@@ -1,0 +1,82 @@
+[
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1730971080.000000",
+    "client_msg_id": "8d01a7ef9139231476",
+    "text": "Added an index on events(recorded_at) \u2014 3x query speedup.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UFD1CF5E271",
+    "type": "message",
+    "ts": "1730980020.000000",
+    "client_msg_id": "01985674ded93f4d82",
+    "text": "Schema migration for the new analytics tables landed in staging.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "grace",
+      "real_name": "Grace",
+      "display_name": "grace",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U0FEBC363B6",
+    "type": "message",
+    "ts": "1730997000.000000",
+    "client_msg_id": "ddcded221e2189c96e",
+    "text": "Moving secrets to Vault this sprint.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "heidi",
+      "real_name": "Heidi",
+      "display_name": "heidi",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U5CC9DC7FA7",
+    "type": "message",
+    "ts": "1730997120.000000",
+    "client_msg_id": "0bcff0b0010f344f74",
+    "text": "Moving secrets to Vault this sprint.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "olivia",
+      "real_name": "Olivia",
+      "display_name": "olivia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U0AA1C221CA",
+    "type": "message",
+    "ts": "1731021540.000000",
+    "client_msg_id": "5ce6c8a6bf920e3f0f",
+    "text": "analytics schema v2 migration notes: new field names, recorded_at replaces timestamp",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "trent",
+      "real_name": "Trent",
+      "display_name": "trent",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

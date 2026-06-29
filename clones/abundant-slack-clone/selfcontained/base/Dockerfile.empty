@@ -1,0 +1,14 @@
+# syntax=docker/dockerfile:1
+# slack-gateway:empty — the SHARED empty gateway: the Slack API gateway with NO baked data. A task
+# using this as its `slack` sidecar mounts its OWN small export at /data/slack-export (or an overlay
+# at /data/slack-overlay) and slack-boot imports it at standup. Use this when a task wants a clean,
+# fully-custom workspace instead of the real prod corpus (slack-gateway:prod-v1).
+ARG SLACK_SERVICE=ghcr.io/abundant-ai/slack-service:slack-mcp-oss
+FROM ${SLACK_SERVICE}
+# Carry the latest boot + importer + gateway (name_normalized, tokenized search, num_members, the
+# overlay import). No /opt/slack.prebuilt.db, so slack-boot starts empty and imports whatever the
+# task mounts (/data/slack-export for a full workspace, /data/slack-overlay for an overlay).
+COPY slack-boot.sh /usr/local/bin/slack-boot.sh
+COPY import_export.py /opt/import_export.py
+COPY slackgw /opt/slackgw
+RUN chmod +x /usr/local/bin/slack-boot.sh

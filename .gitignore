@@ -1,0 +1,19 @@
+# Runtime / build cruft — never commit these even if a clone generates them locally.
+# (Seed data like fixture.json / *-state.json IS intentional and is NOT ignored.)
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+node_modules/
+dist/
+build/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.DS_Store
+
+# Local clone runtime databases (regenerated from seed data)
+*.db
+*.sqlite
+*.sqlite3

@@ -1,0 +1,82 @@
+[
+  {
+    "user": "UA15F8B81A1",
+    "type": "message",
+    "ts": "1731749280.000000",
+    "client_msg_id": "b17922a993ccfe48b7",
+    "text": "Trial conversion analytics deck ready for review.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "ivan",
+      "real_name": "Ivan",
+      "display_name": "ivan",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1731750720.000000",
+    "client_msg_id": "41b4ccdad6fd8ce90a",
+    "text": "Roadmap review next Tuesday.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1731763980.000000",
+    "client_msg_id": "8bf002ba59920dfe11",
+    "text": "User research sessions scheduled for Thursday.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1731765180.000000",
+    "client_msg_id": "7d9584701f749ae258",
+    "text": "Roadmap review next Tuesday.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U1BEEF78000",
+    "type": "message",
+    "ts": "1731776880.000000",
+    "client_msg_id": "22de78c53b47c91aac",
+    "text": "Customer asked about bulk export \u2014 adding to backlog.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "mallory",
+      "real_name": "Mallory",
+      "display_name": "mallory",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]
