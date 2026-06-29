@@ -284,10 +284,39 @@ button.sm { padding: 5px 11px; font-size: 12px; }
 }
 .picklist label:hover { background: var(--panel2); }
 .picklist input { width: auto; accent-color: var(--accent); }
-.plan {
-  margin-top: 16px; background: #080b10; border: 1px solid var(--line); border-radius: var(--r-sm);
-  padding: 14px; font: 11.5px/1.6 var(--mono); color: #c3cfde;
-  max-height: 340px; overflow: auto; white-space: pre-wrap;
+/* generated-spec result panel */
+.plan { margin-top: 16px; border: 1px solid var(--line); border-radius: var(--r-sm); overflow: hidden; background: #080b10; }
+.plan-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 12px; border-bottom: 1px solid var(--line); background: var(--panel2);
+}
+.plan-title { font: 600 11px var(--mono); color: var(--muted); letter-spacing: .3px; }
+.plan-pre {
+  margin: 0; padding: 12px 14px; font: 11.5px/1.6 var(--mono); color: #c3cfde;
+  max-height: 300px; overflow: auto; white-space: pre;
+}
+.plan-todos { margin: 0; padding: 2px 14px 12px 30px; }
+.plan-todos li { color: var(--warn); font-size: 12px; line-height: 1.7; }
+.plan .grp { padding: 0 14px; margin: 10px 0 4px; }
+.plan-cmd {
+  margin: 4px 12px 12px; padding: 8px 11px; border-radius: 6px; border: 1px solid var(--line2);
+  background: var(--panel); color: var(--accent); font: 11.5px var(--mono); overflow: auto; white-space: pre;
+}
+
+/* custom checkboxes (multiselect + picklist) — replace the boxy native control */
+.ms-item input[type="checkbox"], .picklist input[type="checkbox"] {
+  appearance: none; -webkit-appearance: none; width: 16px; height: 16px; flex-shrink: 0;
+  border: 1px solid var(--line2); border-radius: 4px; background: var(--panel2);
+  cursor: pointer; position: relative; transition: background .12s, border-color .12s;
+}
+.ms-item input[type="checkbox"]:hover, .picklist input[type="checkbox"]:hover { border-color: #4a5566; }
+.ms-item input[type="checkbox"]:checked, .picklist input[type="checkbox"]:checked { background: var(--accent); border-color: var(--accent); }
+.ms-item input[type="checkbox"]:checked::after, .picklist input[type="checkbox"]:checked::after {
+  content: ""; position: absolute; left: 5px; top: 2px; width: 4px; height: 8px;
+  border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(42deg);
+}
+.ms-item input[type="checkbox"]:focus-visible, .picklist input[type="checkbox"]:focus-visible {
+  outline: none; box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
 .muted { color: var(--muted); }

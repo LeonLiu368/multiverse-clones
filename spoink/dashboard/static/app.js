@@ -259,11 +259,17 @@ $("#genPlan").onclick = async () => {
         resolution_pr: $("#anchorPr").value,
       }),
     });
-    const o = $("#planOut"); o.hidden = false;
-    o.textContent = "// spec.json — complete the TODOs, then:\n"
-      + "// python -m spoink.pipeline spec.json --out generated-tasks/\n\n"
-      + JSON.stringify(r.spec, null, 2)
-      + "\n\n// TODO before generating:\n" + r.todos.map((t) => "//  · " + t).join("\n");
+    const o = $("#planOut"); o.hidden = false; o.innerHTML = "";
+    const specText = JSON.stringify(r.spec, null, 2);
+    const copy = el("button", { className: "ghost sm", textContent: "copy" });
+    copy.onclick = () => { navigator.clipboard?.writeText(specText); toast("spec.json copied"); };
+    o.append(
+      el("div", { className: "plan-head" }, [el("span", { className: "plan-title", textContent: "spec.json" }), copy]),
+      el("pre", { className: "plan-pre", textContent: specText }),
+      el("div", { className: "grp", textContent: "to finish before generating" }),
+      el("ul", { className: "plan-todos" }, (r.todos || []).map((t) => el("li", { textContent: t }))),
+      el("div", { className: "plan-cmd", textContent: "python -m spoink.pipeline spec.json --out generated-tasks/" }),
+    );
   } catch (e) { toast(e.message, true); }
 };
 
