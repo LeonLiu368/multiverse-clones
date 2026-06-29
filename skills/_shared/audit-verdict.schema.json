@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Clone Audit Verdict",
+  "description": "Machine-readable output of clone-audit. Consumed by clone-creation to close the creator/auditor loop. One object per audited clone.",
+  "type": "object",
+  "required": ["clone", "audited_at", "standard_version", "meets_standard", "requirements", "action_items"],
+  "additionalProperties": false,
+  "properties": {
+    "clone": { "type": "string", "description": "clone folder name, e.g. aws-clone" },
+    "commit": { "type": "string", "description": "git sha audited" },
+    "audited_at": { "type": "string", "description": "YYYY-MM-DD" },
+    "standard_version": { "type": "string", "const": "clone-standard-v1" },
+    "fidelity_tier": {
+      "type": "object",
+      "required": ["declared", "observed"],
+      "properties": {
+        "declared": { "enum": ["T0", "T1", "T2", "T3"] },
+        "observed": { "enum": ["T0", "T1", "T2", "T3"] }
+      }
+    },
+    "meets_standard": { "type": "boolean", "description": "true iff every gating requirement passes" },
+    "gating_passed": { "type": "integer" },
+    "gating_total": { "type": "integer" },
+    "requirements": {
+      "type": "object",
+      "description": "One entry per requirement R1..R6 (and R7 for the audit run itself).",
+      "patternProperties": {
+        "^R[1-7]$": {
+          "type": "object",
+          "required": ["result", "gating"],
+          "properties": {
+            "result": { "enum": ["pass", "partial", "fail"] },
+            "gating": { "type": "boolean" },
+            "evidence": { "type": "string" },
+            "sub": {
+              "type": "object",
+              "description": "optional per-sub-requirement results, e.g. R2 -> {a:pass, b:fail}",
+              "additionalProperties": { "enum": ["pass", "partial", "fail", "n/a"] }
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "coverage": {
+      "type": "object",
+      "description": "Summary of the R4/R5 coverage-matrix audit.",
+      "properties": {
+        "capabilities_total": { "type": "integer" },
+        "with_cli": { "type": "integer" },
+        "with_mcp": { "type": "integer" },
+        "parity_ok": { "type": "integer" },
+        "assessment_grade": { "type": "integer" },
+        "tested": { "type": "integer" }
+      }
+    },
+    "tests": {
+      "type": "object",
+      "properties": {
+        "passed": { "type": "integer" },
+        "total": { "type": "integer" },
+        "nop_reward": { "type": "number" },
+        "oracle_reward": { "type": "number" }
+      }
+    },
+    "action_items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["requirement", "gating", "summary"],
+        "properties": {
+          "requirement": { "type": "string", "pattern": "^R[1-7]$" },
+          "gating": { "type": "boolean" },
+          "priority": { "enum": ["P0", "P1", "P2"] },
+          "summary": { "type": "string" },
+          "where": { "type": "string", "description": "file/path or component to change" },
+          "acceptance": { "type": "string", "description": "how the next audit confirms it's fixed" }
+        }
+      }
+    }
+  }
+}
