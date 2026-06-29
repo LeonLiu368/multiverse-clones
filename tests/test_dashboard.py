@@ -60,9 +60,11 @@ def test_capture_guards(tmp_path, monkeypatch):
     assert r.status_code == 400 and "LINEAR_API_KEY" in r.json()["detail"]
 
 
-def test_slice_guards(tmp_path, monkeypatch):
+def test_rename_delete_guards(tmp_path, monkeypatch):
     c = _client(tmp_path, monkeypatch)
-    assert c.post("/api/slice", json={"run_id": "missing"}).status_code == 400
+    assert c.post("/api/runs/missing/rename", json={"name": "x"}).status_code == 404
+    assert c.delete("/api/runs/missing").status_code == 404
+    assert c.get("/api/published").json() == {"published": []}
 
 
 def test_github_multi_repo_capture(tmp_path, monkeypatch):

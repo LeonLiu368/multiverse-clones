@@ -24,10 +24,13 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
+import threading
+
 from ..slice import parse_cutoff
+from . import publish as pub
 from .jobs import Job, JobStore
 from .pipelines import plan_task_from_run
-from .sources import DEFAULT_T, SOURCES, source_summaries
+from .sources import DEFAULT_T, PUBLISHABLE, SOURCES, source_summaries
 
 # Load .env so the source credentials (SLACK_USER_TOKEN / LINEAR_API_KEY / LOGFIRE_READ_TOKEN)
 # are present — values stay in the process, never returned over the API.
@@ -53,18 +56,22 @@ async def _no_store(request, call_next):
         resp.headers["Cache-Control"] = "no-store"
     return resp
 store = JobStore(RUNS_DIR)
+published = pub.PublishedRegistry(str(Path(RUNS_DIR) / "_published.json"))
 
 
 # ----------------------------------------------------------------- request bodies
 class CaptureBody(BaseModel):
     source: str
     params: Dict[str, Any] = {}
+    name: str = ""
 
 
-class SliceBody(BaseModel):
-    run_id: str
-    cutoff: str = DEFAULT_T            # ISO/epoch/'YYYY-MM-DD HH:MM'
-    tz: Optional[str] = None
+class RenameBody(BaseModel):
+    name: str
+
+
+class PublishBody(BaseModel):
+    image: str
 
 
 # ----------------------------------------------------------------- sources / runs
@@ -91,7 +98,12 @@ def get_options(source_id: str, param: str, request: Request):
 
 @app.get("/api/runs")
 def get_runs():
-    return {"runs": store.list()}
+    runs = store.list()
+    for d in runs:
+        j = store.get(d["id"])
+        if j and j.status == "done":
+            d["metadata"] = _run_metadata(j)
+    return {"runs": runs}
 
 
 @app.get("/api/runs/{job_id}")
@@ -102,6 +114,7 @@ def get_run(job_id: str):
     d = job.to_dict()
     rd = store.run_dir(job_id)
     d["artifacts"] = sorted(p.name for p in rd.iterdir()) if rd.exists() else []
+    d["metadata"] = _run_metadata(job)
     return d
 
 
@@ -117,47 +130,90 @@ def capture(body: CaptureBody):
     def _do(job: Job) -> Dict[str, Any]:
         return src.capture(str(store.run_dir(job.id)), body.params)
 
-    label = body.params.get("until") or body.params.get("latest") or ""
-    job = store.submit("capture", src.id, body.params, _do, label=f"capture {src.label} {label}".strip())
+    name = body.name.strip() or f"{src.label} snapshot"
+    job = store.submit("capture", src.id, body.params, _do, name=name)
     return job.to_dict()
 
 
-# ----------------------------------------------------------------- slice (time-align to T)
-@app.post("/api/slice")
-def slice_run(body: SliceBody):
-    parent = store.get(body.run_id)
-    if not parent or parent.status != "done":
-        raise HTTPException(400, "parent run not found or not finished")
-    src = SOURCES.get(parent.source)
-    if not src or not src.can_slice or not src.slice:
-        raise HTTPException(400, f"{parent.source} does not support slicing (it is captured as-of-T)")
-    try:
-        cutoff = parse_cutoff(body.cutoff, body.tz)
-    except SystemExit as e:
-        raise HTTPException(400, str(e))
-
-    # slice writes its @T artifact into the SAME run dir as the parent capture
-    pdir = str(store.run_dir(body.run_id))
-    artifact = parent.report.get("artifact", src.artifact)
-
-    def _do(job: Job) -> Dict[str, Any]:
-        # mirror the parent's artifacts into this job dir for a self-contained sliced run
-        res = src.slice(pdir, artifact, cutoff)
-        # copy the produced @T file into this slice-job's dir so it stands alone
-        produced = res.get("artifact")
-        if produced and (Path(pdir) / produced).exists():
-            dest = store.run_dir(job.id) / produced
-            dest.parent.mkdir(parents=True, exist_ok=True)
-            if (Path(pdir) / produced).is_dir():
-                import shutil
-                shutil.copytree(Path(pdir) / produced, dest, dirs_exist_ok=True)
-            else:
-                dest.write_bytes((Path(pdir) / produced).read_bytes())
-        return res
-
-    job = store.submit("slice", src.id, {"cutoff": body.cutoff, "tz": body.tz}, _do,
-                       parent=body.run_id, label=f"slice @ {body.cutoff}")
+# ----------------------------------------------------------------- rename / delete
+@app.post("/api/runs/{job_id}/rename")
+def rename_run(job_id: str, body: RenameBody):
+    job = store.rename(job_id, body.name)
+    if not job:
+        raise HTTPException(404, "no such run")
     return job.to_dict()
+
+
+@app.delete("/api/runs/{job_id}")
+def delete_run(job_id: str):
+    if not store.delete(job_id):
+        raise HTTPException(404, "no such run")
+    return {"deleted": job_id}
+
+
+# ----------------------------------------------------------------- publish (bake + push to GHCR)
+@app.get("/api/runs/{job_id}/publish/suggest")
+def publish_suggest(job_id: str):
+    job = store.get(job_id)
+    if not job:
+        raise HTTPException(404, "no such run")
+    return {"image": pub.suggest_image(job.source, job.name or job.source),
+            "publishable": job.source in PUBLISHABLE,
+            "metadata": _run_metadata(job)}
+
+
+@app.post("/api/runs/{job_id}/publish")
+def publish_run(job_id: str, body: PublishBody):
+    job = store.get(job_id)
+    if not job or job.status != "done":
+        raise HTTPException(400, "run not found or not finished")
+    if job.source not in PUBLISHABLE:
+        raise HTTPException(400, f"{job.source} is not publishable (needs a single bakeable overlay)")
+    image = body.image.strip()
+    if not image:
+        raise HTTPException(400, "image ref required")
+    store.set_published(job_id, {"status": "publishing", "image": image})
+
+    def _bg():
+        try:
+            rec = pub.publish(job.source, str(store.run_dir(job_id)), image, job.report)
+            rec.update({"status": "done", "source": job.source, "run_id": job_id,
+                        "name": job.name, "metadata": _run_metadata(job)})
+            published.add(rec)
+            store.set_published(job_id, rec)
+        except Exception as e:  # noqa: BLE001
+            store.set_published(job_id, {"status": "error", "image": image, "error": str(e)[:500]})
+
+    threading.Thread(target=_bg, daemon=True).start()
+    return {"status": "publishing", "image": image}
+
+
+@app.get("/api/published")
+def get_published():
+    return {"published": published.list()}
+
+
+def _run_metadata(job: Job) -> Dict[str, Any]:
+    """Cleanly displayable metadata for a run (channels, repos, timestamps, location, counts)."""
+    r = job.report or {}
+    rd = store.run_dir(job.id)
+    md: Dict[str, Any] = {"as of": r.get("as_of"), "location": str(rd.resolve())}
+    if r.get("channels"):
+        md["channels"] = ", ".join(r["channels"])
+    if r.get("since"):
+        md["history"] = r["since"]
+    if r.get("team"):
+        md["team"] = r["team"]
+    if r.get("org"):
+        md["org"] = r["org"]
+    if r.get("repo_names"):
+        md["repos"] = ", ".join(r["repo_names"][:12]) + (" …" if len(r["repo_names"]) > 12 else "")
+    if r.get("counts"):
+        md.update({k: v for k, v in r["counts"].items()})
+    for k in ("incident_records", "overview_signatures", "issues_kept", "issues_dropped", "comments_kept", "repos"):
+        if r.get(k) is not None:
+            md[k.replace("_", " ")] = r[k]
+    return {k: v for k, v in md.items() if v is not None}
 
 
 # ----------------------------------------------------------------- view in seed-dashboard

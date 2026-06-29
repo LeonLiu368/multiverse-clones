@@ -68,6 +68,15 @@ class Source:
         return bool(os.environ.get(self.env_key)) if self.env_key else True
 
 
+def _resolve_t(v: Any) -> str:
+    """Resolve a 'snapshot as of' value to an ISO-Z timestamp. Empty / 'now' -> current UTC."""
+    from datetime import datetime, timezone
+    s = str(v or "").strip().lower()
+    if not s or s == "now":
+        return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    return str(v).strip()
+
+
 # =========================================================================== Slack
 def _capture_slack(run_dir: str, params: Dict[str, Any]) -> Dict[str, Any]:
     from .. import slack_export as sx
@@ -78,9 +87,8 @@ def _capture_slack(run_dir: str, params: Dict[str, Any]) -> Dict[str, Any]:
         raise CaptureError("slack: pick at least one channel")
     since = params.get("since") or "2y"
     oldest = sx.parse_oldest(since)
-    latest = None
-    if params.get("latest"):
-        latest = f"{parse_cutoff(params['latest'], params.get('tz') or None):.6f}"
+    as_of = _resolve_t(params.get("as_of"))
+    latest = f"{parse_cutoff(as_of, None):.6f}"
     client = sx.SlackClient(token)
     try:
         data = sx.fetch_workspace(client, channels, oldest, latest)
@@ -91,8 +99,8 @@ def _capture_slack(run_dir: str, params: Dict[str, Any]) -> Dict[str, Any]:
         rep = sx.build_report(probe, counts, data, since=since, stalls=client.rate_limit_stalls)
     finally:
         client.close()
-    return {"artifact": "slack-export", "counts": counts,
-            "sufficient": rep.get("sufficient_for_task_gen"), "report": rep}
+    return {"artifact": "slack-export", "as_of": as_of, "channels": channels, "since": since,
+            "counts": counts, "sufficient": rep.get("sufficient_for_task_gen"), "report": rep}
 
 
 def _slice_slack(run_dir: str, artifact: str, cutoff: float) -> Dict[str, Any]:
@@ -127,7 +135,9 @@ def _options_slack(param: str, **_) -> Dict[str, Any]:
 # =========================================================================== Linear
 def _capture_linear(run_dir: str, params: Dict[str, Any]) -> Dict[str, Any]:
     from .. import linear_export as lx
+    from ..slice import parse_cutoff, slice_tracker
     key = _require_env("LINEAR_API_KEY")
+    as_of = _resolve_t(params.get("as_of"))
     client = lx.LinearClient(key)
     try:
         data = lx.fetch_workspace(client, params.get("team") or None)
@@ -136,8 +146,12 @@ def _capture_linear(run_dir: str, params: Dict[str, Any]) -> Dict[str, Any]:
         rep = lx.build_report(probe, state, data)
     finally:
         client.close()
+    # snapshot as-of: creation-cut the tracker to the chosen moment (issues/comments <= as_of)
+    sl = slice_tracker(state, parse_cutoff(as_of, None))
     (Path(run_dir) / "state.json").write_text(json.dumps(state, indent=2, ensure_ascii=False))
-    return {"artifact": "state.json", "team": rep.get("team"), "counts": rep.get("counts"),
+    return {"artifact": "state.json", "as_of": as_of, "team": rep.get("team"),
+            "issues_kept": sl.get("issues_kept"), "issues_dropped": sl.get("issues_dropped"),
+            "comments_kept": sl.get("comments_kept"),
             "sufficient": rep.get("sufficient_for_task_gen"), "report": rep}
 
 
@@ -171,10 +185,10 @@ def _capture_logfire(run_dir: str, params: Dict[str, Any]) -> Dict[str, Any]:
     from datetime import datetime, timedelta, timezone
     from .. import logfire_export as gx
     token = _require_env("LOGFIRE_READ_TOKEN")
-    until = params.get("until") or DEFAULT_T
+    as_of = _resolve_t(params.get("as_of"))
     incident_hours = float(params.get("incident_hours") or 2.0)
     period_days = float(params.get("period_days") or 365.0)
-    cutoff = datetime.fromisoformat(until.replace("Z", "+00:00")).astimezone(timezone.utc)
+    cutoff = datetime.fromisoformat(as_of.replace("Z", "+00:00")).astimezone(timezone.utc)
     fz = lambda d: d.strftime("%Y-%m-%dT%H:%M:%SZ")
     client = gx.LogfireClient(token)
     try:
@@ -184,8 +198,9 @@ def _capture_logfire(run_dir: str, params: Dict[str, Any]) -> Dict[str, Any]:
     finally:
         client.close()
     (Path(run_dir) / "logfire.json").write_text(json.dumps(data, indent=2))
+    (Path(run_dir) / "records.json").write_text(json.dumps(data.get("incident", []), indent=2))  # gateway bake input
     (Path(run_dir) / "gauge-state.json").write_text(json.dumps(gx.to_gauge_state(data), indent=2))
-    return {"artifact": "logfire.json", "gauge_artifact": "gauge-state.json",
+    return {"artifact": "logfire.json", "gauge_artifact": "gauge-state.json", "as_of": as_of,
             "incident_records": rep.get("incident_records"),
             "overview_signatures": rep.get("overview_signatures"),
             "sufficient": rep.get("sufficient"), "report": rep}
@@ -246,6 +261,7 @@ def _capture_github(run_dir: str, params: Dict[str, Any]) -> Dict[str, Any]:
     $GHC_HYDRATE_BIN) + GITHUB_TOKEN. Empty repo selection = ALL repos in the org."""
     org = (params.get("org") or "").strip()
     repos = _as_list(params.get("repos"))
+    as_of = _resolve_t(params.get("as_of"))
     if not org and not repos:
         raise CaptureError("github: set an org/owner (and optionally pick repos)")
     ghc = os.environ.get("GHC_HYDRATE_BIN") or shutil.which("ghc-hydrate")
@@ -266,12 +282,13 @@ def _capture_github(run_dir: str, params: Dict[str, Any]) -> Dict[str, Any]:
                            capture_output=True, text=True, timeout=3600)
         (done if p.returncode == 0 else failed).append(
             full if p.returncode == 0 else {"repo": full, "err": (p.stderr or p.stdout)[-200:]})
-    manifest = {"org": org, "repos": done, "failed": failed, "count": len(done)}
+    manifest = {"org": org, "repos": done, "failed": failed, "count": len(done), "as_of": as_of}
     (snaps / "manifest.json").write_text(json.dumps(manifest, indent=2))
     if not done:
         raise CaptureError(f"github: all {len(repos)} snapshots failed; first: {failed[:1]}")
-    return {"artifact": "snapshots", "org": org, "repos": len(done),
-            "failed": len(failed), "note": "apply each --as-of T into one Forgejo at bake"}
+    return {"artifact": "snapshots", "org": org, "as_of": as_of, "repos": len(done),
+            "repo_names": done, "failed": len(failed),
+            "note": "apply each --as-of T into one Forgejo at bake"}
 
 
 # =========================================================================== helpers + registry
@@ -281,6 +298,9 @@ def _as_list(v: Any) -> List[str]:
     return [s.strip() for s in str(v or "").split(",") if s.strip()]
 
 
+_AS_OF = Param("as_of", "Snapshot as of", "datetime", default="now",
+               help="the moment to snapshot — defaults to now")
+
 SOURCES: Dict[str, Source] = {
     "slack": Source(
         id="slack", label="Slack", env_key="SLACK_USER_TOKEN", kind="slack-export",
@@ -289,9 +309,8 @@ SOURCES: Dict[str, Source] = {
         params=[
             Param("channels", "Channels", "multiselect", required=True, discover="channels",
                   help="pick the channels to capture (you're a member of the rich private ones)"),
-            Param("since", "From", "text", default="2y", help="90d | 12h | all | YYYY-MM-DD"),
-            Param("latest", "Up to (T)", "datetime", default=DEFAULT_T,
-                  help="newest message bound — the incident moment"),
+            Param("since", "History", "text", default="2y", help="how far back: 90d | 12h | all | YYYY-MM-DD"),
+            _AS_OF,
         ],
     ),
     "linear": Source(
@@ -299,18 +318,16 @@ SOURCES: Dict[str, Source] = {
         view_app="jira", can_slice=True, artifact="state.json",
         capture=_capture_linear, slice=_slice_linear, options=_options_linear,
         params=[
-            Param("team", "Team", "select", discover="team",
-                  help="blank = team with the most issues"),
+            Param("team", "Team", "select", discover="team", help="blank = team with the most issues"),
+            _AS_OF,
         ],
     ),
     "logfire": Source(
         id="logfire", label="Logfire", env_key="LOGFIRE_READ_TOKEN", kind="logfire-json",
         view_app="logfire", can_slice=False, artifact="logfire.json",
         capture=_capture_logfire, slice=None,
-        note="captured as-of T (no separate slice)",
         params=[
-            Param("until", "Cutoff (T)", "datetime", default=DEFAULT_T, required=True,
-                  help="telemetry is captured as-of this moment"),
+            _AS_OF,
             Param("incident_hours", "Incident window (hours)", "number", default="2"),
             Param("period_days", "Overview look-back (days)", "number", default="365"),
         ],
@@ -319,14 +336,18 @@ SOURCES: Dict[str, Source] = {
         id="github", label="GitHub", env_key="GITHUB_TOKEN", kind="ghc-snapshot",
         view_app="github", can_slice=False, artifact="snapshots",
         capture=_capture_github, slice=None, options=_options_github,
-        note="snapshot one or many repos (a whole org); T-aligned at bake (needs ghc-hydrate + GITHUB_TOKEN)",
+        note="snapshot one or many repos (a whole org); time-aligned at bake (needs ghc-hydrate + GITHUB_TOKEN)",
         params=[
             Param("org", "Org / owner", "text", required=True, help="e.g. abundant-ai"),
             Param("repos", "Repos", "multiselect", discover="repos",
                   help="pick repos to freeze; leave empty = ALL repos in the org"),
+            _AS_OF,
         ],
     ),
 }
+
+# which sources can be baked + pushed to GHCR (github needs a Forgejo hydrate, not a single image)
+PUBLISHABLE = {"slack", "linear", "logfire"}
 
 
 def source_summaries() -> List[Dict[str, Any]]:
@@ -334,5 +355,6 @@ def source_summaries() -> List[Dict[str, Any]]:
     return [{
         "id": s.id, "label": s.label, "kind": s.kind, "view_app": s.view_app,
         "env_key": s.env_key, "has_key": s.has_key(), "can_slice": s.can_slice,
+        "publishable": s.id in PUBLISHABLE,
         "note": s.note, "params": [p.__dict__ for p in s.params],
     } for s in SOURCES.values()]

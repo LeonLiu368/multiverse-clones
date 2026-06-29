@@ -27,24 +27,23 @@
           <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M8 1.6 13.7 5v6L8 14.4 2.3 11V5z"/><path d="M2.4 5 8 8.3 13.6 5M8 8.3v6.1"/></svg>
           <span>Task&nbsp;Creator</span>
         </button>
+        <button data-tab="published">
+          <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1.6 13.7 5 8 8.3 2.3 5z"/><path d="M2.3 11 8 14.4 13.7 11"/></svg>
+          <span>Published</span>
+        </button>
       </nav>
 
       <div class="side-t">
-        <label for="globalT">incident T</label>
-        <div class="side-t-in">
-          <input id="globalT" type="datetime-local" step="60" />
-          <select id="tzSelect" class="tzsel" aria-label="time zone"></select>
-        </div>
-        <div id="tzEcho" class="tz-echo"></div>
+        <label for="tzSelect">Time zone</label>
+        <select id="tzSelect" class="tzsel" aria-label="time zone"></select>
       </div>
-
-      <div class="side-foot">capture · slice · build</div>
+      <div class="side-foot">Capture · Snapshot · Publish</div>
     </aside>
 
     <main>
       <!-- SOURCES -->
       <section id="tab-sources" class="tab active">
-        <p class="hint">Capture a source as of <strong>T</strong>. Credentials come from <code>.env</code>.</p>
+        <p class="hint">Capture a source, snapshotted to a chosen moment (defaults to now).</p>
         <div id="sourceList" class="source-list"></div>
       </section>
 
@@ -52,7 +51,7 @@
       <section id="tab-runs" class="tab">
         <div class="grp-row">
           <h2 class="grp">Running</h2>
-          <button id="refresh" class="ghost sm">refresh</button>
+          <button id="refresh" class="ghost sm">Refresh</button>
         </div>
         <div id="running" class="runs"></div>
         <p id="runningEmpty" class="muted sm">Nothing running.</p>
@@ -63,23 +62,49 @@
 
       <!-- TASK CREATOR -->
       <section id="tab-tasks" class="tab">
-        <p class="hint">Bundle sliced surfaces @ <strong>T</strong> into an agent-eval task.</p>
+        <p class="hint">Bundle snapshotted surfaces into an agent-eval task.</p>
         <div class="task-grid">
           <div class="panel">
-            <h2 class="grp">1 · pick surfaces @ T</h2>
+            <h2 class="grp">1 · Pick surfaces</h2>
             <div id="taskRuns" class="picklist"></div>
           </div>
           <div class="panel">
-            <h2 class="grp">2 · code anchor</h2>
+            <h2 class="grp">2 · Code anchor</h2>
             <div class="field"><label>SUT repo</label><input id="anchorRepo" placeholder="abundant-ai/oddish" /></div>
-            <div class="field"><label>incident-tip commit</label><input id="anchorSha" placeholder="16595d17… (main @ T)" /></div>
-            <div class="field"><label>resolution PR (for the verifier)</label><input id="anchorPr" placeholder="#468" /></div>
-            <button id="genPlan">generate plan</button>
+            <div class="field"><label>Incident-tip commit</label><input id="anchorSha" placeholder="16595d17…" /></div>
+            <div class="field"><label>Resolution PR (for the verifier)</label><input id="anchorPr" placeholder="#468" /></div>
+            <button id="genPlan">Generate spec</button>
             <div id="planOut" class="plan" hidden></div>
           </div>
         </div>
       </section>
+
+      <!-- PUBLISHED -->
+      <section id="tab-published" class="tab">
+        <div class="grp-row">
+          <h2 class="grp">Published images</h2>
+          <button id="refreshPub" class="ghost sm">Refresh</button>
+        </div>
+        <div id="publishedList"></div>
+        <p id="publishedEmpty" class="muted sm">No published images yet — Publish a completed run.</p>
+      </section>
     </main>
+  </div>
+
+  <!-- PUBLISH MODAL -->
+  <div id="publishModal" class="modal" hidden>
+    <div class="sheet">
+      <div class="sheet-head"><h3>Publish snapshot</h3><button id="pubClose" class="x">×</button></div>
+      <div class="sheet-body">
+        <div class="grp">Metadata</div>
+        <div id="pubMeta" class="kv"></div>
+        <div class="field"><label>GHCR image</label><input id="pubImage" spellcheck="false" /></div>
+        <div id="pubStatus" class="pub-status"></div>
+      </div>
+      <div class="sheet-foot">
+        <button id="pubGo">Publish to GHCR</button>
+      </div>
+    </div>
   </div>
 
   <div id="toast"></div>
