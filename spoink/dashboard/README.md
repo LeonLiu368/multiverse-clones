@@ -10,6 +10,17 @@ pip install -e ".[dashboard]"          # fastapi + uvicorn + python-dotenv
 python -m spoink.dashboard              # http://localhost:8787
 ```
 
+**GitHub capture** additionally needs gh-cli-clone importable in *this* env (it drives
+`ghclone snapshot`); the other sources capture in-process. Install it once:
+
+```bash
+pip install -e <multiverse-clones>/clones/gh-cli-clone   # provides `ghclone` / `ghc-hydrate`
+```
+
+The dashboard auto-resolves it (`$GHC_HYDRATE_BIN` → a `ghc-hydrate` on PATH → `python -m
+ghclone.cli.admin`). Publishing a GitHub run also needs the `ghc-service` image present
+(`scripts/images.sh build` in gh-cli-clone, or a GHCR pull) + a GHCR login for the push.
+
 ## What it does
 
 - **Sources** (`SLACK_USER_TOKEN`, `LINEAR_API_KEY`, `LOGFIRE_READ_TOKEN`) are auto-detected from

@@ -15,10 +15,13 @@ Each Source declares:
 """
 from __future__ import annotations
 
+import importlib.util
 import json
 import os
+import shlex
 import shutil
 import subprocess
+import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
@@ -253,6 +256,26 @@ def _options_github(param: str, **kw) -> Dict[str, Any]:
     return {"kind": "multiselect", "options": opts}
 
 
+def _ghc_hydrate_cmd() -> List[str]:
+    """Resolve how to invoke gh-cli-clone's snapshot CLI, most-explicit first:
+      1. $GHC_HYDRATE_BIN (an explicit path/launcher),
+      2. a `ghc-hydrate` console script on PATH,
+      3. the importable `ghclone` package (installed in the dashboard's own venv) —
+         run as `python -m ghclone.cli.admin`, so a plain `pip install` is enough.
+    """
+    explicit = os.environ.get("GHC_HYDRATE_BIN")
+    if explicit:
+        return shlex.split(explicit) if " " in explicit else [explicit]
+    found = shutil.which("ghc-hydrate")
+    if found:
+        return [found]
+    if importlib.util.find_spec("ghclone") is not None:
+        return [sys.executable, "-m", "ghclone.cli.admin"]
+    raise CaptureError(
+        "github: gh-cli-clone not available — `pip install -e "
+        "<multiverse-clones>/clones/gh-cli-clone` into this env, or set $GHC_HYDRATE_BIN")
+
+
 def _capture_github(run_dir: str, params: Dict[str, Any]) -> Dict[str, Any]:
     """Freeze one OR MANY GitHub repos to a snapshot artifact via `ghc-hydrate snapshot` — i.e.
     a whole org's GitHub state. T-alignment is deferred to bake time (`apply --as-of T` per repo
@@ -263,9 +286,7 @@ def _capture_github(run_dir: str, params: Dict[str, Any]) -> Dict[str, Any]:
     as_of = _resolve_t(params.get("as_of"))
     if not org and not repos:
         raise CaptureError("github: set an org/owner (and optionally pick repos)")
-    ghc = os.environ.get("GHC_HYDRATE_BIN") or shutil.which("ghc-hydrate")
-    if not ghc:
-        raise CaptureError("github: ghc-hydrate not found (set $GHC_HYDRATE_BIN or install gh-cli-clone)")
+    ghc_cmd = _ghc_hydrate_cmd()
     token = _gh_token()
     if not repos:                                   # empty selection -> snapshot the whole org
         repos = [r["name"] for r in _list_org_repos(org, token)]
@@ -277,7 +298,7 @@ def _capture_github(run_dir: str, params: Dict[str, Any]) -> Dict[str, Any]:
     for r in repos:
         full = r if "/" in r else f"{org}/{r}"
         out = snaps / full.replace("/", "__")
-        p = subprocess.run([ghc, "snapshot", full, "--out", str(out), "--token", token],
+        p = subprocess.run([*ghc_cmd, "snapshot", full, "--out", str(out), "--token", token],
                            capture_output=True, text=True, timeout=3600)
         (done if p.returncode == 0 else failed).append(
             full if p.returncode == 0 else {"repo": full, "err": (p.stderr or p.stdout)[-200:]})

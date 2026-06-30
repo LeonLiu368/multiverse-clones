@@ -67,6 +67,24 @@ def test_rename_delete_guards(tmp_path, monkeypatch):
     assert c.get("/api/published").json() == {"published": []}
 
 
+def test_ghc_hydrate_cmd_resolution(tmp_path, monkeypatch):
+    """github capture resolves the snapshot CLI: explicit bin > PATH > importable package."""
+    _client(tmp_path, monkeypatch)
+    from spoink.dashboard import sources as S
+
+    monkeypatch.setenv("GHC_HYDRATE_BIN", "/opt/ghc-hydrate")
+    assert S._ghc_hydrate_cmd() == ["/opt/ghc-hydrate"]
+    # a launcher with args is split
+    monkeypatch.setenv("GHC_HYDRATE_BIN", "python -m ghclone.cli.admin")
+    assert S._ghc_hydrate_cmd() == ["python", "-m", "ghclone.cli.admin"]
+    # none available -> a clear, actionable CaptureError (not a stale message)
+    monkeypatch.delenv("GHC_HYDRATE_BIN", raising=False)
+    monkeypatch.setattr(S.shutil, "which", lambda _n: None)
+    monkeypatch.setattr(S.importlib.util, "find_spec", lambda _n: None)
+    with pytest.raises(S.CaptureError, match="gh-cli-clone not available"):
+        S._ghc_hydrate_cmd()
+
+
 def test_github_is_publishable_via_forge_bake(tmp_path, monkeypatch):
     """GitHub bakes a ghc-service Forgejo image (boot->hydrate->commit), forwarding as_of."""
     _client(tmp_path, monkeypatch)   # ensure modules import with the tmp env
