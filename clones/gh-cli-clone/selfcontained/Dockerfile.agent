@@ -1,14 +1,19 @@
-# Thin ghc-agent — tools ONLY: the `ghc` (gh-compatible) CLI + `ghc-mcp` MCP server, both thin
-# clients of the Forgejo-backed gateway over HTTP. No forge, no server data. `gh` is symlinked to
-# `ghc`. ghclone carries no server source (the server is the separate Forgejo gateway), so nothing
-# to strip. NO clone source remains beyond the installed client package.
+# Thin ghc-agent — tools ONLY: `ghc` (gh-compatible) CLI + `ghc-mcp` MCP server (thin clients of the
+# Forgejo-backed gateway over HTTP). `gh` symlinks to `ghc`. ghclone carries no server source (the
+# server is the separate Forgejo gateway), so nothing to strip.
 FROM python:3.12-slim
 RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates jq \
     && rm -rf /var/lib/apt/lists/*
-COPY ghclone /tmp/ghclone
-RUN pip install --no-cache-dir /tmp/ghclone && rm -rf /tmp/ghclone && \
+WORKDIR /tmp/build
+COPY pyproject.toml README.md ./
+COPY ghclone ./ghclone
+# install runtime deps manually (ghclone declares few), then the package itself (--no-deps) so the
+# ghc / ghc-mcp console entry points are created.
+RUN pip install --no-cache-dir httpx typer rich pydantic platformdirs "mcp>=1.0" && \
+    pip install --no-cache-dir --no-deps . && \
+    cd / && rm -rf /tmp/build && \
     ln -sf "$(command -v ghc)" /usr/local/bin/gh && \
-    ghc --version >/dev/null && python -c "import ghclone.cli.main, ghclone.mcp.server" && \
-    echo "thin ghc-agent OK (ghc + ghc-mcp load; gh symlinked)"
+    ghc --help >/dev/null && python -c "import ghclone.cli.main, ghclone.mcp.server" && \
+    echo "thin ghc-agent OK (ghc + ghc-mcp; gh symlinked)"
 WORKDIR /workspace
 CMD ["sleep", "infinity"]
