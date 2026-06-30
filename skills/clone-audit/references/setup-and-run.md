@@ -20,9 +20,21 @@ baking task data into a per-task gateway image (instead of mount) is **R2.d**; a
 `FROM <svc>-service` (backend artifacts leak into the agent) trends toward an **R2.k/c** finding.
 
 ## 2. Cold boot (no registry creds needed — R1.5)
+> **Standalone-boot gotcha (read before you `up`).** A Harbor task's `environment/docker-compose.yaml`
+> only **overrides** `main` (env, `depends_on`) — it has **no `build:`/`image:` for `main`**, because
+> Harbor injects the agent build at run time. So `docker compose -f environment/docker-compose.yaml up`
+> alone fails: *"service main has neither an image nor a build context specified."* Merge the override
+> asset to reproduce Harbor's injection:
+> ```bash
+> cd <task>/environment
+> docker compose -f docker-compose.yaml \
+>   -f <skills>/clone-audit/assets/harbor-main-build.override.yaml up --build -d
+> ```
+> `assets/audit_harness.sh` auto-detects the missing `main` build and merges this for you.
+
 From a clean state (no leftover volumes/containers), with only documented env vars:
 ```bash
-docker compose -f <compose> up --build -d        # builds `main` + any build:+image: gateway, then up
+docker compose -f <compose> [-f harbor-main-build.override.yaml] up --build -d
 ```
 Assert, **observing actual behavior**:
 - the gateway reaches **healthy** (its `depends_on.condition: service_healthy` healthcheck fires) — R1.1
@@ -52,8 +64,14 @@ Then sanity-check the **other** path: `:empty` + a fixture mount also boots and 
 - **Multi-arch:** `docker buildx imagetools inspect ghcr.io/<org>/<svc>-service:prod-v1` lists
   `linux/amd64` **and** `linux/arm64` (amd64-only breaks `FROM <svc>-service` agent builds on arm dev
   machines).
-- **Leak:** `docker run --rm <agent-image> grep -rs '<task-answer>' /opt /app /usr/local` finds
-  nothing — the answer isn't reproducible from the baked gateway source shipped in the agent.
+- **Leak (3 checks — grep alone is insufficient):**
+  1. `docker run --rm <agent-image> grep -rs '<task-answer>' /opt /app /usr/local` → nothing (literal).
+     Scope to install dirs, **not** whole `/` (grep stalls on `/proc`,`/sys`); note `grep` exits **2**
+     when a dir is absent/empty — that's still "no leak", so don't treat non-zero as a hit in an `&&` chain;
+  2. `docker run --rm <agent-image> python -c 'import <pkg>.seed'` → **raises** (the recomputable-answer
+     leak that slipped past grep in the notion dogfood — an importable deterministic generator);
+  3. `docker run --rm <agent-image> sh -c 'find /opt -path "*/seed/*" -o -path "*/api/*"'` → empty
+     (the gateway's seed/API source was stripped from the agent, or the agent is on a neutral base).
 
 ## 3. nop / oracle (the load-bearing gate — R1.3)
 The verifier entrypoint is `tests/test.sh`, which must write `/logs/verifier/reward.txt`.

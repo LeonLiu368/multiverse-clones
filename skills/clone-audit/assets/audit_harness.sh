@@ -22,7 +22,22 @@ pass=0; fail=0
 ok()   { echo "PASS  $*"; pass=$((pass+1)); }
 no()   { echo "FAIL  $*"; fail=$((fail+1)); }
 
-dc() { docker compose -f "$COMPOSE" "$@"; }
+# A Harbor task compose omits main's build (Harbor injects it). If `main` has no build/image here,
+# auto-merge the override asset so the pair boots standalone (the #1 auditor blocker). Override-path:
+# set EXTRA_COMPOSE to a space-separated list of extra -f files, or drop harbor-main-build.override.yaml
+# next to this script.
+EXTRA_COMPOSE="${EXTRA_COMPOSE:-}"
+_here="$(cd "$(dirname "$0")" && pwd)"
+if ! grep -qE '^[[:space:]]*(build|image):' <(awk '/^[[:space:]]*main:/{f=1} f&&/^[[:space:]]*[a-z_]+:/&&!/main:/{exit} f' "$COMPOSE") 2>/dev/null; then
+  if [ -f "$_here/harbor-main-build.override.yaml" ]; then
+    EXTRA_COMPOSE="$EXTRA_COMPOSE $_here/harbor-main-build.override.yaml"
+    echo "INFO  main has no build/image — merging harbor-main-build.override.yaml"
+  else
+    echo "WARN  main has no build/image and no override found; standalone boot may fail (see asset)"
+  fi
+fi
+_files=(-f "$COMPOSE"); for f in $EXTRA_COMPOSE; do _files+=(-f "$f"); done
+dc() { docker compose "${_files[@]}" "$@"; }
 
 echo "== cold boot =="
 dc down -v >/dev/null 2>&1
@@ -69,15 +84,32 @@ else
   echo "SKIP  set GATEWAY_IMAGE to check multi-arch"
 fi
 
-echo "== image hygiene: answer not greppable in agent (R2.k leak) =="
-if [ -n "${ANSWER:-}" ] && [ -n "${AGENT_IMAGE:-}" ]; then
-  if docker run --rm "$AGENT_IMAGE" grep -rsq "$ANSWER" /opt /app /usr/local; then
-    no "LEAK: '$ANSWER' is greppable in $AGENT_IMAGE (R2.k)"
+echo "== image hygiene: no leak in agent — grep + import + source (R2.k) =="
+if [ -n "${AGENT_IMAGE:-}" ]; then
+  # (1) literal answer grep
+  if [ -n "${ANSWER:-}" ] && docker run --rm "$AGENT_IMAGE" grep -rsq "$ANSWER" /opt /app /usr/local; then
+    no "LEAK(grep): '$ANSWER' is greppable in $AGENT_IMAGE"
   else
-    ok "answer not present in baked gateway source inside agent"
+    ok "answer not greppable in agent ${ANSWER:+}"
+  fi
+  # (2) seed generator must NOT be importable — the recomputable-answer leak grep misses
+  if [ -n "${PKG:-}" ]; then
+    if docker run --rm "$AGENT_IMAGE" python -c "import ${PKG}.seed" 2>/dev/null; then
+      no "LEAK(import): ${PKG}.seed is importable in the agent — generator can recompute the world"
+    else
+      ok "${PKG}.seed not importable in agent"
+    fi
+  else
+    echo "SKIP  set PKG to test seed-generator import-reachability"
+  fi
+  # (3) no api/ or seed/ source dirs survive in the agent
+  if docker run --rm "$AGENT_IMAGE" sh -c 'find /opt /app -path "*/seed/*" -o -path "*/api/*" 2>/dev/null | grep -q .'; then
+    no "LEAK(source): api/ or seed/ source present in $AGENT_IMAGE — strip it from the agent Dockerfile"
+  else
+    ok "no api/ or seed/ source in agent"
   fi
 else
-  echo "SKIP  set ANSWER + AGENT_IMAGE to run the leak grep"
+  echo "SKIP  set AGENT_IMAGE to run the leak checks"
 fi
 
 echo "== isolation: no seed on disk in agent (R2.g/c) =="

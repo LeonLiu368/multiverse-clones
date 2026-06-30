@@ -87,8 +87,15 @@ Also fixed up front:
 - **GHCR publish contract (CI):** build the gateway on push-to-main with the built-in `GITHUB_TOKEN`
   (`permissions: packages: write`), tag `:latest`/`:<sha>`/`:prod-v1`/`:empty`, **multi-arch**
   (`linux/amd64,linux/arm64`). Make the package public or rely on `build:`+`image:`.
-- **Leak rule (R2.k):** the agent ships the gateway's source/baked corpus (`FROM <svc>-service`), so a
-  task answer must **not** be greppable from it — pick task data disjoint from the clone's seed/source.
+- **Leak rule (R2.k) — strip the generator from the agent.** If the agent is built `FROM <svc>-service`,
+  the gateway's **seed generator** rides along, and a *deterministic* generator lets the agent recompute
+  the answer even when no literal grep finds it (the notion dogfood shipped exactly this leak past its
+  own tests). The agent Dockerfile **must** `rm -rf` the `api/`+`seed/` packages (or build from a neutral
+  base with only client+CLI+MCP), AND pick task data disjoint from the clone's seed. Verify:
+  `python -c 'import <pkg>.seed'` raises in the agent; `find /opt -path '*/seed/*'` is empty.
+- **Build all three gateway images — don't drop `:empty`.** R2.b requires the full trio; the figma/canon
+  reference assets ship only base + `:prod-v1`, so a creator copying them silently omits `Dockerfile.empty`.
+  Write it explicitly (base image, no data, a mount target).
 
 Baking task data into a per-task gateway image, building the agent per-task, or shipping an amd64-only
 gateway are the canonical anti-patterns (gh-clone's gap; the figma multi-arch bug) — they fail R2.d/b/j/k.
@@ -121,7 +128,15 @@ Follow `service-clone-builder`'s phases 0–7, but gated by the standard:
 - **Label assessment-grade capabilities in `docs/COVERAGE.md`** as you build (R5) — don't make the
   auditor guess. Make ≥1 a write→read round-trip a bundled task exercises.
 - **Ship the tests you'd want the auditor to run.** If you write the R6 suite, the first audit is a
-  formality, not a discovery.
+  formality, not a discovery. Include the **import-leak** test (`import <pkg>.seed` must raise in the
+  agent) — a grep-only isolation test passes a recomputable-answer leak.
+- **Make local self-validation possible.** `tests/test.sh` writes `/logs/verifier/reward.txt`, which
+  isn't writable outside a container — honor a `REWARD_DIR` override so you can run nop/oracle locally
+  without docker.
+- **Hydrate derived response fields on write.** Real APIs return computed fields the client never sent
+  (Notion's `plain_text` on rich text, timestamps, derived ids). A naive store that persists agent
+  input verbatim silently breaks any verifier that reads that text back — hydrate on write, not just
+  on the seed path.
 - **Emit the clone spec** (`references/clone-spec.md`) — declared tier, image names, surfaces, state
   path, coverage-matrix location. The auditor reads it to orient; a missing/incorrect spec is itself
   an action item.

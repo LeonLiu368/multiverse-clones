@@ -1,0 +1,100 @@
+{
+  "clone": "notion-clone",
+  "commit": "a948c38",
+  "audited_at": "2026-06-29",
+  "standard_version": "clone-standard-v1",
+  "fidelity_tier": { "declared": "T2", "observed": "T2" },
+  "meets_standard": true,
+  "gating_passed": 7,
+  "gating_total": 7,
+  "requirements": {
+    "R1": {
+      "result": "pass",
+      "gating": true,
+      "evidence": "2-container agent+gateway booted via task compose + harbor-main-build.override.yaml; notion reached healthy then main started on the health gate; main reaches http://notion:3000/health by name ({\"status\":\"healthy\"}); build:+image: dual tagged ghcr.io/abundant-ai/notion-service:prod-v1 locally with NO registry creds (GHCR pull returned 'not found'); nop=0.0 then oracle=1.0 measured in the real docker shape via tests/test.sh + solution/solve.sh (verifier reads state back through the API)."
+    },
+    "R2": {
+      "result": "pass",
+      "gating": true,
+      "evidence": "P0 LEAK CLOSED and independently re-verified on a freshly built agent image. Agent Dockerfile (oddish/.../environment/Dockerfile) now COPYs to /tmp/notionclone-src, pip installs, then rm -rf's both the /tmp source tree AND site-packages api/+seed/, with build-time asserts. Three probes: (a) `grep -rs 'Rotate prod database creds' /opt /app /usr/local` -> nothing (bounded grep over site-packages/usr-local-bin/workspace -> exit 1); (b) `python -c 'import notionclone.seed'` -> ModuleNotFoundError (also seed.generator); (c) `find /opt /app -path '*/seed/*' -o -path '*/api/*'` -> empty; /opt and /tmp are empty. Tools still load (notion-cli --help OK; cli.main/mcp.server/client import). Same three re-confirmed inside the running agent; /srv/notion.db absent (SEALED). j PASS: :prod-v1 served baked corpus mount-free (search->1 Tasks db, users->5, no fixture). Multi-arch sub-aspect of k scored n/a: ghcr.io/abundant-ai/notion-service:prod-v1 not pullable, but CI declares platforms linux/amd64,linux/arm64 with packages: write + GITHUB_TOKEN.",
+      "sub": {
+        "a": "pass",
+        "b": "pass",
+        "c": "pass",
+        "d": "pass",
+        "e": "pass",
+        "f": "pass",
+        "g": "pass",
+        "h": "partial",
+        "i": "pass",
+        "j": "pass",
+        "k": "pass"
+      }
+    },
+    "R3": {
+      "result": "pass",
+      "gating": true,
+      "evidence": "notion-mcp stdio inside main: initialize -> tools/list returned 13 tools. Both CLI and MCP are thin clients of one NotionClient (src/notionclone/client.py); 36 parity-suite tests green. 14 CLI agent cmds map to 13 MCP tools (archive folds into notion_update_page, documented)."
+    },
+    "R4": {
+      "result": "pass",
+      "gating": true,
+      "evidence": "docs/COVERAGE.md present and machine-checkable; 14 capabilities each map to a real endpoint + CLI + MCP. Envelopes verified prior audit and spot-re-confirmed live this run (search Tasks db, users->5). List shape {object,results,next_cursor,has_more}, dashed-UUID ids, typed errors {object:error,status,code,message,request_id} with 404/401/400."
+    },
+    "R5": {
+      "result": "pass",
+      "gating": true,
+      "evidence": "7 capabilities labelled assessment-grade (>=5 required). Write->read round-trip exercised end-to-end by notion-db-triage (query Tasks -> update Status=Done + Done checkbox -> create 'rotated' comment), oracle=1.0 with the verifier reading all three back through the API. Query-database grammar / typed-error envelopes unchanged in source from prior audit."
+    },
+    "R6": {
+      "result": "pass",
+      "gating": true,
+      "evidence": "Clean python:3.12-slim container, pip install '.[mcp]' pytest, pytest tests/: 73 passed, 1 skipped (isolation test test_cli_mcp_parity.py needs CLONE_STATE_PATH; holds in the agent container: SEALED, no /srv/notion.db). Covers every endpoint (test_api.py) + every CLI cmd + every MCP tool + parity + isolation (test_cli_mcp_parity.py), each with happy + >=1 error path. Counts unchanged from prior audit (no regression)."
+    },
+    "R7": {
+      "result": "pass",
+      "gating": false,
+      "evidence": "audit-report.md + audit-verdict.json overwritten in clones/notion-clone/audit/ with the re-check result, the canon+seeding grid, the three leak-probe outputs, and non-gating action items."
+    }
+  },
+  "coverage": {
+    "capabilities_total": 14,
+    "with_cli": 14,
+    "with_mcp": 13,
+    "parity_ok": 14,
+    "assessment_grade": 7,
+    "tested": 14
+  },
+  "tests": {
+    "passed": 73,
+    "total": 74,
+    "nop_reward": 0.0,
+    "oracle_reward": 1.0
+  },
+  "action_items": [
+    {
+      "requirement": "R2",
+      "gating": false,
+      "priority": "P1",
+      "summary": "notion-cli seed remains a registered agent subcommand and exits 0 on its ModuleNotFoundError traceback. Harmless (the seed module is physically stripped, so it cannot seed), but a confusing world-building affordance still advertised in --help.",
+      "where": "src/notionclone/cli/main.py (seed Typer group) + agent strip step",
+      "acceptance": "In the agent container, notion-cli --help does not advertise 'seed' and notion-cli seed generate exits non-zero with a clean operator-only message."
+    },
+    {
+      "requirement": "R6",
+      "gating": false,
+      "priority": "P2",
+      "summary": "Isolation test skips by default (no CLONE_STATE_PATH in CI) and its world-building check is narrow. Add an agent-image test asserting 'import notionclone.seed' raises and 'grep -rs <answer> /opt' is empty -- exactly the regression this audit caught manually.",
+      "where": "tests/test_cli_mcp_parity.py::test_isolation_no_seed_on_disk (~line 268) and the world-building-absent check",
+      "acceptance": "Suite runs with 0 skips in the agent container; a new test fails on a pre-fix agent image and passes on the post-fix image."
+    },
+    {
+      "requirement": "R2",
+      "gating": false,
+      "priority": "P2",
+      "summary": "Multi-arch publish is unverifiable: ghcr.io/abundant-ai/notion-service:prod-v1 returns 'not found', so the declared linux/amd64,linux/arm64 manifest can't be inspected. Scored n/a per the hardened standard (not fail) since the build:+image: dual preserves R1.5 portability and the source-leak aspect of R2.k passes.",
+      "where": ".github/workflows/notion-service-image.yml + GHCR package visibility",
+      "acceptance": "GHCR package is public (or a read token is provided) and 'docker buildx imagetools inspect ghcr.io/abundant-ai/notion-service:prod-v1' lists both linux/amd64 and linux/arm64."
+    }
+  ]
+}

@@ -28,6 +28,13 @@
       "branch": "main",
       "commit": "3f54f708ade43e6b2d71deb7cdd67d4b9503e6e0"
     },
+    "notion-clone": {
+      "repo": null,
+      "branch": "main",
+      "commit": null,
+      "strategy": "authored-in-tree",
+      "note": "Handwritten T2 Notion clone authored directly in this monorepo (no upstream OSS); built to clone-standard-v1 via the clone-creation skill."
+    },
     "gauge": {
       "repo": "https://github.com/abundant-ai/gauge",
       "branch": "main",

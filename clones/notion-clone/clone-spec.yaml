@@ -1,0 +1,61 @@
+clone: notion-clone
+service: Notion API
+standard_version: clone-standard-v1
+fidelity_tier: T2                         # handwritten + a real database query grammar
+backed_by: handwritten                    # no faithful self-hostable Notion OSS exists
+
+# The two runtime containers: agent (built by Harbor) + gateway (pulled/seeded).
+gateway:
+  registry: ghcr.io/abundant-ai
+  base:  notion-service                   # API + CLI/MCP tools, NO data (R2.a)
+  prod:  notion-service:prod-v1           # corpus DB baked into the image (R2.j)
+  empty: notion-service:empty             # no data, a mount target (R2.b)
+  port: 3000
+  arches: [linux/amd64, linux/arm64]      # multi-arch publish (R2.k)
+  build_image_dual: true                  # service has build:+image: so it tags locally, no creds (R1.5)
+agent:
+  built_from: oddish/tasks/notion-db-triage/environment/Dockerfile
+  base: python:3.12-slim                  # neutral base; only the thin clients, no api/ no seed/
+  data_free: true
+
+seeding:                                  # BOTH paths exist
+  baked_db:                               # GHCR image DB seeding (the headline path)
+    image: notion-service:prod-v1
+    corpus_copy: "COPY notion_corpus.db /srv/notion.db"
+    serves_mount_free: true               # boots & serves the corpus with NO fixture mount (verified)
+  mount:                                  # empty + per-task fixture
+    image: notion-service:empty
+    fixture_env: NOTION_FIXTURE           # mounted into the GATEWAY only, never the agent
+    control_plane: /_control/seed         # token-gated alt path (NOTION_CONTROL_TOKEN)
+
+run:
+  compose: oddish/tasks/notion-db-triage/environment/docker-compose.yaml
+  service_name: notion                    # gateway name the agent reaches over HTTP
+  health_url: http://notion:3000/health
+  agent_service: main
+  env: [NOTION_API_URL, NOTION_TOKEN]     # documented env vars; nothing else needed to boot
+
+isolation:
+  agent_state_path: /srv/notion.db        # MUST NOT exist in the agent container (set as CLONE_STATE_PATH)
+  networks_exception: null                # no networks: block; Harbor injects network_mode
+
+surfaces:                                 # R3 — both thin clients of one HTTP API
+  http_api: src/notionclone/api           # the single source of truth
+  shared_client: src/notionclone/client.py
+  cli:  { name: notion-cli, entry: "notionclone.cli.main:app", commands: 16 }  # 14 agent + 2 offline seed (operator)
+  mcp:  { name: notion-mcp, entry: "notionclone.mcp.server:main", tools: 13 }
+
+coverage_matrix: docs/COVERAGE.md         # R4
+assessment_grade_count: 7                 # R5 (need >=5)
+round_trip_task: oddish/tasks/notion-db-triage   # write->read round-trip (R5.2)
+
+tests:
+  suite: tests/                           # every endpoint/CLI/MCP + parity + isolation
+  cold_boot: true
+  nop_oracle_task: oddish/tasks/notion-db-triage   # nop=0 / oracle=1 (verified local + 2-container docker)
+
+operator_only:                            # deliberately NOT exposed to the agent (R2.g)
+  - seed.generate
+  - seed.load
+  - _control.seed
+  - _control.reset

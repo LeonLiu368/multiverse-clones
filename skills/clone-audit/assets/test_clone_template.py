@@ -122,6 +122,15 @@ def test_isolation_no_seed_on_disk():
         pytest.skip("set CLONE_STATE_PATH to assert isolation")
     assert not os.path.exists(state), f"LEAK: {state} present — agent could read the answer key"
 
+def test_seed_generator_not_importable():
+    """R6.3/R2.k: a deterministic seed generator left in the agent lets it RECOMPUTE the answer,
+    even when grep-for-the-answer finds nothing. The gateway's seed/ package must not import here."""
+    pkg = os.environ.get("CLONE_PKG")               # e.g. "notionclone"
+    if not pkg:
+        pytest.skip("set CLONE_PKG to assert the seed generator is stripped from the agent")
+    with pytest.raises(ModuleNotFoundError):
+        __import__(f"{pkg}.seed")
+
 def test_world_building_tools_absent_from_agent():
     """R6.3: import/seed/hydrate must not be callable from the agent."""
     for op in ("seed", "import-state", "hydrate", "snapshot"):

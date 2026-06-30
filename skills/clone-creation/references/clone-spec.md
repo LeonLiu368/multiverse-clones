@@ -80,6 +80,14 @@ operator_only:                          # capabilities deliberately NOT exposed 
   for the target list, `isolation.*` for the seal check, and `tests.*` to find the suite — then writes
   `audit-verdict.json` with `fidelity_tier.{declared,observed}` and per-requirement results.
 
+## Registering an authored (non-vendored) clone
+`clones/MANIFEST.json` was built for **vendored** clones (it requires an upstream `repo` + `commit`).
+A clone you **author in-tree** has neither. Register it with an `authored-in-tree` strategy and null
+provenance so the manifest stays complete:
+```json
+"notion-clone": { "strategy": "authored-in-tree", "repo": null, "commit": null, "spec": "clone-spec.yaml" }
+```
+
 ## Minimum viable spec
 If you only fill part of it, fill: `gateway.{base,prod,empty,port}`, `agent.built_from`,
 `seeding.baked_db`, `run.*`, `surfaces.{cli,mcp}`, `coverage_matrix`, `isolation.agent_state_path`.

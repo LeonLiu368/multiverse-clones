@@ -124,7 +124,10 @@ without guessing and the next audit can confirm the fix.
 - `references/functional-coverage.md` — building & auditing the coverage matrix; assessment-grade rubric.
 - `references/unit-tests.md` — what to test per surface; parity + isolation tests; generating missing tests.
 - `references/reporting.md` — filling the report + verdict; the meets-standard decision.
-- `assets/audit_harness.sh` — standup → health-probe → teardown helper.
+- `assets/audit_harness.sh` — standup → health → baked-DB seed → leak → teardown helper (auto-merges
+  the main-build override).
+- `assets/harbor-main-build.override.yaml` — merge to boot a `custom_docker_compose` task standalone
+  (reproduces Harbor's injected `main` build).
 - `assets/test_clone_template.py` — pytest template for endpoint / CLI / MCP / parity / isolation tests.
 - `_shared/clone-standard.md` — the contract. `_shared/audit-report-template.md`,
   `_shared/audit-verdict.schema.json` — output formats.

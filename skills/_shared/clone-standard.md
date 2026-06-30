@@ -65,7 +65,7 @@ gates (j, k) that make the gateway portable:
 | h | identity registry wired (people resolve through `abundant-identity`) | A |
 | i | skill + catalog + PROD-OVERLAY doc present | A |
 | **j** | **GHCR image DB seeding**: `:prod-v1` bakes the corpus DB into the image and boots healthy **with no mount**, pulled as-is from GHCR (or build-tagged to the GHCR name) | **G** |
-| **k** | **image hygiene**: gateway published **multi-arch** (`linux/amd64,linux/arm64`); agent on a neutral base; task answers **not greppable** in the gateway source baked into the agent | G |
+| **k** | **image hygiene**: gateway published **multi-arch** (`linux/amd64,linux/arm64`); agent on a neutral base; the gateway's **API/seed/generator source is stripped from the agent image** and the task answer is neither greppable nor recomputable from anything left on the agent | G |
 
 ### The two seeding paths (set per task, both required to exist)
 
@@ -82,10 +82,24 @@ The gateway carries data one of two ways — a clone must support **both** so an
 - **GHCR publish contract:** CI builds the gateway on push-to-main, `permissions: packages: write`
   with the built-in `GITHUB_TOKEN`, tags `:latest`/`:<sha>`/`:prod-v1`/`:empty`, **multi-arch**. The
   package is public **or** the task uses the `build:`+`image:` dual so it never needs a pull (R1.5).
-- **Leak rule (R2.k):** because the agent's tools ship `FROM <svc>-service` (or copy its source), the
-  baked corpus/seed generator lives in the agent container — so a task answer must **not** be a value
-  reproducible from that source. Check: `docker run --rm <agent-image> grep -rs '<answer>' /opt /app
-  /usr/local` finds nothing.
+- **Scoring multi-arch when the package isn't pullable:** the `build:`+`image:` dual (R1.5) lets a
+  clone pass R1 while its GHCR package stays private/unpublished — so multi-arch can be **locally
+  unverifiable**. Score the multi-arch half of R2.k as **`n/a` (unverified)**, not `pass`, with the
+  reason recorded; it stays a gating *blocker* only at publish time. A local build is single-arch by
+  default and that alone is **not** an R2.k failure — the failure is shipping an amd64-only image to
+  GHCR, or a CI workflow that doesn't declare both arches.
+- **Leak rule (R2.k) — grep is necessary but NOT sufficient.** Because the agent's tools may ship
+  `FROM <svc>-service` (or copy its source), the baked corpus/**seed generator** can ride along in the
+  agent container. A deterministic generator is a leak even when the answer is a *computed* value no
+  literal grep would find — the agent can just `import` it and regenerate the world. The agent
+  Dockerfile must therefore **strip the gateway's API + seed/generator source** (`rm -rf` the
+  `api/`/`seed/` packages, or build the agent from a neutral base with only the client+CLI+MCP). Three
+  checks, all must hold:
+  1. `docker run --rm <agent-image> grep -rs '<answer>' /opt /app /usr/local` finds nothing (literal);
+  2. `docker run --rm <agent-image> python -c 'import <pkg>.seed'` **raises** ModuleNotFoundError
+     (generator not importable — the leak that slipped past grep in the notion dogfood);
+  3. no `api/`/`seed/` source dirs survive in the agent (`find /opt -path '*/seed/*' -o -path '*/api/*'`
+     is empty).
 
 ## R3 — Tool surface: CLI **and** MCP, in parity  (Gating)
 
@@ -138,8 +152,10 @@ An endpoint/tool is **assessment-grade** when it has ≥3 of:
   **every** CLI command, and **every** MCP tool — happy path + at least one error path each.
 - **R6.2 (G)** **Parity tests**: for each capability, a CLI call and the matching MCP tool call
   return the same underlying data (proving R3.3).
-- **R6.3 (G)** **Isolation test**: asserts the agent image has no seed data on disk
-  (`[ ! -e <state path> ]`) and can only reach state over HTTP.
+- **R6.3 (G)** **Isolation test**: asserts the agent has no seed data on disk (`[ ! -e <state path> ]`),
+  can only reach state over HTTP, **and that the gateway's seed generator is not importable**
+  (`import <pkg>.seed` raises) nor its `api/`/`seed/` source present — grep-for-the-answer alone is
+  insufficient when the answer is recomputable (see R2.k).
 - **R6.4 (G)** The suite runs green from a cold `docker compose up` and is wired into CI or `test.sh`.
 - **R6.5 (A)** Envelope-shape assertions pin id prefixes, error codes, and pagination cursors.
 

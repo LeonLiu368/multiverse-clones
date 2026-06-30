@@ -26,9 +26,15 @@ most important action item.
 ### Canon + seeding parity grid (R2 detail) — a–i canon, j–k GHCR image DB seeding
 | a | b | c | d | e | f | g | h | i | j | k |
 |---|---|---|---|---|---|---|---|---|---|---|
-| ✅ | ✅ | ✅ | ⚠️ | ❌ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ⚠️ |
+| ✅ | ✅ | ✅ | ⚠️ | ❌ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ❔ |
 
-*(j = `:prod-v1` bakes the corpus DB and serves it mount-free, pulled from GHCR; k = multi-arch publish + no answer leak in the agent.)*
+*(✅ pass · ⚠️ partial · ❌ fail · ❔ n/a / unverifiable locally — add a one-line "why" below the grid.
+j = `:prod-v1` bakes the corpus DB and serves it mount-free, pulled from GHCR; k = source/seed stripped
+from the agent + no recomputable leak + multi-arch publish. Score multi-arch ❔ when the GHCR package
+isn't pullable — note it, don't pass it.)*
+
+> **Auditor harness notes (if any):** record anything you had to reconstruct to run this audit (e.g.
+> merging Harbor's `main` build override to boot the task standalone) — it's feedback for the skill.
 
 ### Coverage matrix audit (R4/R5 detail)
 | Capability | Endpoint | CLI | MCP | Envelope OK | Assessment-grade | Tested |

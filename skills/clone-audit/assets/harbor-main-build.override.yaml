@@ -1,0 +1,21 @@
+# harbor-main-build.override.yaml
+#
+# A Harbor task's environment/docker-compose.yaml only *overrides* `main` (env, depends_on) — it has
+# no `build:`/`image:` for it, because Harbor injects the agent build at run time (context =
+# environment/, dockerfile = Dockerfile). So `docker compose -f environment/docker-compose.yaml up`
+# ALONE fails: "service main has neither an image nor a build context specified".
+#
+# Merge THIS file to reproduce Harbor's injected build and boot the agent+gateway pair standalone:
+#
+#   docker compose \
+#     -f environment/docker-compose.yaml \
+#     -f /path/to/skills/clone-audit/assets/harbor-main-build.override.yaml \
+#     up --build -d
+#
+# Run it from inside the task's environment/ dir (so the build context "." is environment/).
+# Adjust `dockerfile:` if the agent Dockerfile isn't named `Dockerfile`.
+services:
+  main:
+    build:
+      context: .
+      dockerfile: Dockerfile

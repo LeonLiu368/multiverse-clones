@@ -25,13 +25,20 @@ assert normalize(cli_out) == normalize(mcp_out)   # same data, both thin clients
 A failure here means the surfaces have drifted — they aren't both reading one HTTP source of truth
 (violates R3.2). This is exactly the regression the standard exists to catch.
 
-## Isolation test (R6.3)
+## Isolation test (R6.3) — grep is not enough
 ```python
 # in the agent image / main container
 assert not os.path.exists(STATE_PATH)             # no seed on disk  (R2.g/c)
 assert health_over_http() == 200                  # state reachable only via the service
+# the leak that passed grep in the notion dogfood: a recomputable answer via an importable generator
+with pytest.raises(ModuleNotFoundError):
+    __import__(f"{PKG}.seed")                      # gateway generator NOT importable from the agent
+assert not glob.glob(f"{OPT}/**/seed/*", recursive=True)   # no seed/ or api/ source survives
 ```
 Also assert world-building entrypoints (import/seed/hydrate/snapshot) are **not** on the agent's PATH.
+**Why:** a deterministic seed generator left in the agent lets the agent regenerate the world and read
+the answer off-disk, even when a literal grep for the answer finds nothing (the answer is *computed*).
+Strip the gateway's `api/`+`seed/` from the agent image (or build it from a neutral base).
 
 ## Running from cold (R6.4)
 Tests must pass from a fresh `docker compose up` — not against a warm dev box with hand-loaded state.
