@@ -58,11 +58,11 @@ jobs:
             platforms: linux/amd64,linux/arm64
           - clone: google-workspace-clone
             service: gworkspace-service-mv
-            context: clones/google-workspace-clone/docker
-            base_file: Dockerfile
-            empty_file: Dockerfile
-            prodv1_file: Dockerfile.prod-v1
-            agent_file: Dockerfile.agent
+            context: clones/google-workspace-clone
+            base_file: docker/Dockerfile
+            empty_file: docker/Dockerfile
+            prodv1_file: docker/Dockerfile.prod-v1
+            agent_file: docker/Dockerfile.agent
             agent_image: gworkspace-agent-mv
             corpus_prep: ""        # gws_corpus.db is committed under docker/
             platforms: linux/amd64,linux/arm64

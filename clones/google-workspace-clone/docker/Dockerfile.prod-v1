@@ -12,6 +12,6 @@
 ARG BASE=ghcr.io/abundant-ai/gworkspace-service:empty
 FROM ${BASE}
 
-COPY gws_corpus.db /srv/gws.db
+COPY docker/gws_corpus.db /srv/gws.db
 ENV GWS_DB=/srv/gws.db
 # (entrypoint, port, etc. inherited from the base)
