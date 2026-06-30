@@ -1,0 +1,124 @@
+{
+  "clone": "gauge",
+  "commit": "36e78af",
+  "audited_at": "2026-06-30",
+  "standard_version": "clone-standard-v1",
+  "fidelity_tier": {
+    "declared": "T2",
+    "observed": "T2"
+  },
+  "meets_standard": false,
+  "gating_passed": 3,
+  "gating_total": 6,
+  "requirements": {
+    "R1": {
+      "result": "fail",
+      "gating": true,
+      "evidence": "agent->gateway HTTP works (gcx via http://gauge) and gateway reaches healthy under `docker compose -p gaugeaudit -f examples/task-pack-compose/docker-compose.yaml up`; BUT no tests/test.sh and no solution/solve.sh exist in the repo, so nop=0/oracle=1 cannot be measured (R1.3 unsatisfiable).",
+      "sub": {
+        "R1.1": "pass",
+        "R1.2": "pass",
+        "R1.3": "fail",
+        "R1.4": "pass",
+        "R1.5": "pass"
+      }
+    },
+    "R2": {
+      "result": "fail",
+      "gating": true,
+      "evidence": "`docker manifest inspect ghcr.io/abundant-ai/gauge-service:{prod-v1,empty}` -> ABSENT (R2.b fail); no baked-DB Dockerfile, only empty-image + mounted state.json (R2.j fail); GHCR :main is amd64-only and the agent ships the full gauge/server API source with `import gauge.server.state` succeeding (R2.k partial).",
+      "sub": {
+        "a": "pass",
+        "b": "fail",
+        "c": "pass",
+        "d": "pass",
+        "e": "pass",
+        "f": "partial",
+        "g": "pass",
+        "h": "partial",
+        "i": "partial",
+        "j": "fail",
+        "k": "partial"
+      }
+    },
+    "R3": {
+      "result": "pass",
+      "gating": true,
+      "evidence": "Live MCP stdio client listed 24 tools; `search_dashboards{query:'payment'}` returns byte-identical record to `gcx dashboards search payment --json`; both are thin clients of one HTTP API (gauge.cli.client). `--disable-write` filters create_annotation."
+    },
+    "R4": {
+      "result": "pass",
+      "gating": true,
+      "evidence": "~19 capabilities enumerated by calling each; every CLI group + 24 MCP tools map to real /api/* endpoints with Grafana-shaped envelopes (verified whoami, search, ds/query PromQL+LogQL, alert-instances, annotations). Behavioral coverage complete; docs/COVERAGE.md is missing (advisory action item)."
+    },
+    "R5": {
+      "result": "pass",
+      "gating": true,
+      "evidence": ">=6 assessment-grade capabilities (PromQL query grammar, LogQL query grammar, alert-instances list+filter, panel-query exec, annotation create write->read RT, label-values multi-step); annotation create RT exercised end-to-end (create id:1 -> list reads back -> gaugectl mutations shows annotation.create); realistic errors (exit 2 / isError / JSON-RPC -32602)."
+    },
+    "R6": {
+      "result": "partial",
+      "gating": true,
+      "evidence": "`pytest -q` => 26 passed from clean install; broad endpoint/CLI/MCP smoke incl MCP error path (-32602). Missing: no in-process parity test (R6.2 CLI==MCP) and no importable-generator isolation test (R6.3 `import gauge.server.state` raises). Docker isolation assertions exist only in test_task_pack_compose, which is gated off unless GAUGE_RUN_DOCKER_SMOKE=1, and they check only file/gaugectl absence, not the importable leak."
+    },
+    "R7": {
+      "result": "pass",
+      "gating": true,
+      "evidence": "audit/audit-report.md and audit/audit-verdict.json emitted per _shared schemas with per-requirement results, evidence, and ordered file-scoped action items."
+    }
+  },
+  "coverage": {
+    "capabilities_total": 19,
+    "with_cli": 18,
+    "with_mcp": 18,
+    "parity_ok": 18,
+    "assessment_grade": 6,
+    "tested": 19
+  },
+  "tests": {
+    "passed": 26,
+    "total": 26
+  },
+  "action_items": [
+    {
+      "requirement": "R2",
+      "gating": true,
+      "priority": "P0",
+      "summary": "Add the :prod-v1 baked-DB image (and :empty) so the GHCR image-DB-seeding path exists; switching empty<->prod-v1 must be the image tag alone.",
+      "where": "new Dockerfile.prod-v1 (COPY corpus state.json -> GAUGE_STATE_FILE); .github/workflows/build-service-image.yml tags :prod-v1 and :empty",
+      "acceptance": "`docker compose up` of :prod-v1 with NO volume answers `gcx dashboards search payment --json` with corpus data; `docker manifest inspect ghcr.io/abundant-ai/gauge-service:prod-v1` exists."
+    },
+    {
+      "requirement": "R1",
+      "gating": true,
+      "priority": "P0",
+      "summary": "Bundle at least one Harbor task with a verifier entrypoint and oracle so nop=0/oracle=1 is measurable.",
+      "where": "tests/test.sh (writes /logs/verifier/reward.txt), solution/solve.sh, task environment/docker-compose.yaml",
+      "acceptance": "nop run -> reward.txt = 0.0; oracle (solve.sh) -> reward.txt = 1.0."
+    },
+    {
+      "requirement": "R2",
+      "gating": true,
+      "priority": "P0",
+      "summary": "Publish the gateway multi-arch and strip the gateway API/seed source from the agent image (currently amd64-only and `import gauge.server.state` succeeds in the agent).",
+      "where": ".github build-push-action add `platforms: linux/amd64,linux/arm64`; examples/task-pack-compose/Dockerfile.agent copy only gcx/mcp-grafana + client module, or `rm -rf /opt/gaugecli/gauge/server` after the COPY",
+      "acceptance": "`docker manifest inspect ...:prod-v1` lists amd64+arm64; in agent `python -c 'import gauge.server.state'` raises ModuleNotFoundError and `find /opt -path '*/server/*'` is empty."
+    },
+    {
+      "requirement": "R6",
+      "gating": true,
+      "priority": "P1",
+      "summary": "Add default-run parity tests (R6.2: gcx --json output == matching MCP tool output per capability) and an importable-generator isolation test (R6.3).",
+      "where": "tests/test_parity.py, tests/test_isolation.py (not gated behind GAUGE_RUN_DOCKER_SMOKE)",
+      "acceptance": "`pytest -q` runs the new parity + isolation tests green without GAUGE_RUN_DOCKER_SMOKE=1; isolation asserts `import gauge.server.state` raises and no seed on disk."
+    },
+    {
+      "requirement": "R4",
+      "gating": false,
+      "priority": "P2",
+      "summary": "Add a machine-checkable docs/COVERAGE.md coverage matrix with assessment-grade labelling.",
+      "where": "docs/COVERAGE.md",
+      "acceptance": "every row maps capability -> endpoint + CLI + MCP tool (or N/A with reason); >=5 rows flagged assessment-grade."
+    }
+  ]
+}

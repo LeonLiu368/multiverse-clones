@@ -47,3 +47,7 @@ true with no P0s, say the clone is **eval-ready** and the loop has converged.
 ## Multi-clone runs
 Auditing the whole fleet? Emit one verdict JSON per clone and a roll-up table (clone × R1–R6 + meets)
 so the fleet's readiness is visible at a glance and the worst gaps are obvious to prioritize.
+**Running audits in parallel:** give each a unique `COMPOSE_PROJECT_NAME` (or `docker compose -p`) —
+compose's default project name is the compose *directory* name, so two clones whose task lives in a
+like-named dir (e.g. `examples/task-pack-compose`) will share containers and one agent will come up on
+the other's image. `audit_harness.sh` now sets a path-derived project name automatically.

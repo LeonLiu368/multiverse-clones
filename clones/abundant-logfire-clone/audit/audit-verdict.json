@@ -1,0 +1,124 @@
+{
+  "clone": "abundant-logfire-clone",
+  "commit": "36e78af262eac179dc118662003f9ab5f7067b3f",
+  "audited_at": "2026-06-30",
+  "standard_version": "clone-standard-v1",
+  "fidelity_tier": { "declared": "T2", "observed": "T2" },
+  "meets_standard": false,
+  "gating_passed": 2,
+  "gating_total": 6,
+  "requirements": {
+    "R1": {
+      "result": "fail",
+      "gating": true,
+      "evidence": "No docker-compose, no tests/test.sh, no solution/solve.sh in the clone (find . -name test.sh -o -name solve.sh => none; no environment/ dir). nop/oracle unmeasurable. Two-container images exist (logfire-gateway, logfire-agent) but no Harbor wiring/healthcheck/depends_on."
+    },
+    "R2": {
+      "result": "fail",
+      "gating": true,
+      "evidence": "Gateway shipped as per-incident COPY-data image logfire-gateway:oddish-incident-534pm; no :prod-v1/:empty pair (buildx imagetools inspect :prod-v1 and :empty => not found on GHCR). Both images linux/amd64-only (docker image inspect => linux/amd64). Agent carries gateway API source /opt/logfire_clone/server.py (not stripped). Baked-DB mechanism works (incident gateway boots mount-free, serves 3292 records) but not as the prod-v1 contract.",
+      "sub": {
+        "a": "partial",
+        "b": "fail",
+        "c": "partial",
+        "d": "fail",
+        "e": "partial",
+        "f": "fail",
+        "g": "pass",
+        "h": "partial",
+        "i": "fail",
+        "j": "fail",
+        "k": "fail"
+      }
+    },
+    "R3": {
+      "result": "pass",
+      "gating": true,
+      "evidence": "CLI (logfire {query,exceptions,schema}) and MCP (arbitrary_query, find_exceptions, get_logfire_records_schema) both listed and called live. Both are thin clients of POST /v2/query via cli.query (no business logic in either). Parity verified: CLI `exceptions --limit 2` == MCP `find_exceptions {limit:2}` => EQUAL (byte-equal data)."
+    },
+    "R4": {
+      "result": "fail",
+      "gating": true,
+      "evidence": "No docs/COVERAGE.md exists (R4.1). Envelope fidelity itself is good: {schema:{fields:[{name,data_type}]},data:[...]} verified on /v2/query; real error envelopes (401 {detail}, 400 {error,details}, 404). But the required machine-checkable coverage matrix is absent."
+    },
+    "R5": {
+      "result": "pass",
+      "gating": true,
+      "evidence": "Small clone (>=3 bar). arbitrary_query and find_exceptions each satisfy >=3 of {stateful-read, multi-step, realistic errors, query grammar, devops-investigation shape}. DuckDB SQL query grammar over records (GROUP BY, time-window scoping) verified live = T2 discriminating surface. R5.2 write-read round-trip is N/A (read-only clone, no bundled task) — replaced by read-investigation chain; acceptable for a read-only telemetry API but no bundled task demonstrates it."
+    },
+    "R6": {
+      "result": "fail",
+      "gating": true,
+      "evidence": "No tests/ directory at all in the clone (find . -path tests => none). Zero coverage of endpoints/CLI/MCP; no parity test; no isolation test."
+    },
+    "R7": {
+      "result": "pass",
+      "gating": false,
+      "evidence": "audit-report.md + audit-verdict.json emitted into clones/abundant-logfire-clone/audit/."
+    }
+  },
+  "coverage": {
+    "capabilities_total": 4,
+    "with_cli": 3,
+    "with_mcp": 3,
+    "parity_ok": 3,
+    "assessment_grade": 2,
+    "tested": 0
+  },
+  "tests": {
+    "passed": 0,
+    "total": 0,
+    "nop_reward": -1,
+    "oracle_reward": -1
+  },
+  "action_items": [
+    {
+      "requirement": "R1",
+      "gating": true,
+      "priority": "P0",
+      "summary": "Add Harbor task scaffold: environment/docker-compose.yaml (agent main + logfire gateway, depends_on gateway healthcheck), tests/test.sh writing /logs/verifier/reward.txt, solution/solve.sh oracle.",
+      "where": "new environment/docker-compose.yaml, tests/test.sh, solution/solve.sh",
+      "acceptance": "docker compose up reaches healthy; bundled task scores nop=0.0 and oracle=1.0 in reward.txt."
+    },
+    {
+      "requirement": "R2",
+      "gating": true,
+      "priority": "P0",
+      "summary": "Produce the canon gateway image trio: logfire-service:prod-v1 (corpus baked, boots mount-free) and logfire-service:empty (no data, mount target). Switching tasks = tag swap.",
+      "where": "build.sh + CI workflow",
+      "acceptance": ":prod-v1 boots with no mount and answers a seeded POST /v2/query; :empty + mounted records.json serves the mounted corpus; buildx imagetools inspect resolves both tags."
+    },
+    {
+      "requirement": "R6",
+      "gating": true,
+      "priority": "P0",
+      "summary": "Add pytest suite covering every endpoint (/v2/query, /health), all 3 CLI commands, all 3 MCP tools (happy + >=1 error path each), plus parity and isolation tests.",
+      "where": "new tests/",
+      "acceptance": "pytest -q green from cold boot, wired into test.sh/CI; parity test asserts exceptions==find_exceptions and schema==get_logfire_records_schema; isolation test asserts [ ! -e /data/records.json ] in agent."
+    },
+    {
+      "requirement": "R4",
+      "gating": true,
+      "priority": "P1",
+      "summary": "Author docs/COVERAGE.md mapping each capability to endpoint + CLI + MCP + fidelity grade + assessment-grade label.",
+      "where": "new docs/COVERAGE.md",
+      "acceptance": "machine-checkable matrix exists and matches the audited coverage matrix."
+    },
+    {
+      "requirement": "R2",
+      "gating": true,
+      "priority": "P1",
+      "summary": "Image hygiene: publish both images multi-arch (linux/amd64,linux/arm64); strip gateway API source (server.py) from the agent image so it carries only the client + CLI + MCP.",
+      "where": "Dockerfile.agent + CI workflow",
+      "acceptance": "buildx imagetools inspect lists both arches; docker run --rm <agent> sh -c '[ ! -e /opt/logfire_clone/server.py ]' succeeds."
+    },
+    {
+      "requirement": "R2",
+      "gating": false,
+      "priority": "P2",
+      "summary": "Add a gateway healthcheck with start_period covering the ~9s corpus-load lag (observed under amd64 emulation) so depends_on: service_healthy does not race boot.",
+      "where": "Dockerfile / docker-compose.yaml healthcheck",
+      "acceptance": "gateway reports healthy only after corpus load; agent depends_on waits for it."
+    }
+  ]
+}

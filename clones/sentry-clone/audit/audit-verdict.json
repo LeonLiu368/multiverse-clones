@@ -1,0 +1,125 @@
+{
+  "clone": "sentry-clone",
+  "commit": "bf65a8e",
+  "audited_at": "2026-06-30",
+  "standard_version": "clone-standard-v1",
+  "fidelity_tier": {
+    "declared": "T2",
+    "observed": "T2"
+  },
+  "meets_standard": false,
+  "gating_passed": 4,
+  "gating_total": 6,
+  "requirements": {
+    "R1": {
+      "result": "partial",
+      "gating": true,
+      "evidence": "task-pack compose: agent+gateway both reach Healthy via `up --wait`; agent->gateway HTTP by name OK (curl http://sentry/api/healthz -> {ok:true}). But NO tests/test.sh or solution/solve.sh ships, so nop/oracle (R1.3) is unmeasurable; no bundled Harbor task."
+    },
+    "R2": {
+      "result": "fail",
+      "gating": true,
+      "evidence": "No :prod-v1/:empty image trio (imagetools inspect :prod-v1 -> not found; CI tags only :main/:sha-). Published :main is amd64-only (multi-arch fail). Agent image still carries gateway server/ API source. Empty+mount path works; isolation clean; grep+generator leak checks pass.",
+      "sub": {
+        "a": "pass",
+        "b": "fail",
+        "c": "pass",
+        "d": "pass",
+        "e": "pass",
+        "f": "partial",
+        "g": "pass",
+        "h": "partial",
+        "i": "partial",
+        "j": "fail",
+        "k": "partial"
+      }
+    },
+    "R3": {
+      "result": "pass",
+      "gating": true,
+      "evidence": "Live from agent: CLI `sentry issues get PAYMENTS-501` and MCP `get_issue` both return 1001/PAYMENTS-501/unresolved. MCP tools/list = 22 tools (5 writes). Both are thin clients of one HTTP API (SentryClient); no business logic in CLI/MCP."
+    },
+    "R4": {
+      "result": "partial",
+      "gating": true,
+      "evidence": "All endpoints documented in docs/API_COMPATIBILITY.md and behave correctly (envelopes Sentry-shaped: detail/error/statusCode, id prefixes PAYMENTS-501). But no machine-checkable docs/COVERAGE.md matrix exists, which R4.1 requires."
+    },
+    "R5": {
+      "result": "pass",
+      "gating": true,
+      "evidence": ">=8 assessment-grade capabilities (issue search w/ query grammar, stacktrace, suspect-commits, add_comment, assign, resolve, ignore, reopen). Write->read round-trip exercised live: resolve -> readback 'resolved' -> admin mutation log ['issue.resolve'] with before/after."
+    },
+    "R6": {
+      "result": "pass",
+      "gating": true,
+      "evidence": "18/18 pytest pass from cold checkout (py3.13). CLI smoke covers every command group; MCP covers all 22 tools incl disable-write; every endpoint hit; auth/admin error paths + mutation-log assertions present. Gaps: no dedicated CLI<->MCP parity test, no isolation/seed-importability test, thin on per-surface error paths (advisory)."
+    },
+    "R7": {
+      "result": "pass",
+      "gating": false,
+      "evidence": "audit-report.md + audit-verdict.json emitted into clones/sentry-clone/audit/."
+    }
+  },
+  "coverage": {
+    "capabilities_total": 23,
+    "with_cli": 23,
+    "with_mcp": 22,
+    "parity_ok": 22,
+    "assessment_grade": 8,
+    "tested": 23
+  },
+  "tests": {
+    "passed": 18,
+    "total": 18
+  },
+  "action_items": [
+    {
+      "requirement": "R2",
+      "gating": true,
+      "priority": "P0",
+      "summary": "No :prod-v1/:empty GHCR image trio; baked-DB mount-free boot path absent.",
+      "where": "new Dockerfile.prod-v1 (COPY corpus state.json -> $SENTRY_CLONE_STATE_FILE) + .github/workflows/build-service-image.yml tags",
+      "acceptance": "imagetools inspect ...:prod-v1 resolves; booting :prod-v1 with NO mount serves seeded issues; :empty boots and serves a mounted fixture; switching is the image tag alone."
+    },
+    {
+      "requirement": "R2",
+      "gating": true,
+      "priority": "P0",
+      "summary": "Published :main gateway image is linux/amd64 only.",
+      "where": ".github/workflows/build-service-image.yml (docker/build-push-action step)",
+      "acceptance": "Add platforms: linux/amd64,linux/arm64; imagetools inspect ...:main lists both real arch manifests."
+    },
+    {
+      "requirement": "R1",
+      "gating": true,
+      "priority": "P0",
+      "summary": "No bundled Harbor task; nop/oracle cannot be measured.",
+      "where": "tests/test.sh (writes /logs/verifier/reward.txt), solution/solve.sh, environment/ compose",
+      "acceptance": "nop run -> reward.txt = 0.0; solve.sh then verifier -> 1.0."
+    },
+    {
+      "requirement": "R2",
+      "gating": true,
+      "priority": "P1",
+      "summary": "Agent image still carries gateway server/ API source (R2.k strip).",
+      "where": "examples/task-pack-compose/Dockerfile.agent + README sidecar snippet",
+      "acceptance": "In agent, find /opt -path '*/server/*' is empty; import sentry_clone.server.app raises; grep+generator leak checks still clean."
+    },
+    {
+      "requirement": "R4",
+      "gating": true,
+      "priority": "P1",
+      "summary": "No machine-checkable docs/COVERAGE.md matrix (R4.1).",
+      "where": "docs/COVERAGE.md (promote docs/API_COMPATIBILITY.md)",
+      "acceptance": "docs/COVERAGE.md exists with one row per capability (endpoint|CLI|MCP|envelope|assessment-grade|tested) and >=5 assessment-grade rows."
+    },
+    {
+      "requirement": "R6",
+      "gating": false,
+      "priority": "P2",
+      "summary": "Add explicit CLI<->MCP parity and isolation tests; broaden per-surface error paths.",
+      "where": "tests/",
+      "acceptance": "parity test asserts normalize(cli)==normalize(mcp) for >=5 capabilities; isolation test asserts state path absent + import sentry_clone.seed raises + no server/ source survives; >=1 error path per surface."
+    }
+  ]
+}

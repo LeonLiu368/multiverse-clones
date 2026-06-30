@@ -36,8 +36,14 @@ if ! grep -qE '^[[:space:]]*(build|image):' <(awk '/^[[:space:]]*main:/{f=1} f&&
     echo "WARN  main has no build/image and no override found; standalone boot may fail (see asset)"
   fi
 fi
+# Isolate the compose project so PARALLEL fleet audits don't collide (a real failure seen in a
+# fleet run: one clone's agent came up on another clone's image because both used the compose dir's
+# default project name). Derive a unique, stable name from the clone/compose path.
+: "${COMPOSE_PROJECT_NAME:=audit_$(printf '%s' "$(cd "$(dirname "$COMPOSE")" && pwd)" | tr -c 'a-z0-9' '_' | tail -c 40)}"
+export COMPOSE_PROJECT_NAME
+echo "INFO  COMPOSE_PROJECT_NAME=$COMPOSE_PROJECT_NAME"
 _files=(-f "$COMPOSE"); for f in $EXTRA_COMPOSE; do _files+=(-f "$f"); done
-dc() { docker compose "${_files[@]}" "$@"; }
+dc() { docker compose -p "$COMPOSE_PROJECT_NAME" "${_files[@]}" "$@"; }
 
 echo "== cold boot =="
 dc down -v >/dev/null 2>&1

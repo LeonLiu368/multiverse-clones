@@ -1,0 +1,104 @@
+{
+  "clone": "google-workspace-clone",
+  "commit": "36e78af",
+  "audited_at": "2026-06-30",
+  "standard_version": "clone-standard-v1",
+  "fidelity_tier": { "declared": "T2", "observed": "T2" },
+  "meets_standard": false,
+  "gating_passed": 4,
+  "gating_total": 6,
+  "requirements": {
+    "R1": {
+      "result": "pass",
+      "gating": true,
+      "evidence": "Cold boot of gws-launch-date-prod-v1 via `docker compose -f docker-compose.yaml -f harbor-main-build.override.yaml up --build -d`: gateway reached Healthy, agent started. `docker pull ghcr.io/abundant-ai/gworkspace-service:prod-v1` => 'Image is up to date' (public, no creds, R1.5). Agent reaches gateway by name: `curl http://gworkspace:8080/health` => {\"status\":\"healthy\"}. nop=0 (stock plan.py returns TODO => pytest 2 failed), oracle=1 (gws-cli docs text recovers 2026-09-15 => pytest 2 passed). No `networks:` block in any task compose (R1.4)."
+    },
+    "R2": {
+      "result": "pass",
+      "gating": true,
+      "evidence": "prod-v1 serves baked corpus mount-free: agent `curl /drive/v3/files` => 28 files with no fixture mount (R2.j). Multi-arch confirmed: `docker buildx imagetools inspect ...:prod-v1` lists linux/amd64 + linux/arm64 (also :latest, :empty). Agent leak-sealed: no /srv/gws.db, no api/ or seed/ source dirs, `python -c 'import gwsclone.seed'` => ModuleNotFoundError, answer 2026-09-15 not greppable in /opt /app /usr/local (R2.k all three checks). Per-task data by mount into gateway only (R2.d); control plane token-gated, operator-only (R2.g).",
+      "sub": { "a": "pass", "b": "pass", "c": "pass", "d": "pass", "e": "pass", "f": "pass", "g": "pass", "h": "n/a", "i": "fail", "j": "pass", "k": "pass" }
+    },
+    "R3": {
+      "result": "pass",
+      "gating": true,
+      "evidence": "Both gws-cli and gws-mcp ship and are thin HTTP clients of one API (no business logic; derived doc-text/search reuse shared store helpers). MCP server lists 11 tools (gws_list_files/get_file/get_document/get_file_text/get_document_text/search_document/list_events/get_event/search_messages/get_message/get_thread). Live parity verified: CLI `docs text` == MCP gws_get_document_text (identical), CLI `calendar events -q LaTeX`==1==MCP gws_list_events, MCP gws_get_file NOPE returns the same 404 error envelope as CLI. Full CLI<->MCP capability parity, no orphan capability."
+    },
+    "R4": {
+      "result": "fail",
+      "gating": true,
+      "evidence": "No docs/ directory and no docs/COVERAGE.md exist (R4.1 absent) — the required machine-checkable coverage matrix is missing. The underlying surface is faithful (R4.2/R4.3 would pass): envelopes match Google exactly — drive#fileList / calendar#events / {error:{code,message,status}} with 401 UNAUTHENTICATED, 404 NOT_FOUND, 400 INVALID_ARGUMENT all observed live. But R4.1 is gating and the matrix does not exist, so R4 fails."
+    },
+    "R5": {
+      "result": "fail",
+      "gating": true,
+      "evidence": "R5.1 plausibly met: >=5 read-investigation capabilities carry real query grammar (Drive `q`: name/fullText/mimeType contains/=/!=, 'id' in parents, trashed, and/or/not/parens; Gmail from:/to:/subject:/label: + space-AND/OR/parens; Calendar q + [timeMin,timeMax) window) with realistic 400/404 errors — verified live. BUT R5.2 (>=1 write->read round-trip exercised end-to-end) FAILS: every agent-facing endpoint is GET (the only POSTs are operator-only /_control/*). The clone is read-only; no bundled task does a write->read round-trip. R5.2 is gating => R5 fails."
+    },
+    "R6": {
+      "result": "fail",
+      "gating": true,
+      "evidence": "Only tests/test_query.py (6 tests, all store-level query-engine unit tests) — passed 6/6 from cold venv. NO HTTP-endpoint tests, NO CLI subprocess tests, NO MCP tool tests, NO CLI<->MCP parity test (R6.2), NO isolation test asserting agent has no seed on disk / `import gwsclone.seed` raises (R6.3). Coverage of the endpoint/CLI/MCP surface is essentially absent. R6.1/R6.2/R6.3 all fail."
+    },
+    "R7": {
+      "result": "pass",
+      "gating": true,
+      "evidence": "This audit emits audit/audit-report.md + audit/audit-verdict.json with per-requirement results, evidence, and an ordered action list."
+    }
+  },
+  "coverage": {
+    "capabilities_total": 11,
+    "with_cli": 11,
+    "with_mcp": 11,
+    "parity_ok": 11,
+    "assessment_grade": 5,
+    "tested": 2
+  },
+  "tests": {
+    "passed": 6,
+    "total": 6,
+    "nop_reward": 0.0,
+    "oracle_reward": 1.0
+  },
+  "action_items": [
+    {
+      "requirement": "R6",
+      "gating": true,
+      "priority": "P0",
+      "summary": "Add a test suite covering every endpoint, every CLI command, and every MCP tool (happy + >=1 error path each), plus a CLI<->MCP parity test and an isolation test.",
+      "where": "tests/ (new files, e.g. test_api.py, test_cli.py, test_mcp.py, test_parity.py, test_isolation.py); model on clone-audit/assets/test_clone_template.py",
+      "acceptance": "pytest covers all 9 read endpoints + 3 export/derived paths + 11 CLI commands + 11 MCP tools; a parity test asserts CLI output == MCP tool output per capability; an isolation test asserts no /srv/gws.db in the agent image and `import gwsclone.seed` raises ModuleNotFoundError. Suite runs green from cold boot."
+    },
+    {
+      "requirement": "R5",
+      "gating": true,
+      "priority": "P0",
+      "summary": "The clone exposes no agent-facing write surface, so no write->read round-trip is possible (R5.2 fail). Add at least one mutating capability (e.g. Drive files.create/update, Docs documents.batchUpdate, Calendar events.insert, or Gmail drafts.create) wired through API+CLI+MCP, and a bundled task that writes then reads it back end-to-end.",
+      "where": "src/gwsclone/api/app.py (add POST/PATCH route), src/gwsclone/store.py (mutation op), src/gwsclone/cli/main.py + src/gwsclone/mcp/server.py (thin write client), oddish/tasks/<new-write-task>/",
+      "acceptance": "A bundled task's solve.sh performs a write via gws-cli/gws-mcp and a later read observes the mutation; docs/COVERAGE.md labels >=1 capability as a write->read round-trip; nop=0/oracle=1 on that task."
+    },
+    {
+      "requirement": "R4",
+      "gating": true,
+      "priority": "P0",
+      "summary": "Create docs/COVERAGE.md: a machine-checkable matrix mapping each capability to endpoint | CLI command | MCP tool | envelope-OK | assessment-grade | tested.",
+      "where": "docs/COVERAGE.md (new); docs/ dir does not exist yet",
+      "acceptance": "Matrix enumerates all 11 capabilities across the 4 surfaces (Drive/Docs/Calendar/Gmail), each row maps to a real Google endpoint + CLI + MCP, marks envelope fidelity, and labels >=5 assessment-grade rows including the new write->read one."
+    },
+    {
+      "requirement": "R4",
+      "gating": false,
+      "priority": "P1",
+      "summary": "README.md is stale: it advertises only the 'Drive v3 + Docs v1 slice' but the API/CLI/MCP also fully implement Calendar v3 and Gmail v1 (with real Takeout-scale fixtures: 1735 events / 2000 messages in gws-event-room).",
+      "where": "README.md (Surface table + opening paragraph)",
+      "acceptance": "README documents all four surfaces and points at docs/COVERAGE.md."
+    },
+    {
+      "requirement": "R2",
+      "gating": false,
+      "priority": "P2",
+      "summary": "No CI workflow publishes the gateway image trio to GHCR; images appear pushed manually via docker/build-prod-v1.sh --push. Add a push-to-main workflow (permissions: packages: write, multi-arch buildx, tags :latest/:sha/:empty/:prod-v1) so the GHCR publish contract is automated, not hand-run (R2 advisory / keeps R1.5 durable).",
+      "where": ".github/workflows/ (new, repo-level or clone-scoped)",
+      "acceptance": "A workflow builds + pushes gworkspace-service:{latest,empty,prod-v1} and gworkspace-agent multi-arch on push-to-main using the built-in GITHUB_TOKEN."
+    }
+  ]
+}

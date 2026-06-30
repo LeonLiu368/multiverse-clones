@@ -1,0 +1,132 @@
+{
+  "clone": "abundant-jira-clone",
+  "commit": "36e78af262ea",
+  "audited_at": "2026-06-30",
+  "standard_version": "clone-standard-v1",
+  "fidelity_tier": { "declared": "T2", "observed": "T2" },
+  "meets_standard": false,
+  "gating_passed": 2,
+  "gating_total": 7,
+  "requirements": {
+    "R1": {
+      "result": "partial",
+      "gating": true,
+      "evidence": "prod-v1 healthy ~4s mount-free (issues=8040); empty+mount healthy ~2s (issues=12); live nop=0/oracle=1 on jira-assignee-count; no networks: block. R1.5 only half-holds: gateway resolved from a LOCAL tag and the agent base does an authenticated COPY --from=ghcr.io/abundant-ai/ticketvector-service with no build:+image: fallback in compose."
+    },
+    "R2": {
+      "result": "fail",
+      "gating": true,
+      "evidence": "R2.j passes (prod-v1 bakes 8040-issue corpus, serves mount-free). R2.k FAILS: agent built FROM ticketvector copies /opt/ticketvector wholesale; world_issues.seed importable and seed.py/server.py present in agent; GHCR base amd64-only (imagetools).",
+      "sub": {
+        "a": "pass", "b": "pass", "c": "pass", "d": "pass", "e": "pass",
+        "f": "pass", "g": "pass", "h": "partial", "i": "partial",
+        "j": "pass", "k": "fail"
+      }
+    },
+    "R3": {
+      "result": "fail",
+      "gating": true,
+      "evidence": "No MCP server in the repo. linear/server.py is a read-only GraphQL HTTP gateway (BaseHTTPRequestHandler serving /graphql), not an MCP server. Agent ships jira+linear CLI only. CLI-and-MCP-parity is unachievable with current surfaces. The jira/linear tooling lives in the external ticketvector image."
+    },
+    "R4": {
+      "result": "fail",
+      "gating": true,
+      "evidence": "No docs/COVERAGE.md (find -iname '*coverage*' -> none). No machine-checkable matrix mapping capability -> endpoint/CLI/MCP/fidelity exists in this repo."
+    },
+    "R5": {
+      "result": "partial",
+      "gating": true,
+      "evidence": "Assessment-grade surface exists in substance via ticketvector (JQL grammar, issue query pagination via next_cursor, stateful transitions, comment add, realistic error envelopes with exit_code) and one write->read-style task runs, but it is undocumented and unlabelled here (no COVERAGE.md to carry the >=5 list)."
+    },
+    "R6": {
+      "result": "fail",
+      "gating": true,
+      "evidence": "No pytest suite (find -name 'test_*.py' -> none). Only per-task tests/test.sh verifiers and selfcontained/smoke.sh. No parity test, no isolation pytest (R6.3), no CI workflow (.github absent)."
+    },
+    "R7": {
+      "result": "pass",
+      "gating": true,
+      "evidence": "This audit emits audit/audit-report.md and audit/audit-verdict.json with per-requirement results, evidence, and an ordered file-scoped action list."
+    }
+  },
+  "coverage": {
+    "capabilities_total": 14,
+    "with_cli": 14,
+    "with_mcp": 0,
+    "parity_ok": 0,
+    "assessment_grade": 0,
+    "tested": 2
+  },
+  "tests": {
+    "passed": 2,
+    "total": 2,
+    "nop_reward": 0.0,
+    "oracle_reward": 1.0
+  },
+  "action_items": [
+    {
+      "requirement": "R3",
+      "gating": true,
+      "priority": "P0",
+      "summary": "No MCP server. Add an MCP server (thin client of the ticketvector /rpc API) mirroring the jira/linear CLI, COPY'd into jira-agent; or explicitly re-scope so ticketvector is the clone and this repo is its seeder.",
+      "where": "new mcp surface (ideally in ticketvector, then COPY into selfcontained/base/Dockerfile.agent); linear/server.py is GraphQL not MCP",
+      "acceptance": "MCP server lists issue read/query/transition/comment tools; each maps 1:1 to a jira/linear CLI command (parity verified by a parity test)."
+    },
+    {
+      "requirement": "R2",
+      "gating": true,
+      "priority": "P0",
+      "summary": "Agent ships the gateway's API + seed generator source (world_issues.seed/server/plane importable). Strip to CLI+client only.",
+      "where": "selfcontained/base/Dockerfile.agent: COPY --from=ticketvector /opt/ticketvector /opt/ticketvector",
+      "acceptance": "In the agent image: python -c 'import world_issues.seed' raises ModuleNotFoundError AND find /opt -path '*/seed*' -o -path '*/server*' is empty."
+    },
+    {
+      "requirement": "R6",
+      "gating": true,
+      "priority": "P0",
+      "summary": "No unit-test suite. Add pytest covering every CLI command (happy + error), a parity test (CLI vs MCP), and an isolation test (no state.json on disk AND seed not importable); wire CI.",
+      "where": "tests/ (new); .github/workflows (new)",
+      "acceptance": "pytest runs green from a cold docker compose up; CI job runs it on push."
+    },
+    {
+      "requirement": "R4",
+      "gating": true,
+      "priority": "P0",
+      "summary": "No docs/COVERAGE.md. Write the machine-checkable coverage matrix.",
+      "where": "docs/COVERAGE.md (new)",
+      "acceptance": "File lists the jira/linear surface (>=14 rows) mapped to endpoint+CLI+MCP+fidelity, with >=5 rows labelled assessment-grade."
+    },
+    {
+      "requirement": "R2",
+      "gating": true,
+      "priority": "P0",
+      "summary": "Gateway base published amd64-only on GHCR; build.sh pins linux/amd64. Publish gateway+agent multi-arch.",
+      "where": "selfcontained/base/build.sh; upstream ghcr.io/abundant-ai/ticketvector-service",
+      "acceptance": "docker buildx imagetools inspect ghcr.io/abundant-ai/jira-gateway:prod-v1 lists linux/amd64 AND linux/arm64 (blocked on a multi-arch ticketvector base)."
+    },
+    {
+      "requirement": "R1",
+      "gating": true,
+      "priority": "P1",
+      "summary": "Gateway resolves only from a local image tag; agent base does an authenticated COPY --from GHCR. Add a build:+image: dual for the gateway in task composes or confirm jira-gateway GHCR packages are public.",
+      "where": "tasks/*/environment/docker-compose.yaml (JIRA_GATEWAY_IMAGE default jira-gateway:prod-v1)",
+      "acceptance": "A clean machine docker compose up resolves the gateway with no unauthorized pull and no manual build.sh step."
+    },
+    {
+      "requirement": "R5",
+      "gating": true,
+      "priority": "P1",
+      "summary": "Add a write->read round-trip task (issue transition / comment add end-to-end) and label >=5 assessment-grade capabilities.",
+      "where": "tasks/ (new); docs/COVERAGE.md",
+      "acceptance": "A bundled task mutates an issue via the CLI and the verifier reads the mutation back; >=5 capabilities labelled assessment-grade."
+    },
+    {
+      "requirement": "R4",
+      "gating": false,
+      "priority": "P2",
+      "summary": "Stale README: claims ENG-2016 assignee 'Felix Martin'; live corpus returns 'Priya Fischer'.",
+      "where": "README.md task table",
+      "acceptance": "Doc matches jira issue view ENG-2016 (Done / Priya Fischer)."
+    }
+  ]
+}

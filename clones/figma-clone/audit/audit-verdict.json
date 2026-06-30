@@ -1,0 +1,124 @@
+{
+  "clone": "figma-clone",
+  "commit": "3f54f70",
+  "audited_at": "2026-06-30",
+  "standard_version": "clone-standard-v1",
+  "fidelity_tier": { "declared": "T1", "observed": "T1" },
+  "meets_standard": false,
+  "gating_passed": 4,
+  "gating_total": 6,
+  "requirements": {
+    "R1": {
+      "result": "pass",
+      "gating": true,
+      "evidence": "validate_local.sh -> PASS nop=0 oracle=1 decoy=0; docker compose up (task compose + harbor main-build override) -> figma (healthy), depends_on gates main, main reaches http://figma:3000/health by name; no unauthorized pull (build:+image: dual). 15/15 pytest green."
+    },
+    "R2": {
+      "result": "partial",
+      "gating": true,
+      "evidence": "Trio published multi-arch on GHCR; :prod-v1 boots healthy mount-free serving baked 39MB corpus. BUT task agent (oddish/.../environment/Dockerfile) ships full package: figmaclone.seed.generator importable and '#1D4ED8' greppable in site-packages (leak half of R2.k fails). Also :prod-v1/:empty are not reproducible from the repo (no figma_corpus.db, no :empty Dockerfile, CI builds only amd64 base).",
+      "sub": {
+        "a": "pass",
+        "b": "pass",
+        "c": "partial",
+        "d": "pass",
+        "e": "pass",
+        "f": "pass",
+        "g": "pass",
+        "h": "n/a",
+        "i": "partial",
+        "j": "pass",
+        "k": "partial"
+      }
+    },
+    "R3": {
+      "result": "partial",
+      "gating": true,
+      "evidence": "MCP stdio server lists 11 tools, all call the live HTTP API (verified post_comment->list_comments round-trip, inspect_node err envelope). 11/17 capabilities have an MCP tool; 5 CLI capabilities have NO MCP equivalent and are not operator-only: comments delete, components sets, projects, project-files, me."
+    },
+    "R4": {
+      "result": "pass",
+      "gating": true,
+      "evidence": "docs/figma-api-coverage.md enumerates the agent-used Figma surface; every covered endpoint exercised live with faithful envelopes ({status,err}, 403/404/400, 1-19<->1:19 normalization, ms-epoch comment ids, meta.{components,styles}, unknown image -> null). Advisory: not yet a machine-checkable docs/COVERAGE.md with per-row CLI/MCP/AG columns."
+    },
+    "R5": {
+      "result": "pass",
+      "gating": true,
+      "evidence": "6 assessment-grade capabilities (post comment [write->read, devops], get file ?ids/?depth [multi-step+errors], get nodes [errors+id-normalize], search [query grammar], list comments [thread-mining], delete comment [stateful+404]). The POST comment write->read round-trip is exercised end-to-end by figma-spec-recovery and read back by the verifier."
+    },
+    "R6": {
+      "result": "partial",
+      "gating": true,
+      "evidence": "15/15 unit tests pass covering endpoints + happy/error paths. Gaps: (1) NO isolation test (R6.3) - nothing asserts seed-not-importable / no answer on agent disk; (2) parity tests are helper-level (call mcp_server._get/_document) not tool-level (no tools/call against the registered MCP server); (3) several CLI-only caps (delete, sets, projects, me) untested end-to-end."
+    },
+    "R7": {
+      "result": "pass",
+      "gating": false,
+      "evidence": "audit-report.md + audit-verdict.json emitted into clones/figma-clone/audit/."
+    }
+  },
+  "coverage": {
+    "capabilities_total": 17,
+    "with_cli": 17,
+    "with_mcp": 11,
+    "parity_ok": 11,
+    "assessment_grade": 6,
+    "tested": 14
+  },
+  "tests": {
+    "passed": 15,
+    "total": 15,
+    "nop_reward": 0.0,
+    "oracle_reward": 1.0
+  },
+  "action_items": [
+    {
+      "requirement": "R6",
+      "gating": true,
+      "priority": "P0",
+      "summary": "No isolation test: nothing asserts the agent cannot import the seed generator or grep the answer.",
+      "where": "clones/figma-clone/tests/test_isolation.py (to create)",
+      "acceptance": "Test asserts, in the task agent image, that `import figmaclone.seed` raises ModuleNotFoundError, no figmaclone/api or figmaclone/seed dir survives, grep for '#1D4ED8' over install dirs is empty, and /srv/figma.db + /srv/fixture.json are absent."
+    },
+    {
+      "requirement": "R2",
+      "gating": true,
+      "priority": "P0",
+      "summary": "Task agent image leaks the gateway seed/API source (seed.generator importable, '#1D4ED8' greppable).",
+      "where": "clones/figma-clone/oddish/tasks/figma-spec-recovery/environment/Dockerfile",
+      "acceptance": "After pip install, rm -rf installed figmaclone/api and figmaclone/seed (mirror docker/Dockerfile.agent) or build FROM the thin figma-agent; the R6.3 isolation test passes inside main."
+    },
+    {
+      "requirement": "R3",
+      "gating": true,
+      "priority": "P0",
+      "summary": "CLI<->MCP parity gap: 5 CLI capabilities have no MCP tool (delete comment, component sets, team projects, project files, me).",
+      "where": "clones/figma-clone/src/figmaclone/mcp/server.py",
+      "acceptance": "MCP tools/list returns >=16 tools incl. figma_delete_comment, figma_list_component_sets, figma_list_projects, figma_list_project_files, figma_me; a parity test is green for each."
+    },
+    {
+      "requirement": "R2",
+      "gating": false,
+      "priority": "P1",
+      "summary": ":prod-v1/:empty are not reproducible from the repo (no figma_corpus.db, no :empty Dockerfile, CI builds only the amd64 base).",
+      "where": "clones/figma-clone/docker/ + .github/workflows/figma-service-image.yml",
+      "acceptance": "A clean clone can build all three tags (add :empty Dockerfile + a deterministic build_corpus.py emitting figma_corpus.db); CI builds+pushes figma-service, :empty, :prod-v1 multi-arch (linux/amd64,linux/arm64)."
+    },
+    {
+      "requirement": "R6",
+      "gating": true,
+      "priority": "P1",
+      "summary": "Parity tests are helper-level (call mcp_server._get/_document) instead of driving the real MCP server.",
+      "where": "clones/figma-clone/tests/test_mcp_parity.py",
+      "acceptance": "A parametrized test drives the registered MCP tools via stdio tools/call and compares to the matching figma-cli output for every capability."
+    },
+    {
+      "requirement": "R4",
+      "gating": false,
+      "priority": "P2",
+      "summary": "Coverage doc is prose, not a machine-checkable matrix with explicit CLI/MCP/assessment-grade columns.",
+      "where": "clones/figma-clone/docs/COVERAGE.md (to create from figma-api-coverage.md)",
+      "acceptance": "One row per capability with endpoint|CLI|MCP|envelope|assessment-grade|tested columns; >=5 rows labelled assessment-grade; matches the audited matrix."
+    }
+  ]
+}
