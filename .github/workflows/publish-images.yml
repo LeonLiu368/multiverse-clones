@@ -1,13 +1,18 @@
 name: publish-images
 
-# Build each clone's gateway image trio (base / :empty / :prod-v1) and publish to the
-# repo OWNER's GHCR namespace (ghcr.io/<owner>, lowercased — i.e. ghcr.io/leonliu368 for this
-# fork). Images are pushed PUBLIC (best-effort auto-flip + a documented one-time manual fallback).
+# Build each clone's gateway image trio (base / :empty / :prod-v1) PLUS the thin <svc>-agent (where
+# defined) and publish to ghcr.io/abundant-ai. Every image carries org.opencontainers.image.source so
+# the package links to THIS repo. Together the gateway + agent images let a task run with NO clone
+# source vendored into environment/ (the image-pull pattern — see experiments/pull-smoke).
 #
-# Scope: the 8 clones whose images build standalone. jira + slack are handled SEPARATELY by
-# publish-jira-slack.yml because their builds are bespoke (external private base + multi-image) and
-# depend on mirror-upstream-bases.yml having mirrored ghcr.io/abundant-ai/{ticketvector-service,
-# slack-seed} into the owner namespace first. Nothing here ever writes to abundant-ai.
+# Auth: pushing to the abundant-ai ORG needs a PAT with write:packages on abundant-ai — secret
+# GHCR_PUSH_TOKEN (the default GITHUB_TOKEN is scoped to this repo's owner and can't write org pkgs).
+#
+# ⚠️ CLOBBER NOTE: clones cloned FROM abundant-ai (figma, google-workspace, gh-cli, sentry, aws,
+# logfire) already have abundant-ai/<svc>-service packages — publishing UPDATES them. notion + grafana
+# are new. Use the `only:` dispatch input to publish one clone at a time until you're sure.
+#
+# Scope: the 8 standalone clones. jira + slack are separate (publish-jira-slack.yml).
 
 on:
   push:
@@ -39,6 +44,8 @@ jobs:
             base_file: docker/Dockerfile
             empty_file: docker/Dockerfile.empty
             prodv1_file: docker/Dockerfile.prod-v1
+            agent_file: docker/Dockerfile.agent
+            agent_image: notion-agent
             corpus_prep: ""
             platforms: linux/amd64,linux/arm64
           - clone: figma-clone
@@ -47,6 +54,8 @@ jobs:
             base_file: docker/Dockerfile
             empty_file: docker/Dockerfile.empty
             prodv1_file: docker/Dockerfile.prod-v1
+            agent_file: docker/Dockerfile.agent
+            agent_image: figma-agent
             corpus_prep: 'pip install -e ".[mcp]" && python scripts/build_corpus.py --out figma_corpus.db'
             platforms: linux/amd64,linux/arm64
           - clone: google-workspace-clone
@@ -55,6 +64,8 @@ jobs:
             base_file: Dockerfile
             empty_file: Dockerfile
             prodv1_file: Dockerfile.prod-v1
+            agent_file: Dockerfile.agent
+            agent_image: gworkspace-agent
             corpus_prep: ""        # gws_corpus.db is committed under docker/
             platforms: linux/amd64,linux/arm64
           - clone: sentry-clone
@@ -79,6 +90,8 @@ jobs:
             base_file: docker/Dockerfile
             empty_file: docker/Dockerfile.empty
             prodv1_file: docker/Dockerfile.prod-v1
+            agent_file: docker/Dockerfile.agent
+            agent_image: logfire-agent
             corpus_prep: ""        # corpus/records.json.gz committed
             platforms: linux/amd64,linux/arm64
           - clone: gh-cli-clone
@@ -112,10 +125,10 @@ jobs:
       - uses: actions/checkout@v4
         if: steps.gate.outputs.run == 'true'
 
-      - name: Lowercase owner -> registry namespace
+      - name: Registry namespace (abundant-ai org)
         if: steps.gate.outputs.run == 'true'
         id: ns
-        run: echo "ns=ghcr.io/$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
+        run: echo "ns=ghcr.io/abundant-ai" >> "$GITHUB_OUTPUT"
 
       - uses: docker/setup-qemu-action@v3
         if: steps.gate.outputs.run == 'true'
@@ -128,7 +141,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.GHCR_PUSH_TOKEN }}   # PAT w/ write:packages on abundant-ai
 
       - name: Corpus prep (only clones that generate their baked corpus)
         if: steps.gate.outputs.run == 'true' && matrix.corpus_prep != ''
@@ -150,6 +163,7 @@ jobs:
           file: ${{ matrix.context }}/${{ matrix.base_file }}
           platforms: ${{ matrix.platforms }}
           push: true
+          labels: org.opencontainers.image.source=https://github.com/${{ github.repository }}
           tags: |
             ${{ steps.ns.outputs.ns }}/${{ matrix.service }}:latest
             ${{ steps.ns.outputs.ns }}/${{ matrix.service }}:empty
@@ -162,13 +176,26 @@ jobs:
           file: ${{ matrix.context }}/${{ matrix.prodv1_file }}
           platforms: ${{ matrix.platforms }}
           push: true
+          labels: org.opencontainers.image.source=https://github.com/${{ github.repository }}
           build-args: |
             BASE=${{ steps.ns.outputs.ns }}/${{ matrix.service }}:empty
           tags: |
             ${{ steps.ns.outputs.ns }}/${{ matrix.service }}:prod-v1
 
-      - name: Visibility reminder (owner flips to Public once, manually)
+      - name: Build & push thin <svc>-agent (tools only; enables the no-source pull pattern)
+        if: steps.gate.outputs.run == 'true' && matrix.agent_file != ''
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.context }}/${{ matrix.agent_file }}
+          platforms: ${{ matrix.platforms }}
+          push: true
+          labels: org.opencontainers.image.source=https://github.com/${{ github.repository }}
+          tags: |
+            ${{ steps.ns.outputs.ns }}/${{ matrix.agent_image }}:latest
+
+      - name: Visibility reminder (flip packages to Public once, manually)
         if: steps.gate.outputs.run == 'true'
         run: |
-          echo "::notice::Published ghcr.io/${{ github.repository_owner }}/${{ matrix.service }}:{latest,empty,prod-v1}."
-          echo "::notice::First publish creates a PRIVATE package — flip it to Public once in GitHub -> Packages -> ${{ matrix.service }} -> Package settings -> Change visibility -> Public."
+          echo "::notice::Published ghcr.io/abundant-ai/${{ matrix.service }}:{latest,empty,prod-v1}${{ matrix.agent_file != '' && format(' + {0}:latest', matrix.agent_image) || '' }}."
+          echo "::notice::First publish creates a PRIVATE package — flip it to Public once in GitHub -> abundant-ai -> Packages -> Package settings -> Change visibility -> Public."
