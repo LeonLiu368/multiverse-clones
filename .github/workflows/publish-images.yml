@@ -15,12 +15,10 @@ name: publish-images
 #
 # Scope: the 8 standalone clones. jira + slack are separate (publish-jira-slack.yml).
 
+# Dispatch-only ON PURPOSE: most target images already exist as live abundant-ai packages, so an
+# auto-publish on every push to main would clobber them unintentionally. Publish DELIBERATELY,
+# clone-by-clone, via the `only:` input.
 on:
-  push:
-    branches: [main]
-    paths:
-      - "clones/**"
-      - ".github/workflows/publish-images.yml"
   workflow_dispatch:
     inputs:
       only:
