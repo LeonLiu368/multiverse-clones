@@ -10,7 +10,8 @@
 #   * no api/seed source dir survives in the image,
 # while `gcx`/`mcp-grafana` still load. The agent reaches state only over HTTP, and the
 # `grafanactl` admin CLI is intentionally absent.
-FROM grafana-service:local AS grafana-tools
+ARG TOOLS_IMAGE=grafana-service:local
+FROM ${TOOLS_IMAGE} AS grafana-tools
 
 FROM python:3.10-slim
 

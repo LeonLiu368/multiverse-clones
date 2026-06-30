@@ -1,4 +1,5 @@
-FROM aws-clone-service:local AS aws-tools
+ARG TOOLS_IMAGE=aws-clone-service:local
+FROM ${TOOLS_IMAGE} AS aws-tools
 
 FROM python:3.10-slim
 

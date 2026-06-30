@@ -4,7 +4,8 @@
 # is STRIPPED so the seeded corpus is neither greppable nor recomputable on the agent —
 # the agent reaches state solely over HTTP at $SENTRY_URL. `sentry-clonectl` (admin) is
 # deliberately NOT copied.
-FROM sentry-clone-service:local AS sentry-tools
+ARG TOOLS_IMAGE=sentry-clone-service:local
+FROM ${TOOLS_IMAGE} AS sentry-tools
 
 FROM python:3.10-slim
 

@@ -72,6 +72,9 @@ jobs:
             base_file: Dockerfile.service
             empty_file: Dockerfile.empty
             prodv1_file: Dockerfile.prod-v1
+            agent_file: examples/task-pack-compose/Dockerfile.agent
+            agent_image: sentry-clone-agent-mv
+            agent_build_args: TOOLS_IMAGE=ghcr.io/abundant-ai/sentry-clone-service-mv:latest
             corpus_prep: ""        # corpus/state.json committed
             platforms: linux/amd64,linux/arm64
           - clone: grafana-clone
@@ -80,6 +83,9 @@ jobs:
             base_file: Dockerfile.service
             empty_file: Dockerfile.service
             prodv1_file: Dockerfile.prod-v1
+            agent_file: examples/task-pack-compose/Dockerfile.agent
+            agent_image: grafana-agent
+            agent_build_args: TOOLS_IMAGE=ghcr.io/abundant-ai/grafana-service:latest
             corpus_prep: ""        # examples/data/grafana/state.json committed
             platforms: linux/amd64,linux/arm64
           - clone: abundant-logfire-clone
@@ -106,6 +112,9 @@ jobs:
             base_file: Dockerfile.service
             empty_file: Dockerfile.empty
             prodv1_file: Dockerfile.prod-v1
+            agent_file: examples/task-pack-compose/Dockerfile.agent
+            agent_image: aws-clone-agent-mv
+            agent_build_args: TOOLS_IMAGE=ghcr.io/abundant-ai/aws-clone-service-mv:latest
             corpus_prep: ""        # examples/data/aws-clone/state.json committed
             platforms: linux/amd64   # LocalStack base; pin amd64 for reliability
 
@@ -188,6 +197,7 @@ jobs:
           file: ${{ matrix.context }}/${{ matrix.agent_file }}
           platforms: ${{ matrix.platforms }}
           push: true
+          build-args: ${{ matrix.agent_build_args }}
           labels: org.opencontainers.image.source=https://github.com/${{ github.repository }}
           tags: |
             ${{ steps.ns.outputs.ns }}/${{ matrix.agent_image }}:latest
