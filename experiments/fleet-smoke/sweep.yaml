@@ -1,0 +1,10 @@
+# CLI sweep for the fleet smoke: nop + oracle + gemini, 1 trial each, across all 7 tasks in tasks/.
+#   oddish run experiments/fleet-smoke/tasks -c experiments/fleet-smoke/sweep.yaml
+agents:
+  - name: nop
+    n_trials: 1
+  - name: oracle
+    n_trials: 1
+  - name: gemini-cli
+    model_name: google/gemini-3.1-pro-preview
+    n_trials: 1

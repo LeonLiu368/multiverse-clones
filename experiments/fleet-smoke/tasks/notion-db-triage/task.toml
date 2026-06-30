@@ -1,14 +1,34 @@
-# Harbor/Oddish task: notion-db-triage
-#
-# Two containers: `main` (the agent, built by Harbor from environment/Dockerfile)
-# and `notion` (the gateway sidecar, the notion-service image with a baked corpus).
-# The agent uses notion-cli / notion-mcp to query the Tasks database, find the right
-# task, mark it done, and post a confirmation comment. The verifier reads the state
-# back through the public API (write -> read round-trip, R5.2).
-name = "notion-db-triage"
-custom_docker_compose = true
+schema_version = "1.2"
+name = "notion-clone/notion-db-triage"
+description = "Read + write task on a Notion-clone workspace. The agent uses the notion-cli CLI and the notion-mcp MCP server (pointed at the `notion` gateway over HTTP) to query the Tasks database, find the 'Rotate prod database creds' page, set its Status=Done + Done checkbox, and post a comment containing 'rotated'. A verifier reads the state back through the Notion API (write->read round-trip). Notion data lives only in the notion sidecar (baked :prod-v1 corpus), never on the agent FS. Deterministic nop=0, oracle=1."
 
 [metadata]
+category = "software-engineering"
+service = "notion"
 clone = "notion-clone"
-service = "Notion API"
+tools = ["notion-cli", "notion-mcp"]
+tags = ["notion", "notion-clone", "tool-use", "read-write", "round-trip", "agent-gateway-split", "smoke"]
 assessment_grade = ["databases.query", "pages.update", "comments.create"]
+
+[agent]
+timeout_sec = 900
+
+[verifier]
+timeout_sec = 300
+
+[environment]
+cpus = 2
+memory_mb = 4096
+storage_mb = 12288
+gpus = 0
+allow_internet = true
+workdir = "/workspace"
+build_timeout_sec = 1800
+
+# The agent operates Notion through the notion-cli CLI and this MCP server (stdio).
+# notion-mcp is installed in the agent image and reaches the `notion` gateway via the
+# baked NOTION_API_URL env — the same HTTP API the CLI uses, so CLI and MCP are in parity.
+[[environment.mcp_servers]]
+name = "notion"
+transport = "stdio"
+command = "notion-mcp"
