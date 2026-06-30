@@ -11,14 +11,10 @@ name: publish-jira-slack
 #
 # Package visibility: flip each new package to Public once in GitHub -> Packages (owner does this).
 
+# Dispatch-only ON PURPOSE: these build FROM the owner-mirrored bases, so they must run AFTER
+# mirror-upstream-bases.yml — never auto-fire on a push that lands before the mirror exists.
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - "clones/abundant-jira-clone/**"
-      - "clones/abundant-slack-clone/**"
-      - ".github/workflows/publish-jira-slack.yml"
 
 permissions:
   contents: read
