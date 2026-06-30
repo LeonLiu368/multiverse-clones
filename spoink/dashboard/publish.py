@@ -16,7 +16,8 @@ from typing import Any, Dict, List
 SPOINK = Path(__file__).resolve().parents[2]          # repo root (has gateway/)
 LOGFIRE_CLONE = Path(os.environ.get("LOGFIRE_CLONE_DIR", str(Path.home() / "projects" / "abundant-logfire-clone")))
 
-DEFAULT_REPO = {"slack": "slack-gateway", "linear": "jira-gateway", "logfire": "logfire-gateway"}
+DEFAULT_REPO = {"slack": "slack-gateway", "linear": "jira-gateway",
+                "logfire": "logfire-gateway", "github": "ghc-service"}
 
 
 def _bake_cmd(source: str, run_dir: str, image: str, report: Dict[str, Any]) -> List[str]:
@@ -28,6 +29,10 @@ def _bake_cmd(source: str, run_dir: str, image: str, report: Dict[str, Any]) -> 
         return ["bash", str(SPOINK / "gateway" / "build_jira.sh"), str(rd / "state.json"), image, proj]
     if source == "logfire":
         return ["bash", str(LOGFIRE_CLONE / "build.sh"), str(rd / "records.json"), image]
+    if source == "github":
+        # boot -> hydrate (apply --as-of T) -> commit a ghc-service (Forgejo) image
+        return ["bash", str(SPOINK / "gateway" / "build_forge.sh"),
+                str(rd / "snapshots"), image, report.get("as_of") or ""]
     raise RuntimeError(f"{source!r} is not publishable")
 
 

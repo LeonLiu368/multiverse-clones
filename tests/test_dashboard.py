@@ -67,6 +67,25 @@ def test_rename_delete_guards(tmp_path, monkeypatch):
     assert c.get("/api/published").json() == {"published": []}
 
 
+def test_github_is_publishable_via_forge_bake(tmp_path, monkeypatch):
+    """GitHub bakes a ghc-service Forgejo image (boot->hydrate->commit), forwarding as_of."""
+    _client(tmp_path, monkeypatch)   # ensure modules import with the tmp env
+    from spoink.dashboard import publish as pub
+    from spoink.dashboard.sources import PUBLISHABLE
+
+    assert "github" in PUBLISHABLE
+    # image suggestion targets the forge service image, not a *-gateway
+    assert pub.suggest_image("github", "june snap").startswith("ghcr.io/abundant-ai/ghc-service:")
+    # bake drives build_forge.sh with the snapshots dir + the captured as_of (the real fix:
+    # as_of must reach `apply --as-of`, not just sit in the manifest)
+    cmd = pub._bake_cmd("github", "/runs/r1", "ghcr.io/abundant-ai/ghc-service:t",
+                        {"as_of": "2026-06-25T00:34:00Z", "org": "acme"})
+    assert cmd[0] == "bash" and cmd[1].endswith("gateway/build_forge.sh")
+    assert cmd[2].endswith("/snapshots")
+    assert "2026-06-25T00:34:00Z" in cmd
+    assert Path(cmd[1]).exists()    # the bake script is shipped
+
+
 def test_github_multi_repo_capture(tmp_path, monkeypatch):
     """The whole point: snapshot MANY repos in one run (loop over ghc-hydrate snapshot)."""
     import json as _json

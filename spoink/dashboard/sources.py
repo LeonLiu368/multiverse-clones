@@ -345,8 +345,9 @@ SOURCES: Dict[str, Source] = {
     ),
 }
 
-# which sources can be baked + pushed to GHCR (github needs a Forgejo hydrate, not a single image)
-PUBLISHABLE = {"slack", "linear", "logfire"}
+# which sources can be baked + pushed to GHCR (github bakes via a boot->hydrate->commit
+# of a ghc-service Forgejo image rather than a single `docker build`; see gateway/build_forge.sh)
+PUBLISHABLE = {"slack", "linear", "logfire", "github"}
 
 
 def source_summaries() -> List[Dict[str, Any]]:
