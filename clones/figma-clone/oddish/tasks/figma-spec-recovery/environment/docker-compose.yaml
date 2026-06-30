@@ -1,20 +1,6 @@
-# Merged on top of Harbor's base compose. Harbor auto-configures the `main` (agent)
-# container from environment/Dockerfile; here we only OVERRIDE `main` (point it at the
-# service + wait for health) and ADD the `figma` service.
-#
-# No `networks:` — Harbor wires networking (and injects network_mode on `main` for the
-# Modal/DinD provider, which is mutually exclusive with an explicit networks: key).
-# The agent reaches the service by name at http://figma:3000.
-#
-# The `figma` service carries BOTH `build:` and `image:`. Harbor's docker provider runs
-# `docker compose build` (which builds every service with a build section) then `up`; the
-# build tags the image with the `image:` name, so `up` uses the local build and never pulls
-# from a registry — no GHCR auth needed. The `image:` name still matches the published
-# ghcr.io/abundant-ai/figma-service for anyone who prefers to pull it.
-#
-# This task's design data is provided PER TASK by mounting fixture.json into the `figma`
-# service container ONLY — never into `main` — so the agent reaches the seeded spec solely
-# through the API.
+# Image-pull pattern — NO clone source in environment/. The figma gateway is PULLED as
+# figma-service-mv:empty and seeded by the per-task fixture.json mount; the agent is FROM
+# figma-agent-mv. No vendored figmaclone/, no figma.Dockerfile. (fixture.json is per-task data.)
 services:
   main:
     environment:
@@ -26,10 +12,7 @@ services:
         condition: service_healthy
 
   figma:
-    image: ghcr.io/abundant-ai/figma-service:latest
-    build:
-      context: .
-      dockerfile: figma.Dockerfile
+    image: ghcr.io/abundant-ai/figma-service-mv:empty
     environment:
       - FIGMA_FIXTURE=/srv/fixture.json
     volumes:
