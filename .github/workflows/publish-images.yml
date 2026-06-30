@@ -104,6 +104,8 @@ jobs:
             base_file: selfcontained/gateway/Dockerfile
             empty_file: selfcontained/gateway/Dockerfile
             prodv1_file: selfcontained/gateway/Dockerfile.prod-v1
+            agent_file: selfcontained/Dockerfile.agent
+            agent_image: ghc-agent-mv
             corpus_prep: ""        # prod-v1 bakes a seeded Forgejo data dir at build time
             platforms: linux/amd64   # Forgejo bake under QEMU arm64 is impractically slow
           - clone: aws-clone

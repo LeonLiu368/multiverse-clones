@@ -1,0 +1,14 @@
+# Thin ghc-agent — tools ONLY: the `ghc` (gh-compatible) CLI + `ghc-mcp` MCP server, both thin
+# clients of the Forgejo-backed gateway over HTTP. No forge, no server data. `gh` is symlinked to
+# `ghc`. ghclone carries no server source (the server is the separate Forgejo gateway), so nothing
+# to strip. NO clone source remains beyond the installed client package.
+FROM python:3.12-slim
+RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates jq \
+    && rm -rf /var/lib/apt/lists/*
+COPY ghclone /tmp/ghclone
+RUN pip install --no-cache-dir /tmp/ghclone && rm -rf /tmp/ghclone && \
+    ln -sf "$(command -v ghc)" /usr/local/bin/gh && \
+    ghc --version >/dev/null && python -c "import ghclone.cli.main, ghclone.mcp.server" && \
+    echo "thin ghc-agent OK (ghc + ghc-mcp load; gh symlinked)"
+WORKDIR /workspace
+CMD ["sleep", "infinity"]

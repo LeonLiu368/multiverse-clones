@@ -41,6 +41,12 @@ jobs:
             -f "$CTX/Dockerfile.empty"   -t "$NS/jira-gateway-mv:empty"   --push "$CTX"
           docker buildx build --platform linux/amd64 --label "$SRC_LABEL" --build-arg TICKETVECTOR_SERVICE="$TV" \
             -f "$CTX/Dockerfile.gateway" -t "$NS/jira-gateway-mv:prod-v1" --push "$CTX"
+      - name: Build & push jira-agent-mv (FROM in-org ticketvector; world_issues stripped)
+        run: |
+          set -euo pipefail
+          docker buildx build --platform linux/amd64 --label "$SRC_LABEL" \
+            -f clones/abundant-jira-clone/selfcontained/base/Dockerfile.agent \
+            -t "$NS/jira-agent-mv:latest" --push clones/abundant-jira-clone
 
   slack:
     runs-on: ubuntu-latest
@@ -67,3 +73,10 @@ jobs:
             -f "$CTX/Dockerfile.empty"   -t "$NS/slack-gateway-mv:empty"   --push "$CTX"
           docker buildx build --platform linux/amd64 --label "$SRC_LABEL" --build-arg SLACK_SERVICE="$SVC" --build-arg SEED="$SEED" \
             -f "$CTX/Dockerfile.gateway" -t "$NS/slack-gateway-mv:prod-v1" --push "$CTX"
+      - name: Build & push slack-agent-mv (FROM our slack-service-mv)
+        env:
+          CTX: clones/abundant-slack-clone/selfcontained/base
+        run: |
+          set -euo pipefail
+          docker buildx build --platform linux/amd64 --label "$SRC_LABEL" --build-arg SLACK_SERVICE="$NS/slack-service-mv:latest" \
+            -f "$CTX/Dockerfile.agent" -t "$NS/slack-agent-mv:latest" --push "$CTX"
