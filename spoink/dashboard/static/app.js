@@ -123,6 +123,7 @@ function sourceCard(s) {
     f.append(el("label", { textContent: p.label + (p.required ? " *" : "") }));
     if (p.discover && p.kind === "multiselect") inputs[p.name] = multiselect(f, s, p, loaders, deps);
     else if (p.discover && p.kind === "select") inputs[p.name] = discoverSelect(f, s, p, loaders);
+    else if (p.discover && p.kind === "combo") inputs[p.name] = comboField(f, s, p, loaders);
     else if (p.kind === "datetime") {
       const i = el("input", { type: "datetime-local", step: "60" });
       f.append(i); inputs[p.name] = zonedInput(i, p.default === "now" ? nowIso() : (p.default || ""));
@@ -199,6 +200,26 @@ function multiselect(field, s, p, loaders, getDeps) {
   reload.onclick = () => { Object.keys(OPTCACHE).filter((k) => k.startsWith(`${s.id}:${p.discover}:`)).forEach((k) => delete OPTCACHE[k]); opts = []; load(); };
   loaders.push(() => { if (!opts.length) load(); });
   return () => [...chosen];
+}
+
+function comboField(field, s, p, loaders) {
+  // free-text input backed by a <datalist> of suggestions (e.g. your GitHub orgs)
+  const listId = `dl-${s.id}-${p.name}`;
+  const input = el("input", { type: "text", value: p.default || "", placeholder: p.help || "",
+                              autocomplete: "off" });
+  input.setAttribute("list", listId);
+  const dl = el("datalist", { id: listId });
+  field.append(input, dl);
+  const load = async () => {
+    try {
+      const key = `${s.id}:${p.discover}`;
+      const opts = OPTCACHE[key] || (OPTCACHE[key] = (await api(`/api/sources/${s.id}/options/${p.discover}`)).options);
+      dl.innerHTML = "";
+      for (const o of opts) dl.append(el("option", { value: o.value, label: o.note || "" }));
+    } catch (e) { /* suggestions are best-effort; typing still works */ }
+  };
+  loaders.push(() => { if (!dl.children.length) load(); });
+  return () => input.value.trim();
 }
 
 function discoverSelect(field, s, p, loaders) {

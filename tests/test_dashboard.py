@@ -67,6 +67,14 @@ def test_rename_delete_guards(tmp_path, monkeypatch):
     assert c.get("/api/published").json() == {"published": []}
 
 
+def test_github_org_is_suggestion_combo(tmp_path, monkeypatch):
+    """The org field is a discover-backed combo (suggests your orgs, still free-text)."""
+    _client(tmp_path, monkeypatch)
+    from spoink.dashboard.sources import SOURCES
+    org = next(p for p in SOURCES["github"].params if p.name == "org")
+    assert org.kind == "combo" and org.discover == "orgs" and org.required
+
+
 def test_ghc_hydrate_cmd_resolution(tmp_path, monkeypatch):
     """github capture resolves the snapshot CLI: explicit bin > PATH > importable package."""
     _client(tmp_path, monkeypatch)

@@ -243,7 +243,48 @@ def _list_org_repos(org: str, token: str) -> List[Dict[str, Any]]:
     return out
 
 
+def _list_owner_orgs(token: str) -> List[Dict[str, str]]:
+    """Owners the token can snapshot under, in priority order: the authed user's own login,
+    their orgs (/user/orgs), then any other owner that shows up among accessible repos.
+    The last source matters for fine-grained PATs, which often can read an org's repos
+    without that org appearing under /user/orgs."""
+    import httpx
+    headers = {"Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json"}
+    out: List[Dict[str, str]] = []
+    seen: set = set()
+
+    def add(login: str, kind: str) -> None:
+        if login and login.lower() not in seen:
+            seen.add(login.lower())
+            out.append({"login": login, "kind": kind})
+
+    with httpx.Client(timeout=20, headers=headers) as c:
+        me = c.get("https://api.github.com/user")
+        if me.status_code == 200:
+            add(me.json().get("login", ""), "you")
+        orgs = c.get("https://api.github.com/user/orgs", params={"per_page": 100})
+        if orgs.status_code == 200:
+            for o in orgs.json():
+                add(o.get("login", ""), "org")
+        # owners of accessible repos (2 pages, freshest first) — surfaces orgs /user/orgs misses
+        for page in (1, 2):
+            r = c.get("https://api.github.com/user/repos",
+                      params={"per_page": 100, "page": page, "sort": "pushed",
+                              "affiliation": "owner,collaborator,organization_member"})
+            if r.status_code != 200 or not r.json():
+                break
+            for repo in r.json():
+                owner = repo.get("owner") or {}
+                add(owner.get("login", ""), "org" if owner.get("type") == "Organization" else "user")
+    return out
+
+
 def _options_github(param: str, **kw) -> Dict[str, Any]:
+    if param == "orgs":
+        owners = _list_owner_orgs(_gh_token())
+        return {"kind": "combo", "options": [
+            {"value": o["login"], "label": o["login"],
+             "note": "you" if o["kind"] == "you" else "org"} for o in owners]}
     if param != "repos":
         return {"kind": "multiselect", "options": []}
     org = (kw.get("org") or "").strip()
@@ -348,8 +389,13 @@ SOURCES: Dict[str, Source] = {
         capture=_capture_logfire, slice=None,
         params=[
             _AS_OF,
-            Param("incident_hours", "Incident window (hours)", "number", default="2"),
-            Param("period_days", "Overview look-back (days)", "number", default="365"),
+            # Logfire is captured at two resolutions, both ending at the anchor above:
+            # a fine-grained detail window just before it, and a coarse baseline going
+            # far back (powers the overview's "what's normal" signatures).
+            Param("incident_hours", "Detail window before anchor (hours)", "number", default="2",
+                  help="high-detail records pulled for the N hours up to the anchor"),
+            Param("period_days", "Baseline history (days)", "number", default="365",
+                  help="coarse look-back for the overview baseline; also ends at the anchor"),
         ],
     ),
     "github": Source(
@@ -358,7 +404,8 @@ SOURCES: Dict[str, Source] = {
         capture=_capture_github, slice=None, options=_options_github,
         note="snapshot one or many repos (a whole org); time-aligned at bake (needs ghc-hydrate + GITHUB_TOKEN)",
         params=[
-            Param("org", "Org / owner", "text", required=True, help="e.g. abundant-ai"),
+            Param("org", "Org / owner", "combo", required=True, discover="orgs",
+                  help="your orgs are suggested — or type any owner"),
             Param("repos", "Repos", "multiselect", discover="repos",
                   help="pick repos to freeze; leave empty = ALL repos in the org"),
             _AS_OF,
