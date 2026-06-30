@@ -98,3 +98,29 @@ def test_verify_ok_when_complete(tmp_path):
     c.get_issue.return_value = {"number": 1, "title": "t", "state": "open"}
     rep = hver.verify(str(tmp_path), "o/r", client=c, sample=1)
     assert rep["ok"] is True
+
+
+def test_bundle_create_relative_paths(tmp_path, monkeypatch):
+    """Regression: `git -C <mirror> bundle create <path>` resolves <path> against the
+    mirror, so a *relative* out path (callers like spoink use runs/<id>/...) must be
+    absolutized or git writes inside _mirror.git and dies with exit 128."""
+    import subprocess
+
+    from ghclone.forge import gitutil
+
+    src = tmp_path / "src"
+    subprocess.run(["git", "init", "-q", str(src)], check=True)
+    for k, v in (("user.email", "a@b"), ("user.name", "a")):
+        subprocess.run(["git", "-C", str(src), "config", k, v], check=True)
+    subprocess.run(["git", "-C", str(src), "commit", "-q", "--allow-empty", "-m", "one"], check=True)
+
+    work = tmp_path / "runs" / "abc" / "snap"
+    work.mkdir(parents=True)
+    subprocess.run(["git", "clone", "-q", "--mirror", str(src), str(work / "_mirror.git")], check=True)
+
+    # run from a different cwd, passing RELATIVE paths (the shape that used to crash)
+    monkeypatch.chdir(tmp_path)
+    gitutil.bundle_create("runs/abc/snap/_mirror.git", "runs/abc/snap/git.bundle")
+    assert (work / "git.bundle").exists()
+    # and NOT written inside the mirror
+    assert not (work / "_mirror.git" / "runs").exists()

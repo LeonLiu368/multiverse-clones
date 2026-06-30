@@ -77,7 +77,10 @@ def push_mirror(cfg: HostConfig, owner: str, repo: str, local_dir: str) -> None:
 
 
 def bundle_create(repo_dir: str, bundle_path: str) -> None:
-    run(["git", "-C", repo_dir, "bundle", "create", bundle_path, "--all"])
+    # `git -C <repo_dir>` resolves a *relative* bundle path against repo_dir, not the
+    # caller's cwd — so a relative out path (e.g. runs/<id>/.../git.bundle) would be
+    # written inside _mirror.git and fail (parent dir missing, exit 128). Absolutize it.
+    run(["git", "-C", repo_dir, "bundle", "create", str(Path(bundle_path).resolve()), "--all"])
 
 
 def mirror_clone(src_url: str, dest_dir: str) -> None:
