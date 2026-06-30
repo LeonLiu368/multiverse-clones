@@ -1,19 +1,6 @@
-# Merged on top of Harbor's base compose. Harbor force-builds `main` (the agent) from
-# environment/Dockerfile; here we only OVERRIDE `main` (point it at the gateway + wait
-# for health) and ADD the `logfire` gateway service.
-#
-# No `networks:` — Harbor injects network_mode on `main`. The agent reaches the gateway
-# by service name at http://logfire:80.
-#
-# The `logfire` service carries BOTH `build:` and `image:`. Harbor's docker provider runs
-# `docker compose build` (builds the gateway, tagging it the `image:` name) then `up`, so
-# `up` uses the local build and never pulls from GHCR — no registry auth needed. The
-# `image:` name still matches the published ghcr.io/abundant-ai/logfire-service:prod-v1
-# for anyone who prefers to pull it.
-#
-# This is a PROD-V1 (baked-corpus) task: the incident corpus is baked into the gateway
-# image (corpus/records.json.gz), served mount-free. No fixture is mounted into `main`,
-# so the agent reaches the telemetry solely through the `logfire` tools over HTTP.
+# Image-pull pattern — NO clone source in environment/. The logfire gateway is PULLED as
+# logfire-service:prod-v1 (telemetry corpus baked in, served mount-free); the agent is FROM
+# logfire-agent-mv. No vendored logfire_clone/, no logfire.Dockerfile, no corpus/.
 services:
   main:
     environment:
@@ -26,9 +13,6 @@ services:
 
   logfire:
     image: ghcr.io/abundant-ai/logfire-service:prod-v1
-    build:
-      context: .
-      dockerfile: logfire.Dockerfile
     environment:
       - LOGFIRE_TOKEN=test-token-acme-eval
     expose:
