@@ -1,0 +1,32 @@
+schema_version = "1.2"
+name = "abundant-logfire-clone/logfire-incident-rca"
+description = "Observability + SWE task. The oddish-worker service is failing in production and a repo test fails because the queue_slots schema is missing the column the worker stamps. The root cause is recoverable ONLY from the Logfire telemetry: the agent must use the `logfire` tools (logfire-cli + logfire-mcp) to run SQL over the `records` table — find the worker's failing exception, the exact exception type, the service, the database table and the missing column, and how many records carry it in the incident window — then fill in the RCA and apply the schema fix. A hidden grader pins the exact recovered values (asyncpg.exceptions.UndefinedColumnError / oddish-worker / queue_slots / locked_at / 60). The corpus is baked into the gateway (prod-v1), reachable solely over HTTP. nop=0, oracle=1."
+
+[metadata]
+category = "software-engineering"
+service = "logfire"
+tools = ["logfire-cli", "logfire-mcp"]
+tags = ["logfire", "logfire-clone", "observability", "swe", "tool-use", "sql", "incident", "rca", "isolated", "tests"]
+
+[agent]
+timeout_sec = 2400
+
+[verifier]
+timeout_sec = 600
+
+[environment]
+cpus = 2
+memory_mb = 4096
+storage_mb = 12288
+gpus = 0
+allow_internet = true
+workdir = "/workspace"
+build_timeout_sec = 1800
+
+# The agent operates Logfire through the `logfire` CLI and this MCP server (stdio).
+# logfire-mcp is installed in the agent image and reaches the gateway via the baked
+# LOGFIRE_URL / LOGFIRE_TOKEN env.
+[[environment.mcp_servers]]
+name = "logfire"
+transport = "stdio"
+command = "logfire-mcp"

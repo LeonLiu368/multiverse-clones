@@ -1,0 +1,38 @@
+# Merged on top of Harbor's base compose. Harbor auto-configures the `main` (agent)
+# container from environment/Dockerfile; here we only OVERRIDE `main` (point it at
+# the service + wait for health) and ADD the `notion` gateway service.
+#
+# No `networks:` — Harbor wires networking (and injects network_mode on `main`),
+# which is mutually exclusive with an explicit networks: key. The agent reaches the
+# gateway by name at http://notion:3000.
+#
+# The `notion` service carries BOTH `build:` and `image:`. Harbor's docker provider
+# runs `docker compose build` then `up`; the build tags the image with the `image:`
+# name, so `up` uses the local build and never pulls from a registry — no GHCR auth
+# needed (R1.5). The `image:` still matches the published
+# ghcr.io/abundant-ai/notion-service:prod-v1 for anyone who prefers to pull it.
+#
+# This task uses the BAKED-DB (:prod-v1) path: the corpus is baked into the image,
+# served mount-free (R2.j) — there is NO fixture volume.
+services:
+  main:
+    environment:
+      - NOTION_API_URL=http://notion:3000
+      - NOTION_TOKEN=notion-clone-token
+    depends_on:
+      notion:
+        condition: service_healthy
+
+  notion:
+    image: ghcr.io/abundant-ai/notion-service:prod-v1
+    build:
+      context: .
+      dockerfile: notion.Dockerfile
+    expose:
+      - "3000"
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:3000/health')\" || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s

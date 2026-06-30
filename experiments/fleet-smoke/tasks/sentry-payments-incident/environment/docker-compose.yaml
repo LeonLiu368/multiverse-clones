@@ -1,0 +1,50 @@
+# Merged on top of Harbor's base compose. Harbor auto-builds the `main` (agent)
+# container from environment/Dockerfile; here we OVERRIDE `main` (point it at the
+# service + wait for health) and ADD the `sentry` gateway service.
+#
+# No `networks:` — Harbor wires networking (and injects network_mode on `main`, which
+# is mutually exclusive with an explicit networks: key). The agent reaches the gateway
+# by name at http://sentry.
+#
+# The `sentry` service carries BOTH `build:` and `image:`. Harbor runs `docker compose
+# build` then `up`; the build tags the image with the `image:` name, so `up` uses the
+# local build and never pulls from GHCR (no registry auth — R1.5). The `image:` name
+# still matches the published ghcr.io/abundant-ai/sentry-clone-service:empty for anyone
+# who prefers to pull it.
+#
+# This task's incident data is provided PER TASK by mounting fixture.json into the
+# `sentry` service ONLY — never into `main` — so the agent reaches the seeded incident
+# solely through the API.
+services:
+  main:
+    environment:
+      - SENTRY_URL=http://sentry
+      - SENTRY_AUTH_TOKEN=test-token-acme-eval
+      - SENTRY_ORG=acme
+    depends_on:
+      sentry:
+        condition: service_healthy
+
+  sentry:
+    image: ghcr.io/abundant-ai/sentry-clone-service:empty
+    build:
+      context: .
+      dockerfile: sentry.Dockerfile
+    hostname: sentry
+    environment:
+      - SENTRY_CLONE_STATE_FILE=/data/sentry-clone/state.json
+      - SENTRY_CLONE_RUNTIME_STATE_FILE=/var/lib/sentry-clone/state.json
+      - SENTRY_CLONE_ENABLE_ADMIN_API=1
+      - SENTRY_CLONE_ADMIN_TOKEN=test-admin-token-acme-eval
+      - SENTRY_AUTH_TOKEN=test-token-acme-eval
+      - SENTRY_ORG=acme
+    volumes:
+      - ./fixture.json:/data/sentry-clone/state.json:ro
+    expose:
+      - "80"
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost/api/healthz', timeout=1).read()\""]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+      start_period: 3s
