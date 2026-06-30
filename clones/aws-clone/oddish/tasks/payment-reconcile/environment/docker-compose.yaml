@@ -28,10 +28,7 @@ services:
         condition: service_healthy
 
   aws:
-    image: ghcr.io/abundant-ai/aws-clone-service:empty
-    build:
-      context: .
-      dockerfile: aws.Dockerfile
+    image: ghcr.io/abundant-ai/aws-clone-service-mv:empty   # PULLED (no build)
     hostname: aws
     environment:
       - AWS_CLONE_STATE_FILE=/data/aws-clone/state.json

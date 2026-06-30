@@ -1,6 +1,0 @@
-#!/usr/bin/env sh
-export PYTHONPATH="/opt/awscli:/opt/aws-clone${PYTHONPATH:+:$PYTHONPATH}"
-if [ -x /opt/awscli/bin/awslocal ]; then
-  exec /opt/awscli/bin/awslocal "$@"
-fi
-exec python -m awscli_local "$@"
