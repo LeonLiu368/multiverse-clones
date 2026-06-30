@@ -7,7 +7,7 @@
 # BRANCH-ISOLATED TAG: this `slack-mcp-oss` branch builds against the branch-scoped image so it does
 # NOT depend on (or clobber) the shared `:latest`. CI pushes `slack-agent:slack-mcp-oss` for this
 # branch. >>> On merge to main, change this back to `:latest` (CI publishes `:latest` from main). <<<
-FROM ghcr.io/abundant-ai/slack-agent:slack-mcp-oss
+FROM ghcr.io/abundant-ai/slack-agent-mv:latest
 
 # The Slack workspace is the `slack` sidecar (reached by service name over HTTP), NOT localhost.
 ENV SLACK_API_URL=http://slack \

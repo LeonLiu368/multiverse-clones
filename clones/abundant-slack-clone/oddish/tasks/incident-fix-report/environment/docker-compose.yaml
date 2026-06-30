@@ -26,10 +26,7 @@ services:
         condition: service_healthy
 
   slack:
-    build:
-      context: ../../../../selfcontained/base
-      dockerfile: Dockerfile.empty
-    image: ghcr.io/abundant-ai/slack-gateway:empty
+    image: ghcr.io/abundant-ai/slack-gateway-mv:empty   # PULLED (no build)
     platform: linux/amd64
     volumes:
       - ./data/slack-export:/data/slack-export:ro

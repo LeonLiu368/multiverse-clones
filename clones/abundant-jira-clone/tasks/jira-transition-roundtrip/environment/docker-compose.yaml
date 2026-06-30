@@ -26,12 +26,7 @@ services:
         condition: service_healthy
 
   jira:
-    image: ${JIRA_GATEWAY_IMAGE:-ghcr.io/abundant-ai/jira-gateway:empty}
-    # R1.5 build:+image: dual — build & tag the SAME name locally when the GHCR package isn't
-    # pullable. Context = selfcontained/base.
-    build:
-      context: ../../../selfcontained/base
-      dockerfile: Dockerfile.empty
+    image: ghcr.io/abundant-ai/jira-gateway-mv:empty   # PULLED (no build); -mv = multiverse-clones build
     hostname: jira
     platform: linux/amd64
     environment:
