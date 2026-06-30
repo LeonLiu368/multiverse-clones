@@ -248,8 +248,7 @@ def _options_github(param: str, **kw) -> Dict[str, Any]:
         return {"kind": "multiselect", "options": [], "note": "enter an org/owner to list repos"}
     repos = _list_org_repos(org, _gh_token())
     opts = [{"value": r["name"], "label": r["name"],
-             "private": bool(r.get("private")), "archived": bool(r.get("archived")),
-             "count": (r.get("pushed_at") or "")[:10]} for r in repos]
+             "private": bool(r.get("private")), "archived": bool(r.get("archived"))} for r in repos]
     opts.sort(key=lambda o: (o["archived"], o["label"].lower()))
     return {"kind": "multiselect", "options": opts}
 
