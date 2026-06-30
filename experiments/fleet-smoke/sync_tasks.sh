@@ -12,7 +12,7 @@ notion-db-triage	notion-clone/oddish/tasks/notion-db-triage
 figma-spec-recovery	figma-clone/oddish/tasks/figma-spec-recovery
 gws-launch-date-prod-v1	google-workspace-clone/oddish/tasks/gws-launch-date-prod-v1
 sentry-payments-incident	sentry-clone/tasks/payments-incident
-gauge-annotation-roundtrip	gauge/oddish/tasks/gauge-annotation-roundtrip
+grafana-annotation-roundtrip	grafana-clone/oddish/tasks/gauge-annotation-roundtrip
 logfire-incident-rca	abundant-logfire-clone/oddish/tasks/logfire-incident-rca
 aws-payment-reconcile	aws-clone/oddish/tasks/payment-reconcile
 EOF

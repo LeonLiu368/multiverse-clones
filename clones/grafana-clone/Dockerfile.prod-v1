@@ -1,0 +1,18 @@
+# grafana-service:prod-v1 — the base gateway image with a REAL observability corpus baked in.
+#
+# FROM the data-free base (:empty); bake the corpus state.json to GRAFANA_STATE_FILE. The
+# entrypoint serves whatever GRAFANA_STATE_FILE points at, so this image needs NO fixture
+# mount — it serves the full corpus out of the box from a cold `docker compose up`. A task
+# switches empty <-> prod-v1 by the image tag ALONE; on prod-v1 any per-task fixture mount
+# is irrelevant because the baked corpus is already in the image at /srv/grafana/state.json.
+#
+# Build context must contain `examples/data/grafana/state.json` (the corpus).
+ARG BASE=ghcr.io/abundant-ai/grafana-service:empty
+FROM ${BASE}
+
+COPY examples/data/grafana/state.json /srv/grafana/state.json
+
+# Point the seed at the baked corpus; keep the runtime (mutable) state on a writable path.
+ENV GRAFANA_STATE_FILE=/srv/grafana/state.json \
+    GRAFANA_RUNTIME_STATE_FILE=/var/lib/grafana/state.json
+# (entrypoint, port, healthcheck, EXPOSE inherited from the base)

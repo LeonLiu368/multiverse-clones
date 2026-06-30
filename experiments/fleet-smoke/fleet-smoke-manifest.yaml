@@ -21,7 +21,7 @@ tasks:
   - figma-spec-recovery         # Figma: recover a design spec via figma-cli/mcp, apply to code
   - gws-launch-date-prod-v1     # Google Workspace: recover a launch date from Drive/Docs
   - sentry-payments-incident    # Sentry: triage an incident, resolve + comment
-  - gauge-annotation-roundtrip  # Gauge (Grafana): find firing alert, post incident annotation
+  - grafana-annotation-roundtrip  # Grafana: find firing alert, post incident annotation
   - logfire-incident-rca        # Logfire: SQL over telemetry to root-cause + fix
   - aws-payment-reconcile       # AWS: reconcile a stuck payment via SQS/S3/DynamoDB
 

@@ -35,8 +35,8 @@
       "strategy": "authored-in-tree",
       "note": "Handwritten T2 Notion clone authored directly in this monorepo (no upstream OSS); built to clone-standard-v1 via the clone-creation skill."
     },
-    "gauge": {
-      "repo": "https://github.com/abundant-ai/gauge",
+    "grafana-clone": {
+      "repo": "https://github.com/abundant-ai/grafana-clone",
       "branch": "main",
       "commit": "4d6cefe1890b00f8614d8e6b19f56be4d14f3633"
     },

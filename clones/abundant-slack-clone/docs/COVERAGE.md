@@ -1,5 +1,12 @@
 # Coverage matrix — `abundant-slack-clone`
 
+## Real service
+- name: Slack Web API
+- api_base: https://slack.com/api
+- reference: https://api.slack.com/web
+- version: Web API (current)
+- snapshot_date: 2026-06-30
+
 The **agent-used surface** of the Slack Web API this clone emulates, mapped capability → HTTP
 endpoint → `slack` CLI command → `slack-mcp` (korotovsky) tool → response-envelope fidelity →
 assessment-grade label → test. This file is machine-checkable: one row per capability, the

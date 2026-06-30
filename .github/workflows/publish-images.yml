@@ -65,13 +65,13 @@ jobs:
             prodv1_file: Dockerfile.prod-v1
             corpus_prep: ""        # corpus/state.json committed
             platforms: linux/amd64,linux/arm64
-          - clone: gauge
-            service: gauge-service
-            context: clones/gauge
+          - clone: grafana-clone
+            service: grafana-service
+            context: clones/grafana-clone
             base_file: Dockerfile.service
             empty_file: Dockerfile.service
             prodv1_file: Dockerfile.prod-v1
-            corpus_prep: ""        # examples/data/gauge/state.json committed
+            corpus_prep: ""        # examples/data/grafana/state.json committed
             platforms: linux/amd64,linux/arm64
           - clone: abundant-logfire-clone
             service: logfire-service

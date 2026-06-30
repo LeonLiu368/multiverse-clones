@@ -1,0 +1,26 @@
+services:
+  grafana:
+    build:
+      context: ..
+      dockerfile: Dockerfile.service
+    image: grafana-service:local
+    ports:
+      - "3000:80"
+    environment:
+      GRAFANA_STATE_FILE: /data/grafana/state.json
+      GRAFANA_RUNTIME_STATE_FILE: /var/lib/grafana/state.json
+      GRAFANA_ENABLE_ADMIN_API: "1"
+      GRAFANA_ADMIN_TOKEN: test-admin-token-acme-eval
+      GRAFANA_SERVICE_ACCOUNT_TOKEN: test-token-acme-eval
+      GRAFANA_TOKEN: test-token-acme-eval
+    volumes:
+      - ./data/grafana/state.json:/data/grafana/state.json:ro
+      - grafana-runtime:/var/lib/grafana
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost/api/healthz', timeout=1).read()\""]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+
+volumes:
+  grafana-runtime:

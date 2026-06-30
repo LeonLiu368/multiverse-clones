@@ -1,5 +1,12 @@
 # COVERAGE — agent-used `gh` surface → endpoint / CLI / MCP / envelope (Clone Standard R4/R5)
 
+## Real service
+- name: GitHub REST API (via the gh CLI)
+- api_base: https://api.github.com
+- reference: https://docs.github.com/en/rest
+- version: 2022-11-28
+- snapshot_date: 2026-06-30
+
 Canon coverage matrix for `gh-cli-clone`. One row per capability the agent
 realistically needs, each mapped to its **HTTP endpoint** (Forgejo `/api/v1`), its
 **CLI** command (`ghc …`), its **MCP** tool (`ghc-mcp`), the **envelope** fidelity

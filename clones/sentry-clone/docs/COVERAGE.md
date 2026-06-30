@@ -1,5 +1,12 @@
 # Coverage matrix — `sentry-clone`
 
+## Real service
+- name: Sentry Web API
+- api_base: https://sentry.io/api/0
+- reference: https://docs.sentry.io/api/
+- version: v0
+- snapshot_date: 2026-06-30
+
 Machine-checkable enumeration of the real Sentry agent-used surface, mapping each
 capability to its HTTP endpoint + `sentry` CLI command + `sentry-mcp` MCP tool, with
 the response-envelope-fidelity and assessment-grade flags. Every row is covered by the

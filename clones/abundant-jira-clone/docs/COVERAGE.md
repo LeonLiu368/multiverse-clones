@@ -1,5 +1,12 @@
 # Coverage matrix — abundant-jira-clone (R4 / R5)
 
+## Real service
+- name: Jira Cloud REST API v3 (+ Linear GraphQL)
+- api_base: https://<your-domain>.atlassian.net/rest/api/3
+- reference: https://developer.atlassian.com/cloud/jira/platform/rest/v3/
+- version: v3
+- snapshot_date: 2026-06-30
+
 The agent-used surface of the Jira/Linear tooling layered on the **ticketvector** issue
 engine. Every capability maps to a real ticketvector `/rpc` method **and** a `jira`/`linear`
 CLI command **and** a `jira-mcp` MCP tool. CLI and MCP are thin clients of the **same**

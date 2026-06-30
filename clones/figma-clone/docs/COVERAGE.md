@@ -1,5 +1,12 @@
 # Coverage matrix — `figma-clone`
 
+## Real service
+- name: Figma REST API
+- api_base: https://api.figma.com/v1
+- reference: https://www.figma.com/developers/api
+- version: v1
+- snapshot_date: 2026-06-30
+
 Machine-checkable map of the real Figma REST API's **agent-used surface** to this
 clone's endpoint + `figma-cli` command + `figma-mcp` tool, with envelope-fidelity,
 assessment-grade label, and test status. One row per capability. Auth mirrors

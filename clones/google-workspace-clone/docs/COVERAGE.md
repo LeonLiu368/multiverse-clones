@@ -1,5 +1,12 @@
 # Coverage matrix — abundant-gworkspace-clone
 
+## Real service
+- name: Google Workspace APIs (Drive v3, Docs v1, Calendar v3, Gmail v1)
+- api_base: https://www.googleapis.com
+- reference: https://developers.google.com/workspace
+- version: Drive v3 / Docs v1 / Calendar v3 / Gmail v1
+- snapshot_date: 2026-06-30
+
 The agent-used surface of Google Workspace this clone emulates, mapped capability →
 HTTP endpoint → `gws-cli` command → `gws-mcp` tool → envelope fidelity → assessment
 grade → tested. One HTTP API is the source of truth; the CLI and MCP server are thin

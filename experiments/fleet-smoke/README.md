@@ -19,7 +19,7 @@ The point is a single, cheap signal that the whole fleet is runnable end-to-end 
 | figma-spec-recovery | figma-clone | read: recover design spec → apply to code |
 | gws-launch-date-prod-v1 | google-workspace-clone | read: recover a launch date from Drive/Docs |
 | sentry-payments-incident | sentry-clone | write→read: triage → resolve + comment |
-| gauge-annotation-roundtrip | gauge | write→read: find firing alert → post annotation |
+| grafana-annotation-roundtrip | grafana-clone | write→read: find firing alert → post annotation |
 | logfire-incident-rca | abundant-logfire-clone | read: SQL RCA → fix |
 | aws-payment-reconcile | aws-clone | write→read: reconcile payment via SQS/S3/DynamoDB |
 

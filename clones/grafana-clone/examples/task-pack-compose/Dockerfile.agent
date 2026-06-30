@@ -1,0 +1,39 @@
+# The thin grafana-agent image — tools ONLY, zero service data, zero server source.
+#
+# An agent task's `main` builds FROM this (or copies the same way). It ships the `gcx`
+# CLI and the `mcp-grafana` MCP server (both thin HTTP clients of the gateway API) plus
+# the pure `grafana.server.links` deeplink helper they need — but NOT the gateway's API
+# server, query engine, state/seed loader, or admin plane. After the COPY we `rm -rf`
+# every server module except `links.py`, so:
+#   * `import grafana.server.state` raises ModuleNotFoundError (the seed/generator leak),
+#   * `import grafana.server.query_engine` / `.app` / `.clone_admin` all raise,
+#   * no api/seed source dir survives in the image,
+# while `gcx`/`mcp-grafana` still load. The agent reaches state only over HTTP, and the
+# `grafanactl` admin CLI is intentionally absent.
+FROM grafana-service:local AS grafana-tools
+
+FROM python:3.10-slim
+
+RUN useradd --create-home --shell /bin/sh agent
+COPY --from=grafana-tools /usr/local/bin/gcx /usr/local/bin/mcp-grafana /usr/local/bin/
+COPY --from=grafana-tools /opt/grafanacli /opt/grafanacli
+
+# Strip the gateway's API + seed/query/admin source from the agent image. Keep only the
+# CLI/MCP packages and the pure `grafana.server.links` helper the tools import.
+RUN find /opt/grafanacli/grafana/server -type f -name '*.py' \
+        ! -name '__init__.py' ! -name 'links.py' -delete && \
+    find /opt/grafanacli -name '__pycache__' -type d -prune -exec rm -rf {} + && \
+    # build-time leak smoke test: tools load, server state/seed source gone
+    PYTHONPATH=/opt/grafanacli python -c "import grafana.cli.gcx, grafana.cli.mcp_server" && \
+    ! PYTHONPATH=/opt/grafanacli python -c "import grafana.server.state" 2>/dev/null && \
+    ! PYTHONPATH=/opt/grafanacli python -c "import grafana.server.query_engine" 2>/dev/null && \
+    test ! -e /opt/grafanacli/grafana/server/state.py && \
+    test ! -e /opt/grafanacli/grafana/server/app.py && \
+    echo "thin grafana-agent OK (server api/seed stripped; gcx + mcp-grafana load)"
+
+ENV PYTHONPATH=/opt/grafanacli \
+    GRAFANA_URL=http://grafana
+
+USER agent
+WORKDIR /home/agent
+CMD ["sleep", "infinity"]

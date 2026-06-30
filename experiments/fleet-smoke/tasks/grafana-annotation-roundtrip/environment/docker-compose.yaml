@@ -1,0 +1,46 @@
+# Merged on top of Harbor's base compose. Harbor auto-configures the `main` (agent)
+# container from environment/Dockerfile; here we only OVERRIDE `main` (point it at the
+# service + wait for health) and ADD the `grafana` gateway service.
+#
+# No `networks:` — Harbor wires networking (and injects network_mode on `main`), which is
+# mutually exclusive with an explicit networks: key. The agent reaches the gateway by name
+# at http://grafana.
+#
+# The `grafana` service carries BOTH `build:` and `image:`. Harbor's docker provider runs
+# `docker compose build` then `up`; the build tags the local image with the `image:` name,
+# so `up` uses the local build and never pulls from GHCR — no auth needed (R1.5). The
+# `image:` name still matches the published ghcr.io/abundant-ai/grafana-service for pulls.
+#
+# This task's corpus is provided PER TASK by mounting fixture.json into the `grafana`
+# service container ONLY — never into `main` — so the agent reaches the seeded data solely
+# through the API.
+services:
+  main:
+    environment:
+      - GRAFANA_URL=http://grafana
+      - GRAFANA_TOKEN=test-token-acme-eval
+      - GRAFANA_SERVICE_ACCOUNT_TOKEN=test-token-acme-eval
+    depends_on:
+      grafana:
+        condition: service_healthy
+
+  grafana:
+    image: ghcr.io/abundant-ai/grafana-service:latest
+    build:
+      context: .
+      dockerfile: grafana.Dockerfile
+    hostname: grafana
+    environment:
+      - GRAFANA_STATE_FILE=/srv/grafana/fixture.json
+      - GRAFANA_RUNTIME_STATE_FILE=/var/lib/grafana/state.json
+      - GRAFANA_TOKEN=test-token-acme-eval
+      - GRAFANA_SERVICE_ACCOUNT_TOKEN=test-token-acme-eval
+    volumes:
+      - ./fixture.json:/srv/grafana/fixture.json:ro
+    expose:
+      - "80"
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost/api/healthz', timeout=1).read()\""]
+      interval: 2s
+      timeout: 2s
+      retries: 30

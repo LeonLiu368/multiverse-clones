@@ -1,5 +1,12 @@
 # aws-clone — Functional Coverage Matrix (R4)
 
+## Real service
+- name: AWS service APIs (S3, SQS, SNS, DynamoDB, CloudWatch Logs, IAM/STS, Kinesis)
+- api_base: AWS SDK/CLI service endpoints (LocalStack-backed)
+- reference: https://docs.aws.amazon.com/
+- version: botocore 1.x
+- snapshot_date: 2026-06-30
+
 Machine-checkable map of the **agent-used AWS surface** to its LocalStack
 endpoint, its CLI command, its `aws-mcp` MCP tool, fidelity tier, and whether it
 is **assessment-grade** (R5). The clone is **T3** (OSS-backed: LocalStack/moto
