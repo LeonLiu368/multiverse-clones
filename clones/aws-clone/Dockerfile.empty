@@ -1,0 +1,15 @@
+# aws-clone-service:empty — the MOUNT-TARGET gateway image.
+#
+# Identical base API + tools, but ships NO data. A per-task fixture state.json is
+# mounted in at AWS_CLONE_STATE_FILE (/data/aws-clone/state.json) at run time.
+# Switching a task between this and the baked corpus is the image TAG alone
+# (:empty <-> :prod-v1). (Clone Standard R2 — empty+mount seeding path)
+#
+# Build:
+#   docker build -f Dockerfile.empty --build-arg BASE=aws-clone-service:base \
+#     -t aws-clone-service:empty .
+ARG BASE=aws-clone-service:base
+FROM ${BASE}
+
+# Inherits the base image's AWS_CLONE_STATE_FILE=/data/aws-clone/state.json
+# (the documented mount point). No data is baked in.

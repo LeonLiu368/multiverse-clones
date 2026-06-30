@@ -24,3 +24,13 @@ def gen_file_id(rng: random.Random | None = None, length: int = 44) -> str:
     """Generate a Drive/Docs-style id (also used as a Doc's documentId)."""
     r = rng or random
     return "".join(r.choice(_ALPHABET) for _ in range(length))
+
+
+# Calendar event ids are base32hex-style tokens (lowercase a-v + 0-9), ~26 chars.
+_EVENT_ALPHABET = "0123456789abcdefghijklmnopqrstuv"
+
+
+def gen_event_id(rng: random.Random | None = None, length: int = 26) -> str:
+    """Generate a Calendar-event-style id (base32hex alphabet, like Google's)."""
+    r = rng or random
+    return "".join(r.choice(_EVENT_ALPHABET) for _ in range(length))

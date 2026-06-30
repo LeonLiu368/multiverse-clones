@@ -86,6 +86,8 @@ jobs:
           docker compose -f examples/task-pack-compose/docker-compose.yaml up -d --build
           docker compose -f examples/task-pack-compose/docker-compose.yaml exec -T agent test ! -e /data/gauge/state.json
           docker compose -f examples/task-pack-compose/docker-compose.yaml exec -T agent sh -lc 'command -v gcx && command -v mcp-grafana && ! command -v gaugectl'
+          docker compose -f examples/task-pack-compose/docker-compose.yaml exec -T agent sh -lc '! python -c "import gauge.server.state"'
+          docker compose -f examples/task-pack-compose/docker-compose.yaml exec -T agent test ! -e /opt/gaugecli/gauge/server/state.py
           docker compose -f examples/task-pack-compose/docker-compose.yaml exec -T agent gcx dashboards search payment --json
           docker compose -f examples/task-pack-compose/docker-compose.yaml exec -T agent gcx metrics query -d prom-payments 'sum by (status_code)(increase(payment_gateway_responses_total{service="payments"}[5m]))' --since 1h --step 5m --json
           docker compose -f examples/task-pack-compose/docker-compose.yaml exec -T agent gcx logs query -d loki-payments '{service="payments"} |= "lock_conflict"' --since 1h --limit 20 --json
@@ -96,6 +98,25 @@ jobs:
         if: always()
         run: docker compose -f examples/task-pack-compose/docker-compose.yaml down -v
 
+      - name: Run prod-v1 mount-free smoke test (R2.j)
+        run: |
+          docker build -f Dockerfile.service -t ghcr.io/abundant-ai/gauge-service:empty .
+          docker build -f Dockerfile.prod-v1 --build-arg BASE=ghcr.io/abundant-ai/gauge-service:empty \
+            -t ghcr.io/abundant-ai/gauge-service:prod-v1 .
+          docker rm -f gauge-prodv1 >/dev/null 2>&1 || true
+          docker run -d --name gauge-prodv1 -e GRAFANA_TOKEN=test-token-acme-eval ghcr.io/abundant-ai/gauge-service:prod-v1
+          for i in $(seq 1 30); do
+            docker exec gauge-prodv1 python -c "import urllib.request; urllib.request.urlopen('http://localhost/api/healthz')" >/dev/null 2>&1 && break
+            sleep 1
+          done
+          # serves the baked corpus with NO mount:
+          docker exec -e GRAFANA_URL=http://localhost -e GRAFANA_TOKEN=test-token-acme-eval gauge-prodv1 \
+            gcx dashboards search payment --json | grep -q dash-payment-webhooks
+          docker rm -f gauge-prodv1
+
+      - name: Run agent annotation-roundtrip task validation (R1 nop/oracle)
+        run: bash oddish/tasks/gauge-annotation-roundtrip/validate_local.sh
+
       - name: Log in to GHCR
         if: github.event_name != 'pull_request'
         uses: docker/login-action@v4
@@ -104,10 +125,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
 
-      - name: Extract metadata
+      # ---- base / :empty (data-free gateway; mount target) ----
+      - name: Extract base metadata
         id: meta
         uses: docker/metadata-action@v6
         with:
@@ -115,17 +140,38 @@ jobs:
           tags: |
             type=ref,event=branch
             type=sha,prefix=sha-
+            type=raw,value=empty
           labels: |
             org.opencontainers.image.title=Gauge Service
             org.opencontainers.image.description=Local Grafana-compatible observability service for agent benchmarks
 
-      - name: Build and push service image
+      - name: Build and push base service image (multi-arch)
         uses: docker/build-push-action@v7
         with:
           context: .
           file: Dockerfile.service
+          platforms: linux/amd64,linux/arm64
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # ---- :prod-v1 (corpus DB baked in; serves mount-free) ----
+      # FROM the just-built :empty so the corpus layers cache on top of the base.
+      - name: Build and push prod-v1 service image (multi-arch, corpus baked in)
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: Dockerfile.prod-v1
+          platforms: linux/amd64,linux/arm64
+          build-args: |
+            BASE=${{ env.IMAGE }}:empty
+          push: true
+          tags: ${{ env.IMAGE }}:prod-v1
+          labels: |
+            org.opencontainers.image.title=Gauge Service (prod-v1)
+            org.opencontainers.image.description=Gauge gateway with the payment-webhooks observability corpus baked in (serves mount-free)
           cache-from: type=gha
           cache-to: type=gha,mode=max

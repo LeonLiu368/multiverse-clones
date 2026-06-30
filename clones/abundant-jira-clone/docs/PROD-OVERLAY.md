@@ -1,3 +1,36 @@
+# Boundary decision (R2 structural) — what this repo's clone surface IS
+
+The `jira`/`linear` CLI, the issue HTTP API (`POST /rpc` on `:8765`), the JQL engine, and the
+synthetic seed generator all live in the **external** `ghcr.io/abundant-ai/ticketvector-service`
+image. **This repo** owns: the converters (`tools/*.py`), the image-trio Dockerfiles
+(`selfcontained/base/`), the read-only Linear GraphQL gateway (`linear/`), the tasks, and — added
+in this pass — **the jira MCP server (`mcp/`)** and the agent-image hardening.
+
+**Decision (explicit):** we treat THIS repo's clone surface as *"the jira/linear tooling layered on
+the ticketvector engine."* The ticketvector image is the **gateway engine**; this repo is the
+clone's tooling + packaging + tasks around it. Consequences:
+
+- **MCP (R3) lives here** (`mcp/`), as a *thin client* of the same ticketvector `/rpc` API the CLI
+  hits — not in the ticketvector repo. It mirrors the CLI 1:1 (parity proven in `tests/test_parity.py`).
+- **The agent ships only the thin client surface (R2.k).** `selfcontained/base/Dockerfile.agent`
+  no longer `COPY`s `/opt/ticketvector` wholesale; it runs `strip_agent_tooling.py`, which deletes
+  the gateway's API + world-builder source (`server/seed/plane/demo/runtime/snapshot.py`) and
+  patches `cli.py` so the remaining thin-client CLI still imports. After the strip:
+  `import world_issues.seed` raises `ModuleNotFoundError` and no `seed`/`server` source survives.
+- **The corpus DB was never in the `world_issues` package** — it lives only in the baked gateway
+  DB (`:prod-v1`) or a mounted fixture (`:empty`). So even the (now-removed) generator could only
+  regenerate the unrelated demo `PAY` world, never the ENG/WEB task corpus.
+
+## Known blocker that belongs to the ticketvector repo (multi-arch, R2.k)
+
+The base `ghcr.io/abundant-ai/ticketvector-service` is **published linux/amd64-only**. The CI
+workflow (`.github/workflows/ci.yml`) declares `platforms: [linux/amd64, linux/arm64]` and pushes
+the gateway+agent multi-arch, but the **arm64 leg cannot succeed until the ticketvector base is
+republished multi-arch** — a change that must be made in the ticketvector repo, not here. The
+arm64 matrix entry is marked `continue-on-error` so it surfaces the blocker without failing the
+whole run; amd64 is the supported arch today. Per the standard, the multi-arch half of R2.k scores
+`n/a (unverified)` locally and is a publish-time blocker owned upstream.
+
 # Prod corpus + per-task seeding (Jira clone)
 
 This mirrors the Slack clone's `docs/PROD-OVERLAY.md`, adapted to ticketvector. The big difference:

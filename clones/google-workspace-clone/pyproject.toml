@@ -1,7 +1,7 @@
 [project]
 name = "gwsclone"
 version = "0.1.0"
-description = "A Google Workspace-faithful service clone (Drive + Docs) for Harbor/Oddish environments"
+description = "A Google Workspace-faithful service clone (Drive v3 + Docs v1 + Calendar v3 + Gmail v1) for Harbor/Oddish environments"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [

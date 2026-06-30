@@ -136,6 +136,24 @@ def create_app(db_path: str | None = None) -> FastAPI:
             return store.document_resource(d)
 
     # ----- Calendar v3 -----
+    @app.post("/calendar/v3/calendars/{calendar_id}/events")
+    async def events_insert(calendar_id: str, request: Request,
+                            _tok: str = Depends(auth)) -> JSONResponse:
+        """events.insert — create an event (write). Returns the created resource (200),
+        observable on a later events.list / events.get (write→read round-trip)."""
+        try:
+            body = await request.json()
+        except Exception:
+            body = {}
+        if not isinstance(body, dict):
+            raise GoogleError(400, "Request body must be a JSON object.")
+        with Session() as s:
+            try:
+                e = store.insert_event(s, calendar_id, body)
+            except QueryError as ex:
+                raise GoogleError(400, f"Invalid event: {ex}")
+            return JSONResponse(store.event_resource(e))
+
     @app.get("/calendar/v3/calendars/{calendar_id}/events")
     def events_list(calendar_id: str, q: str | None = None, timeMin: str | None = None,
                     timeMax: str | None = None, maxResults: str | None = None,

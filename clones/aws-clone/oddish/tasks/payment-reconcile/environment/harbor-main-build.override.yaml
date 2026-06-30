@@ -1,0 +1,13 @@
+# LOCAL-ONLY override that emulates what Harbor injects for the `main` (agent)
+# container: it force-builds `main` from environment/Dockerfile. Harbor does this
+# automatically (the agent is always built from environment/Dockerfile), so this
+# file is NOT used in production — it only lets `docker compose` validate the task
+# (nop/oracle) standalone:
+#
+#   docker compose -f docker-compose.yaml -f harbor-main-build.override.yaml up -d --build
+services:
+  main:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: aws-clone-task-agent:local

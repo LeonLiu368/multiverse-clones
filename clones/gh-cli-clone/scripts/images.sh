@@ -1,100 +1,70 @@
 #!/usr/bin/env bash
-# Build and push the public gh-cli-clone service image.
+# Build and push the ghc-service gateway image TRIO (canon R2).
 #
-# One reusable image, matching the Slack/TicketVector task-pack pattern:
-#   ghc-service  Forgejo + gh-compatible CLI + Actions runner support
+#   ghc-service            base: Forgejo + gh CLI/MCP + Actions runner, NO DATA
+#   ghc-service:empty      == base (boots empty; per-task fixture mounted at /fixture)
+#   ghc-service:prod-v1    corpus DB BAKED IN; boots mount-free and serves the corpus
+#
+# Switching a task between empty and prod-v1 is the image TAG ALONE. Per-task data
+# for `:empty` arrives as a BIND MOUNT into the gateway (never COPY'd into a
+# per-task image).
 #
 # Usage:
-#   REGISTRY=ghcr.io/abundant-ai TAG=latest scripts/images.sh build
-#   scripts/images.sh push
-#   scripts/images.sh all
-#   scripts/images.sh pull
+#   REGISTRY=ghcr.io/abundant-ai scripts/images.sh build     # build all three locally (single-arch)
+#   scripts/images.sh push                                   # push all three
+#   scripts/images.sh all                                    # build + push
+#   scripts/images.sh buildx-multiarch                       # multi-arch build+push (amd64,arm64)
 #   scripts/images.sh login
-#
-# Tasks use ghc-service as the GitHub sidecar and copy /usr/local/bin/gh from it
-# into the agent's thin main image.
 set -euo pipefail
 
 REGISTRY="${REGISTRY:-ghcr.io/abundant-ai}"
-TAG="${TAG:-latest}"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-ISO="$ROOT/selfcontained/isolated"
+GW="$ROOT/selfcontained/gateway"
 IMAGE="ghc-service"
+PLATFORMS="${PLATFORMS:-linux/amd64,linux/arm64}"
 
-_ctx() {
-  CTX="$(mktemp -d)"
-  cp -r "$ROOT/ghclone" "$CTX/ghclone"
-  find "$CTX/ghclone" -name __pycache__ -type d -prune -exec rm -rf {} + 2>/dev/null || true
-  cp "$ISO/Dockerfile.forge-actions" "$CTX/Dockerfile"
-  cp "$ISO/forge-entrypoint-actions.sh" "$CTX/forge-entrypoint.sh"
-  printf '#!/usr/bin/env bash\n# no-op base seed - tasks override this file.\nexit 0\n' > "$CTX/seed.sh"
-}
+# All builds use the repo root as context so `ghclone/` is available; the
+# gateway Dockerfiles reference it via selfcontained/gateway/*.
+
+build_base()  { docker build -f "$GW/Dockerfile"          -t "$REGISTRY/$IMAGE:latest" -t "$REGISTRY/$IMAGE:empty" "$ROOT"; }
+build_prod()  { docker build -f "$GW/Dockerfile.prod-v1"  --build-arg "BASE=$REGISTRY/$IMAGE:latest" -t "$REGISTRY/$IMAGE:prod-v1" "$ROOT"; }
 
 build() {
-  _ctx
-  echo ">> building $REGISTRY/$IMAGE:$TAG"
-  docker build -t "$REGISTRY/$IMAGE:$TAG" -f "$CTX/Dockerfile" "$CTX"
-  rm -rf "$CTX"
-  echo "built: $REGISTRY/$IMAGE:$TAG"
+  echo ">> building $REGISTRY/$IMAGE {latest,empty}"; build_base
+  echo ">> building $REGISTRY/$IMAGE:prod-v1 (baking corpus)"; build_prod
+  echo "built trio: $IMAGE:{latest,empty,prod-v1}"
 }
 
-push() { docker push "$REGISTRY/$IMAGE:$TAG"; }
-pull() { docker pull "$REGISTRY/$IMAGE:$TAG"; }
+push() {
+  for t in latest empty prod-v1; do docker push "$REGISTRY/$IMAGE:$t"; done
+}
+
+# Multi-arch build+push in one shot (CI uses the equivalent buildx steps).
+buildx_multiarch() {
+  docker buildx create --use --name ghc-builder >/dev/null 2>&1 || docker buildx use ghc-builder
+  echo ">> buildx $PLATFORMS base {latest,empty}"
+  docker buildx build --platform "$PLATFORMS" -f "$GW/Dockerfile" \
+    -t "$REGISTRY/$IMAGE:latest" -t "$REGISTRY/$IMAGE:empty" --push "$ROOT"
+  echo ">> buildx $PLATFORMS prod-v1 (bakes corpus per-arch)"
+  docker buildx build --platform "$PLATFORMS" -f "$GW/Dockerfile.prod-v1" \
+    --build-arg "BASE=$REGISTRY/$IMAGE:latest" \
+    -t "$REGISTRY/$IMAGE:prod-v1" --push "$ROOT"
+}
 
 login() {
   cat <<EOF
-# 1. get a token with write:packages (one of):
+# 1. token with write:packages:
 gh auth refresh -h github.com -s write:packages
-# ...or create a classic PAT with write:packages at github.com/settings/tokens
 # 2. log in to GHCR:
 gh auth token | docker login ghcr.io -u <github-username> --password-stdin
 EOF
 }
 
-# ---- registry-free sharing (docker save/load via tarballs + GitHub Releases) ----
-OUT="${OUT:-./image-dist}"
-SHARE_REPO="${SHARE_REPO:-abundant-ai/gh-cli-clone}"
-
-save() {
-  mkdir -p "$OUT"
-  echo ">> saving $REGISTRY/$IMAGE:$TAG -> $OUT/$IMAGE-$TAG.tar.gz"
-  docker save "$REGISTRY/$IMAGE:$TAG" | gzip > "$OUT/$IMAGE-$TAG.tar.gz"
-  ls -lh "$OUT"/*.tar.gz
-}
-
-load() {
-  for f in "$OUT"/*.tar.gz; do echo ">> loading $f"; gzip -dc "$f" | docker load; done
-}
-
-release() {
-  local tag="${1:-images-$TAG}"
-  save
-  if gh release view "$tag" -R "$SHARE_REPO" >/dev/null 2>&1; then
-    gh release upload "$tag" "$OUT"/*.tar.gz -R "$SHARE_REPO" --clobber
-  else
-    gh release create "$tag" "$OUT"/*.tar.gz -R "$SHARE_REPO" \
-      -t "ghc service image ($tag)" \
-      -n "Docker image for gh-cli-clone. Install: \`gh release download $tag -R $SHARE_REPO -p '*.tar.gz' && for f in *.tar.gz; do docker load < \$f; done\`"
-  fi
-  echo "shared via release '$tag' on $SHARE_REPO (no registry needed)"
-}
-
-install() {
-  local tag="${1:-images-$TAG}"
-  mkdir -p "$OUT"
-  gh release download "$tag" -R "$SHARE_REPO" -p '*.tar.gz' -D "$OUT" --clobber
-  load
-}
-
 case "${1:-build}" in
   build) build ;;
   push) push ;;
-  pull) pull ;;
   all) build && push ;;
+  buildx-multiarch) buildx_multiarch ;;
   login) login ;;
-  save) save ;;
-  load) load ;;
-  release) release "${2:-}" ;;
-  install) install "${2:-}" ;;
-  *) echo "usage: $0 {build|push|pull|all|login|save|load|release|install} (REGISTRY=$REGISTRY TAG=$TAG)"; exit 2 ;;
+  *) echo "usage: $0 {build|push|all|buildx-multiarch|login} (REGISTRY=$REGISTRY)"; exit 2 ;;
 esac

@@ -1,5 +1,7 @@
 .venv/
 __pycache__/
 *.pyc
-records.json
+.pytest_cache/
+# the root dev corpus (the COMMITTED corpus lives at corpus/records.json.gz)
+/records.json
 *.db

@@ -23,8 +23,15 @@ docker build --platform "$PLATFORM" -f Dockerfile.gateway -t "jira-gateway:${PRO
 echo "==> jira-gateway:empty (no data)"
 docker build --platform "$PLATFORM" -f Dockerfile.empty -t "jira-gateway:empty" -t "${REGISTRY}/jira-gateway:empty" .
 
-echo "==> jira-agent:latest (thin agent, tools only)"
-docker build --platform "$PLATFORM" -f Dockerfile.agent -t "jira-agent:latest" -t "${REGISTRY}/jira-agent:latest" .
+echo "==> jira-agent:latest (thin agent: CLI + MCP, NO gateway API/seed source)"
+# The agent build needs both these base files (Dockerfile.agent, strip_agent_tooling.py,
+# agent-entrypoint.sh) AND the repo-root mcp/ package. Build from the REPO ROOT so mcp/ is in
+# context; point -f at this dir's Dockerfile.agent (which COPYs `mcp` and the base scripts by path).
+REPO_ROOT="$(cd "$HERE/../.." && pwd)"
+docker build --platform "$PLATFORM" \
+  -f "$HERE/Dockerfile.agent" \
+  -t "jira-agent:latest" -t "${REGISTRY}/jira-agent:latest" \
+  "$REPO_ROOT"
 
 echo "==> done:"
 docker images | grep -E 'jira-gateway|jira-agent' || true

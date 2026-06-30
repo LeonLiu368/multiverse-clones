@@ -1,21 +1,45 @@
-# Two-container isolation. The agent runs in `main`; the git host runs in a
-# sidecar the agent cannot read. The sidecar is reachable ONLY by static IP on a
-# private bridge — no "forge"/"github" service name appears in any URL the agent
-# sees (clone remotes, PR links, errors all show http://10.88.0.2/...). The
-# backend listens on port 80, so there's no :3000 (Gitea-default) tell either.
+# Two-container agent + gateway (canon R1/R2). The agent runs in `main`; the git
+# host is the gateway sidecar the agent cannot read. The sidecar is reachable
+# ONLY by static IP on a private bridge — no "forge"/"github" service name in any
+# URL the agent sees (clone remotes, PR links, errors all show http://10.88.0.2/).
+# The backend listens on :80, so there's no :3000 (Gitea-default) tell either.
+#
+# SEEDING (canon R2.d — per-task data by MOUNT, never a per-task gateway image):
+# the gateway is the task-INDEPENDENT `ghc-service:empty` base; this task's data
+# (acme/webapp + the split_bill incident issue) arrives as a BIND MOUNT of
+# ./fixture/ into the gateway at /fixture, applied to a runtime copy at first
+# boot. To run this same task off the shared baked corpus instead, the change is
+# the image tag alone: `image: ghc-service:prod-v1` and drop the /fixture mount.
+#
+# The gateway carries BOTH build: and image: (R1.5): `docker compose build` tags
+# the pullable name locally, so `up` never pulls from GHCR (no creds needed); the
+# image: name still matches the published ghcr.io/abundant-ai/ghc-service:empty.
 services:
-  # Backend git host (sidecar). Neutral service name so reverse-DNS gives nothing
-  # away; the agent addresses it by IP and never resolves this name.
   api:
-    build: { context: ., dockerfile: Dockerfile.forge }
-    volumes: [ "shared:/shared" ]
+    image: ghcr.io/abundant-ai/ghc-service:empty
+    build:
+      context: ../../../..            # repo root (so ghclone/ is in context)
+      dockerfile: selfcontained/gateway/Dockerfile
+    environment:
+      GHC_FIXTURE: /fixture
+    volumes:
+      - "shared:/shared"
+      - "./fixture:/fixture:ro"
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost/api/healthz"]
+      interval: 5s
+      timeout: 3s
+      start_period: 60s
+      retries: 30
     networks:
       default:
         ipv4_address: 10.88.0.2
 
   main:
     build: { context: ., dockerfile: Dockerfile.main }
-    depends_on: [ api ]
+    depends_on:
+      api:
+        condition: service_healthy
     environment:
       GH_HOST: "http://10.88.0.2"
     # token delivered at the standard secrets path (not a tell-y /shared mount)

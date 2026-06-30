@@ -1,0 +1,55 @@
+clone: abundant-logfire-clone
+service: logfire
+upstream: Pydantic Logfire — Query API + Logfire MCP
+fidelity_tier: T2            # real DuckDB SQL query grammar over a `records` table
+read_only: true             # Logfire Query API is SELECT/WITH only
+
+runtime:
+  shape: agent + gateway      # canon two-container Harbor task
+  agent:
+    image_role: main          # Harbor force-builds from environment/Dockerfile
+    base: python:3.12-slim    # neutral, data-free
+    tools: [logfire-cli, logfire-mcp]
+    data_on_disk: none        # corpus reachable only over HTTP
+  gateway:
+    api: POST /v2/query (SQL over `records`), GET /health
+    store: DuckDB (in-memory, loaded from records.json[.gz])
+    auth: bearer read token (LOGFIRE_TOKEN)
+
+images:
+  trio:
+    base:     ghcr.io/abundant-ai/logfire-service:latest    # data-free
+    empty:    ghcr.io/abundant-ai/logfire-service:empty      # mount target (/data/records.json)
+    prod_v1:  ghcr.io/abundant-ai/logfire-service:prod-v1     # incident corpus baked (corpus/records.json.gz), served mount-free
+  agent:      ghcr.io/abundant-ai/logfire-agent:latest        # client only; server.py stripped
+  multi_arch: [linux/amd64, linux/arm64]                       # CI declaration (.github/workflows/logfire-service-image.yml)
+  publish: build.sh (local trio) + CI on push-to-main
+
+seeding:
+  baked:  prod-v1 bakes corpus/records.json.gz; served as-is, mount ignored
+  mount:  empty + a per-task records.json mounted at /data/records.json
+  switch: empty <-> prod-v1 is the image tag alone
+
+corpus:
+  source: real oddish incident telemetry (spoink capture)
+  records: 3292
+  window: 2026-06-24T22:34Z .. 2026-06-25T00:34Z
+  sha256: d01dfadec61ccc8496f11f807b9dd45f1d38b8d5972ec6608ed9d20e2225e643
+
+tasks:
+  - name: logfire-incident-rca
+    kind: observability + SWE (read-investigation)
+    image: prod-v1 (baked corpus, mount-free)
+    answer: asyncpg.exceptions.UndefinedColumnError / oddish-worker / queue_slots / locked_at / 60
+    nop: 0.0
+    oracle: 1.0
+
+coverage_doc: docs/COVERAGE.md
+tests: tests/   # pytest: api + cli/mcp parity + isolation/import-leak
+assessment_grade: 3   # arbitrary_query, find_exceptions, error surface (small-clone >=3)
+
+leak_controls:
+  - agent strips logfire_clone/server.py (import raises)
+  - no corpus on agent (/data sealed)
+  - no seed generator (deterministic generator absent)
+  - answer not greppable on agent code paths

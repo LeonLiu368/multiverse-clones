@@ -1,0 +1,28 @@
+# figma-service:empty — the base gateway image with NO data baked in.
+#
+# Identical to the base figma-service (docker/Dockerfile): the Figma REST API +
+# figma-cli + figma-mcp, no corpus. It is a *mount target* — a task seeds it by
+# mounting a per-task fixture.json into /srv/fixture.json (service container only),
+# or by pushing through the token-gated /_control/seed plane. The prod-v1 image
+# (docker/Dockerfile.prod-v1) is built FROM this and bakes a corpus DB on top.
+#
+# We re-declare the build here (rather than `FROM figma-service`) so a clean
+# checkout can build :empty directly without first tagging the base locally.
+FROM python:3.12-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends curl jq \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /opt/figmaclone
+COPY pyproject.toml README.md ./
+COPY src ./src
+RUN pip install --no-cache-dir ".[mcp]"
+
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+ENV FIGMA_DB=/srv/figma.db \
+    FIGMA_FIXTURE=/srv/fixture.json \
+    PORT=3000
+EXPOSE 3000
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

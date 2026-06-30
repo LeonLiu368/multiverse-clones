@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import base64
 import re
+from datetime import datetime, timezone
 from typing import Any, Iterator
 
 from sqlalchemy import select
@@ -309,6 +310,50 @@ def event_resource(e: CalendarEvent) -> dict[str, Any]:
 def _event_start_key(e: CalendarEvent) -> str:
     st = e.start or {}
     return st.get("dateTime") or st.get("date") or ""
+
+
+def _norm_when(v: Any) -> dict[str, Any]:
+    """Coerce a Calendar start/end into Google's {dateTime|date} object."""
+    if isinstance(v, dict):
+        return v
+    if isinstance(v, str) and v:
+        return {"date": v} if len(v) == 10 else {"dateTime": v}
+    return {}
+
+
+def insert_event(s: Session, calendar_id: str, body: dict[str, Any]) -> CalendarEvent:
+    """`events.insert` — create a Calendar event (Google allocates the id).
+
+    Mirrors the real API: a POST body with at least ``summary`` + ``start`` + ``end``;
+    the server mints an opaque id and ``created``/``updated`` timestamps. Raises
+    :class:`QueryError` (surfaced as 400) when the required fields are missing, like
+    Google's INVALID_ARGUMENT.
+    """
+    summary = body.get("summary")
+    start = _norm_when(body.get("start"))
+    end = _norm_when(body.get("end"))
+    if not summary or not start or not end:
+        raise QueryError("events.insert requires summary, start, and end")
+    from .ids import gen_event_id
+    eid = body.get("id") or gen_event_id()
+    now = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+    ev = CalendarEvent(
+        id=eid,
+        calendar_id=calendar_id or "primary",
+        summary=summary,
+        description=body.get("description", "") or "",
+        location=body.get("location", "") or "",
+        status=body.get("status", "confirmed") or "confirmed",
+        start=start,
+        end=end,
+        attendees=body.get("attendees", []) or [],
+        organizer=body.get("organizer") or {},
+        created=now,
+        updated=now,
+    )
+    s.add(ev)
+    s.commit()
+    return ev
 
 
 def list_events(s: Session, calendar_id: str, q: str | None,

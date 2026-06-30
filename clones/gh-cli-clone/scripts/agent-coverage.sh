@@ -12,6 +12,10 @@ export GHC_TOKEN="${GHC_TOKEN:-$(cat "$HERE/../ghc-token.txt")}"
 GHC="$HERE/../.venv/bin/ghc"
 
 PASS=0; FAIL=0; ROWS=""
+# `ghc create` faithfully prints the resource URL (e.g.
+# http://10.88.0.2/acme/webapp/issues/3) — like real gh — NOT "#3". Extract the
+# trailing path number; fall back to a "#N" form if one is ever present.
+lastnum() { grep -oE '([0-9]+)[[:space:]]*$|#[0-9]+' | tail -1 | grep -oE '[0-9]+'; }
 chk() {  # chk "<label>" <cmd...>   — pass if exit 0
   local label="$1"; shift
   if "$@" >/tmp/cov.out 2>&1; then ROWS+="  ✓ $label\n"; PASS=$((PASS+1));
@@ -42,7 +46,7 @@ chk    "repo rename"                        gh repo rename "$SLUG" "${R}-renamed
 chk    "repo rename (back)"                 gh repo rename "$ME/${R}-renamed" "$R"
 
 echo "== ISSUE =="
-ISS=$(gh issue create -R "$SLUG" -t "bug one" -b "body" | grep -oE '#[0-9]+' | tr -d '#')
+ISS=$(gh issue create -R "$SLUG" -t "bug one" -b "body" | lastnum)
 chk    "issue create (#$ISS)"               test -n "$ISS"
 chk    "issue list"                         gh issue list -R "$SLUG"
 chk    "issue list --state all"             gh issue list -R "$SLUG" --state all
@@ -69,7 +73,7 @@ git checkout -q -b feature
 printf 'hello\n' > FEATURE.txt
 git add -A && git commit -qm "add feature"
 git push -q origin feature
-PR=$(gh pr create -R "$SLUG" -t "Add feature" -H feature -B main -b "the feature" | grep -oE '#[0-9]+' | tr -d '#')
+PR=$(gh pr create -R "$SLUG" -t "Add feature" -H feature -B main -b "the feature" | lastnum)
 chk    "pr create (#$PR)"                   test -n "$PR"
 chk    "pr list"                            gh pr list -R "$SLUG"
 chkout "pr view"               "Add feature" gh pr view "$PR" -R "$SLUG"
@@ -82,7 +86,7 @@ chk    "pr merge"                           bash -c "gh pr view $PR -R $SLUG --j
 # a second PR to exercise close/reopen
 cd "$WORK/clone"; git checkout -q main; git checkout -q -b feature2
 printf 'x\n' > F2.txt; git add -A && git commit -qm f2; git push -q origin feature2
-PR2=$(gh pr create -R "$SLUG" -t "Second" -H feature2 -B main -b x | grep -oE '#[0-9]+' | tr -d '#')
+PR2=$(gh pr create -R "$SLUG" -t "Second" -H feature2 -B main -b x | lastnum)
 chk    "pr close"                           gh pr close "$PR2" -R "$SLUG"
 chk    "pr reopen"                          gh pr reopen "$PR2" -R "$SLUG"
 

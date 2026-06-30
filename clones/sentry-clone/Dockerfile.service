@@ -2,6 +2,7 @@ FROM python:3.13-slim
 
 ENV SENTRY_CLONE_STATE_FILE=/data/sentry-clone/state.json \
     SENTRY_CLONE_RUNTIME_STATE_FILE=/var/lib/sentry-clone/state.json \
+    SENTRY_CLONE_CORPUS_FILE=/srv/sentry-clone/corpus-state.json \
     SENTRY_CLONE_ENABLE_ADMIN_API=0 \
     SENTRY_CLONE_BIND_HOST=0.0.0.0 \
     SENTRY_CLONE_PORT=80 \

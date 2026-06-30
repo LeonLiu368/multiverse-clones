@@ -28,7 +28,12 @@ services:
         condition: service_healthy
 
   jira:
-    image: ${JIRA_GATEWAY_IMAGE:-jira-gateway:empty}
+    image: ${JIRA_GATEWAY_IMAGE:-ghcr.io/abundant-ai/jira-gateway:empty}
+    # R1.5 build:+image: dual — build & tag the SAME name locally when the GHCR package isn't
+    # pullable, so a fresh checkout never fails with `unauthorized`. Context = selfcontained/base.
+    build:
+      context: ../../../selfcontained/base
+      dockerfile: Dockerfile.empty
     hostname: jira
     platform: linux/amd64
     environment:

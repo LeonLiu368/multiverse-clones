@@ -1,0 +1,7 @@
+# logfire-service:empty — base API, NO data. A per-task fixture is MOUNTED into the
+# gateway at $LOGFIRE_RECORDS (/data/records.json). Switching a task empty<->prod-v1 is
+# the image tag alone. Behaviourally identical to the base; tagged distinctly so task
+# composes can reference the canon `:empty` name.
+ARG BASE=ghcr.io/abundant-ai/logfire-service:latest
+FROM ${BASE}
+# no corpus baked — relies on a mount at /data/records.json (see docker/entrypoint.sh)

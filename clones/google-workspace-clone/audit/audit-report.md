@@ -1,105 +1,114 @@
-# Audit — google-workspace-clone
+# Audit (RE-AUDIT) — google-workspace-clone
 
 - **Clone:** `google-workspace-clone` (Google Workspace: Drive v3 + Docs v1 + Calendar v3 + Gmail v1)
-- **Commit:** `36e78af`  ·  **Audited:** 2026-06-30  ·  **Standard:** clone-standard-v1
-- **Fidelity tier:** declared **T2**, observed **T2** (handwritten FastAPI + SQLite with a real Drive `q` / Gmail-operator / Calendar time-window query grammar)
-- **Verdict: DOES NOT MEET STANDARD** — 4 / 6 gating requirements pass. Three gating gaps: no coverage matrix (R4), no write→read round-trip / read-only surface (R5), and near-absent surface tests (R6).
+- **Commit:** `b2b2abd`  ·  **Audited:** 2026-06-30  ·  **Standard:** clone-standard-v1
+- **Fidelity tier:** declared **T2**, observed **T2** (handwritten FastAPI + SQLite with a real Drive `q` / Gmail-operator / Calendar time-window query grammar, plus a Calendar write)
+- **Verdict: MEETS STANDARD — 6 / 6 gating requirements pass.** Round-1 was 4/6 (FAIL R4/R5/R6); the fixer's claim of 6/6 is **CONFIRMED** by independent run.
 
 ## TL;DR
 
-This is a genuinely strong, faithful read clone with excellent runtime hygiene. The agent+gateway
-runtime is exemplary: `:prod-v1` bakes the corpus DB and serves it **mount-free**, the GHCR images are
-**public, pullable, and multi-arch**, the thin agent is **leak-sealed** (no seed on disk, `seed`
-module not importable, answer not greppable), CLI and MCP are in **verified live parity** over one HTTP
-API, and **nop=0 / oracle=1** was measured end-to-end with the answer recovered through `gws-cli`
-against an adversarial needle-among-decoys corpus. What it lacks is the **scaffolding the standard
-gates on**: there is no `docs/COVERAGE.md`, the agent surface is **entirely read-only** (so no
-write→read round-trip can be exercised, R5.2), and the test suite is 6 store-level query tests with **no
-endpoint / CLI / MCP / parity / isolation coverage** (R6).
+This is the second pass after a fix round. All three previously-failing gates now pass, verified by
+running — not reading: `docs/COVERAGE.md` is a real 12-row matrix with 6 assessment-grade rows (R4); an
+agent-facing **Calendar `events.insert`** write is reachable from both `gws-cli calendar create` and the
+`gws_create_event` MCP tool, and the bundled `gws-create-event` task does a genuine write→read
+round-trip (NOP=0, ORACLE=1, grader reads the event back through the API) (R5); and `pytest` from a cold
+3.13 venv runs **75 passed / 2 skipped** covering every endpoint, CLI command, MCP tool, plus parity and
+isolation (R6). R1/R2 regressions hold: the rebuilt `:prod-v1` serves its baked corpus mount-free and the
+freshly-built agent image is leak-sealed (no seed on disk, `import gwsclone.seed` raises, answer not
+greppable). **One P1 non-gating caveat:** the currently-published/cached image trio is stale (2026-06-25,
+Drive-only) and must be republished from current source so a `docker pull` user gets the write surface.
 
 ## What it handles well (verified, not read)
 
-- **Cold boot, Harbor-style (R1).** `docker compose up --build -d` on `gws-launch-date-prod-v1`: gateway → Healthy, agent started, agent reaches `http://gworkspace:8080/health` by service name. No `networks:` block in any task compose.
-- **GHCR image-DB seeding (R2.j).** prod-v1 served **28 baked drive files with no fixture mount**; `docker pull ...:prod-v1` => "Image is up to date" (public, creds-free).
-- **Multi-arch (R2.k).** `imagetools inspect` shows `linux/amd64` + `linux/arm64` on `:prod-v1`, `:latest`, and `:empty`.
-- **Leak-sealed agent (R2.c/g/k).** In the built agent image: no `/srv/gws.db`; no `api/`/`seed/` source; `import gwsclone.seed` → `ModuleNotFoundError`; answer `2026-09-15` not greppable in `/opt /app /usr/local`.
-- **CLI + MCP parity (R3).** 11 MCP tools, 11 CLI commands, both thin HTTP clients of one API; live checks: CLI `docs text` == MCP `gws_get_document_text`, CLI/MCP calendar `q=LaTeX` both ==1, identical 404 error envelope across CLI and MCP.
-- **Faithful envelopes (R4.3).** Live: `drive#fileList`, `calendar#events`, `{error:{code,message,status}}` with 401 UNAUTHENTICATED / 404 NOT_FOUND / 400 INVALID_ARGUMENT.
-- **Real query grammar (T2 / R5.1).** Drive `q` (name/fullText/mimeType contains/=/!=, `'id' in parents`, trashed, and/or/not/parens — `fullText` searches Doc bodies); Gmail `from:/to:/subject:/label:` + space-AND/OR/parens; Calendar `q` + `[timeMin,timeMax)`. Invalid Drive terms → 400, like Google.
-- **Real, high-volume fixtures.** `gws-event-room` mounts **115 drive / 103 docs / 1735 calendar / 2000 gmail** items from a genuine Gmail Takeout export (real sender addresses observed live). `gws-launch-multihop` chains Calendar→Gmail.
-- **nop=0 / oracle=1 (R1.3).** Stock `plan.py` (`"TODO"`) → 2 pytest failures → reward 0. Oracle recovers `2026-09-15` via `gws-cli docs text` (disambiguating the "DRAFT — superseded" decoy) → 2 passed → reward 1.
-- **Determinism (R1.6).** `seed gen-corpus` twice → byte-identical drive-id set.
+- **Cold boot + mount-free prod-v1 (R1/R2.j).** Rebuilt `gws-local/gworkspace-service:prod-v1` boots Healthy with NO fixture mount and serves **28 baked Drive files**; needle query `name contains 'Q3 Launch Plan'` → 2 docs (needle + DRAFT decoy). No `networks:` block in any task compose.
+- **Leak-sealed agent (R2.c/g/k, R6.3).** In a freshly-built `Dockerfile.agent` image with no source mount: 7/7 leak checks PASS — `gwsclone.seed` not importable, no `/srv/gws.db`, no `api/`/`seed/` dir, `import gwsclone.seed` → `ModuleNotFoundError`, no `seed/import/hydrate/snapshot` on PATH, `2026-09-15` not greppable in `/opt /app /usr/local`.
+- **CLI + MCP parity, now incl. write (R3).** 12 MCP tools (incl. `gws_create_event`); `test_parity.py` asserts CLI==MCP per capability + identical 404 envelope, green in the cold run. Rebuilt `:empty` openapi exposes the full surface incl. `POST /calendar/v3/calendars/{id}/events`.
+- **Write→read round-trip (R5.2).** Live against rebuilt `:empty`: `POST .../events` → server-minted base32hex id → `events.list q=` reads it back. Bundled task: NOP grade=0, oracle reads the Gmail thread (rejecting the Oct-3 draft-bot decoy), writes `Q3 Retro` via `gws-cli calendar create`, hidden grader reads it back through `events.list q='Q3 Retro'` → PASS at the confirmed 2026-10-06T14:00, NOT the draft date.
+- **Faithful envelopes (R4.3).** Live: `drive#fileList`, `calendar#events`, `calendar#event`, `{error:{code,message,status}}` with 401 UNAUTHENTICATED / 404 NOT_FOUND / 400 INVALID_ARGUMENT.
+- **Comprehensive tests (R6).** `test_api.py` (29 endpoint tests, happy+error incl. insert roundtrip + 401/404/400), `test_cli.py`, `test_mcp.py` (12 tools over real stdio JSON-RPC), `test_parity.py`, `test_isolation.py`, `test_roundtrip.py`, `test_query.py`. **75 passed / 2 skipped** in 111s from a cold venv.
 
 ## Scorecard
 
 | Req | Result | Gating | Evidence (one command) |
 |---|---|---|---|
-| R1 Setup & run | **pass** | yes | `compose up --build -d` → Healthy; pull prod-v1 creds-free; nop=0/oracle=1 measured in-container |
-| R2 Agent+gateway / seeding | **pass** | yes | prod-v1 28 files mount-free; multi-arch inspect; `import gwsclone.seed`→ModuleNotFoundError |
-| R3 CLI + MCP parity | **pass** | yes | 11 MCP tools listed; CLI `docs text` == MCP `gws_get_document_text` live |
-| R4 Coverage matrix | **fail** | yes | `docs/` does not exist → no `COVERAGE.md` (R4.1 absent) |
-| R5 Assessment-grade | **fail** | yes | all agent endpoints GET (grep routes) → no write→read round-trip (R5.2) |
-| R6 Unit tests | **fail** | yes | `pytest -q` = 6/6 but only `test_query.py` store tests; no endpoint/CLI/MCP/parity/isolation |
+| R1 Setup & run | **pass** | yes | `docker run -d :prod-v1` → Healthy; `/drive/v3/files` = 28 files mount-free; nop=0/oracle=1 on write task |
+| R2 Agent+gateway / seeding | **pass** | yes | rebuilt agent image: 7/7 leak checks PASS; multi-arch declared in CI; per-task mount into gateway only |
+| R3 CLI + MCP parity | **pass** | yes | 12 MCP tools; `test_parity.py` green; rebuilt `:empty` openapi = full Drive/Docs/Calendar(+POST)/Gmail |
+| R4 Coverage matrix | **pass** | yes | `docs/COVERAGE.md` = 12-cap matrix, 6 assessment-grade rows, write→read row, envelope section |
+| R5 Assessment-grade | **pass** | yes | `gws-cli calendar create` + `gws_create_event` present in agent image; bundled task nop=0/oracle=1 |
+| R6 Unit tests | **pass** | yes | cold-venv `pytest tests -q` = **75 passed, 2 skipped**; isolation runs green inside the agent image |
 
 ### R2 canon sub-grid
 
 | a | b | c | d | e | f | g | h | i | j | k |
 |---|---|---|---|---|---|---|---|---|---|---|
-| pass | pass | pass | pass | pass | pass | pass | n/a | fail | **pass** | **pass** |
+| pass | pass | pass | pass | pass | pass | pass | n/a | pass | **pass** | **pass** |
 
-(h identity registry not wired — advisory; i skill+catalog+PROD-OVERLAY doc absent — advisory.)
+(h identity registry not wired — advisory/n-a; i CI publish workflow now present.)
 
-## Coverage-matrix audit (reconstructed — clone ships none)
+## Coverage-matrix audit (clone now ships docs/COVERAGE.md)
 
-| Capability | Endpoint | CLI | MCP | envelope | assess-grade | tested |
-|---|---|---|---|---|---|---|
-| Drive list (q-grammar) | GET /drive/v3/files | `drive ls -q` | gws_list_files | ✅ | ✅ | live only |
-| Drive get | GET /drive/v3/files/{id} | `drive get` | gws_get_file | ✅ | – | live only |
-| Drive export/media | GET …/export, ?alt=media | `drive export` | gws_get_file_text | ✅ | – | no |
-| Docs get | GET /v1/documents/{id} | `docs get` | gws_get_document | ✅ | ✅ | no |
-| Docs text (derived) | (client) | `docs text` | gws_get_document_text | ✅ | – | yes (store) |
-| Docs search (derived) | (client) | `docs search` | gws_search_document | ✅ | – | no |
-| Calendar list (q+window) | GET …/events | `calendar events` | gws_list_events | ✅ | ✅ | live only |
-| Calendar get | GET …/events/{id} | `calendar get` | gws_get_event | ✅ | – | no |
-| Gmail search (operators) | GET …/messages | `gmail search` | gws_search_messages | ✅ | ✅ | yes (store) |
-| Gmail get | GET …/messages/{id} | `gmail get` | gws_get_message | ✅ | – | no |
-| Gmail thread | GET …/threads/{id} | `gmail thread` | gws_get_thread | ✅ | ✅ | no |
+| # | Capability | Endpoint | CLI | MCP | envelope | assess | tested |
+|---|---|---|---|---|---|---|---|
+| 1 | Drive list (q) | GET /drive/v3/files | `drive ls -q` | gws_list_files | ✅ | ✅ | api/cli/mcp/parity |
+| 2 | Drive get | GET /drive/v3/files/{id} | `drive get` | gws_get_file | ✅ | – | api/cli/mcp/parity |
+| 3 | Drive export/media | …/export, ?alt=media | `drive export` | gws_get_file_text | ✅ | – | api/cli/mcp |
+| 4 | Docs get | GET /v1/documents/{id} | `docs get` | gws_get_document | ✅ | ✅ | api/cli/mcp/parity |
+| 5 | Docs text (derived) | (client) | `docs text` | gws_get_document_text | ✅ | – | cli/mcp/parity/query |
+| 6 | Docs search (derived) | (client) | `docs search` | gws_search_document | ✅ | – | cli/mcp |
+| 7 | Calendar list (q+window) | GET …/events | `calendar events` | gws_list_events | ✅ | ✅ | api/cli/mcp/parity |
+| 8 | Calendar get | GET …/events/{id} | `calendar get` | gws_get_event | ✅ | – | api/cli/mcp |
+| 9 | **Calendar create (WRITE→READ)** | POST …/events | `calendar create` | gws_create_event | ✅ | ✅ | api/cli/mcp/parity/roundtrip |
+| 10 | Gmail search (operators) | GET …/messages | `gmail search` | gws_search_messages | ✅ | ✅ | api/cli/mcp/parity/query |
+| 11 | Gmail get | GET …/messages/{id} | `gmail get` | gws_get_message | ✅ | – | api/cli/mcp |
+| 12 | Gmail thread | GET …/threads/{id} | `gmail thread` | gws_get_thread | ✅ | ✅ | api/cli/mcp |
 
-11/11 with CLI, 11/11 with MCP, 11/11 parity, ~5 assessment-grade (all read), 2 tested at the surface
-(only via store-level tests). **Zero** write capabilities.
+12/12 with CLI, 12/12 with MCP, 12/12 parity, **6 assessment-grade** (≥5 required), **all 12 tested at the surface**. Row 9 is the write→read round-trip.
 
-## Ordered action items
+## Confirm/deny per previously-failing gate
 
-1. **[P0 · R6]** Add a test suite covering every endpoint, every CLI command, every MCP tool (happy + ≥1 error each) + a CLI↔MCP **parity** test + an **isolation** test (`no /srv/gws.db`, `import gwsclone.seed` raises). *Where:* `tests/` (model on `clone-audit/assets/test_clone_template.py`). *Accept:* green from cold boot, all 11 caps + error paths + parity + isolation covered.
-2. **[P0 · R5]** Add ≥1 agent-facing **write** capability (Drive `files.create`/Docs `batchUpdate`/Calendar `events.insert`/Gmail `drafts.create`) through API+CLI+MCP and a bundled task that writes→reads it. *Where:* `api/app.py`, `store.py`, `cli/main.py`, `mcp/server.py`, `oddish/tasks/<new>`. *Accept:* a task's `solve.sh` writes via a tool and a later read observes it; nop=0/oracle=1.
-3. **[P0 · R4]** Create `docs/COVERAGE.md` (machine-checkable: endpoint | CLI | MCP | envelope-OK | assessment-grade | tested) covering all four surfaces; label ≥5 assessment-grade incl. the new round-trip. *Accept:* every capability row maps to real endpoint+CLI+MCP.
-4. **[P1 · R4 advisory]** Fix stale `README.md` — it claims only "Drive + Docs slice" but Calendar v3 + Gmail v1 are fully implemented and exercised (1735 events / 2000 messages). *Accept:* README documents all four surfaces + links COVERAGE.md.
-5. **[P2 · R2 advisory]** Add a GHCR-publish CI workflow (push-to-main, `packages: write`, multi-arch buildx, tags `:latest/:sha/:empty/:prod-v1`) so the publish contract is automated rather than hand-run via `build-prod-v1.sh --push`.
+- **R4 — CONFIRM (was fail).** `docs/COVERAGE.md` now exists and is a genuine matrix (capability→endpoint→CLI→MCP→envelope→assess→tested), 6 assessment-grade rows ≥ the 5 required, operator-only routes segregated. *Cmd:* `cat docs/COVERAGE.md`.
+- **R5 — CONFIRM (was fail).** Agent-facing write present on both surfaces and exercised end-to-end. *Cmd:* boot `:empty`+task fixture; `bash oddish/tasks/gws-create-event/solution/solve.sh` (oracle writes via gws-cli) then `pytest tests/trusted/test_grade_event.py` (grader reads back via API) → NOP fail / ORACLE pass.
+- **R6 — CONFIRM (was fail).** Full surface suite. *Cmd:* `python3.13 -m venv v && v/bin/pip install -e '.[dev,mcp]' && v/bin/python -m pytest tests -q` → 75 passed, 2 skipped; in-image isolation: `docker run --rm <agent-img> python -c '<leak asserts>'` → all PASS.
+
+## Regressions (R1/R2)
+
+- **R1/R2 hold.** `:prod-v1` boots mount-free and serves the baked corpus (28 files); freshly-built agent image is leak-sealed (7/7). No regression introduced by the write feature.
+
+## Remaining blockers / caveats
+
+- **None gating.** `meets_standard = true`.
+- **P1 (non-gating, R2):** the *published/cached* image trio (`gworkspace-service:{empty,prod-v1}`, `gworkspace-agent`) is dated 2026-06-25 and predates the write work — the cached `:prod-v1` openapi shows only Drive+Docs and POST events returns FastAPI `{"detail":"Not Found"}`; the cached agent image has no `gws-cli calendar create`. Source + Dockerfiles are correct (rebuild produces full write-capable, leak-sealed images, verified), so this is a publish-staleness item, not a design defect. Republish via the CI workflow on next push-to-main.
+- **P2 (non-gating, R5):** `seed gen-corpus` for `:prod-v1` emits calendar:0/gmail:0 (Drive+Docs only). Fine today (the write task uses `:empty`+per-task fixture), but a future prod-v1-difficulty write task would need baked events.
 
 ## Reproduction
 
 ```bash
-# install (needs py>=3.11; py3.9 system python is rejected by requires-python)
-python3.13 -m venv .venv && .venv/bin/pip install -e ".[dev]"
-.venv/bin/pytest tests/ -q                       # 6 passed
+cd clones/google-workspace-clone
+export COMPOSE_PROJECT_NAME=gwsre
 
-# live API + CLI/MCP
-.venv/bin/gws-cli seed load fixtures/acme.json --out /tmp/acme.db
-GWS_DB=/tmp/acme.db .venv/bin/uvicorn gwsclone.api.app:app --port 8099 &
-GWS_API_URL=http://127.0.0.1:8099 GWS_TOKEN=t .venv/bin/gws-cli docs text DOC_Q3PLAN_0001
+# R6 — cold-venv full surface suite (needs py>=3.11)
+python3.13 -m venv /tmp/gws-cv13 && /tmp/gws-cv13/bin/pip install -e ".[dev,mcp]"
+/tmp/gws-cv13/bin/python -m pytest tests -q              # 75 passed, 2 skipped
 
-# Harbor standup + nop/oracle + leak checks
-cd oddish/tasks/gws-launch-date-prod-v1/environment
-MAIN_IMAGE_NAME=gws-audit-main:latest docker compose \
-  -f docker-compose.yaml -f <skills>/clone-audit/assets/harbor-main-build.override.yaml up --build -d
-docker exec environment-main-1 sh -c "curl -fsS http://gworkspace:8080/drive/v3/files -H 'Authorization: Bearer gws-clone-token' | jq '.files|length'"  # 28, mount-free
-docker exec environment-main-1 sh -c "python -c 'import gwsclone.seed'"  # ModuleNotFoundError
-docker buildx imagetools inspect ghcr.io/abundant-ai/gworkspace-service:prod-v1  # amd64 + arm64
+# R1/R2.j — rebuilt prod-v1 boots mount-free
+docker build -f docker/Dockerfile -t gwsre/service:empty .
+python -m gwsclone.cli.main seed gen-corpus --out docker/gws_corpus.db
+docker build -f docker/Dockerfile.prod-v1 --build-arg BASE=gwsre/service:empty -t gwsre/service:prod-v1 docker
+docker run -d --name gwsre-prodv1 -p 18097:8080 gwsre/service:prod-v1
+curl -s -H "Authorization: Bearer gws-clone-token" localhost:18097/drive/v3/files   # 28 files
+
+# R2/R6.3 — leak-sealed agent image
+docker build -f docker/Dockerfile.agent -t gwsre/agent .
+docker run --rm gwsre/agent python -c 'import importlib.util,os,gwsclone; \
+  assert importlib.util.find_spec("gwsclone.seed") is None; assert not os.path.exists("/srv/gws.db")'
+
+# R5.2 — write→read round-trip (nop=0 / oracle=1)
+docker run -d --name gw -p 18094:8080 \
+  -v "$PWD/oddish/tasks/gws-create-event/environment/data/gws/fixture.json:/srv/fixture.json:ro" gwsre/service:empty
+export GWS_API_URL=http://localhost:18094 GWS_TOKEN=gws-clone-token PATH="/tmp/gws-cv13/bin:$PATH"
+cp oddish/tasks/gws-create-event/tests/trusted/test_grade_event.py /tmp/test_g.py
+python -m pytest /tmp/test_g.py -q          # NOP: 1 failed (reward 0)
+bash oddish/tasks/gws-create-event/solution/solve.sh   # oracle writes Q3 Retro via gws-cli
+python -m pytest /tmp/test_g.py -q          # ORACLE: 1 passed (reward 1)
 ```
-
-## Gates that were static-only (not dynamically exercised)
-
-- **R5.1 assessment-grade labelling** — assessed by reading routes + live query probes, not against a shipped matrix (none exists).
-- **R2.h/i** (identity registry, skill/catalog/PROD-OVERLAY doc) — advisory, judged by file presence (absent).
-- The `:empty + mount` path was confirmed by config + GHCR inspect + a local seed-and-serve of the event-room fixture (1735/2000 items) on the host uvicorn, not a second container standup (one docker standup, to share the pool).
-- nop/oracle were reproduced by running the verifier's pytest logic **inside the live agent container** (the answer recovered through `gws-cli`), equivalent to `tests/test.sh`'s `code_ok` path.

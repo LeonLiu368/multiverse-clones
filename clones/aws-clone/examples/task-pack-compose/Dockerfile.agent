@@ -3,10 +3,25 @@ FROM aws-clone-service:local AS aws-tools
 FROM python:3.10-slim
 
 RUN useradd --create-home --shell /bin/sh agent
-COPY --from=aws-tools /usr/local/bin/aws /usr/local/bin/awslocal /usr/local/bin/
-COPY --from=aws-tools /opt/awscli /opt/awscli
 
-ENV PYTHONPATH=/opt/awscli \
+# Real aws/awslocal CLI + the aws-mcp launcher, and the AWS client libs (incl.
+# the IAM hybrid shim that auto-loads from /opt/awscli via sitecustomize).
+COPY --from=aws-tools /usr/local/bin/aws /usr/local/bin/awslocal /usr/local/bin/aws-mcp /usr/local/bin/
+COPY --from=aws-tools /opt/awscli /opt/awscli
+RUN python -m pip install --no-cache-dir "mcp>=1.0"
+
+# Agent-safe slice of aws_clone only: the MCP server + the admin HTTP client it
+# reuses. The seed corpus / seed generator (aws_clone/seed) and admin server
+# (aws_clone/admin) are NOT copied -> `import aws_clone.seed` raises in the
+# agent (leak rule R2.k / isolation R6.3).
+RUN mkdir -p /opt/aws-clone/aws_clone/mcp /opt/aws-clone/aws_clone/cli
+COPY --from=aws-tools /opt/aws-clone/aws_clone/__init__.py /opt/aws-clone/aws_clone/__init__.py
+COPY --from=aws-tools /opt/aws-clone/aws_clone/mcp /opt/aws-clone/aws_clone/mcp
+COPY --from=aws-tools /opt/aws-clone/aws_clone/cli/__init__.py /opt/aws-clone/aws_clone/cli/__init__.py
+COPY --from=aws-tools /opt/aws-clone/aws_clone/cli/client.py /opt/aws-clone/aws_clone/cli/client.py
+RUN find /opt/aws-clone -name '__pycache__' -type d -prune -exec rm -rf {} +
+
+ENV PYTHONPATH=/opt/aws-clone:/opt/awscli \
     AWS_ENDPOINT_URL=http://aws:4566 \
     AWS_ACCESS_KEY_ID=test \
     AWS_SECRET_ACCESS_KEY=test \

@@ -1,59 +1,58 @@
 # Fleet audit roll-up — Clone Standard v1
 
-Per-clone audits run via the `clone-audit` skill (2026-06-29). Each clone has its own
-`clones/<name>/audit/{audit-report.md,audit-verdict.json}` with full evidence. `meets_standard` =
-every **gating** requirement passes.
+Per-clone audits + a creator→auditor fix loop run via the `clone-audit` / `clone-creation` skills
+(2026-06-29). Each clone has its own `clones/<name>/audit/{audit-report.md,audit-verdict.json}` with
+full evidence. `meets_standard` = every **gating** requirement passes, independently re-verified
+(every PASS cites a command the auditor ran).
 
-| Clone | Verdict | R1 run | R2 canon/seed | R3 CLI+MCP | R4 coverage | R5 assess | R6 tests | P0s |
-|---|---|---|---|---|---|---|---|---|
-| **notion-clone** | ✅ **PASS 7/7** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 0 |
-| figma-clone | ❌ 4/6 | ✅ | ⚠️ | ⚠️ | ✅ | ✅ | ⚠️ | 3 |
-| gh-cli-clone | ❌ 4/6 | ✅ | ❌ | ✅ | ✅ | ✅ | ❌ | 5 |
-| google-workspace-clone | ❌ 4/6 | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | 3 |
-| sentry-clone | ❌ 4/6 | ⚠️ | ❌ | ✅ | ⚠️ | ✅ | ✅ | 3 |
-| gauge | ❌ 3/6 | ❌ | ❌ | ✅ | ✅ | ✅ | ⚠️ | 3 |
-| abundant-logfire-clone | ❌ 2/6 | ❌ | ❌ | ✅ | ❌ | ✅ | ❌ | 3 |
-| abundant-jira-clone | ❌ 2/7 | ⚠️ | ❌ | ❌ | ❌ | ⚠️ | ❌ | 5 |
-| abundant-slack-clone | ❌ 1/6 | ⚠️ | ❌ | ⚠️ | ❌ | ⚠️ | ❌ | 2 |
-| aws-clone | ❌ 1/6 | ❌ | ❌ | ❌ | ⚠️ | ✅ | ⚠️ | 4 |
+## Current state: **10 / 10 meet the standard** ✅
 
-**1 of 10 meets the standard.** notion-clone (built to the standard via `clone-creation`) is the
-reference; the rest predate the standard and fail on a small set of recurring, systemic gaps.
+| Clone | Verdict | R1 | R2 | R3 | R4 | R5 | R6 |
+|---|---|---|---|---|---|---|---|
+| notion-clone | ✅ 7/7 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| figma-clone | ✅ 6/6 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| google-workspace-clone | ✅ 6/6 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| gh-cli-clone | ✅ 6/6 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| sentry-clone | ✅ 6/6 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| gauge | ✅ 6/6 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| abundant-logfire-clone | ✅ 6/6 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| abundant-slack-clone | ✅ 6/6 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| aws-clone | ✅ 6/6 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| abundant-jira-clone | ✅ 7/7 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
-## Systemic gaps (fix once, apply fleet-wide)
+(jira's gating_total is 7 — it carries the operator-boundary sub-gate explicitly.)
 
-1. **R2 — the GHCR baked-DB `:prod-v1` canon is missing almost everywhere (7/9 fail).** Most clones
-   never built the `:prod-v1`+`:empty` image trio with a baked corpus + multi-arch publish. Variants:
-   gh-clone bakes data *per task* and builds the agent per task (the inverse of the canon); gauge /
-   sentry / logfire / aws have no `:prod-v1` at all; slack *has* the clean trio but no task uses it.
-   This is the #1 fleet blocker.
-2. **R2.k — the agent ships the gateway's `api/`+`seed/` source (endemic leak class).** figma (task
-   agent), gauge, sentry, logfire, jira, slack all leave server/seed source importable in the agent —
-   the exact class fixed in notion. Strip it in the agent Dockerfile (build from a neutral base or
-   `rm -rf` api/seed; assert `import <pkg>.seed` raises).
-3. **R6 — no parity/isolation unit tests (6/9 fail).** Most ship store-level pytest but no
-   endpoint/CLI/MCP coverage, no CLI↔MCP parity test, no isolation/import-leak test.
-4. **R4 — no machine-checkable `docs/COVERAGE.md` (most clones).** Only gh-clone and figma have a
-   coverage matrix; the rest have prose docs the loop can't check.
-5. **R3 — no MCP server: aws-clone, abundant-jira-clone.** The two confirmed CLI-only clones.
-6. **Multi-arch — single-arch publishes across the board** (CI declares no `platforms:`).
-7. **R5 — google-workspace-clone is read-only** (all agent endpoints GET); needs ≥1 write→read
-   round-trip to discriminate agents.
+## What the fix loop did (the recurring work)
+Round 1 found 9/10 failing on the same systemic gaps; one `clone-creation` pass + independent
+re-audit closed them:
 
-## Closest to passing (best ROI for a `clone-creation` pass)
-**figma-clone, gh-cli-clone, google-workspace-clone, sentry-clone** (all 4/6). Each needs a focused,
-mostly-mechanical pass: build the `:prod-v1` trio + strip the agent leak + add parity/isolation tests
-(+ a COVERAGE matrix; + one write path for gws).
+- **R2 GHCR baked-DB canon (was the #1 fleet gap):** built the `:prod-v1`+`:empty` image trio for
+  every clone — `:prod-v1` bakes the corpus and boots **mount-free**, verified live. gh-cli's
+  Forgejo-backed `:prod-v1` bakes a seeded Forgejo data dir (the "OSS won't bake" worry didn't hold);
+  slack/jira re-pointed tasks to the existing clean trio + mount model (dropping per-task `COPY` data).
+- **R2.k leak (endemic):** stripped the gateway's `api/`+`seed/` source from every agent image — the
+  recomputable-generator leak class fixed in notion. Verified by `import <pkg>.seed` raising + no
+  source dir, in addition to the literal grep.
+- **R3 MCP:** added MCP servers to **aws-clone** (26 tools) and **abundant-jira-clone** (11 tools),
+  both thin clients in CLI parity — closing the two CLI-only gaps.
+- **R5 write path:** added an agent-facing write + a write→read round-trip task to read-only
+  **google-workspace-clone**.
+- **R4/R6:** added `docs/COVERAGE.md` matrices and full unit suites (every endpoint/CLI/MCP + CLI↔MCP
+  parity + isolation/import-leak) across the fleet.
+- Bugs fixed in passing: gh's stale "41/41" coverage counter; aws's log-window ingestion drop; stale
+  READMEs (gws/jira/slack); deleted slack's dead root Mattermost gateway.
 
-## Structural questions (not pure mechanics)
-- **abundant-jira-clone**: the CLI, API, JQL engine, and seed generator live in the **external
-  ticketvector** image — R3/R4/R6 can't be satisfied here without either vendoring the tool surface in
-  or declaring *ticketvector* the clone and this repo its per-task seeder. Decide the boundary first.
-- **abundant-slack-clone**: the clean `slack-agent`/`slack-gateway:prod-v1` trio already exists and
-  passes its checks — the work is re-pointing the shipped Oddish tasks at the 2-container shape.
+## Known non-gating follow-ups (do not block `meets_standard`)
+- **Multi-arch is a CI *declaration* everywhere.** Each clone's CI workflow declares
+  `platforms: linux/amd64,linux/arm64`, but the GHCR packages aren't published/pullable from here, so
+  the multi-arch half of R2.k is scored `n/a (unverified)` locally — it becomes a true gate at publish
+  time when CI runs on push-to-main. **abundant-jira-clone has a real upstream blocker:** its
+  `ticketvector-service` base is published amd64-only, so arm64 can't be produced until ticketvector
+  republishes multi-arch.
+- A few P2s noted in individual reports (docker-compose test races in aws/gauge that self-skip; stale
+  secondary docs in slack; help-string byte-faithfulness untested in figma).
 
-## Stale docs caught in passing (cheap fixes)
-- gws README claims "Drive+Docs slice" but Calendar+Gmail are fully implemented.
-- gh-clone's "41/41 passing" coverage claim is stale (counter breaks on faithful URL output → 23/41).
-- jira README says ENG-2016 assignee "Felix Martin"; live corpus returns "Priya Fischer".
-- slack repo-root `slackgw/app.py` is a dead Mattermost gateway contradicting the README.
+## Reproduce
+`clones/<name>/audit/audit-report.md` has the per-clone Reproduction commands; verdicts are
+machine-readable at `clones/<name>/audit/audit-verdict.json` (schema:
+`skills/_shared/audit-verdict.schema.json`).

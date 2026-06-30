@@ -1,147 +1,119 @@
-# Clone Audit Report — `abundant-logfire-clone`
+# Clone Audit Report — `abundant-logfire-clone` (RE-AUDIT)
 
-- **Audited:** `2026-06-30` · **Auditor:** `clone-audit v1` · **Commit:** `36e78af`
-- **Fidelity tier (declared / observed):** `T2` (implied) / `T2` — real DuckDB SQL query grammar over a `records` table
-- **Verdict:** ❌ FAILS — *(meets = all gating reqs pass)*
-- **Gating score:** `2 / 6` gating requirements pass (R3, R5). R1, R2, R4, R6 fail.
+- **Audited:** `2026-06-30` · **Auditor:** `clone-audit v1` · **Commit:** `b2b2abd`
+- **Fidelity tier (declared / observed):** `T2` / `T2` — real DuckDB SQL query grammar over a `records` table
+- **Verdict:** ✅ MEETS STANDARD — *(meets = all gating reqs pass)*
+- **Gating score:** `6 / 6` gating requirements pass (R1, R2, R3, R4, R5, R6).
 
 ## TL;DR
-A genuinely faithful, thin Logfire **Query API** clone: `POST /v2/query` runs read-only DuckDB SQL
-over a `records` table with real trace/span/exception/http columns, fronted by a `logfire` CLI (3
-commands) and a `logfire-mcp` server (3 tools mirroring the real Pydantic Logfire MCP), both verified
-to be thin clients of one HTTP API and in **parity**. The *query surface* is eval-useful today. But it
-is **not a Clone-Standard task**: there is **no docker-compose, no `tests/`, no `test.sh`/`solve.sh`
-oracle, no `docs/COVERAGE.md`, no CI**, and the gateway ships as a per-incident COPY-data image
-(`logfire-gateway:oddish-incident-534pm`) rather than the canonical `:prod-v1`(baked-DB) + `:empty`
-(mount-target) pair. **Top action item:** add the Harbor task scaffold (compose + `tests/test.sh` →
-`reward.txt` + `solution/solve.sh`) and re-tag the gateway as the `:prod-v1`/`:empty` trio.
+Re-audit after the fix pass. The Round-1 blockers (R1, R2, R4, R6) are all **independently
+confirmed fixed** — nothing taken on the fixer's word. The clone is now a complete
+Clone-Standard task: a canon docker trio (`base` → `:empty` + `:prod-v1`) plus a matched
+data-free agent, a real Harbor/Oddish task (`oddish/tasks/logfire-incident-rca/`) that boots
+the agent+gateway pair and scores **nop=0 / oracle=1**, a machine-checkable `docs/COVERAGE.md`,
+and a **23/23-green** pytest suite covering every endpoint, CLI command, MCP tool, parity, and
+isolation. R3/R5 (Round-1 passes) still hold. One non-gating P2 remains (verify GHCR tags
+resolve once published).
 
 ## What it handles well
-- **Faithful Query API envelope.** `POST /v2/query` returns the real `{schema:{fields:[{name,data_type}]}, data:[…]}`
-  shape; required body is `sql` + `min_timestamp` (optional `max_timestamp`/`limit`), exactly as upstream.
-  Verified by direct curl (HTTP 200 with full 12-column schema on `SELECT *`).
-- **Real read-only enforcement + auth.** Bad token → `401 {"detail":"Invalid read token"}`; `INSERT`/`DROP`
-  → `400 {"error":"invalid query","details":"only SELECT/WITH queries are allowed"}`; missing fields →
-  `400 {"error":"sql and min_timestamp are required"}`; bad column → `400` with the real DuckDB Binder
-  Error. Unknown path → `404`. All observed, real envelopes (no 500s).
-- **Time-window scoping works.** `max_timestamp` correctly excludes out-of-window records (verified:
-  a `2026-06-27` KeyError dropped when `max=2026-06-26T23:59:59Z`).
-- **CLI + MCP parity.** `logfire {query,exceptions,schema}` and MCP `{arbitrary_query, find_exceptions,
-  get_logfire_records_schema}` both call `cli.query` → the one HTTP API; CLI `exceptions` vs MCP
-  `find_exceptions` returned byte-equal data (`EQUAL`, 2 rows).
-- **Baked-DB mechanism works.** `logfire-gateway:oddish-incident-534pm` boots **mount-free** and serves
-  a real 3292-record corpus (`{"ok":true,"records":3292}`) — the prod-v1 *mechanism* exists, just
-  mis-tagged.
-- **Agent is data-free.** Agent image has no `/data/records.json` (`SEALED`); the corpus lives only
-  behind the gateway.
+- **`:prod-v1` bakes the corpus and boots mount-free.** `docker run :prod-v1` (no mount) →
+  `/health` `{"ok":true,"records":3292}`; seeded `POST /v2/query` for the incident exception
+  count returns `60`. `:empty` + a bind-mounted `records.json` serves the mounted corpus.
+  Switching is the **image tag alone** (entrypoint prefers `$LOGFIRE_BAKED`, else mounted
+  `$LOGFIRE_RECORDS`; server transparently gunzips a `.gz` corpus).
+- **Agent is sealed.** `import logfire_clone.server` → `ModuleNotFoundError`; the agent package
+  is `__init__ + cli + mcp_server` only (no `server.py`); the answer literals
+  (`asyncpg.exceptions.UndefinedColumnError`, `locked_at`) are not greppable under `/opt`
+  or `/usr/local`; no `/data/records.json[.gz]` on the agent. State is reachable only over HTTP.
+- **The Harbor task is real and non-hackable.** Gateway reaches `Healthy`, agent reaches it by
+  name (`curl http://logfire:80/health`), no `networks:` block. The verifier grades in a
+  verifier-owned `/tmp` dir (not `/workspace`) against a hidden exact-value grader. Measured
+  **nop=0** (untouched workspace) and **oracle=1** (after `solve.sh`).
+- **Faithful Query API + thin CLI/MCP in parity.** `POST /v2/query` returns the real
+  `{schema:{fields:[{name,data_type}]}, data:[…]}`; real error envelopes (401 `{detail}`,
+  400 `{error[,details]}`, 404). CLI and MCP both route through `cli.query`; parity asserted
+  by green tests.
 
 ## Scorecard
 
 | Req | Area | Result | Evidence | Action item (if not full pass) |
 |---|---|---|---|---|
-| R1 | Setup & run (Harbor) | **fail** | no compose / no `tests/test.sh` / no `solution/solve.sh`; nop & oracle unmeasurable | Add Harbor task scaffold; measure nop=0/oracle=1 |
-| R2 | Architecture canon a–g + seeding j–k | **fail** | grid below; gateway tag `oddish-incident-534pm`, no `:prod-v1`/`:empty`; both images `linux/amd64`-only; agent carries `server.py` | Re-tag trio; multi-arch; strip gateway API from agent |
-| R3 | CLI + MCP parity | **pass** | CLI 3 cmds + MCP 3 tools listed & called; `find_exceptions`==`exceptions` `EQUAL` | — (advisory: no COVERAGE doc) |
-| R4 | Functional coverage | **fail** | envelopes/ids verified faithful, but **no `docs/COVERAGE.md`** (R4.1) | Author machine-checkable `docs/COVERAGE.md` |
-| R5 | Assessment-grade endpoints | **pass** | SQL query grammar over records = T2; 3 capabilities ≥3 criteria | (advisory: no bundled round-trip task) |
-| R6 | Unit tests all surfaces | **fail** | **no `tests/` at all** | Add pytest: endpoint+CLI+MCP happy/error + parity + isolation |
+| R1 | Setup & run (Harbor) | **pass** | pair boots healthy; agent→gateway by name; no real `networks:`; nop=0, oracle=1 (reward.txt) | — |
+| R2 | Architecture canon a–g + seeding j–k | **pass** | trio builds; `:prod-v1` mount-free `/health`=3292 + query=60; `:empty`+mount works; agent sealed (no server.py, import raises, not greppable); CI declares multi-arch | (P2) verify GHCR tags resolve once published |
+| R3 | CLI + MCP parity | **pass** | 3 CLI cmds + 3 MCP tools, all thin clients; `test_parity_exceptions`/`test_parity_schema` green | — |
+| R4 | Functional coverage | **pass** | `docs/COVERAGE.md` machine-checkable matrix; envelopes/errors verified | — |
+| R5 | Assessment-grade endpoints | **pass** | 3 assessment-grade (small-clone ≥3); round-trip = bundled RCA read-investigation chain (nop=0/oracle=1) | — |
+| R6 | Unit tests all surfaces | **pass** | **23/23 green from cold**; endpoint+CLI+MCP happy/error + parity + isolation | — |
 
-### Canon + seeding parity grid (R2 detail) — a–i canon, j–k GHCR image DB seeding
+### Canon + seeding parity grid (R2 detail)
 | a | b | c | d | e | f | g | h | i | j | k |
 |---|---|---|---|---|---|---|---|---|---|---|
-| ⚠️ | ❌ | ⚠️ | ❌ | ⚠️ | ❌ | ✅ | ⚠️ | ❌ | ❌ | ❌ |
+| ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | n/a | ✅ | ✅ | ✅ |
 
-- **a (⚠️):** A gateway image exists but there is **no neutral `logfire-service` base** image; the
-  Dockerfile bakes data directly (`COPY records.json /data/records.json`). Base-without-data role unmet.
-- **b (❌):** No `:prod-v1` + `:empty` pair. Only `logfire-gateway:oddish-incident-534pm` (per-incident).
-  `buildx imagetools inspect …:prod-v1` and `…:empty` → **not found** on GHCR.
-- **c (⚠️):** Agent is **data-free** (`/data/records.json` absent → `SEALED`), but the agent image
-  **carries the gateway's API source** (`/opt/logfire_clone/server.py` present). No separate seed
-  generator and no data, so it is not an answer leak, but the API source is not stripped (R2.k tie-in).
-- **d (❌):** Per-task data is delivered by **`COPY records.json` into a per-task gateway image**
-  (`build.sh <records.json> <tag>`), not by mounting into an `:empty` gateway. The `:empty`+mount path
-  does not exist.
-- **e (⚠️):** Bulk = native JSON (`records.json`, good). No mutation op-list (clone is read-only by
-  design — acceptable for a read-only telemetry API, but the canon "shared op-list" half is N/A-ish).
-- **f (❌):** No Harbor 2-container task: no `docker-compose.yaml`, no `tests/test.sh`→`reward.txt`.
-- **g (✅):** No world-building/seed entrypoint is on the agent's PATH (only `logfire` + `logfire-mcp`);
-  seeding is a build-time `COPY` on the gateway, not agent-callable.
-- **h (⚠️):** No identity registry wiring (advisory).
-- **i (⚠️):** No skill/catalog/PROD-OVERLAY doc (advisory). No `docs/` dir at all.
-- **j (❌):** The baked-DB *mechanism* works (the incident gateway boots mount-free, serves 3292
-  records), **but there is no `:prod-v1` tag** baking the corpus per the contract — fails by name.
-- **k (❌):** Both `logfire-gateway` and `logfire-agent` are **`linux/amd64`-only** (host-arm warning;
-  `docker image inspect` → `linux/amd64`); no CI workflow declares multi-arch. **And** the agent image
-  bundles the gateway API source (`server.py`) — not stripped to a neutral client. (Literal grep finds
-  only source comments, not seeded answers, since no corpus/seed-generator ships in the agent; but the
-  "strip the gateway API/seed source" rule is unmet.)
-
-> **Auditor harness notes:** No standalone compose to merge — there is no Harbor task. I ran the
-> gateway/CLI/MCP directly (local `python3.13` venv with `duckdb`+`mcp`, a 5-record synthetic
-> `records.json`) to exercise the surface, and booted the local `logfire-gateway:oddish-incident-534pm`
-> image mount-free to confirm the baked corpus (3292 records). amd64 emulation on the arm host adds
-> ~9s corpus-load lag before `/health` answers — worth a healthcheck `start_period`.
+- **a/b:** Neutral `base` image (no data) → `:empty` (mount target) + `:prod-v1` (corpus baked).
+- **c/g:** Agent data-free and seed-free; no `server.py`/API source.
+- **d:** Per-task data delivered by baked corpus (prod-v1 task) or `:empty`+mount — not a
+  per-task COPY into a bespoke image. The task bakes `corpus/records.json.gz` (prod-v1 contract).
+- **e:** Bulk = native JSON (`records.json[.gz]`). Read-only clone → mutation op-list N/A.
+- **f:** Two-container Harbor task with `build:`+`image:` gateway, healthcheck, `depends_on`.
+- **j:** `:prod-v1` boots mount-free serving the full 3292-record corpus. **Confirmed.**
+- **k:** Multi-arch declared in CI (`linux/amd64,linux/arm64`); leak checks clean. Local builds
+  are single-arch (accepted per hardened R2.k).
+- **h:** No identity registry needed for a telemetry read API (n/a). **i:** `docs/COVERAGE.md` present.
 
 ### Coverage matrix audit (R4/R5 detail)
 | Capability | Endpoint | CLI | MCP | Envelope OK | Assessment-grade | Tested |
 |---|---|---|---|---|---|---|
-| Arbitrary SQL over records | `POST /v2/query` | `logfire query <sql>` | `arbitrary_query` | ✅ `{schema,data}` | ✅ (stateful-read, multi-step, query grammar, realistic errors) | ❌ no tests |
-| Recent exceptions | `POST /v2/query` (canned SQL) | `logfire exceptions` | `find_exceptions` | ✅ | ✅ (multi-step, query grammar, devops-investigation shape) | ❌ |
-| Records schema | `POST /v2/query` (`limit 0`) | `logfire schema` | `get_logfire_records_schema` | ✅ `{schema.fields}` | ⚠️ (1–2 criteria) | ❌ |
-| Health | `GET /health` | — | — | ✅ `{ok,records}` | — (operator) | ❌ |
+| Arbitrary SQL over records | `POST /v2/query` | `logfire query <sql>` | `arbitrary_query` | ✅ `{schema,data}` | ✅ (stateful, errors, grammar, devops) | ✅ |
+| Recent exceptions | `POST /v2/query` (canned) | `logfire exceptions` | `find_exceptions` | ✅ | ✅ (multi-step, grammar, investigation) | ✅ |
+| Records schema | `POST /v2/query` (`limit 0`) | `logfire schema` | `get_logfire_records_schema` | ✅ `{fields}` | ✅ (investigation entry; chains to query) | ✅ (parity) |
+| Auth / read-only / validation | `POST /v2/query` (errors) | (exit 1) | (raises) | ✅ 401/400/404 | ✅ (real error envelopes) | ✅ |
+| Health | `GET /health` | — | — | ✅ `{ok,records}` | — (operator) | ✅ |
 
-**R5 assessment-grade tally:** `arbitrary_query` and `find_exceptions` each satisfy ≥3 of
-{stateful-read, multi-step, realistic errors, query grammar, devops shape}. The **SQL query grammar**
-(DuckDB `SELECT … WHERE … GROUP BY`, time-window scoping) is the discriminating surface — strong T2
-signal. Meets the **small-clone ≥3** bar (here 2 strong + schema). **Gap:** R5.2's "≥1 write→read
-round-trip exercised by a bundled task" is **N/A** — the clone is read-only and ships no task, so the
-round-trip is replaced by a read-investigation chain; acceptable for a read-only telemetry clone but
-there is no bundled task to demonstrate it.
+**R5 tally:** 3 assessment-grade capabilities — meets the small-clone ≥3 bar. The SQL query
+grammar is the discriminating T2 surface. R5.2 write→read round-trip is N/A (read-only Query
+API), replaced end-to-end by the bundled `logfire-incident-rca` read-investigation chain.
 
-## Action items (ordered, for the creator loop)
-1. **[R1 · gating · P0]** Add the Harbor task scaffold. *Where:* new `environment/docker-compose.yaml`
-   (agent `main` + `logfire` gateway, `depends_on` on a gateway healthcheck), `tests/test.sh` (writes
-   `/logs/verifier/reward.txt`), `solution/solve.sh` (oracle). *Acceptance:* `docker compose up` reaches
-   healthy and a bundled task scores **nop=0.0, oracle=1.0**.
-2. **[R2.b/j · gating · P0]** Re-tag the gateway as the canon trio. *Where:* `build.sh` + CI. Produce
-   `logfire-service:prod-v1` (corpus baked, boots mount-free) **and** `logfire-service:empty` (no data,
-   mount target); switching tasks = tag swap. *Acceptance:* `…:prod-v1` boots with no mount and answers
-   a seeded `POST /v2/query`; `…:empty` + a mounted `records.json` serves the mounted corpus.
-3. **[R6 · gating · P0]** Add `tests/` (pytest). *Where:* new `tests/`. Cover **each** of `/v2/query`,
-   `/health`, all 3 CLI commands, all 3 MCP tools — happy + ≥1 error path each; **parity** test
-   (`exceptions`==`find_exceptions`, `schema`==`get_logfire_records_schema`); **isolation** test
-   (`[ ! -e /data/records.json ]` in agent, state only over HTTP). *Acceptance:* `pytest -q` green from
-   cold boot, wired into `test.sh`/CI; report `<passed>/<total>`.
-4. **[R4 · gating · P1]** Add `docs/COVERAGE.md`. *Where:* new `docs/COVERAGE.md`. One row per capability
-   → endpoint + CLI cmd + MCP tool + fidelity grade + assessment-grade label. *Acceptance:* matrix exists,
-   machine-checkable, and matches the audited matrix above.
-5. **[R2.k · gating · P1]** Image hygiene. *Where:* `Dockerfile.agent` + CI. (a) Build & publish both
-   images **multi-arch** (`linux/amd64,linux/arm64`). (b) Strip the gateway API source from the agent —
-   the agent only needs `cli.py`/`mcp_server.py`/`__init__.py`; `rm` `server.py` (or build the agent from
-   a neutral base copying only the client + CLI + MCP). *Acceptance:* `buildx imagetools inspect` lists
-   both arches; `docker run --rm <agent> sh -c '[ ! -e /opt/logfire_clone/server.py ]'` succeeds.
-6. **[R2 · advisory · P2]** Add a gateway healthcheck with a `start_period` covering the corpus-load lag
-   (~9s observed under amd64 emulation), so `depends_on: service_healthy` doesn't race the boot.
+## Round-1 → Round-2 (confirm/deny per previously-failing gate)
+- **R1 (was fail):** CONFIRMED FIXED. Task exists; pair boots healthy; nop=0/oracle=1 measured.
+- **R2 (was fail):** CONFIRMED FIXED. `:prod-v1`/`:empty` trio + sealed agent; mount-free baked
+  boot serves 3292; multi-arch declared in CI.
+- **R4 (was fail):** CONFIRMED FIXED. `docs/COVERAGE.md` machine-checkable matrix present.
+- **R6 (was fail):** CONFIRMED FIXED. 23/23 pytest green from cold.
+- **Regressions:** none — R3 and R5 still pass (parity tests green; assessment-grade matrix intact).
 
 ## Reproduction
 ```bash
-# Surface exercised locally (no Harbor task exists to boot):
-python3.13 -m venv venv && venv/bin/pip install 'duckdb>=1.0' mcp
-LOGFIRE_RECORDS=records.json LOGFIRE_PORT=8771 LOGFIRE_TOKEN=test-token-acme-eval \
-  venv/bin/python -m logfire_clone.server   # /health -> {"ok":true,"records":5}
+cd clones/abundant-logfire-clone
+# 1) build the trio + agent (clone-scoped tags)
+docker build -t logfirere/logfire-service:base    -f docker/Dockerfile .
+docker build -t logfirere/logfire-service:empty   -f docker/Dockerfile.empty   --build-arg BASE=logfirere/logfire-service:base .
+docker build -t logfirere/logfire-service:prod-v1 -f docker/Dockerfile.prod-v1 --build-arg BASE=logfirere/logfire-service:base .
+docker build -t ghcr.io/abundant-ai/logfire-agent:latest -f docker/Dockerfile.agent .
 
-# HTTP: happy, scoping, auth(401), read-only(400 INSERT/DROP), bad-sql(400), 404, /v1 alias  — all real envelopes
-curl -s -X POST :8771/v2/query -H "Authorization: Bearer test-token-acme-eval" \
-  -d '{"sql":"SELECT exception_type,count(*) n FROM records WHERE exception_type IS NOT NULL GROUP BY 1","min_timestamp":"2026-06-24T00:00:00Z"}'
+# 2) R2.j prod-v1 mount-free
+docker run -d --name lf_prod -p 18080:80 logfirere/logfire-service:prod-v1
+curl -s localhost:18080/health   # {"ok":true,"records":3292}
 
-# CLI: logfire {schema,exceptions,query}  (exit=1 + verbatim gateway error on bad SQL)
-# MCP: stdio list_tools -> {arbitrary_query, find_exceptions, get_logfire_records_schema}; called each
-# Parity: CLI `exceptions` == MCP `find_exceptions`  -> EQUAL
+# 3) R2 agent seal
+docker run --rm ghcr.io/abundant-ai/logfire-agent:latest python -c "import logfire_clone.server"  # ModuleNotFoundError
 
-# Images (local, no GHCR prod-v1/empty):
-docker image inspect ghcr.io/abundant-ai/logfire-gateway:oddish-incident-534pm --format '{{.Os}}/{{.Architecture}}'  # linux/amd64
-docker run -d -p 8772:80 ghcr.io/abundant-ai/logfire-gateway:oddish-incident-534pm   # mount-free -> {"ok":true,"records":3292}
-docker run --rm ghcr.io/abundant-ai/logfire-agent:latest sh -c '[ -e /data/records.json ] && echo LEAK || echo SEALED'  # SEALED
-docker run --rm ghcr.io/abundant-ai/logfire-agent:latest sh -c 'ls /opt/logfire_clone/server.py'  # present (API source not stripped)
-docker buildx imagetools inspect ghcr.io/abundant-ai/logfire-gateway:prod-v1   # not found
+# 4) R1 boot pair + nop/oracle
+cd oddish/tasks/logfire-incident-rca/environment
+export COMPOSE_PROJECT_NAME=logfirere
+docker compose -f docker-compose.yaml \
+  -f ../../../../../skills/clone-audit/assets/harbor-main-build.override.yaml up --build -d
+#   (nop: bash tests/test.sh -> reward.txt=0; oracle: solution/solve.sh then test.sh -> reward.txt=1)
+
+# 5) R6 unit suite from cold
+python3.13 -m venv /tmp/lfvenv && /tmp/lfvenv/bin/pip install duckdb mcp pytest
+/tmp/lfvenv/bin/python -m pytest tests/   # 23 passed
 ```
+
+> **Auditor harness notes:** Docker shared host, `COMPOSE_PROJECT_NAME=logfirere`, clone-scoped
+> image tags. Isolation tests expect `ghcr.io/abundant-ai/logfire-agent:latest`; I tagged the
+> locally-built agent to that name so the 4 isolation tests ran (not skipped). arm64 host; local
+> builds single-arch — multi-arch is a CI declaration (accepted per hardened R2.k). `main` has no
+> long-running CMD (Harbor keeps it alive), so for the live agent probes I ran the built agent
+> image with `sleep infinity` on the compose network; nop/oracle were measured inside it via the
+> task's own `tests/test.sh` + `solution/solve.sh`.

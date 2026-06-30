@@ -1,0 +1,16 @@
+# sentry-clone-service:prod-v1 — the gateway with a REAL issue corpus baked in.
+#
+# FROM the data-free :empty base; bake the reproducible corpus state.json (built from
+# this repo's corpus/state.json) to $SENTRY_CLONE_CORPUS_FILE. The entrypoint serves
+# the baked corpus when no fixture is mounted at $SENTRY_CLONE_STATE_FILE, so this
+# image needs NO mount — it serves the full corpus out of the box. A task switches
+# empty<->prod-v1 by the image tag alone; a fixture mount on prod-v1 takes precedence
+# if one is supplied.
+#
+# Build context is the repo root (same as Dockerfile.service / Dockerfile.empty).
+ARG BASE=ghcr.io/abundant-ai/sentry-clone-service:empty
+FROM ${BASE}
+
+COPY corpus/state.json /srv/sentry-clone/corpus-state.json
+ENV SENTRY_CLONE_CORPUS_FILE=/srv/sentry-clone/corpus-state.json
+# entrypoint, port, healthcheck, tokens inherited from the base.

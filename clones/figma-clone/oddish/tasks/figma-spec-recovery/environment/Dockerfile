@@ -11,8 +11,24 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl jq \
 # vendored package (code only) -> provides `figma-cli` and `figma-mcp`.
 # pytest is installed too: the agent runs the visible tests, and the verifier runs
 # pytest inside this container against the candidate code.
-COPY figmaclone /opt/figmaclone
-RUN pip install --no-cache-dir "/opt/figmaclone[mcp]" pytest
+#
+# Install from /tmp, then STRIP the gateway's API server (`api/`) and seed/generator
+# (`seed/`) from the installed package — mirroring docker/Dockerfile.agent. The agent
+# box must carry only the thin HTTP clients (figma-cli + figma-mcp); it must NOT be
+# able to import the seed generator or grep the planted design spec out of disk. A
+# build-time smoke test asserts the server/seed source is gone and the answer color
+# (#1D4ED8) is nowhere on the agent image.
+COPY figmaclone /tmp/figmaclone
+RUN pip install --no-cache-dir "/tmp/figmaclone[mcp]" pytest && \
+    PKG="$(python -c 'import figmaclone, os; print(os.path.dirname(figmaclone.__file__))')" && \
+    rm -rf "$PKG/api" "$PKG/seed" && \
+    rm -rf /tmp/figmaclone && \
+    test ! -e "$PKG/api" && test ! -e "$PKG/seed" && \
+    python -c "import figmaclone.cli.main, figmaclone.mcp.server" && \
+    figma-cli --help >/dev/null && \
+    ! python -c "import figmaclone.seed" 2>/dev/null && \
+    ! grep -rsq '#1D4ED8' /opt /usr/local/lib/python*/site-packages/figmaclone && \
+    echo "thin agent OK (no api/, no seed/; no #1D4ED8; figma-cli + figma-mcp load)"
 
 # the codebase the agent edits
 COPY codebase /workspace

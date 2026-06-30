@@ -1,0 +1,32 @@
+name: test
+
+# R6.4: the clone unit suite must be green from a cold start. Builds the service/agent/empty-gateway
+# images, boots a gateway on a deterministic fixture, then runs the full pytest suite:
+#   endpoints (happy + error) · CLI (every command) · MCP (all 5 tools) · CLI<->MCP parity ·
+#   isolation/import-leak (the thin agent is data-free and the seed generator is not importable).
+on:
+  push:
+    branches: [main, slack-mcp-oss]
+  pull_request: {}
+  workflow_dispatch: {}
+
+jobs:
+  unit-suite:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pytest (host, for the isolation probe)
+        run: pip install pytest
+      - name: Run the clone unit suite (cold boot)
+        env:
+          # Build the images locally from this checkout (no GHCR pull / creds needed).
+          SLACK_TEST_TAG: ci
+        run: bash tests/test.sh
+      - name: Show reward
+        if: always()
+        run: cat /logs/verifier/reward.txt 2>/dev/null || true

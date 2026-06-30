@@ -4,6 +4,7 @@ Usage:
   slack whoami
   slack channels
   slack history <channel> [--limit N]
+  slack replies <channel> <thread_ts>
   slack search "<query>"
   slack users
   slack post <channel> "<text>"
@@ -62,6 +63,10 @@ def main(argv=None) -> int:
     h.add_argument("channel", help="channel name (e.g. general) or id (C…)")
     h.add_argument("--limit", type=int, default=50)
 
+    r = sub.add_parser("replies", help="read a thread (parent + replies)", parents=[common])
+    r.add_argument("channel", help="channel name (e.g. general) or id (C…)")
+    r.add_argument("thread_ts", help="thread parent ts (e.g. 1748020800.000000)")
+
     s = sub.add_parser("search", help="full-text message search (noisy — read carefully)",
                        parents=[common])
     s.add_argument("query")
@@ -81,6 +86,8 @@ def main(argv=None) -> int:
             _emit(client.list_users(), args.json, _fmt_users)
         elif args.cmd == "history":
             _emit(client.history(args.channel, args.limit), args.json, _fmt_messages)
+        elif args.cmd == "replies":
+            _emit(client.replies(args.channel, args.thread_ts), args.json, _fmt_messages)
         elif args.cmd == "search":
             _emit(client.search(args.query), args.json, _fmt_messages)
         elif args.cmd == "post":

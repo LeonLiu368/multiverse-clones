@@ -6,8 +6,7 @@ on:
       - main
     paths:
       - ghclone/**
-      - selfcontained/isolated/Dockerfile.forge-actions
-      - selfcontained/isolated/forge-entrypoint-actions.sh
+      - selfcontained/gateway/**
       - scripts/images.sh
       - pyproject.toml
       - README.md
@@ -16,8 +15,7 @@ on:
   pull_request:
     paths:
       - ghclone/**
-      - selfcontained/isolated/Dockerfile.forge-actions
-      - selfcontained/isolated/forge-entrypoint-actions.sh
+      - selfcontained/gateway/**
       - scripts/images.sh
       - pyproject.toml
       - README.md
@@ -31,14 +29,18 @@ permissions:
 
 env:
   IMAGE_NAME: ghcr.io/abundant-ai/ghc-service
+  PLATFORMS: linux/amd64,linux/arm64
 
 jobs:
   build:
-    name: Build ghc-service image
+    name: Build & publish ghc-service trio (multi-arch)
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
         uses: actions/checkout@v6
+
+      - name: Set up QEMU (arm64 emulation)
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
@@ -51,36 +53,53 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Prepare build context
-        run: |
-          rm -rf .image-build
-          mkdir -p .image-build
-          cp -R ghclone .image-build/ghclone
-          find .image-build/ghclone -name __pycache__ -type d -prune -exec rm -rf {} +
-          cp selfcontained/isolated/Dockerfile.forge-actions .image-build/Dockerfile
-          cp selfcontained/isolated/forge-entrypoint-actions.sh .image-build/forge-entrypoint.sh
-          printf '#!/usr/bin/env bash\n# no-op base seed - tasks override this file.\nexit 0\n' > .image-build/seed.sh
-
-      - name: Extract metadata
-        id: meta
+      # ---- base: ghc-service {latest,:<sha>,:empty} ----
+      - name: Metadata (base)
+        id: meta-base
         uses: docker/metadata-action@v6
         with:
           images: ${{ env.IMAGE_NAME }}
           tags: |
             type=sha,prefix=sha-
-            type=ref,event=branch
             type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=empty,enable={{is_default_branch}}
           labels: |
             org.opencontainers.image.title=ghc Service
-            org.opencontainers.image.description=GitHub-compatible Forgejo service with gh CLI and Actions runner for offline tasks
+            org.opencontainers.image.description=GitHub-compatible Forgejo gateway with gh CLI/MCP and Actions runner for offline tasks
 
-      - name: Build image
+      - name: Build & push base (multi-arch)
+        id: base
         uses: docker/build-push-action@v7
         with:
-          context: .image-build
-          file: .image-build/Dockerfile
+          context: .
+          file: selfcontained/gateway/Dockerfile
+          platforms: ${{ env.PLATFORMS }}
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta-base.outputs.tags }}
+          labels: ${{ steps.meta-base.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      # ---- prod-v1: corpus DB baked in (built FROM the base) ----
+      # On PRs the base isn't pushed, so build prod-v1 FROM the local base ref via
+      # the same build context (buildx resolves the ARG against the freshly built
+      # base only when pushed). On main, BASE points at the pushed :latest.
+      - name: Build & push prod-v1 (multi-arch, corpus baked)
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: selfcontained/gateway/Dockerfile.prod-v1
+          platforms: ${{ env.PLATFORMS }}
+          build-args: |
+            BASE=${{ env.IMAGE_NAME }}:latest
+          push: true
+          tags: ${{ env.IMAGE_NAME }}:prod-v1
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Verify multi-arch manifests
+        if: github.event_name != 'pull_request'
+        run: |
+          docker buildx imagetools inspect ${{ env.IMAGE_NAME }}:latest
+          docker buildx imagetools inspect ${{ env.IMAGE_NAME }}:prod-v1

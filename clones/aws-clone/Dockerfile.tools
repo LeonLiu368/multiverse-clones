@@ -4,14 +4,27 @@ ENV AWS_ENDPOINT_URL=http://aws:4566 \
     AWS_ACCESS_KEY_ID=test \
     AWS_SECRET_ACCESS_KEY=test \
     AWS_DEFAULT_REGION=us-east-1 \
-    PYTHONPATH=/opt/awscli
+    PYTHONPATH=/opt/aws-clone:/opt/awscli
 
 RUN python -m pip install --no-cache-dir --target /opt/awscli \
       awscli==1.31.13 \
       boto3==1.33.13 \
       botocore==1.33.13 \
       awscli-local==0.22.0 && \
-    mkdir -p /opt/aws-clone
+    python -m pip install --no-cache-dir "mcp>=1.0" && \
+    mkdir -p /opt/aws-clone/aws_clone
 
-COPY bin/aws bin/awslocal /usr/local/bin/
-RUN chmod +x /usr/local/bin/aws /usr/local/bin/awslocal
+# CLI tools (real aws/awslocal) + the aws-mcp launcher.
+COPY bin/aws bin/awslocal bin/aws-mcp /usr/local/bin/
+RUN chmod +x /usr/local/bin/aws /usr/local/bin/awslocal /usr/local/bin/aws-mcp
+
+# Ship ONLY the agent-safe slice of aws_clone: the MCP server (thin boto3 client
+# of AWS_ENDPOINT_URL) + the admin HTTP client it reuses. The seed corpus,
+# seed generator (aws_clone/seed) and the admin server (aws_clone/admin) are
+# deliberately NOT copied, so `import aws_clone.seed` raises in the agent
+# (leak rule R2.k / isolation R6.3) while CLI<->MCP parity still holds.
+COPY aws_clone/__init__.py /opt/aws-clone/aws_clone/__init__.py
+COPY aws_clone/mcp /opt/aws-clone/aws_clone/mcp
+COPY aws_clone/cli/__init__.py /opt/aws-clone/aws_clone/cli/__init__.py
+COPY aws_clone/cli/client.py /opt/aws-clone/aws_clone/cli/client.py
+RUN find /opt/aws-clone -name '__pycache__' -type d -prune -exec rm -rf {} +

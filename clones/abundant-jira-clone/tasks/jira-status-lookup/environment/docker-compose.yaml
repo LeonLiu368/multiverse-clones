@@ -27,7 +27,13 @@ services:
         condition: service_healthy
 
   jira:
-    image: ${JIRA_GATEWAY_IMAGE:-jira-gateway:prod-v1}
+    image: ${JIRA_GATEWAY_IMAGE:-ghcr.io/abundant-ai/jira-gateway:prod-v1}
+    # R1.5 build:+image: dual — if the GHCR package isn't pullable (private/unpublished), a
+    # fresh checkout builds and tags the SAME name locally instead of failing with `unauthorized`.
+    # The build context is selfcontained/base (the gateway Dockerfile + baked ENG corpus).
+    build:
+      context: ../../../selfcontained/base
+      dockerfile: Dockerfile.gateway
     hostname: jira
     platform: linux/amd64
     environment:

@@ -2,6 +2,10 @@
 # Tools + runtime only, NO gateway, NO importer, NO data. Tasks build `main` FROM this and add just
 # their codebase. The Slack workspace lives in the separate `slack` sidecar; the agent reaches it
 # only over HTTP via the `slack` CLI / korotovsky `slack-mcp`, so it can't bypass the tools.
+# The service image we lift the agent's tools out of (override in CI to the just-built tag).
+ARG SLACK_SERVICE=ghcr.io/abundant-ai/slack-service:slack-mcp-oss
+FROM ${SLACK_SERVICE} AS svc
+
 FROM python:3.12-slim
 
 RUN apt-get update && \
@@ -11,9 +15,9 @@ RUN apt-get update && \
 
 # Just the agent's tools from the service image — the CLI + the korotovsky MCP binary + slackcli.
 # No gateway code (slackgw), no importer, no data ride along.
-COPY --from=ghcr.io/abundant-ai/slack-service:slack-mcp-oss \
+COPY --from=svc \
      /usr/local/bin/slack /usr/local/bin/slack-mcp /usr/local/bin/slack-mcp-server-bin /usr/local/bin/
-COPY --from=ghcr.io/abundant-ai/slack-service:slack-mcp-oss /opt/slackcli /opt/slackcli
+COPY --from=svc /opt/slackcli /opt/slackcli
 
 COPY agent-entrypoint.sh /usr/local/bin/agent-entrypoint.sh
 RUN chmod +x /usr/local/bin/agent-entrypoint.sh

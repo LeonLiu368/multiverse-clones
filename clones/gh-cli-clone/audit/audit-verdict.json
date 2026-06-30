@@ -1,60 +1,60 @@
 {
   "clone": "gh-cli-clone",
-  "commit": "36e78af262eac179dc118662003f9ab5f7067b3f",
+  "commit": "b2b2abdc877623718596468bd7e6fc83ff8e1e4e",
   "audited_at": "2026-06-30",
   "standard_version": "clone-standard-v1",
   "fidelity_tier": { "declared": "T3", "observed": "T3" },
-  "meets_standard": false,
-  "gating_passed": 4,
+  "meets_standard": true,
+  "gating_passed": 6,
   "gating_total": 6,
   "requirements": {
     "R1": {
       "result": "pass",
       "gating": true,
-      "evidence": "incident-isolated cold-boots as 2-container agent+gateway; forge healthz=pass; agent 'gh auth status' -> Logged in to 10.88.0.2 account acme over HTTP; nop=0.0 oracle=1.0 measured via tests/test.sh + solution/solve.sh in main. Static-IP networks: block documented (docs/SIM-TELLS.md) so R1.4 exception holds. Base ghc-service pullable creds-free."
+      "evidence": "Two-container agent+gateway cold-boots (COMPOSE_PROJECT_NAME=ghre): `docker compose build` then `up -d` -> api healthy, main up. Agent `gh auth status` -> 'Logged in to 10.88.0.2 account acme (GH_TOKEN)' (R1.2, IP over HTTP). Gateway carries build:+image: dual (R1.5, no GHCR pull). Static-IP 10.88.0.0/24 network is the documented isolation exception (docs/SIM-TELLS.md), so R1.4 exception holds. On the migrated bundled task incident-isolated: measured nop=0.0 (verifier with no action) and oracle=1.0 (solution/solve.sh clone->fix->PR->approve->squash-merge->close-issue, then verifier: fixed=1 merged=1 incident_closed=1 -> 1)."
     },
     "R2": {
-      "result": "fail",
+      "result": "pass",
       "gating": true,
-      "evidence": "Canon-inverse seeding: no :prod-v1/:empty image trio, no baked-DB (R2.b/j fail); per-task seed.sh COPY'd into a per-task forge image instead of mounted (R2.d fail); CI publish-images.yml declares no platforms -> single-arch (R2.k multi-arch fail). Leak half of R2.k passes (no greppable answer; import ghclone raises; no seed/api source on agent). Operator boundary (g), base image (a), neutral data-free agent (c) all pass.",
+      "evidence": "FIXED since round 1. (j) Built ghc-service:prod-v1 (Dockerfile.prod-v1 boots Forgejo, runs corpus-seed.sh as admin acme, bakes token+DB) and booted it MOUNT-FREE on 10.88.0.2: healthy, and the API served the full baked corpus (repo acme/webapp + billing.py contents + open incident issue #1) with the baked /shared/token, no mount, no re-seed. (b) image trio exists: ghc-service (base) / :empty (== base) / :prod-v1. (d) bundled task incident-isolated switched from `COPY seed.sh` into a per-task forge image to a task-INDEPENDENT gateway (image: ghcr.io/abundant-ai/ghc-service:empty + build: dual) with per-task data delivered as a BIND MOUNT ./fixture:/fixture:ro + GHC_FIXTURE, applied to a runtime copy at first boot. Verified empty<->prod-v1 switch is the image tag alone: re-ran the same compose with `image: ghc-service:prod-v1` and the fixture mount dropped -> agent saw the baked corpus. (k leak, all 3 hold on the agent image): `import ghclone` -> ModuleNotFoundError; no ghclone/seed/api source under /opt /app /usr/local; no on-disk forge state (/var/lib/forgejo, /shared/token, /opt/ghclone all absent); answer literals (def split_bill / if people == 0 / 'Incident: /split') not greppable (only Python-stdlib ZeroDivisionError false positives). gh is a sealed ELF PyInstaller onefile, not python source. (k multi-arch): publish-images.yml declares platforms linux/amd64,linux/arm64 for base+prod-v1 with QEMU+Buildx and an imagetools-inspect verify step -- declaration accepted (package not pulled; build:+image: dual per R1.5). Operator boundary (g), base image (a), neutral data-free agent (c) confirmed.",
       "sub": {
         "a": "pass",
-        "b": "fail",
+        "b": "pass",
         "c": "pass",
-        "d": "fail",
+        "d": "pass",
         "e": "pass",
         "f": "pass",
         "g": "pass",
         "h": "partial",
         "i": "partial",
-        "j": "fail",
-        "k": "partial"
+        "j": "pass",
+        "k": "pass"
       }
     },
     "R3": {
       "result": "pass",
       "gating": true,
-      "evidence": "41 CLI commands (9 groups) + 31 MCP tools (ghc-mcp tools/list verified live). Both are thin clients of one ForgejoClient (ghclone/forge/client.py); live MCP issue_list/pr_list/repo_view hit identical /api/v1 endpoints as the CLI against the same forge. No dedicated parity test, but parity is structural and confirmed live. R3.2/R3.3 pass; R3.4 byte-faithfulness strong (docs/GH-EMULATION-AUDIT.md)."
+      "evidence": "41 CLI commands (9 groups) + 31 MCP tools, both thin clients of one ForgejoClient. Parity confirmed live AND now codified: tests/test_parity.py (7 tests) all PASS against the live gateway -- normalize(ghc --json) == mcp_tool(...) for repo/issue/pr/label/milestone/workflow + the raw api escape hatch. R3.2/R3.3 pass; R3.4 byte-faithfulness strong (docs/GH-EMULATION-AUDIT.md, docs/PARITY.md)."
     },
     "R4": {
       "result": "pass",
       "gating": true,
-      "evidence": "docs/COMMAND-COVERAGE.md + docs/PARITY.md enumerate every command -> gh equivalent -> endpoint with fidelity grades. Envelopes verified live: issue list --json -> state:\"CLOSED\"; pr view --json -> state:\"MERGED\"; errors 'gh: ... (HTTP NNN)'. No file literally named docs/COVERAGE.md (advisory item 6)."
+      "evidence": "docs/COVERAGE.md now EXISTS (was the round-1 advisory gap) -- machine-checkable matrix, one row per capability: Capability|Endpoint|CLI|MCP|Envelope|AG|Tested, 30+ capability rows, declares 41 CLI / 31 MCP all thin clients of one ForgejoClient. Companion docs/COMMAND-COVERAGE.md + docs/PARITY.md map gh<->ghc with fidelity grades. Envelopes verified live (issue state:OPEN/CLOSED, pr MERGED, create prints URL)."
     },
     "R5": {
       "result": "pass",
       "gating": true,
-      "evidence": "Bundled tasks carry >=5 assessment-grade capabilities: incident-fix (clone->fix->PR->review->merge->close = stateful+multi-step+devops write->read), ci-artifact (dispatch->run->artifact), triage-sweep, release-prep, pr-review. Write->read round-trip exercised end-to-end by incident-isolated oracle (reward 1). Not explicitly labelled 'assessment-grade' in a matrix (advisory item 6)."
+      "evidence": "COVERAGE.md flags 11 assessment-grade capabilities (>=5 required): issue list (filter+state grammar), issue create (stateful), close/reopen (write->read round-trip), PR create/review/merge, workflow dispatch/run/artifact, etc. The write->read round-trip is exercised end-to-end by the incident-isolated oracle (clone->fix->PR->approve->squash-merge->close-issue, reward 1)."
     },
     "R6": {
-      "result": "fail",
+      "result": "pass",
       "gating": true,
-      "evidence": "68 tests green (47 offline + 21 live client/integration), but the suite is MISSING two gating sub-requirements: no dedicated CLI<->MCP parity test (R6.2) and no isolation test asserting no on-disk state / import ghclone raises / no seed source (R6.3). Both behaviors hold in practice (verified by auditor in the running agent) but are not codified in pytest."
+      "evidence": "Cold-boot pytest: 78 passed / 15 skipped offline (skips are live tests needing GHC_HOST/GHC_TOKEN). With the gateway live (proxied to host): test_parity.py 7/7 PASS (R6.2), test_integration.py + test_client.py PASS. The lone red is test_coverage_live.py -- the SAME pre-existing P1 advisory (scripts/agent-coverage.sh greps '#N' but `ghc create` prints a URL); non-gating, R3 advisory. R6.3 isolation: test_isolation.py present (on-disk check always runs; agent-only assertions gated to the sealed agent) AND wired as a hard-fail guard at the top of tests/test.sh -- verified live inside the agent: no forge state, import ghclone raises, no clone source, gh is ELF. Both round-1 missing gating sub-reqs (R6.2 parity, R6.3 isolation) are now codified and green."
     },
     "R7": {
       "result": "pass",
       "gating": false,
-      "evidence": "audit-report.md + audit-verdict.json emitted with per-requirement results and ordered file-scoped action items."
+      "evidence": "audit-report.md + audit-verdict.json emitted with per-requirement results, canon/seeding parity grid, coverage-matrix audit, reproduction commands, and ordered action items."
     }
   },
   "coverage": {
@@ -62,71 +62,39 @@
     "with_cli": 41,
     "with_mcp": 31,
     "parity_ok": 31,
-    "assessment_grade": 10,
+    "assessment_grade": 11,
     "tested": 41
   },
   "tests": {
-    "passed": 68,
-    "total": 68,
+    "passed": 85,
+    "total": 86,
     "nop_reward": 0.0,
     "oracle_reward": 1.0
   },
   "action_items": [
     {
-      "requirement": "R2",
-      "gating": true,
-      "priority": "P0",
-      "summary": "No :prod-v1/:empty image trio and no baked-DB; ship ghc-service:{prod-v1,empty} with corpus DB baked into :prod-v1.",
-      "where": "selfcontained/, scripts/images.sh, .github/workflows/publish-images.yml",
-      "acceptance": "docker compose up of :prod-v1 with no fixture mount answers a seeded read; empty<->prod-v1 switch is the image tag alone."
+      "requirement": "R3",
+      "gating": false,
+      "priority": "P1",
+      "summary": "test_coverage_live.py is the lone red test: scripts/agent-coverage.sh parses '#[0-9]+' for the issue/PR number but `ghc create` prints a trailing URL (no #N), so a clean run reports failures and the assertion `0 failed` breaks. Commands themselves work given a real number; harness parsing is the bug.",
+      "where": "scripts/agent-coverage.sh (number extraction), tests/test_coverage_live.py",
+      "acceptance": "harness parses the trailing number from the create URL; `uv run --extra dev pytest tests/test_coverage_live.py` is green against a live gateway."
     },
     {
       "requirement": "R2",
-      "gating": true,
-      "priority": "P0",
-      "summary": "Per-task data is COPY'd into a per-task forge image (R2.d); deliver it by mounting a fixture into the gateway instead.",
-      "where": "selfcontained/isolated/Dockerfile.forge, selfcontained/isolated/docker-compose.yaml",
-      "acceptance": "gateway image is task-independent; task data arrives as a bind mount applied to a runtime copy at boot, not COPY seed.sh."
-    },
-    {
-      "requirement": "R2",
-      "gating": true,
-      "priority": "P0",
-      "summary": "CI publishes single-arch; declare multi-arch for the gateway image (R2.k).",
-      "where": ".github/workflows/publish-images.yml (docker/build-push-action step)",
-      "acceptance": "platforms: linux/amd64,linux/arm64 declared; docker buildx imagetools inspect lists both arches."
-    },
-    {
-      "requirement": "R6",
-      "gating": true,
-      "priority": "P0",
-      "summary": "Add a dedicated CLI<->MCP parity test (R6.2).",
-      "where": "tests/test_parity.py (new)",
-      "acceptance": "parametrized test asserts normalize(ghc --json) == normalize(mcp_tool(...)) for >=1 row per CLI group, green."
-    },
-    {
-      "requirement": "R6",
-      "gating": true,
-      "priority": "P0",
-      "summary": "Add a pytest isolation test (R6.3) run against the agent image.",
-      "where": "tests/test_isolation.py (new), wired into tests/test.sh",
-      "acceptance": "asserts no state on disk, import ghclone raises ModuleNotFoundError, and no seed/api source survives; green from cold boot."
+      "gating": false,
+      "priority": "P2",
+      "summary": "Legacy selfcontained/isolated/ scaffold still ships the OLD per-task model (Dockerfile.forge does `COPY seed.sh`; its docker-compose.yaml uses a static forge build, not the gateway image trio). It is no longer what the bundled task uses (incident-isolated uses gateway+mount), but it lingers as a non-canon path and migrate-isolated.sh step-1 still copies its scaffold over task dirs. Retire or repoint it at selfcontained/gateway/ to avoid regressing migrated tasks.",
+      "where": "selfcontained/isolated/{Dockerfile.forge,docker-compose.yaml,seed.sh}, scripts/migrate-isolated.sh",
+      "acceptance": "no shipped scaffold COPYs a per-task seed.sh into a gateway image; migrate-isolated produces the gateway+mount compose (image: ghc-service:empty + ./fixture mount), matching incident-isolated."
     },
     {
       "requirement": "R4",
       "gating": false,
-      "priority": "P1",
-      "summary": "Add machine-checkable docs/COVERAGE.md and explicitly label >=5 assessment-grade capabilities.",
-      "where": "docs/COVERAGE.md (new)",
-      "acceptance": "one row per capability (endpoint|CLI|MCP|envelope|assessment-grade|tested); >=5 rows flagged assessment-grade; matches the live surface."
-    },
-    {
-      "requirement": "R3",
-      "gating": false,
-      "priority": "P1",
-      "summary": "Stale '41/41 passing' claim: scripts/agent-coverage.sh extracts #N via grep '#[0-9]+' but ghc create prints a URL (no #N), so a clean run is 23/41 with 18 cascading empty-variable failures; commands themselves work given a real number.",
-      "where": "scripts/agent-coverage.sh, docs/PARITY.md, README.md",
-      "acceptance": "harness parses the trailing number from the create URL; re-run prints '0 failed'."
+      "priority": "P2",
+      "summary": "ghclone must be vendored into each task's environment/ (gitignored) before `docker compose build main` works -- agent Dockerfile.main does `COPY ghclone` but the build context is the env dir (no ghclone there on a fresh checkout). Done by migrate-isolated.sh vendor step but is an undocumented prerequisite for a bare `compose build` of a task.",
+      "where": "examples/oddish-tasks/*/environment/, docs/HARBOR.md or docs/task-integration.md",
+      "acceptance": "doc states the vendor step (or compose auto-stages ghclone); a fresh checkout's `compose build` of a bundled task succeeds without a manual cp."
     }
   ]
 }

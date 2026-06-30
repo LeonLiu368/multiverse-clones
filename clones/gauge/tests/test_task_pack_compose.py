@@ -19,6 +19,9 @@ def test_task_pack_compose_smoke() -> None:
     try:
         subprocess.run([*COMPOSE, "exec", "-T", "agent", "test", "!", "-e", "/data/gauge/state.json"], check=True, timeout=10)
         subprocess.run([*COMPOSE, "exec", "-T", "agent", "sh", "-lc", "command -v gcx && command -v mcp-grafana && ! command -v gaugectl"], check=True, timeout=10)
+        # R2.k leak probe: the gateway's seed/state source must NOT be importable in the agent.
+        subprocess.run([*COMPOSE, "exec", "-T", "agent", "sh", "-lc", "! python -c 'import gauge.server.state'"], check=True, timeout=10)
+        subprocess.run([*COMPOSE, "exec", "-T", "agent", "test", "!", "-e", "/opt/gaugecli/gauge/server/state.py"], check=True, timeout=10)
         subprocess.run([*COMPOSE, "exec", "-T", "agent", "gcx", "dashboards", "search", "payment", "--json"], check=True, timeout=10)
         subprocess.run(
             [

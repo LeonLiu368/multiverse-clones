@@ -85,17 +85,24 @@ The token can also be delivered as a file at `/run/secrets/token` or `~/.config/
 
 ## Container image (public registry)
 
-One reusable service image, matching the Slack and TicketVector task-pack format.
-**Published publicly to GHCR under `abundant-ai`:**
+The gateway is the canon **image trio** (Clone Standard R2). **Published publicly
+to GHCR under `abundant-ai`, multi-arch (`linux/amd64,linux/arm64`):**
 
-| Image | What it is |
-|---|---|
-| [`ghcr.io/abundant-ai/ghc-service`](https://github.com/orgs/abundant-ai/packages/container/package/ghc-service) | Forgejo + the gh-compatible CLI + Actions runner support for offline GitHub tasks |
+| Image (tag) | What it is | Data delivery |
+|---|---|---|
+| [`ghcr.io/abundant-ai/ghc-service`](https://github.com/orgs/abundant-ai/packages/container/package/ghc-service) (`:latest`) | base — Forgejo + gh CLI/MCP + Actions runner, **no data** | — |
+| `ghc-service:empty` | the base; boots an empty forge | per-task fixture **mounted** at `/fixture` |
+| `ghc-service:prod-v1` | the **corpus DB baked into the image** | none — boots mount-free and serves the corpus as-is |
+
+Switching a task between an empty workspace and the shared corpus is the **image
+tag alone** (`:empty` + a `/fixture` mount ↔ `:prod-v1`). The image trio is built
+from `selfcontained/gateway/` (`Dockerfile`, `Dockerfile.prod-v1`,
+`gateway-entrypoint.sh`, `corpus-seed.sh`).
 
 ```bash
-docker pull ghcr.io/abundant-ai/ghc-service:latest
-# or:
-scripts/images.sh pull
+docker pull ghcr.io/abundant-ai/ghc-service:prod-v1   # corpus baked in
+# or build the whole trio locally (no pull needed):
+scripts/images.sh build        # ghc-service:{latest,empty,prod-v1}
 ```
 
 Republish with `scripts/images.sh` (registry-parameterized; defaults to GHCR
@@ -107,12 +114,10 @@ and pushes it):
 # 1. authenticate to the registry (GHCR needs a token with write:packages)
 scripts/images.sh login          # prints the exact gh-refresh + docker-login steps
 
-# 2. build + push (override REGISTRY/TAG as needed)
-REGISTRY=ghcr.io/abundant-ai TAG=latest scripts/images.sh build
-scripts/images.sh push           # or: scripts/images.sh all   (build+push)
-
-# elsewhere: pull it
-scripts/images.sh pull
+# 2. build + push the trio (override REGISTRY as needed)
+REGISTRY=ghcr.io/abundant-ai scripts/images.sh build   # builds {latest,empty,prod-v1}
+scripts/images.sh push                                 # or: scripts/images.sh all
+scripts/images.sh buildx-multiarch                     # multi-arch build+push (amd64,arm64)
 ```
 
 Tasks should use `ghc-service` as a sidecar and copy `/usr/local/bin/gh` (or
@@ -122,31 +127,15 @@ images. See [Task integration](docs/task-integration.md).
 
 ### Sharing without a registry
 
-No registry (or no permission to create org packages)? Three options:
+No registry (or no permission to create org packages)? The gateway carries both
+`build:` and `image:` in every task compose (R1.5): `docker compose build` tags
+the pullable `ghcr.io/abundant-ai/...` name **locally**, so `up` uses the local
+build and never pulls — no GHCR auth needed. To build the trio from source:
 
-**1. Build from source** — the Dockerfiles + `ghclone` are in this repo, so the
-lightest share is just the repo:
 ```bash
 git clone https://github.com/abundant-ai/gh-cli-clone && cd gh-cli-clone
-scripts/images.sh build          # builds ghc-service locally, no pull needed
+scripts/images.sh build          # builds ghc-service:{latest,empty,prod-v1}, no pull needed
 ```
-
-**2. `docker save` tarballs via a GitHub Release** — GitHub Release assets aren't
-a container registry (works with plain `repo` scope; private repo ⇒ private
-assets). **Published:
-[release `v0.1`](https://github.com/abundant-ai/gh-cli-clone/releases/tag/v0.1)**
-(`ghc-service` only).
-```bash
-# pull the prebuilt image (no registry, no build):
-scripts/images.sh install v0.1            # gh release download + docker load
-# (re)publish after a rebuild:
-scripts/images.sh build && scripts/images.sh release v0.1
-```
-
-**3. Plain tarballs** — `scripts/images.sh save` writes `image-dist/*.tar.gz`;
-ship them however (S3, scp, shared drive) and `scripts/images.sh load` on the
-other side. The image keeps its `ghcr.io/abundant-ai/...` name, so tasks that
-`FROM` them resolve to the locally-loaded copy with no pull.
 
 ## As an MCP server
 ```bash
@@ -438,7 +427,9 @@ uv run pytest -q          # 55 tests: offline + live integration + exhaustive co
 - `test_hydrate_unit.py` — temporal reconstruction edge cases, apply plan, verify drops.
 - `test_smoke.py` — config, CLI/MCP surface, **agent-boundary** assertions.
 - `test_integration.py` — live issue + PR + P1 lifecycles against a running Forgejo.
-- `test_coverage_live.py` — **exhaustive**: every agent command via the `gh` shim (`scripts/agent-coverage.sh`), 41/41.
+- `test_coverage_live.py` — **exhaustive**: every agent command via the `gh` shim (`scripts/agent-coverage.sh`), 41/41 (the harness parses the resource URL `ghc … create` prints, e.g. `…/issues/3`).
+- `test_parity.py` — **CLI↔MCP parity** (R6.2): per group, `ghc … --json` and the matching `ghc-mcp` tool return the same records (live).
+- `test_isolation.py` — **agent isolation** (R6.3): no forge state on disk, `import ghclone` raises, no api/seed source on the agent.
 
 ## Known gaps
 - **GraphQL** — none on Forgejo; `gh api graphql` errors by design.

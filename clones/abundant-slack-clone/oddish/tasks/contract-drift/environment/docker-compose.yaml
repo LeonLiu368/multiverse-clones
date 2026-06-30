@@ -1,16 +1,35 @@
-# Single-container task compose. The `main` service contains the SQLite-backed Slack gateway, the
-# importer, and the agent tools (our `slack` CLI + the korotovsky `slack-mcp` server). Harbor
-# force-builds `main` from environment/Dockerfile (FROM slack-service + codebase). The real Slack
-# export under ./data/slack-export is mounted in and imported into SQLite at boot.
+# Two-container Harbor task: agent + gateway.
 #
-# NO `networks:` block (Harbor injects network_mode, which conflicts). platform pinned amd64.
-# The healthcheck gates agent start: harbor/oddish waits for `main` healthy before running the agent.
+#   main  — the thing under test. Harbor force-builds it from environment/Dockerfile
+#           (FROM slack-agent: a THIN, data-free image carrying only the `slack` CLI + the
+#           korotovsky `slack-mcp` server) + this task's codebase. It holds NO Slack data, NO
+#           gateway source, NO importer; it reaches the workspace only over HTTP via SLACK_API_URL.
+#   slack — the Slack workspace sidecar (the gateway). Harbor does NOT build it; it is a PULLED
+#           image (slack-gateway:empty) that imports this task's export at boot. The `build:`+`image:`
+#           dual lets `docker compose build` build+tag it locally so no GHCR pull / creds are needed
+#           (R1.5). The real Slack export under ./data/slack-export is mounted into the GATEWAY only.
+#
+# NO `networks:` block (Harbor injects network_mode). The agent waits on the gateway healthcheck via
+# depends_on: service_healthy, so the workspace is reachable before the agent runs.
 services:
   main:
     build:
       context: .
       dockerfile: Dockerfile
     image: ${APEX_TASK_DOCKER_CLIENT_IMAGE_NAME:-contract-drift-main:local}
+    platform: linux/amd64
+    environment:
+      SLACK_API_URL: http://slack
+      SLACK_BOT_TOKEN: xoxp-acme-eval-0001
+    depends_on:
+      slack:
+        condition: service_healthy
+
+  slack:
+    build:
+      context: ../../../../selfcontained/base
+      dockerfile: Dockerfile.empty
+    image: ghcr.io/abundant-ai/slack-gateway:empty
     platform: linux/amd64
     volumes:
       - ./data/slack-export:/data/slack-export:ro

@@ -1,0 +1,11 @@
+{
+  "calendar": [
+    {"id":"EV_STANDUP_1","calendarId":"primary","summary":"Daily Standup","start":{"dateTime":"2026-09-28T09:00:00Z"},"end":{"dateTime":"2026-09-28T09:15:00Z"}},
+    {"id":"EV_1ON1_2","calendarId":"primary","summary":"1:1 with Mira","start":{"dateTime":"2026-09-29T15:00:00Z"},"end":{"dateTime":"2026-09-29T15:30:00Z"}}
+  ],
+  "gmail": [
+    {"id":"MSG_A","threadId":"THR_RETRO","labelIds":["INBOX"],"from":"ops@acme.example","to":"you@acme.example","subject":"Scheduling odds and ends","date":"Mon, 21 Sep 2026 08:00:00 +0000","internalDate":"1000","body":"A few placeholder asks landed this week — ignore the draft ones, they were cancelled. We'll confirm the real ones in this thread."},
+    {"id":"MSG_B","threadId":"THR_RETRO","labelIds":["INBOX"],"from":"draft-bot@acme.example","to":"you@acme.example","subject":"Re: Scheduling odds and ends","date":"Tue, 22 Sep 2026 08:00:00 +0000","internalDate":"2000","body":"DRAFT (superseded): tentative retro Oct 3, 10:00. Do NOT book this one — see Priya's confirmation below."},
+    {"id":"MSG_C","threadId":"THR_RETRO","labelIds":["INBOX"],"from":"priya@acme.example","to":"you@acme.example","subject":"Re: Scheduling odds and ends","date":"Wed, 23 Sep 2026 08:00:00 +0000","internalDate":"3000","body":"Confirmed: please put the Q3 Retro on the calendar for 2026-10-06, 14:00-15:00 UTC. Title it exactly 'Q3 Retro'. Thanks!"}
+  ]
+}

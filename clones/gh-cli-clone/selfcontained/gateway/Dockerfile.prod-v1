@@ -1,0 +1,28 @@
+# ghc-service:prod-v1 — the corpus DB BAKED INTO the image.
+#
+# Boots Forgejo at build time, seeds the shared corpus (corpus-seed.sh) as admin
+# `acme`, bakes a deterministic admin token, then shuts down so the resulting
+# /var/lib/forgejo (SQLite DB + git repos) is captured in the image layer. At
+# runtime the gateway entrypoint detects the baked corpus and serves it AS-IS —
+# no mount, no seed. Switching a task :empty<->:prod-v1 is the image tag alone.
+#
+# Build:  docker build -f selfcontained/gateway/Dockerfile.prod-v1 \
+#                       --build-arg BASE=ghc-service -t ghc-service:prod-v1 .
+ARG BASE=ghc-service
+FROM ${BASE}
+
+# Bake against the same ROOT_URL the runtime uses so repo/PR/clone URLs are
+# internally consistent in the seeded objects. The admin token is minted by
+# Forgejo at bake time (it stores tokens hashed and won't accept a supplied
+# value) and written to /var/lib/forgejo/.baked-token, which the runtime
+# entrypoint publishes to /shared/token for the agent — no mount, no re-seed.
+ENV GHC_ROOT_URL=http://10.88.0.2/
+
+RUN /usr/local/bin/gateway-entrypoint.sh --bake
+
+# Sanity: the corpus must be present in the baked layer.
+RUN test -f /var/lib/forgejo/.baked-token \
+ && test -s /var/lib/forgejo/data/forgejo.db \
+ && echo "prod-v1 corpus baked OK"
+
+CMD ["/usr/local/bin/gateway-entrypoint.sh"]

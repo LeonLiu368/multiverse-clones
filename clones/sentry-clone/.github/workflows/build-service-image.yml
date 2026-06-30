@@ -66,6 +66,37 @@ jobs:
           docker compose -f examples/task-pack-compose/docker-compose.yaml logs --no-color sentry agent
       - run: docker compose -f examples/task-pack-compose/docker-compose.yaml down -v
         if: always()
+
+      # --- Image trio smoke: :empty (mount target) + :prod-v1 (corpus baked, mount-free) ---
+      - name: Build :empty and :prod-v1 locally
+        run: |
+          docker build -f Dockerfile.empty -t sentry-clone-service:empty .
+          docker build -f Dockerfile.prod-v1 --build-arg BASE=sentry-clone-service:empty -t sentry-clone-service:prod-v1 .
+      - name: prod-v1 boots mount-free and serves the corpus
+        run: |
+          docker run -d --name sc-prod -p 3001:80 sentry-clone-service:prod-v1
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:3001/api/healthz && break || sleep 1
+          done
+          docker exec sc-prod sh -lc '[ ! -e /data/sentry-clone/state.json ]'   # no mount
+          curl -sf -H 'Authorization: Bearer test-token-acme-eval' \
+            http://localhost:3001/api/0/organizations/acme/issues/ | grep -q CHECKOUT-12
+          curl -sf -H 'Authorization: Bearer test-token-acme-eval' \
+            http://localhost:3001/api/0/projects/acme/checkout-web/issues/ | grep -q CHECKOUT-7
+          docker rm -f sc-prod
+
+      # --- Agent leak probes (R2.k): stripped server, no greppable/recomputable corpus ---
+      - name: Agent image leak probes
+        run: |
+          docker build -f examples/task-pack-compose/Dockerfile.agent -t sentry-clone-task-agent:local .
+          docker run --rm sentry-clone-task-agent:local sh -lc '! find /opt -path "*/server/*" | grep -q .'
+          docker run --rm sentry-clone-task-agent:local python -c "exec('try:\n import sentry_clone.server\n raise SystemExit(\"FAIL: server importable\")\nexcept ModuleNotFoundError:\n pass')"
+          ! docker run --rm sentry-clone-task-agent:local grep -rs 'retry_policy\|validation_conflict\|CHECKOUT-12' /opt /usr/local
+
+      # --- Bundled Harbor task: nop=0.0, oracle=1.0 ---
+      - name: Bundled task nop/oracle
+        run: bash tasks/payments-incident/run_local.sh
+
       - name: Login to GHCR
         if: github.event_name != 'pull_request'
         uses: docker/login-action@v4
@@ -77,25 +108,40 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
 
-      - name: Extract image metadata
-        id: meta
-        uses: docker/metadata-action@v6
-        with:
-          images: ${{ env.IMAGE }}
-          tags: |
-            type=ref,event=branch
-            type=sha,prefix=sha-
-          labels: |
-            org.opencontainers.image.title=Sentry Clone Service
-            org.opencontainers.image.description=Local Sentry-compatible error monitoring service for agent benchmarks
-
-      - name: Build and push service image
+      # Image trio (all multi-arch linux/amd64,linux/arm64):
+      #   base  -> :latest / :main / :sha-<sha> / :empty  (data-free; mount target)
+      #   prod  -> :prod-v1                                (corpus state.json baked in)
+      - name: Build and push base + :empty (multi-arch)
         uses: docker/build-push-action@v7
         with:
           context: .
           file: Dockerfile.service
+          platforms: linux/amd64,linux/arm64
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: |
+            ${{ env.IMAGE }}:latest
+            ${{ env.IMAGE }}:main
+            ${{ env.IMAGE }}:sha-${{ github.sha }}
+            ${{ env.IMAGE }}:empty
+          labels: |
+            org.opencontainers.image.title=Sentry Clone Service
+            org.opencontainers.image.description=Local Sentry-compatible error monitoring service for agent benchmarks
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push :prod-v1 (corpus baked, multi-arch)
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: Dockerfile.prod-v1
+          platforms: linux/amd64,linux/arm64
+          push: ${{ github.event_name != 'pull_request' }}
+          build-args: |
+            BASE=${{ env.IMAGE }}:empty
+          tags: |
+            ${{ env.IMAGE }}:prod-v1
+          labels: |
+            org.opencontainers.image.title=Sentry Clone Service (prod-v1 corpus)
+            org.opencontainers.image.description=Sentry clone gateway with a real issue corpus baked in
           cache-from: type=gha
           cache-to: type=gha,mode=max

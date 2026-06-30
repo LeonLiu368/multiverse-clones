@@ -1,0 +1,25 @@
+{
+  "drive": [
+    {"id":"DOC_PLAN_0001","name":"Q3 Launch Plan","mimeType":"application/vnd.google-apps.document","parents":["root"],"modifiedTime":"2026-06-01T10:00:00Z","owners":[{"displayName":"Mira Devon","emailAddress":"mira@acme.example"}]},
+    {"id":"FILE_BUDGET_002","name":"Budget","mimeType":"application/vnd.google-apps.spreadsheet","parents":["root"],"modifiedTime":"2026-05-20T09:00:00Z"},
+    {"id":"FILE_OLD_003","name":"Old Draft","mimeType":"application/vnd.google-apps.document","parents":["root"],"trashed":true}
+  ],
+  "documents": [
+    {"documentId":"DOC_PLAN_0001","title":"Q3 Launch Plan","revisionId":"7",
+     "body":{"content":[
+       {"sectionBreak":{}},
+       {"paragraph":{"paragraphStyle":{"namedStyleType":"HEADING_1"},"elements":[{"textRun":{"content":"Q3 Launch Plan\n"}}]}},
+       {"paragraph":{"paragraphStyle":{"namedStyleType":"NORMAL_TEXT"},"elements":[{"textRun":{"content":"Owner: Mira Devon\n"}}]}},
+       {"paragraph":{"paragraphStyle":{"namedStyleType":"NORMAL_TEXT"},"elements":[{"textRun":{"content":"Launch date: 2026-09-15\n"}}]}},
+       {"paragraph":{"paragraphStyle":{"namedStyleType":"NORMAL_TEXT"},"elements":[{"textRun":{"content":"Status: on track\n"}}]}}
+     ]}}
+  ],
+  "calendar": [
+    {"id":"EV_KICKOFF_1","calendarId":"primary","summary":"Q3 Kickoff","description":"planning sync","location":"Room A","start":{"dateTime":"2026-07-01T09:00:00Z"},"end":{"dateTime":"2026-07-01T10:00:00Z"},"organizer":{"email":"mira@acme.example"}},
+    {"id":"EV_REVIEW_2","calendarId":"primary","summary":"Design Review","description":"LaTeX rendering review","location":"Room B","start":{"dateTime":"2026-07-08T14:00:00Z"},"end":{"dateTime":"2026-07-08T15:00:00Z"}}
+  ],
+  "gmail": [
+    {"id":"MSG_1","threadId":"THR_1","labelIds":["INBOX"],"from":"pm@acme.example","to":"launch@acme.example","subject":"Atlas launch date","date":"Mon, 01 Jun 2026 10:00:00 +0000","internalDate":"1000","body":"What is the ship date?"},
+    {"id":"MSG_2","threadId":"THR_1","labelIds":["INBOX"],"from":"mira@acme.example","to":"launch@acme.example","subject":"Re: Atlas launch date","date":"Mon, 01 Jun 2026 11:00:00 +0000","internalDate":"2000","body":"Approved for 2026-09-15."}
+  ]
+}

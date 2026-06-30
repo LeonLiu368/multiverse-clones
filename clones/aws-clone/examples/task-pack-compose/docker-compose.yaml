@@ -7,6 +7,9 @@ services:
     depends_on:
       aws:
         condition: service_healthy
+    # The agent drives AWS through the real aws/awslocal CLI AND the aws-mcp MCP
+    # server (stdio, `command: aws-mcp`). Both read AWS_ENDPOINT_URL — the same
+    # LocalStack endpoint — so they are in parity.
     environment:
       AWS_ENDPOINT_URL: http://aws:4566
       AWS_ACCESS_KEY_ID: test

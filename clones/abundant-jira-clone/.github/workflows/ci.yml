@@ -1,0 +1,93 @@
+name: ci
+
+# Builds the jira image trio + thin agent, runs the pytest suite (per-tool, CLI↔MCP parity,
+# agent isolation/leak probes), and on push-to-main publishes the gateway + agent to GHCR.
+#
+# Multi-arch (R2.k): we declare linux/amd64,linux/arm64. The upstream
+# ghcr.io/abundant-ai/ticketvector-service base is currently amd64-only, so the arm64 leg may
+# fail to build until that base is republished multi-arch — see docs/PROD-OVERLAY.md ("Known
+# blocker"). The amd64 leg is the supported path today; the arm64 matrix entry is allowed to
+# fail so it surfaces the blocker without red-flagging the whole run.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  REGISTRY: ghcr.io/abundant-ai
+  TICKETVECTOR_IMAGE: ghcr.io/abundant-ai/ticketvector-service:latest
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pytest
+        run: pip install pytest
+      - name: Build images (single-arch amd64 for the test run)
+        run: |
+          set -euo pipefail
+          docker build --platform linux/amd64 \
+            -f selfcontained/base/Dockerfile.empty -t jira-gateway:empty selfcontained/base
+          docker build --platform linux/amd64 \
+            -f selfcontained/base/Dockerfile.gateway -t jira-gateway:prod-v1 selfcontained/base
+          docker build --platform linux/amd64 \
+            -f selfcontained/base/Dockerfile.agent -t jira-agent:latest .
+      - name: Run test suite (per-tool, parity, isolation)
+        env:
+          JIRA_GATEWAY_IMAGE: jira-gateway:empty
+        run: pytest -ra
+
+  publish:
+    # Push the multi-arch gateway + agent to GHCR on main. Build:+image: dual in the task
+    # composes (R1.5) means tasks still work if this is skipped or the package stays private.
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [linux/amd64, linux/arm64]
+    continue-on-error: ${{ matrix.platform == 'linux/arm64' }}  # arm64 blocked on multi-arch base
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build & push jira-gateway:empty
+        uses: docker/build-push-action@v6
+        with:
+          context: selfcontained/base
+          file: selfcontained/base/Dockerfile.empty
+          platforms: ${{ matrix.platform }}
+          push: true
+          tags: ${{ env.REGISTRY }}/jira-gateway:empty
+      - name: Build & push jira-gateway:prod-v1
+        uses: docker/build-push-action@v6
+        with:
+          context: selfcontained/base
+          file: selfcontained/base/Dockerfile.gateway
+          platforms: ${{ matrix.platform }}
+          push: true
+          tags: ${{ env.REGISTRY }}/jira-gateway:prod-v1
+      - name: Build & push jira-agent:latest
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: selfcontained/base/Dockerfile.agent
+          platforms: ${{ matrix.platform }}
+          push: true
+          tags: ${{ env.REGISTRY }}/jira-agent:latest

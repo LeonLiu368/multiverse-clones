@@ -1,0 +1,33 @@
+schema_version = "1.2"
+name = "abundant-aws-clone/payment-reconcile"
+description = "Observability + on-call DevOps task. A payment event evt_042 is stuck in the payment-idempotency DynamoDB table. The correct resolution is buried across AWS services and reachable ONLY through the tools: the failing SQS message in payment-webhook-retry carries the batch_id (pay-20260630-batch7), the CloudWatch worker log confirms the validation_conflict, and an S3 runbook (runbooks/reconcile.json) gives the resolved_state ('reconciled'). The agent must use the `aws`/`awslocal` CLI OR the `aws-mcp` MCP server to gather these, then write the resolution into DynamoDB (state=reconciled, reconciled_batch=pay-20260630-batch7). A verifier reads the item back through the same AWS API — a write->read round-trip. nop=0, oracle=1."
+
+[metadata]
+category = "software-engineering"
+service = "aws"
+tools = ["aws-cli", "aws-mcp"]
+tags = ["aws", "aws-clone", "localstack", "observability", "devops", "tool-use", "dynamodb", "round-trip", "isolated", "tests"]
+
+[agent]
+timeout_sec = 2400
+
+[verifier]
+timeout_sec = 600
+
+[environment]
+cpus = 2
+memory_mb = 4096
+storage_mb = 12288
+gpus = 0
+allow_internet = true
+workdir = "/workspace"
+build_timeout_sec = 1800
+
+# The agent operates AWS through the real `aws`/`awslocal` CLI and this MCP server
+# (stdio). aws-mcp is installed in the agent image (from the vendored aws_clone
+# package) and reaches the `aws` gateway via the baked AWS_ENDPOINT_URL env — the
+# SAME LocalStack endpoint the CLI uses, so CLI and MCP are in parity.
+[[environment.mcp_servers]]
+name = "aws"
+transport = "stdio"
+command = "aws-mcp"

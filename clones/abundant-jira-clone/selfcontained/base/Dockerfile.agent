@@ -1,9 +1,10 @@
 # syntax=docker/dockerfile:1
 # jira-agent — the published THIN AGENT base image (analogue of slack-agent). Tools + runtime only,
-# NO service, NO data, NO state.json. Tasks build `main` FROM this and add just their codebase. The
-# Jira/ENG corpus lives in the separate `jira` sidecar; the agent reaches it ONLY over HTTP via the
-# `jira` (and `linear`) CLI in WORLD_ISSUES_BACKEND=remote mode, so it can't bypass the tools by
-# reading state.json off disk.
+# NO service, NO data, NO state.json, and — critically (R2.k) — NO gateway API/seed/world-builder
+# source. Tasks build `main` FROM this and add just their codebase. The Jira/ENG corpus lives in the
+# separate `jira` sidecar; the agent reaches it ONLY over HTTP via the `jira`/`linear` CLI and the
+# `jira-mcp` MCP server, both thin clients of the sidecar's /rpc API in WORLD_ISSUES_BACKEND=remote
+# mode — so it can neither read state.json off disk nor regenerate the world by importing a seeder.
 FROM --platform=linux/amd64 python:3.12-slim
 
 RUN apt-get update && \
@@ -11,19 +12,39 @@ RUN apt-get update && \
     pip3 install --no-cache-dir pytest && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Just the agent's tools + the world_issues package from the service image — the `jira`/`linear`
-# CLIs. No server module entrypoint is used, no data rides along. (world_issues.server is present in
-# the package but never started here; the agent only ever runs the CLI as a thin HTTP client.)
+# 1) The CLI launchers + the world_issues package from the service image. We DO NOT copy /opt
+#    wholesale (that shipped the gateway's server.py + the seed generator into the agent — the R2.k
+#    leak the audit flagged). We copy the CLI entrypoints and the package, then immediately STRIP the
+#    world-building/API modules below.
 COPY --from=ghcr.io/abundant-ai/ticketvector-service:latest \
      /usr/local/bin/jira /usr/local/bin/linear /usr/local/bin/world-issues /usr/local/bin/
 COPY --from=ghcr.io/abundant-ai/ticketvector-service:latest /opt/ticketvector /opt/ticketvector
 
-COPY agent-entrypoint.sh /usr/local/bin/agent-entrypoint.sh
-RUN chmod +x /usr/local/bin/agent-entrypoint.sh /usr/local/bin/jira /usr/local/bin/linear /usr/local/bin/world-issues
+# 2) Strip the gateway API + seed/world-builder source (server/seed/plane/demo/runtime/snapshot) and
+#    patch cli.py so it no longer imports them. What remains is exactly the remote thin-client surface
+#    (cli + client RPC transport + config/errors/manifest/models/output/git/jql/resolver). After this:
+#      - `python -c 'import world_issues.seed'`  raises ModuleNotFoundError
+#      - find /opt -path '*/seed*' -o -path '*/server*'  is empty
+#      - the corpus DB was never in this package, so nothing is greppable OR recomputable here.
+COPY selfcontained/base/strip_agent_tooling.py /tmp/strip_agent_tooling.py
+RUN python3 /tmp/strip_agent_tooling.py /opt/ticketvector/world_issues && \
+    rm -f /tmp/strip_agent_tooling.py && \
+    python3 -c "import sys; sys.path.insert(0,'/opt/ticketvector'); import world_issues.cli" && \
+    ( python3 -c "import sys; sys.path.insert(0,'/opt/ticketvector'); import world_issues.seed" \
+        && (echo 'LEAK: world_issues.seed still importable' >&2; exit 1) || true )
 
-# remote backend → the CLI POSTs to the `jira` sidecar at PLANE_BASE_URL; agent_mode blocks the
+# 3) The jira MCP server — the SECOND tool surface (R3), a self-contained thin /rpc client that
+#    mirrors the jira/linear CLI 1:1 and imports nothing from world_issues. Installed as `jira-mcp`.
+COPY mcp /opt/jira-mcp/mcp
+RUN ln -sf /opt/jira-mcp/mcp/jira-mcp /usr/local/bin/jira-mcp
+
+COPY selfcontained/base/agent-entrypoint.sh /usr/local/bin/agent-entrypoint.sh
+RUN chmod +x /usr/local/bin/agent-entrypoint.sh /usr/local/bin/jira /usr/local/bin/linear \
+        /usr/local/bin/world-issues /opt/jira-mcp/mcp/jira-mcp
+
+# remote backend → the CLI + MCP POST to the `jira` sidecar at PLANE_BASE_URL; agent_mode blocks the
 # admin/seed/runtime subcommands so the agent can only do normal issue workflow.
-ENV PYTHONPATH=/opt/ticketvector \
+ENV PYTHONPATH=/opt/ticketvector:/opt/jira-mcp \
     WORLD_ISSUES_BACKEND=remote \
     WORLD_ISSUES_AGENT_MODE=1 \
     WORLD_ISSUES_OUTPUT=json \

@@ -1,0 +1,22 @@
+#!/usr/bin/env python3
+"""Launcher for the jira MCP server (installed at /usr/local/bin/jira-mcp in the agent).
+
+Adds the package dir to sys.path so `mcp.server` resolves whether the package lives at
+/opt/jira-mcp (agent image) or in the repo, then runs the stdio MCP server.
+"""
+import os
+import sys
+
+_HERE = os.path.dirname(os.path.abspath(__file__))
+_PKG_PARENT = os.path.dirname(_HERE) if os.path.basename(_HERE) == "mcp" else "/opt/jira-mcp"
+for _p in (_PKG_PARENT, _HERE):
+    if _p and _p not in sys.path:
+        sys.path.insert(0, _p)
+
+try:
+    from mcp.server import main  # type: ignore
+except ImportError:
+    from server import main  # type: ignore
+
+if __name__ == "__main__":
+    main()

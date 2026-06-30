@@ -21,7 +21,9 @@ RUN pip install --no-cache-dir ".[mcp]" && \
     test ! -e "$PKG/api" && test ! -e "$PKG/seed" && \
     figma-cli --help >/dev/null && \
     python -c "import figmaclone.cli.main, figmaclone.mcp.server" && \
-    echo "thin figma-agent OK (no api/, no seed/; figma-cli + figma-mcp load)"
+    ! python -c "import figmaclone.seed" 2>/dev/null && \
+    ! grep -rsq '#1D4ED8' /opt /usr/local/lib/python*/site-packages/figmaclone && \
+    echo "thin figma-agent OK (no api/, no seed/; no #1D4ED8; figma-cli + figma-mcp load)"
 
 ENV FIGMA_API_URL=http://figma:3000 \
     FIGMA_TOKEN=figma-clone-token

@@ -6,8 +6,11 @@ maps to `gh`**.
 
 Every agent-facing command below is exercised end-to-end through the `gh` shim
 against a live forge by `scripts/agent-coverage.sh` — **41/41 passing**
-(`tests/test_coverage_live.py`). A real model (gemini-3.5-flash via Harbor) drives
-the surface too: 3/3 on tasks spanning P0+P1 (see [HARBOR.md](HARBOR.md)).
+(`tests/test_coverage_live.py`). The harness parses the **resource URL** that
+`ghc … create` faithfully prints (e.g. `…/issues/3`, like real `gh` — not `#3`),
+so issue/PR numbers resolve correctly and dependent commands don't cascade-fail.
+A real model (gemini-3.5-flash via Harbor) drives the surface too: 3/3 on tasks
+spanning P0+P1 (see [HARBOR.md](HARBOR.md)).
 
 Legend: ✅ parity · 🟡 parity with a documented difference · ⚙️ operator-only
 (not agent-facing) · ❌ no Forgejo equivalent.

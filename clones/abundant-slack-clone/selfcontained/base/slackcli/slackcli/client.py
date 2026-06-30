@@ -84,6 +84,13 @@ def history(channel: str, limit: int = 50) -> list[dict[str, Any]]:
     return resp.get("messages", [])
 
 
+def replies(channel: str, thread_ts: str) -> list[dict[str, Any]]:
+    """Fetch a thread: the parent message at `thread_ts` plus its replies, in order."""
+    cid = resolve_channel(channel)
+    resp = _web().conversations_replies(channel=cid, ts=thread_ts)
+    return resp.get("messages", [])
+
+
 def search(query: str) -> list[dict[str, Any]]:
     resp = _web().search_messages(query=query)
     return ((resp.get("messages") or {}).get("matches")) or []

@@ -1,10 +1,12 @@
 # Slack-observability + codebase tasks (isolated, for Harbor / Oddish)
 
 > The agent operates a realistic **Slack Web API** served by a small gateway over a **SQLite
-> store seeded from a real Slack export** — packaged as a **single-container** artifact. Harbor
-> force-builds the `main` service `FROM ghcr.io/abundant-ai/slack-service:latest`, which carries
-> the gateway, the importer, and the agent tools: our **`slack` CLI** and the off-the-shelf
-> **[korotovsky `slack-mcp`](https://github.com/korotovsky/slack-mcp-server)** server.
+> store seeded from a real Slack export** — packaged as a **two-container agent + gateway**
+> artifact. Harbor force-builds the thin `main` agent `FROM ghcr.io/abundant-ai/slack-agent`
+> (a data-free image carrying ONLY the agent tools: our **`slack` CLI** and the off-the-shelf
+> **[korotovsky `slack-mcp`](https://github.com/korotovsky/slack-mcp-server)** server) + the
+> codebase; the workspace lives in a separate **`slack` gateway sidecar** the agent reaches only
+> over HTTP — so the seeded export, the SQLite DB, and the importer are never on the agent's disk.
 
 These are **APEX-SWE-style observability tasks**: the agent is dropped into a workspace with
 **heavy, noisy Slack history** *and* a **codebase whose tests fail**, and must use its tools to
@@ -23,36 +25,44 @@ without it) and **(b) using it is non-trivial** (the fact is buried among distra
 
 ---
 
-## Architecture (single-container)
+## Architecture (two containers: agent + gateway)
 
 ```
    ┌──────────────────────────── one Harbor task ────────────────────────────────────┐
-   │   ┌──────────────────────────────────────────────────────────────────────────┐  │
-   │   │  main  (the only container)                                              │  │
-   │   │                                                                          │  │
-   │   │  import_export.py: /data/slack-export (real export) ──► SQLite           │  │
-   │   │  slackgw gateway (:80)  ◄── reads/writes ──  SQLite                      │  │
-   │   │  slack CLI ─┐                                                            │  │
-   │   │  slack-mcp ─┴──► http://localhost/api/<method>   (korotovsky, stdio)     │  │
-   │   │  python3 + pytest   /workspace = repo whose tests FAIL                   │  │
-   │   └──────────────────────────────────┬───────────────────────────────────────┘  │
-   │                                      ▼ verifier: pytest (hidden grader) +       │
-   │                                        comms check via gateway                  │
-   │                                        /logs/verifier/reward.txt                │
+   │   ┌─────────────────────────────────┐      ┌──────────────────────────────────┐  │
+   │   │  main  (the AGENT — thin)       │      │  slack  (the GATEWAY sidecar)    │  │
+   │   │                                 │      │                                  │  │
+   │   │  slack CLI ─┐                   │ HTTP │  import_export.py:               │  │
+   │   │  slack-mcp ─┴──► http://slack/api/<method> ──►  /data/slack-export ► SQLite │
+   │   │  python3 + pytest               │      │  slackgw gateway (:80) ◄─ SQLite  │  │
+   │   │  /workspace = repo whose        │      │                                  │  │
+   │   │  tests FAIL                     │      │  NO agent code; NO codebase      │  │
+   │   │  NO data, NO slackgw, NO import │      │                                  │  │
+   │   └────────────────┬────────────────┘      └──────────────────────────────────┘  │
+   │                    ▼ verifier: pytest (hidden grader) + comms check via gateway   │
+   │                      /logs/verifier/reward.txt                                    │
    └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-- **`main`** — one container does everything: the **importer** loads `/data/slack-export` (a real
-  Slack export) into **SQLite**; the **Slack Web API gateway** (`slackgw`, FastAPI) on `:80` serves
+- **`main`** (the thing under test) — Harbor force-builds it `FROM ghcr.io/abundant-ai/slack-agent`
+  (a **thin, data-free** image: only the **`slack` CLI** + the korotovsky **`slack-mcp`** binary +
+  `python3`/`pytest` on a neutral `python:slim` base) and adds the codebase at `/workspace`. It holds
+  **no Slack data, no gateway source (`slackgw`), no importer (`import_export.py`)** — it reaches the
+  workspace only over HTTP at `$SLACK_API_URL` (`http://slack`). This is what keeps the answer key off
+  the agent's disk.
+- **`slack`** (the gateway sidecar) — Harbor does **not** build it; it's a pulled
+  `slack-gateway:{empty|prod-v1}` image (with a `build:`+`image:` dual so it also builds + tags
+  locally with no registry creds, R1.5). The **importer** loads the **mounted** `/data/slack-export`
+  (a real export) into **SQLite**; the **Slack Web API gateway** (`slackgw`, FastAPI) on `:80` serves
   faithful Slack from it (`{"ok":...}` envelopes, `C…`/`U…` ids, `ts` strings, threads, reactions,
-  snake_case errors); the agent operates it through our **`slack` CLI** and the off-the-shelf
-  **korotovsky `slack-mcp`** server (both hitting `http://localhost`); `python3`/`pytest` + the
-  codebase at `/workspace`. No Mattermost, no Postgres — the image is ~112 MB and boots in seconds.
-- **No `networks:` block** (Harbor injects `network_mode`, which conflicts). `linux/amd64`.
+  snake_case errors). No Mattermost, no Postgres.
+- **No `networks:` block** (Harbor injects `network_mode`). The agent waits on the gateway
+  healthcheck via `depends_on: service_healthy`.
 
-Harbor force-builds `main` `FROM ghcr.io/abundant-ai/slack-service:latest` (gateway + importer +
-CLI + the korotovsky MCP binary, built once by CI) and adds the codebase — so tasks never rebuild
-the backend. Release process: [docs/IMAGE-RELEASE.md](docs/IMAGE-RELEASE.md).
+The gateway ships as the canonical **image trio**: `slack-service` (base, no data) →
+`slack-gateway:prod-v1` (corpus DB baked in, serves mount-free) + `slack-gateway:empty` (mount
+target). Release process: [docs/IMAGE-RELEASE.md](docs/IMAGE-RELEASE.md). Tests:
+[tests/](tests/) (`tests/test.sh`), coverage matrix: [docs/COVERAGE.md](docs/COVERAGE.md).
 
 ---
 

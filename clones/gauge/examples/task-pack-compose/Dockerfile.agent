@@ -1,3 +1,15 @@
+# The thin gauge-agent image — tools ONLY, zero service data, zero server source.
+#
+# An agent task's `main` builds FROM this (or copies the same way). It ships the `gcx`
+# CLI and the `mcp-grafana` MCP server (both thin HTTP clients of the gateway API) plus
+# the pure `gauge.server.links` deeplink helper they need — but NOT the gateway's API
+# server, query engine, state/seed loader, or admin plane. After the COPY we `rm -rf`
+# every server module except `links.py`, so:
+#   * `import gauge.server.state` raises ModuleNotFoundError (the seed/generator leak),
+#   * `import gauge.server.query_engine` / `.app` / `.clone_admin` all raise,
+#   * no api/seed source dir survives in the image,
+# while `gcx`/`mcp-grafana` still load. The agent reaches state only over HTTP, and the
+# `gaugectl` admin CLI is intentionally absent.
 FROM gauge-service:local AS gauge-tools
 
 FROM python:3.10-slim
@@ -5,6 +17,19 @@ FROM python:3.10-slim
 RUN useradd --create-home --shell /bin/sh agent
 COPY --from=gauge-tools /usr/local/bin/gcx /usr/local/bin/mcp-grafana /usr/local/bin/
 COPY --from=gauge-tools /opt/gaugecli /opt/gaugecli
+
+# Strip the gateway's API + seed/query/admin source from the agent image. Keep only the
+# CLI/MCP packages and the pure `gauge.server.links` helper the tools import.
+RUN find /opt/gaugecli/gauge/server -type f -name '*.py' \
+        ! -name '__init__.py' ! -name 'links.py' -delete && \
+    find /opt/gaugecli -name '__pycache__' -type d -prune -exec rm -rf {} + && \
+    # build-time leak smoke test: tools load, server state/seed source gone
+    PYTHONPATH=/opt/gaugecli python -c "import gauge.cli.gcx, gauge.cli.mcp_server" && \
+    ! PYTHONPATH=/opt/gaugecli python -c "import gauge.server.state" 2>/dev/null && \
+    ! PYTHONPATH=/opt/gaugecli python -c "import gauge.server.query_engine" 2>/dev/null && \
+    test ! -e /opt/gaugecli/gauge/server/state.py && \
+    test ! -e /opt/gaugecli/gauge/server/app.py && \
+    echo "thin gauge-agent OK (server api/seed stripped; gcx + mcp-grafana load)"
 
 ENV PYTHONPATH=/opt/gaugecli \
     GRAFANA_URL=http://gauge

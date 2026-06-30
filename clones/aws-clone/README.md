@@ -8,14 +8,27 @@ The service image is:
 ghcr.io/abundant-ai/aws-clone-service:main
 ```
 
+The gateway is published as an image trio (see `docs/IMAGE-RELEASE.md`):
+
+```text
+ghcr.io/abundant-ai/aws-clone-service:main      # base API + tools, no data
+ghcr.io/abundant-ai/aws-clone-service:prod-v1   # corpus baked in — boots mount-free
+ghcr.io/abundant-ai/aws-clone-service:empty     # base API — per-task fixture mounted in
+```
+
 The Python package is `aws_clone`, the service hostname used by task packs should be `aws`, and the agent-facing tools are:
 
 - `/usr/local/bin/aws`
 - `/usr/local/bin/awslocal`
+- `/usr/local/bin/aws-mcp` — the MCP server (stdio), in **CLI↔MCP parity**: every
+  agent capability reachable from the CLI is also an MCP tool and vice-versa
+  (see `docs/COVERAGE.md`). It is a thin client of the **same** LocalStack endpoint
+  (`AWS_ENDPOINT_URL`) the CLI uses — boto3 calls in `aws_clone/mcp/tools.py`.
 
 The admin/debug tool is:
 
-- `/usr/local/bin/aws-clonectl`
+- `/usr/local/bin/aws-clonectl` (mirrored by the operator-only MCP tools
+  `aws_admin_state` / `aws_admin_mutations`)
 
 Do not copy `aws-clonectl` into agent containers. Do not pass `AWS_CLONE_ADMIN_TOKEN` to agents. Do not mount raw AWS clone seed state into agent containers.
 
@@ -89,10 +102,20 @@ P0 coverage is backed by LocalStack for S3, SQS, SNS, DynamoDB, EventBridge, Clo
 
 Lambda execution is intentionally not required in v1. Task authors can seed function metadata, event source mappings, and CloudWatch logs without relying on Docker socket access inside task containers.
 
+## Bundled task
+
+A runnable Harbor/Oddish task lives at `oddish/tasks/payment-reconcile/` (agent +
+`aws` gateway, `tests/test.sh`→`/logs/verifier/reward.txt`, `solution/solve.sh`).
+It is a DynamoDB write→read round-trip: reconcile a stuck payment by recovering the
+resolution from the SQS message, CloudWatch log, and S3 runbook. **nop=0, oracle=1**
+(verified). See its `instruction.md` and `task.toml`.
+
 ## More Docs
 
+- `docs/COVERAGE.md` — capability → endpoint → CLI → MCP tool matrix (R4/R5)
 - `docs/TOOLS.md`
 - `docs/STATE_SCHEMA.md`
 - `docs/CREATING-TASKS.md`
 - `docs/LOCALSTACK-COMPATIBILITY.md`
 - `docs/IMAGE-RELEASE.md`
+- `docs/PROD-OVERLAY.md` — canon advisories (identity N/A, operator boundary)

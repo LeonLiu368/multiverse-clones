@@ -3,6 +3,8 @@ __pycache__/
 *.pyc
 .pytest_cache/
 *.db
+# but the prod-v1 corpus DB must reach the build context (Dockerfile.prod-v1 COPYs it)
+!figma_corpus.db
 .git/
 oddish/
 tests/

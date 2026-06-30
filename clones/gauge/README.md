@@ -27,45 +27,63 @@ The service image also includes `gaugectl` for admin/debug use. Task instruction
 
 Admin/verifier endpoints under `/api/_clone/*` require both `GAUGE_ENABLE_ADMIN_API=1` and `GAUGE_ADMIN_TOKEN`. Normal `GRAFANA_TOKEN` and `GRAFANA_SERVICE_ACCOUNT_TOKEN` values cannot read these endpoints.
 
-## Service Image Pattern
+## Service Image Pattern (the gateway trio)
 
-Gauge is built as one reusable service image:
+Gauge ships a **gateway image trio** (see `docs/IMAGE-RELEASE.md`):
 
 ```text
-ghcr.io/abundant-ai/gauge-service:main
+ghcr.io/abundant-ai/gauge-service:main      # base gateway (data-free)
+ghcr.io/abundant-ai/gauge-service:empty     # base, no data — a MOUNT target
+ghcr.io/abundant-ai/gauge-service:prod-v1   # corpus baked in — serves mount-free
 ```
 
-Future task packs should copy only the agent tools into the agent image and mount task-specific state only into the Gauge sidecar:
+A task selects its seeding path by **image tag alone**: `:empty` + a mounted `state.json`
+fixture, or `:prod-v1` which serves the baked corpus with no mount. Both are published
+multi-arch (`linux/amd64,linux/arm64`).
+
+The **agent** image must carry the tools ONLY — copy `gcx` + `mcp-grafana` + `/opt/gaugecli`,
+then strip the gateway's server source so an agent can neither read nor regenerate the
+answer (R2.k):
 
 ```dockerfile
 FROM ghcr.io/abundant-ai/gauge-service:<tag>@sha256:<digest> AS gauge-tools
+FROM python:3.10-slim
 COPY --from=gauge-tools /usr/local/bin/gcx /usr/local/bin/mcp-grafana /usr/local/bin/
 COPY --from=gauge-tools /opt/gaugecli /opt/gaugecli
-ENV PYTHONPATH=/opt/gaugecli
-ENV GRAFANA_URL=http://gauge
+# strip api/seed/query/admin source; keep only the CLI/MCP + pure links.py helper
+RUN find /opt/gaugecli/gauge/server -type f -name '*.py' \
+        ! -name '__init__.py' ! -name 'links.py' -delete && \
+    ! python -c 'import gauge.server.state' 2>/dev/null   # leak probe must FAIL to import
+ENV PYTHONPATH=/opt/gaugecli GRAFANA_URL=http://gauge
 ```
 
 ```yaml
-agent:
-  environment:
-    GRAFANA_URL: http://gauge
-    GRAFANA_TOKEN: test-token-acme-eval
-    GRAFANA_SERVICE_ACCOUNT_TOKEN: test-token-acme-eval
-
+# :empty + mount (per-task fixture into the GATEWAY only)
 gauge:
-  image: ghcr.io/abundant-ai/gauge-service:<tag>@sha256:<digest>
+  image: ghcr.io/abundant-ai/gauge-service:empty
   environment:
     GAUGE_STATE_FILE: /data/gauge/state.json
     GAUGE_RUNTIME_STATE_FILE: /var/lib/gauge/state.json
-    GRAFANA_SERVICE_ACCOUNT_TOKEN: test-token-acme-eval
   volumes:
     - ./data/gauge/state.json:/data/gauge/state.json:ro
     - gauge-runtime:/var/lib/gauge
+# OR :prod-v1 — same task, corpus baked in, no volume needed
 ```
 
-The raw seed state must not be mounted into the agent container.
+The raw seed state must NEVER be mounted into the agent container.
+`/opt/gaugecli` is Python 3.10+ compatible.
 
-`/opt/gaugecli` is Python 3.10+ compatible for current clone task images.
+## Bundled Harbor task
+
+`oddish/tasks/gauge-annotation-roundtrip/` is a runnable two-container (agent + gauge
+gateway) task: the agent investigates a firing alert via `gcx`/`mcp-grafana` and posts an
+incident annotation, read back through the API (write→read round-trip). `tests/test.sh`
+writes `/logs/verifier/reward.txt`; `solution/solve.sh` is the oracle. Validate end-to-end
+(nop=0, oracle=1, decoy=0, isolation):
+
+```bash
+bash oddish/tasks/gauge-annotation-roundtrip/validate_local.sh
+```
 
 ## Local Checks
 

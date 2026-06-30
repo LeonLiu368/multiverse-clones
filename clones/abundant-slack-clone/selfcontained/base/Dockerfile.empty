@@ -1,4 +1,3 @@
-# syntax=docker/dockerfile:1
 # slack-gateway:empty — the SHARED empty gateway: the Slack API gateway with NO baked data. A task
 # using this as its `slack` sidecar mounts its OWN small export at /data/slack-export (or an overlay
 # at /data/slack-overlay) and slack-boot imports it at standup. Use this when a task wants a clean,

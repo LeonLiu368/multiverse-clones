@@ -1,9 +1,12 @@
-# Build and publish the single, pullable figma-service image to GHCR.
+# Build and publish the figma-service image TRIO to GHCR, multi-arch.
 #
-# Oddish/Harbor tasks pull this image as their `figma` service and mount their own
-# fixture.json into it (see oddish/tasks/*/environment/docker-compose.yaml). Pin
-# `sha-<commit>` (or the digest) in task packs for reproducibility; use `latest`
-# only for local prototyping.
+# Oddish/Harbor tasks pull these images as their `figma` service:
+#   - figma-service[:latest|:sha-<commit>]  base API + tools, no data (mount target)
+#   - figma-service:empty                    identical to base; the empty/mount variant
+#   - figma-service:prod-v1                  the deterministic corpus DB baked in (mount-free)
+#
+# A task switches empty<->prod-v1 by the image tag alone. Pin sha-<commit> (or the
+# digest) in task packs for reproducibility; use `latest` only for local prototyping.
 name: figma-service-image
 
 on:
@@ -11,14 +14,15 @@ on:
     branches: [main]
     paths:
       - "src/**"
+      - "scripts/**"
       - "pyproject.toml"
       - "docker/**"
       - ".github/workflows/figma-service-image.yml"
   workflow_dispatch: {}
 
 env:
-  # Match the image name task composes reference. Change in lockstep with the tasks.
   IMAGE: ghcr.io/abundant-ai/figma-service
+  PLATFORMS: linux/amd64,linux/arm64
 
 jobs:
   build-push:
@@ -29,6 +33,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: docker/setup-qemu-action@v3        # arm64 emulation for multi-arch
+
       - uses: docker/setup-buildx-action@v3
 
       - uses: docker/login-action@v3
@@ -37,7 +43,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Metadata (tags)
+      - name: Metadata (tags) for base
         id: meta
         uses: docker/metadata-action@v5
         with:
@@ -46,14 +52,53 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
             type=sha,prefix=sha-
 
-      - name: Build and push
+      # 1) base figma-service (no data) — multi-arch
+      - name: Build & push base
         uses: docker/build-push-action@v6
         with:
           context: .
           file: docker/Dockerfile
-          platforms: linux/amd64
+          platforms: ${{ env.PLATFORMS }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      # 2) :empty (mount target) — multi-arch
+      - name: Build & push :empty
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/Dockerfile.empty
+          platforms: ${{ env.PLATFORMS }}
+          push: true
+          tags: ${{ env.IMAGE }}:empty
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # 3) deterministically build the corpus DB, then bake :prod-v1 FROM :empty
+      - name: Build corpus DB
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[mcp]"
+          python scripts/build_corpus.py --out figma_corpus.db
+          ls -la figma_corpus.db
+
+      - name: Build & push :prod-v1 (corpus baked in)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/Dockerfile.prod-v1
+          build-args: |
+            BASE=${{ env.IMAGE }}:empty
+          platforms: ${{ env.PLATFORMS }}
+          push: true
+          tags: ${{ env.IMAGE }}:prod-v1
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Verify multi-arch manifests
+        run: |
+          docker buildx imagetools inspect ${{ env.IMAGE }}:empty
+          docker buildx imagetools inspect ${{ env.IMAGE }}:prod-v1

@@ -1,0 +1,75 @@
+clone: abundant-slack-clone
+service: Slack Web API
+standard_version: clone-standard-v1
+fidelity_tier: T2                         # handwritten SQLite gateway + real Slack search-operator grammar
+backed_by: handwritten                    # no faithful self-hostable Slack OSS exists
+
+# The two runtime containers: agent (built by Harbor) + gateway (pulled/seeded/built-locally).
+gateway:
+  registry: ghcr.io/abundant-ai
+  base:  slack-service                    # SQLite Slack API + `slack` CLI + korotovsky slack-mcp, NO data (R2.a)
+  prod:  slack-gateway:prod-v1            # corpus DB baked into the image (R2.j) — serves 88 channels mount-free
+  empty: slack-gateway:empty             # no data, a mount target (R2.b)
+  port: 80
+  arches: [linux/amd64, linux/arm64]      # multi-arch publish declared in CI (R2.k)
+  build_image_dual: true                  # each task's `slack` sidecar has build:+image: so it tags locally, no creds (R1.5)
+agent:
+  built_from: oddish/tasks/buried-spec/environment/Dockerfile   # representative; all 5 tasks share the shape
+  base: ghcr.io/abundant-ai/slack-agent   # THIN image FROM python:3.12-slim; only the thin clients
+  data_free: true                         # no slackgw, no import_export.py, no export, no /tmp/slack.db
+
+seeding:                                  # BOTH paths exist
+  baked_db:                               # GHCR image DB seeding (the prod/realistic path)
+    image: slack-gateway:prod-v1
+    corpus_copy: "COPY --from=slack-seed:<dataset> /slack.prebuilt.db /opt/slack.prebuilt.db"
+    serves_mount_free: true               # boots & serves the corpus with NO fixture mount (verified: 88 channels)
+  mount:                                  # empty + per-task fixture
+    image: slack-gateway:empty
+    fixture_path: /data/slack-export      # real Slack export dir mounted into the GATEWAY only, never the agent
+    overlay_path: /data/slack-overlay     # optional small overlay on top of a prod DB
+
+run:
+  compose: oddish/tasks/buried-spec/environment/docker-compose.yaml
+  service_name: slack                     # gateway name the agent reaches over HTTP
+  health_url: http://slack:80/api/auth.test
+  agent_service: main
+  env: [SLACK_API_URL, SLACK_BOT_TOKEN]   # documented env vars; nothing else needed to boot
+
+isolation:
+  agent_state_paths:                      # MUST NOT exist in the agent container
+    - /data/slack-export
+    - /tmp/slack.db
+    - /opt/slackgw
+    - /opt/import_export.py
+  not_importable: [import_export, slackgw.store]   # seed/generator unreachable from the agent (R6.3/R2.k)
+  networks_exception: null                # no networks: block; Harbor injects network_mode
+
+surfaces:                                 # R3 — both thin clients of one HTTP API
+  http_api: selfcontained/base/slackgw/app.py        # the single source of truth
+  shared_client: selfcontained/base/slackcli/slackcli/client.py
+  cli:  { name: slack, entry: "slackcli.cli:main", commands: 7 }     # whoami,channels,users,history,replies,search,post
+  mcp:  { name: slack-mcp, vendor: korotovsky, tools: 5 }            # channels_list, conversations_{history,replies,search_messages,add_message}
+
+coverage_matrix: docs/COVERAGE.md         # R4
+assessment_grade_count: 5                 # R5 (need >=5): history, replies, search, post (+ search counts multiply)
+round_trip_task: oddish/tasks/incident-fix-report   # write->read: agent posts, verifier reads back via conversations.history (R5.2)
+
+tests:
+  suite: tests/                           # every endpoint/CLI/MCP + parity + isolation
+  runner: tests/test.sh                   # builds images, boots a gateway, runs pytest; writes reward.txt
+  ci: .github/workflows/test.yml
+  cold_boot: true                         # 40 tests green from a cold build (verified)
+  nop_oracle_tasks:                       # nop=0 / oracle=1 verified on the 2-container shape
+    - oddish/tasks/buried-spec
+    - oddish/tasks/incident-fix-report
+
+operator_only:                            # world-building deliberately NOT reachable from the agent (R2.g)
+  - import_export.py                      # the seeder/importer (gateway entrypoint only)
+  - slackgw.store                         # the SQLite store
+
+tasks:
+  - buried-spec            # recover an agreed rate-limit config from noisy chat, implement it
+  - contract-drift
+  - incident-fix-report    # fix SLO monitor + post a notification (write->read round-trip)
+  - rw-large-slack-read
+  - rw-small-slack-read

@@ -35,6 +35,12 @@ async def _get(path: str, **params: Any) -> dict:
         return r.json()
 
 
+async def _post(path: str, body: dict) -> dict:
+    async with _client() as c:
+        r = await c.post(path, json=body)
+        return r.json()
+
+
 def build_server() -> FastMCP:
     mcp = FastMCP("abundant-gworkspace-clone")
 
@@ -93,6 +99,21 @@ def build_server() -> FastMCP:
     async def gws_get_event(event_id: str, calendar_id: str = "primary") -> dict:
         """Get a single Calendar event."""
         return await _get(f"/calendar/v3/calendars/{calendar_id}/events/{event_id}")
+
+    @mcp.tool()
+    async def gws_create_event(summary: str, start: str, end: str,
+                               calendar_id: str = "primary",
+                               location: str | None = None,
+                               description: str | None = None) -> dict:
+        """Create a Calendar event (events.insert — a WRITE). `start`/`end` are
+        RFC-3339 dateTimes (or YYYY-MM-DD). Returns the created event (with its new
+        id); a later gws_list_events / gws_get_event will observe it."""
+        body: dict = {"summary": summary, "start": start, "end": end}
+        if location is not None:
+            body["location"] = location
+        if description is not None:
+            body["description"] = description
+        return await _post(f"/calendar/v3/calendars/{calendar_id}/events", body)
 
     # ----- Gmail -----
     @mcp.tool()

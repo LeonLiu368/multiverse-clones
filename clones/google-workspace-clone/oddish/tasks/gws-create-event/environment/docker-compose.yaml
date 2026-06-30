@@ -1,0 +1,35 @@
+# gws-create-event — a WRITE→READ round-trip task (R5.2).
+#
+# The agent must read a Gmail thread to learn what meeting to schedule (and resist a
+# superseded DRAFT decoy), then CREATE the event via `gws-cli calendar create` /
+# `gws_create_event`. The verifier reads the calendar back THROUGH THE API to confirm
+# the event exists with the right title + start. Uses the :empty image + a mounted
+# per-task fixture (a small custom workspace). No networks: block; the agent reaches
+# the API at http://gworkspace:8080.
+services:
+  main:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${MAIN_IMAGE_NAME}
+    working_dir: /app
+    environment:
+      GWS_API_URL: http://gworkspace:8080
+      GWS_TOKEN: gws-clone-token
+    depends_on:
+      gworkspace:
+        condition: service_healthy
+
+  gworkspace:
+    image: ghcr.io/abundant-ai/gworkspace-service:empty
+    hostname: gworkspace
+    platform: linux/amd64
+    volumes:
+      - ./data/gws/fixture.json:/srv/fixture.json:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8080/health >/dev/null || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 24
+      start_period: 15s

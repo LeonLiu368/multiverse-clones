@@ -1,0 +1,73 @@
+# Build & publish the logfire image trio (base, :empty, :prod-v1) to GHCR, multi-arch.
+# Tasks pull `:prod-v1` (corpus baked) or `:empty` (mount target); switching a task is the
+# image tag alone. The agent image is built by Harbor from the task's environment/Dockerfile,
+# so it is NOT published here.
+name: logfire-service-image
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "logfire_clone/**"
+      - "docker/**"
+      - "corpus/**"
+      - "pyproject.toml"
+      - ".github/workflows/logfire-service-image.yml"
+  workflow_dispatch: {}
+
+env:
+  IMAGE: ghcr.io/abundant-ai/logfire-service
+
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # 1) base (data-free), multi-arch
+      - name: Build & push base
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ${{ env.IMAGE }}:latest
+            ${{ env.IMAGE }}:sha-${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # 2) :empty (mount target), multi-arch
+      - name: Build & push :empty
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/Dockerfile.empty
+          build-args: BASE=${{ env.IMAGE }}:latest
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ env.IMAGE }}:empty
+          cache-from: type=gha
+
+      # 3) :prod-v1 (corpus baked in), multi-arch
+      - name: Build & push :prod-v1
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/Dockerfile.prod-v1
+          build-args: BASE=${{ env.IMAGE }}:latest
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ env.IMAGE }}:prod-v1
+          cache-from: type=gha

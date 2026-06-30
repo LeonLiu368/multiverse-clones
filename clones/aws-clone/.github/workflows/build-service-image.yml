@@ -58,6 +58,19 @@ jobs:
       - name: Build local service image
         run: docker build -f Dockerfile.service -t aws-clone-service:local .
 
+      - name: Build + smoke the :prod-v1 baked image (boots mount-free)
+        run: |
+          docker build -f Dockerfile.prod-v1 --build-arg BASE=aws-clone-service:local -t aws-clone-service:prod-v1 .
+          docker run -d --name prodv1_smoke aws-clone-service:prod-v1
+          for i in $(seq 1 90); do
+            if docker exec prodv1_smoke sh -c 'curl -sf http://localhost:4566/_localstack/health >/dev/null && curl -sf http://localhost/api/healthz >/dev/null' 2>/dev/null; then break; fi
+            sleep 2
+          done
+          # No -v mount: the corpus must be served from the baked image (R2.j).
+          docker exec prodv1_smoke awslocal s3 ls | grep acme-payment-exports
+          docker exec prodv1_smoke awslocal dynamodb get-item --table-name payment-idempotency --key '{"event_id":{"S":"evt_001"}}' | grep scheduled
+          docker rm -f prodv1_smoke
+
       - name: Run compose smoke test
         env:
           AWS_ENDPOINT_URL: http://localhost:4566
@@ -98,7 +111,10 @@ jobs:
         run: |
           docker compose -f examples/task-pack-compose/docker-compose.yaml up -d --build
           docker compose -f examples/task-pack-compose/docker-compose.yaml exec -T agent test ! -e /data/aws-clone/state.json
-          docker compose -f examples/task-pack-compose/docker-compose.yaml exec -T agent sh -lc 'command -v aws && command -v awslocal && ! command -v aws-clonectl'
+          docker compose -f examples/task-pack-compose/docker-compose.yaml exec -T agent sh -lc 'command -v aws && command -v awslocal && command -v aws-mcp && ! command -v aws-clonectl'
+          # MCP server loads and registers tools; seed generator is NOT importable (leak rule R2.k).
+          docker compose -f examples/task-pack-compose/docker-compose.yaml exec -T agent python -c "import asyncio; from aws_clone.mcp.server import build_server; assert len(asyncio.run(build_server().list_tools())) >= 10; print('mcp tools ok')"
+          docker compose -f examples/task-pack-compose/docker-compose.yaml exec -T agent sh -lc '! python -c "import aws_clone.seed" 2>/dev/null && echo "seed not importable ok"'
           docker compose -f examples/task-pack-compose/docker-compose.yaml exec -T agent awslocal sts get-caller-identity
           docker compose -f examples/task-pack-compose/docker-compose.yaml exec -T agent awslocal s3 ls
           docker compose -f examples/task-pack-compose/docker-compose.yaml exec -T agent awslocal s3 cp s3://acme-payment-exports/exports/2026-06-07/manifest.json -
@@ -121,6 +137,9 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set up QEMU (multi-arch emulation)
+        uses: docker/setup-qemu-action@v3
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
 
@@ -136,14 +155,47 @@ jobs:
             org.opencontainers.image.title=AWS Clone Service
             org.opencontainers.image.description=LocalStack-backed AWS-local task harness for agent benchmarks
 
-      - name: Build and push service image
+      # Base gateway image — published MULTI-ARCH (linux/amd64,linux/arm64) so the
+      # sidecar pulls cleanly on both arches (Clone Standard R2.k).
+      - name: Build and push base service image (multi-arch)
         id: push
         uses: docker/build-push-action@v7
         with:
           context: .
           file: Dockerfile.service
+          platforms: linux/amd64,linux/arm64
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # :prod-v1 — corpus DB baked into the image; boots healthy with NO mount.
+      - name: Build and push :prod-v1 (baked corpus, multi-arch)
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: Dockerfile.prod-v1
+          platforms: linux/amd64,linux/arm64
+          build-args: |
+            BASE=${{ env.IMAGE }}:main
+          push: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
+          tags: ${{ env.IMAGE }}:prod-v1
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # :empty — base API, no data; per-task fixture mounted at run time.
+      - name: Build and push :empty (mount target, multi-arch)
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: Dockerfile.empty
+          platforms: linux/amd64,linux/arm64
+          build-args: |
+            BASE=${{ env.IMAGE }}:main
+          push: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
+          tags: ${{ env.IMAGE }}:empty
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

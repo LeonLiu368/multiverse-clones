@@ -1,162 +1,119 @@
 # Clone Audit Report — `abundant-slack-clone`
 
-- **Audited:** `2026-06-30` · **Auditor:** `clone-audit v1` · **Commit:** `36e78af` (working tree)
-- **Fidelity tier (declared / observed):** `T2` / `T2` (SQLite gateway + real Slack search-operator grammar)
-- **Verdict:** ❌ FAILS — *(meets = all gating reqs pass)*
-- **Gating score:** ~3 / 6 gating requirement-groups pass cleanly (R1 partial, R3 partial, R4 fail, R6 fail, R2 fail on c/g/k for shipped tasks).
+- **Audited:** `2026-06-30` · **Auditor:** `clone-audit v1` (RE-AUDIT after fix pass) · **Commit:** `b2b2abd`
+- **Fidelity tier (declared / observed):** `T2` / `T2`
+- **Verdict:** ✅ MEETS STANDARD  — *(meets = all gating reqs pass)*
+- **Gating score:** `6/6` gating requirements pass.
 
 ## TL;DR
-A genuinely high-fidelity, handwritten Slack Web API clone: a FastAPI + SQLite gateway seeded from a
-real Slack export, driven by a real `slack` CLI **and** the off-the-shelf korotovsky `slack-mcp`
-server (5 tools, patched to hit the gateway). Envelope fidelity is excellent (`{ok:...}`, `C…`/`U…`
-ids, `ts` strings, snake_case errors, Slack search operators), and all bundled tasks verified
-`nop=0 / oracle=1` with reward-hack-resistant hidden graders. **But the shipped Oddish tasks run as
-a single container (`main` = gateway + importer + raw export + SQLite corpus + agent tools all in
-one), so the agent can `grep REFILL_RATE /data/slack-export` and read the answer key off disk** —
-a hard R2.c/g/k + R6.3 isolation failure. The two-container `slack-agent` + `slack-gateway:prod-v1`
-trio that would fix this **exists and is clean**, but no task uses it. The single most important
-action item: **re-point the task composes at the two-container agent+gateway shape** (or otherwise
-strip the export/DB/importer from `main`). Secondary: ship a `docs/COVERAGE.md` and an actual pytest
-suite — there are currently **zero unit tests** in the clone.
+A faithful T2 Slack Web API clone (handwritten SQLite gateway + real search-operator grammar),
+operated through a `slack` CLI and the korotovsky `slack-mcp` server that are both thin HTTP clients
+of one gateway. The Round-1 blocker — shipped tasks co-located the answer key with the agent — is
+**fixed and independently re-confirmed**: all 5 Oddish tasks now run as the two-container
+agent+gateway shape, and direct leak probes in the live `main` container come up clean. The clone is
+**usable for agent assessment today**; remaining items are non-gating P2 polish (flip branch-scoped
+image tags back to `:latest` and verify the published multi-arch manifests before merge).
 
 ## What it handles well
-- **Real envelope fidelity** (gateway, verified live): `auth.test` returns a Slack-shaped
-  `https://<ws>.slack.com/` URL; errors are real codes — `{"ok":false,"error":"channel_not_found"}`,
-  `not_authed`, `unknown_method` (curl probes against a booted container), not 500s.
-- **Real Slack search grammar** (T2): `_parse_search` honors `in:`/`from:`/`before:`/`after:`/`on:`
-  operators + quoted phrases; search is deliberately *noisy* — a `slack search REFILL_RATE` surfaced
-  both superseded (`CAPACITY=50`) and agreed (`CAPACITY=100`) values, exactly the disambiguation the
-  tasks measure.
-- **CLI + MCP both real and both reach one HTTP API**: `slack` CLI (6 cmds) uses `slack_sdk`
-  `WebClient`; korotovsky `slack-mcp` enumerated **5 tools** over stdio and a live
-  `conversations_search_messages` call returned the same rows as the CLI (parity confirmed for the
-  shared capabilities).
-- **Reward-hack-resistant verifiers**: graded in an isolated `/tmp` dir against a hidden
-  `test_grade_*.py`; `incident-fix-report` additionally reads the agent's posted message back through
-  `conversations.history` (a true write→read round-trip). Both audited tasks: `nop=0`, `oracle=1`.
-- **The clean trio exists**: `slack-gateway:prod-v1` boots healthy and serves **88 channels from its
-  baked DB with no mount** (R2.j infra works); `slack-agent` is a clean thin image — no `slackgw`,
-  no `import_export.py`, importer not importable, no data on disk.
+- **2-container isolation is real, not just declared.** In a booted `main` (incident-fix-report and
+  buried-spec): no `/data/slack-export`, no `/tmp/slack.db`, `import import_export` and `import slackgw`
+  both `ModuleNotFoundError`, and a full-disk grep for the policy answer (`0.05`/`should_page`) hits
+  only OS libraries. The answer is reachable only via the gateway over HTTP.
+- **Bundled task discriminates agents.** incident-fix-report: nop=0 (14 hidden-grader cases fail on the
+  unimplemented `should_page`), oracle=1, requiring BOTH a code fix and a `slack post` write→read
+  round-trip the verifier reads back via `conversations.history`.
+- **prod-v1 ships its corpus.** Boots mount-free and serves 88 channels; `:empty` + mounted export is
+  the same image minus the baked DB — switching is the tag alone.
+- **Full cold-boot test suite.** `tests/test.sh` builds images fresh and runs 40 tests green (endpoint
+  happy+error, CLI, MCP, parity, isolation).
 
 ## Scorecard
 
 | Req | Area | Result | Evidence | Action item (if not full pass) |
 |---|---|---|---|---|
-| R1 | Setup & run (Harbor) | **partial** | `nop=0 oracle=1` on buried-spec + incident-fix-report; boots healthy in 4–7s | Tasks are single-container, not 2-container agent+gateway (R1.1). Boots & scores fine, so partial not fail. |
-| R2 | Architecture canon a–g + seeding j–k | **fail** | grid below; `grep REFILL_RATE=10.0 /data/slack-export` hits inside `main` | Shipped tasks leak export+DB+importer into the agent (c/g/k). Trio exists but unused. |
-| R3 | CLI + MCP parity | **partial** | CLI 6 cmds, MCP 5 tools; search parity confirmed live | CLI-only `whoami`,`users`; MCP-only `conversations_replies`. Parity gap on 3 capabilities. |
-| R4 | Functional coverage | **fail** | no `docs/COVERAGE.md` anywhere (`find` empty) | Write a machine-checkable `docs/COVERAGE.md`. |
-| R5 | Assessment-grade endpoints | **partial** | search (operator grammar), history, post round-trip via gateway | ≥1 write→read round-trip ✅ (incident); but <5 *labelled* (no COVERAGE.md to label in) → blocked by R4. |
-| R6 | Unit tests all surfaces | **fail** | no `tests/` pytest in clone; `find test_*.py` in selfcontained = empty | Ship endpoint/CLI/MCP/parity/isolation tests. |
+| R1 | Setup & run (Harbor) | pass | 2 containers boot, gateway healthy, `nop=0 oracle=1`, prod-v1 88ch mount-free | — |
+| R2 | Architecture canon a–k | pass | leak probes clean in `main` (2 tasks); CI multi-arch declared | P2: flip tags to `:latest`, verify published manifests |
+| R3 | CLI + MCP parity | pass | CLI 7 cmds incl `replies`; MCP exactly 5 tools; live search parity | — |
+| R4 | Functional coverage | pass | `docs/COVERAGE.md` machine-checkable, 10 caps | — |
+| R5 | Assessment-grade endpoints | pass | 5 AG rows labelled; write→read round-trip confirmed live | — |
+| R6 | Unit tests all surfaces | pass | `40 passed / 40` from cold boot | — |
 
-### Canon + seeding parity grid (R2 detail) — a–i canon, j–k GHCR image DB seeding
+### Canon + seeding parity grid (R2 detail)
 | a | b | c | d | e | f | g | h | i | j | k |
 |---|---|---|---|---|---|---|---|---|---|---|
-| ✅ | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ⚠️ | ⚠️ | ✅ | ❌ |
+| ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
-Why:
-- **a** ✅ base `slack-service` image exists + published (`ghcr.io/abundant-ai/slack-service`).
-- **b** ✅ `slack-gateway:prod-v1` **and** `:empty` both exist (pulled locally; `Dockerfile.gateway`/`Dockerfile.empty`).
-- **c** ❌ **In the shipped tasks the agent is NOT data-free**: `main` carries `/data/slack-export`,
-  `/tmp/slack.db`, `/opt/slackgw`, `/opt/import_export.py`. (The separate `slack-agent` image *is* clean — but no task uses it.)
-- **d** ✅ per-task data delivered by **mount** (`./data/slack-export:/data/slack-export:ro`), not a per-task image COPY of data; prod path uses overlay-by-layer.
-- **e** ✅ bulk = native Slack-export format; mutations go through the shared store op-list.
-- **f** ❌ shipped tasks are **single-container** (`main` only), not the 2-container agent+gateway Harbor shape; no documented isolation *exception* covers co-locating the answer key with the agent.
-- **g** ❌ **operator/agent boundary broken**: the importer (`import_export.py`) is on the agent's PATH and importable; world-building is reachable from the agent.
-- **h** ⚠️ identity not wired through `abundant-identity` (users are export-local). Advisory.
-- **i** ⚠️ skill present (`skills/slack-clone-task-builder`) + PROD-OVERLAY doc; no `docs/COVERAGE.md` catalog. Advisory.
-- **j** ✅ `slack-gateway:prod-v1` baked-DB boots **mount-free** and served 88 channels (verified live). The *tasks* don't use prod-v1 (they use `slack-service` + boot-time import), but the seeding infra passes its own probe.
-- **k** ❌ **leak**: literal answer greppable in `/data/slack-export` inside `main`; `import_export`
-  + `slackgw.store` importable from the agent (recomputable); **and** `slack-service`/`slack-gateway:prod-v1`
-  are **amd64-only** (`docker manifest inspect` shows a single `amd64` platform + an `unknown` attestation, no `arm64`).
+- **c/g (no seed on agent):** `[ ! -e /data/slack-export ]` and `[ ! -e /tmp/slack.db ]` both PASS in `main`.
+- **k (no recomputable leak + multi-arch):** importer/store not importable; answer not greppable;
+  multi-arch declared in CI (`build-service-image.yml` PLATFORMS=linux/amd64,linux/arm64;
+  `build-seed-image.yml --platform linux/amd64,linux/arm64`). Accepted locally per the hardened R2.k
+  rule (registry manifest not re-pulled in this audit — see P2 item).
+- **f (no networks:):** confirmed absent; Harbor injects `network_mode`; agent waits on gateway
+  `depends_on: service_healthy`.
+- **j (prod-v1 baked DB):** boots mount-free, `conversations.list` → 88 channels.
 
-> **Auditor harness notes:** the trio images were already present locally
-> (`slack-service:slack-mcp-oss`, `slack-gateway:prod-v1`, `:empty`, `slack-agent:slack-mcp-oss`), so
-> no GHCR pull was needed. Tasks build `main` standalone from their own `environment/Dockerfile`
-> (`FROM slack-service:slack-mcp-oss`), so no Harbor `main`-build override was needed — the compose
-> already declares `build:`. Note the **branch-pinned tag** `slack-mcp-oss` in every task Dockerfile;
-> the comment says to switch back to `:latest` on merge to main (currently still `slack-mcp-oss`).
+> **Auditor harness notes:** local host is arm64; task compose pins `platform: linux/amd64`, and the
+> local `slack-agent`/`slack-service`/`slack-gateway:empty` images are arm64. Booted with a tiny
+> `platform: linux/arm64` compose override to run on the host (registry arm manifest not re-pulled).
+> This is exactly the hardened-R2.k "multi-arch CI declaration acceptable locally" allowance. Shared
+> Docker host: used `COMPOSE_PROJECT_NAME=slackre`/`slackre2` and `:audit` tags throughout; all audit
+> containers torn down.
 
-### Coverage matrix audit (R4/R5 detail) — reconstructed (no `docs/COVERAGE.md` exists)
+### Coverage matrix audit (R4/R5 detail) — from `docs/COVERAGE.md`, spot-verified live
 | Capability | Endpoint | CLI | MCP | Envelope OK | Assessment-grade | Tested |
 |---|---|---|---|---|---|---|
-| identity | `auth.test` | `slack whoami` | ❌ (not in enabled set) | ✅ | no | ❌ |
-| list channels | `conversations.list` / `users.conversations` | `slack channels` | `channels_list` | ✅ | partial (stateful read) | ❌ |
-| channel info | `conversations.info` | ❌ | ❌ | ✅ | no | ❌ |
-| channel history | `conversations.history` | `slack history` | `conversations_history` | ✅ | ✅ (multi-step, paged read) | ❌ |
-| thread replies | `conversations.replies` | ❌ | `conversations_replies` | ✅ | ✅ (multi-step) | ❌ |
-| search messages | `search.messages`/`search.all` | `slack search` | `conversations_search_messages` | ✅ | ✅ (query grammar + stateful + multi-step) | ❌ |
-| list users | `users.list` | `slack users` | ❌ | ✅ | no | ❌ |
-| user info | `users.info` | ❌ | ❌ | ✅ | no | ❌ |
-| team info | `team.info` | ❌ | ❌ | ✅ | no | ❌ |
-| post message | `chat.postMessage`/`conversations.add_message` | `slack post` | `conversations_add_message` | ✅ | ✅ (write→read round-trip, devops comms) | ✅ (oracle exercises it) |
+| List channels | `conversations.list` | `slack channels` | `channels_list` | ✅ | ✅ AG | ✅ |
+| Channel history | `conversations.history` | `slack history` | `conversations_history` | ✅ | ✅ AG | ✅ |
+| Thread replies | `conversations.replies` | `slack replies` | `conversations_replies` | ✅ | ✅ AG | ✅ |
+| Search messages | `search.messages` | `slack search` | `conversations_search_messages` | ✅ | ✅ AG (operator grammar) | ✅ |
+| Post message | `chat.postMessage` | `slack post` | `conversations_add_message` | ✅ | ✅ AG (write→read) | ✅ |
+| Identity/users/team/info | `auth.test`,`users.*`,`team.info`,`conversations.info` | partial (`whoami`,`users`) | — operator-only (note A) | ✅ | no | ✅ (HTTP/CLI) |
 
-Counts: capabilities_total=10, with_cli=6, with_mcp=5, parity_ok=4 (channels/history/search/post),
-assessment_grade≈4 (search, history, replies, post) — meets the ≥3 small-clone bar substantively,
-but **R5.1 requires them *labelled* in `docs/COVERAGE.md`**, which doesn't exist → R5 blocked on R4.
-tested=1 (post, via the oracle path only; no unit tests).
+**5 assessment-grade** capabilities labelled; write→read round-trip (post → history) exercised
+end-to-end and confirmed live in the oracle run.
 
 ## Action items (ordered, for the creator loop)
-1. **[R2 · gating · P0]** *Stop leaking the answer key into the agent.* **Where:** every
-   `oddish/tasks/*/environment/docker-compose.yaml` + `Dockerfile`. **Fix:** split into the
-   two-container shape that already exists — `main` builds `FROM ghcr.io/abundant-ai/slack-agent`
-   (clean, verified) + codebase only; add a `slack` gateway service `image:
-   ghcr.io/abundant-ai/slack-gateway:{prod-v1|empty}` with the export mounted into the **gateway**,
-   wired by `depends_on: condition: service_healthy`. **Acceptance:** in `main`,
-   `grep -rs '<answer>' /data /opt` finds nothing, `[ ! -e /data/slack-export ]`, `[ ! -e /tmp/slack.db ]`,
-   and `python3 -c 'import import_export'` / `import slackgw.store` both raise ModuleNotFoundError.
-2. **[R6 · gating · P0]** *Ship a unit-test suite.* **Where:** new `tests/` (clone root) or
-   `selfcontained/base/tests/`. **Fix:** cover every endpoint (happy + error envelope), every CLI
-   command, every MCP tool, a **parity** test (CLI vs MCP same data), and an **isolation** test
-   (no seed on disk, importer not importable). Wire into CI. **Acceptance:** `pytest -q` green from a
-   cold boot, counts reported, isolation test asserts the R6.3 conditions.
-3. **[R4 · gating · P1]** *Add `docs/COVERAGE.md`.* **Where:** `docs/COVERAGE.md`. **Fix:** one row
-   per capability mapping endpoint ↔ CLI ↔ MCP ↔ envelope ↔ assessment-grade ↔ tested (use the matrix
-   above as the seed); mark the ≥5 assessment-grade rows. **Acceptance:** matrix exists, ≥5 rows
-   labelled assessment-grade, each maps to a real endpoint + CLI + MCP or is marked N/A with reason.
-4. **[R3 · gating · P1]** *Close the CLI↔MCP parity gaps.* **Where:** `slackcli/slackcli/cli.py`
-   (+ `client.py`) and `mcp/slack-mcp.sh` `SLACK_MCP_ENABLED_TOOLS`. **Fix:** add a `slack replies`
-   CLI command (MCP has `conversations_replies`, CLI doesn't); decide whether `whoami`/`users` are
-   operator-only (document) or add MCP equivalents. **Acceptance:** every non-operator capability has
-   both a CLI command and an MCP tool; a parity test passes for each.
-5. **[R2.k · gating · P1]** *Publish multi-arch.* **Where:** `.github/workflows/build-service-image.yml`
-   (and the gateway/seed build paths). **Fix:** `platforms: linux/amd64,linux/arm64`. **Acceptance:**
-   `docker buildx imagetools inspect ghcr.io/abundant-ai/slack-gateway:prod-v1` lists both arches.
-6. **[R1 · advisory · P2]** *Remove the stale Mattermost gateway.* **Where:** repo-root `slackgw/app.py`
-   is a dead Mattermost-translation copy (httpx to `MM_URL`) that contradicts the README's "no
-   Mattermost" claim; the live gateway is `selfcontained/base/slackgw/app.py` (SQLite). Delete or
-   clearly mark the dead copy. **Acceptance:** only the SQLite gateway remains; README matches.
+1. **[R2 · advisory P2]** Before merge to main, flip branch-scoped tags (`slack-mcp-oss`) back to
+   `:latest` in `oddish/tasks/*/environment/Dockerfile` (FROM) and `selfcontained/base/Dockerfile.agent`
+   + `Dockerfile.empty` (`SLACK_SERVICE` ARG), then `docker buildx imagetools inspect
+   ghcr.io/abundant-ai/slack-gateway:prod-v1` to confirm the published manifest lists amd64 AND arm64.
+2. **[R1 · advisory P2]** If a stale repo-root `slackgw/app.py` (dead Mattermost-translation gateway)
+   still exists, remove it; the live gateway is `selfcontained/base/slackgw/app.py`.
 
 ## Reproduction
 ```bash
-# Build + boot buried-spec (single-container), confirm health + CLI + envelopes
-cd oddish/tasks/buried-spec/environment
-docker build -t buried-spec-main:audit .          # FROM slack-service:slack-mcp-oss (local)
-docker run -d --name bs-audit -v "$PWD/data/slack-export:/data/slack-export:ro" buried-spec-main:audit
-docker exec bs-audit curl -sf http://localhost:80/api/auth.test         # healthy ~7s
-docker exec bs-audit slack channels                                     # C… ids, # names
-docker exec bs-audit slack search REFILL_RATE                           # noisy: superseded + agreed
-docker exec bs-audit sh -c 'curl -s "http://localhost:80/api/conversations.info?channel=C_NOPE" -H "Authorization: Bearer xoxp-acme-eval-0001"'  # {"ok":false,"error":"channel_not_found"}
+export COMPOSE_PROJECT_NAME=slackre
+# arch override (host is arm64; compose pins amd64 — hardened R2.k local allowance)
+printf 'services:\n  main: {platform: linux/arm64}\n  slack: {platform: linux/arm64}\n' > /tmp/ov.yaml
 
-# MCP: 5 tools over stdio, search reaches the gateway (parity)
-docker exec -i bs-audit sh -c 'printf "%s\n" <initialize> <initialized> <tools/list> | slack-mcp'   # 5 tools
-# -> channels_list, conversations_add_message, conversations_history, conversations_replies, conversations_search_messages
+# --- R1/R2: boot the 2-container task + leak probes ---
+cd clones/abundant-slack-clone/oddish/tasks/incident-fix-report/environment
+APEX_TASK_DOCKER_CLIENT_IMAGE_NAME=slackre-incident-main:audit \
+  docker compose -f docker-compose.yaml -f /tmp/ov.yaml up -d --build
+M=slackre-main-1
+docker exec $M sh -c '[ ! -e /data/slack-export ] && echo "PASS no export"'   # PASS
+docker exec $M sh -c '[ ! -e /tmp/slack.db ] && echo "PASS no db"'             # PASS
+docker exec $M python3 -c 'import import_export'                                # ModuleNotFoundError
+docker exec $M python3 -c 'import slackgw'                                      # ModuleNotFoundError
+docker exec $M sh -c 'grep -rIl -e "0.05" -e "should_page" / 2>/dev/null | grep -vE "^/(proc|sys)"'  # only OS libs
 
-# Isolation LEAK (the R2.k/R6.3 failure)
-docker exec bs-audit sh -c '[ -e /data/slack-export ] && echo LEAK; [ -e /tmp/slack.db ] && echo LEAK'  # both LEAK
-docker exec bs-audit python3 -c 'import import_export'                  # imports OK (recomputable)
-docker exec bs-audit sh -c "grep -rs 'REFILL_RATE=10.0' /data/slack-export | head -1"  # answer on disk
+# --- prod-v1 mount-free 88 channels ---
+docker run -d --name slackre-prodv1 --platform linux/amd64 ghcr.io/abundant-ai/slack-gateway:prod-v1
+docker exec slackre-prodv1 sh -c 'curl -sS http://localhost:80/api/conversations.list?limit=1000 \
+  -H "Authorization: Bearer xoxp-acme-eval-0001" | jq "{ok:.ok, n:(.channels|length)}"'  # {ok:true, n:88}
 
-# nop / oracle (R1.3) — buried-spec and incident-fix-report
-docker cp ../tests bs-audit:/tests; docker cp ../solution bs-audit:/solution
-docker exec bs-audit bash /tests/run_verifier.sh; docker exec bs-audit cat /logs/verifier/reward.txt   # nop=0
-docker exec bs-audit bash /solution/solve.sh; docker exec bs-audit bash /tests/run_verifier.sh         # oracle=1
+# --- nop / oracle on the re-pointed task ---
+docker cp tests $M:/verifier
+docker exec $M sh -c 'bash /verifier/test.sh; cat /logs/verifier/reward.txt'   # nop -> 0
+docker cp solution/solve.sh $M:/tmp/solve.sh
+docker exec $M sh -c 'bash /tmp/solve.sh && bash /verifier/test.sh; cat /logs/verifier/reward.txt'  # oracle -> 1
 
-# R2.j: prod-v1 baked DB serves mount-free
-docker run -d --name gw-prod ghcr.io/abundant-ai/slack-gateway:prod-v1
-docker exec gw-prod curl -s http://localhost:80/api/conversations.list -H "Authorization: Bearer xoxp-acme-eval-0001"  # 88 channels, no mount
+# --- R3: CLI tree + MCP tool list ---
+docker exec $M slack --help            # whoami,channels,users,history,replies,search,post
+docker exec $M slack replies --help    # present
+# MCP tools/list over stdio -> 5 tools (channels_list, conversations_{history,replies,add_message,search_messages})
 
-# slack-agent thin image is clean (the trio that tasks SHOULD use)
-docker run --rm --entrypoint sh ghcr.io/abundant-ai/slack-agent:slack-mcp-oss -c 'ls /opt/slackgw'   # No such file
-docker run --rm --entrypoint python3 ghcr.io/abundant-ai/slack-agent:slack-mcp-oss -c 'import import_export'  # ModuleNotFoundError
+# --- R6: full suite from cold ---
+cd clones/abundant-slack-clone && SLACK_TEST_TAG=slackre-audit bash tests/test.sh
+# 34 passed (in-gateway: endpoints+cli+mcp+parity) + 6 passed (isolation) = 40/40, reward=1
 ```

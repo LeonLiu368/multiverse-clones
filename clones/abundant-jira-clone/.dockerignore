@@ -1,0 +1,16 @@
+# Keep the jira-agent build context lean (it builds from the repo root so it can pull in mcp/).
+# Everything the agent image needs is mcp/ + selfcontained/base/{Dockerfile.agent,
+# strip_agent_tooling.py,agent-entrypoint.sh}; exclude the rest.
+.git
+audit
+docs
+tools
+linear
+tasks
+selfcontained/base/data
+selfcontained/smoke.sh
+**/__pycache__
+**/*.pyc
+.DS_Store
+.venv
+README.md

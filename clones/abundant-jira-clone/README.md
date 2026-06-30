@@ -19,9 +19,36 @@ currently **linux/amd64** — see "Architecture note"). Build them with
 |---|---|---|
 | **`jira-gateway:prod-v1`** | ticketvector service with the real **ENG** Jira corpus (8040 issues / 14997 comments / 22 users) BAKED in at `/var/lib/ticketvector/state.json`. Served on `:8765`. | `slack-gateway:prod-v1` |
 | **`jira-gateway:empty`** | ticketvector service with **no data** (the stock image's demo `PAY` state is deleted). A task MOUNTS its own `state.json` at `/var/lib/ticketvector/state.json:ro`. | `slack-gateway:empty` |
-| **`jira-agent:latest`** | the THIN AGENT base: `jira` + `linear` CLI + the `world_issues` package, **no service, no data, no state.json**. Tasks build their `main` FROM this + their codebase. The CLI runs in `WORLD_ISSUES_BACKEND=remote` mode and POSTs to the sidecar at `PLANE_BASE_URL=http://jira:8765`. | `slack-agent` |
+| **`jira-agent:latest`** | the THIN AGENT base: `jira` + `linear` CLI **and** the `jira-mcp` MCP server, **no service, no data, no state.json, and no gateway API/seed source**. Tasks build their `main` FROM this + their codebase. Both surfaces run in `WORLD_ISSUES_BACKEND=remote` mode and POST to the sidecar at `PLANE_BASE_URL=http://jira:8765`. | `slack-agent` |
 
 The agent never receives a gateway image — only HTTP access to one.
+
+## Tool surface: CLI **and** MCP, in parity (R3)
+
+The agent operates the clone through **two** surfaces, both thin clients of the **same**
+ticketvector `POST /rpc` HTTP API on the `jira` sidecar:
+
+- **CLI** — `jira` / `linear` (from the ticketvector image), e.g. `jira jql "<JQL>"`,
+  `jira issue view <ID> --comments`, `jira issue transition <ID> "Done"`,
+  `jira issue comment add <ID> --body "..."`.
+- **MCP** — `jira-mcp` (this repo's `mcp/`), a stdio MCP server mirroring the CLI 1:1:
+  `get_issue`, `search_issues` (JQL + filters), `get_comments`, `list_projects/states/labels`,
+  `issue_mine`, `list_links`, `issue_history`, `transition_issue`, `add_comment`.
+
+The full capability → endpoint → CLI → MCP map is in **`docs/COVERAGE.md`** (14 capabilities,
+5 labelled assessment-grade). CLI↔MCP parity is proven by `tests/test_parity.py` (the real CLI
+dispatch vs the matching MCP tool return identical data). The `mcp/` package imports **nothing**
+from `world_issues` — it is a self-contained `/rpc` client — which is what lets the agent image
+strip the gateway source (below).
+
+## Leak-stripped agent (R2.k)
+
+`selfcontained/base/Dockerfile.agent` no longer copies the ticketvector package wholesale. It runs
+`strip_agent_tooling.py`, which **deletes** the gateway's API + world-builder source
+(`server/seed/plane/demo/runtime/snapshot.py`) and patches `cli.py` so the remaining thin-client
+CLI still imports. Verified in the agent image: `import world_issues.seed` raises
+`ModuleNotFoundError`, no `seed`/`server` source survives on disk, and a literal grep for any answer
+finds nothing. The corpus DB was never in the package, so nothing is greppable **or** recomputable.
 
 ## The prod corpus (ENG)
 
@@ -85,8 +112,9 @@ tasks/<name>/
 
 | Task | Sidecar | Question | Answer | Seeding |
 |---|---|---|---|---|
-| `jira-status-lookup` | `jira-gateway:prod-v1` | status + assignee of **ENG-2016** | `Done` / `Felix Martin` | prod corpus baked |
+| `jira-status-lookup` | `jira-gateway:prod-v1` | status + assignee of **ENG-2016** | `Done` / `Priya Fischer` | prod corpus baked |
 | `jira-assignee-count` | `jira-gateway:empty` | # WEB issues assigned to **Priya Singh** | `4` | custom state mounted |
+| `jira-transition-roundtrip` | `jira-gateway:empty` | close the checkout-bug issue (transition→Done + comment) | `WEB-7` | custom state mounted; **write→read** (R5.2) |
 
 ## Smoke test
 

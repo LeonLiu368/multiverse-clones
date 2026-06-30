@@ -1,0 +1,27 @@
+# logfire-agent (client) image — the matched pair to logfire-service.
+# Ships ONLY the agent's tools: the `logfire` CLI + `logfire-mcp` server, thin clients
+# of the gateway. NO records, NO gateway API/seed source: the gateway's server.py is
+# NOT copied here (R2.k), so `import logfire_clone.server` raises ModuleNotFoundError
+# and the corpus is neither greppable nor recomputable on the agent. The agent reaches
+# state only over HTTP at $LOGFIRE_URL.
+FROM mirror.gcr.io/library/python:3.12-slim
+
+RUN pip install --no-cache-dir mcp \
+    && apt-get update && apt-get install -y --no-install-recommends curl jq \
+    && rm -rf /var/lib/apt/lists/*
+
+# Client-only package: __init__ + cli + mcp_server. server.py (the gateway API) is
+# deliberately omitted so no API/seed source rides along on the agent.
+RUN mkdir -p /opt/logfire_clone
+COPY logfire_clone/__init__.py   /opt/logfire_clone/__init__.py
+COPY logfire_clone/cli.py        /opt/logfire_clone/cli.py
+COPY logfire_clone/mcp_server.py /opt/logfire_clone/mcp_server.py
+
+RUN printf '#!/bin/sh\nexec python -m logfire_clone.cli "$@"\n'        > /usr/local/bin/logfire     && chmod +x /usr/local/bin/logfire \
+ && printf '#!/bin/sh\nexec python -m logfire_clone.mcp_server "$@"\n' > /usr/local/bin/logfire-mcp && chmod +x /usr/local/bin/logfire-mcp
+
+ENV PYTHONPATH=/opt \
+    LOGFIRE_URL=http://logfire \
+    LOGFIRE_TOKEN=test-token-acme-eval
+
+CMD ["sleep", "infinity"]

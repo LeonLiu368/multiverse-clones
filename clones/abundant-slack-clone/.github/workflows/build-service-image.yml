@@ -1,7 +1,17 @@
 name: build-service-image
 
-# Rebuild and push the single slack-service image (the prebuilt backend every task pulls) on every
-# push to main. Tasks reference ghcr.io/abundant-ai/slack-service:latest and are never rebuilt here.
+# Rebuild and push the slack image set on every push to main:
+#   - slack-service        : the base gateway image (SQLite Slack API + CLI + korotovsky slack-mcp,
+#                            NO data) that every other image derives from.
+#   - slack-agent          : the THIN, data-free agent base each task's `main` builds FROM (tools
+#                            only — no gateway, no importer, no data). This is what keeps the answer
+#                            key off the agent filesystem (R2.k).
+#   - slack-gateway:empty  : the gateway sidecar with NO baked data; a task mounts its own export.
+#
+# All images are published MULTI-ARCH (linux/amd64,linux/arm64) so the gateway/agent run on both
+# Intel and Apple-silicon / arm64 hosts (R2.k image hygiene). The baked-DB `slack-gateway:prod-v1`
+# is built from a (possibly large/off-repo) slack-seed image via build-gateway.sh / a separate
+# dispatch, not on every push.
 on:
   push:
     branches: [main]
@@ -12,16 +22,16 @@ permissions:
   packages: write
 
 env:
-  IMAGE: ghcr.io/abundant-ai/slack-service
+  REGISTRY: ghcr.io/abundant-ai
+  PLATFORMS: linux/amd64,linux/arm64
 
 jobs:
   build-and-push:
-    # ubuntu-latest is native x86_64 → no QEMU. Mattermost is amd64-only, so this avoids slow
-    # emulated builds. Both the service and the agent containers pin platform: linux/amd64.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
+      - uses: docker/setup-qemu-action@v3       # emulation for the arm64 leg of the multi-arch build
       - uses: docker/setup-buildx-action@v3
 
       - name: Log in to GHCR
@@ -32,30 +42,58 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       # Tag :latest ONLY on main. On any other branch (workflow_dispatch), push a branch-scoped tag
-      # + the sha — so feature branches can build a runnable image WITHOUT clobbering the shared
-      # :latest that other experiments (e.g. three-surface-ops) depend on.
-      - name: Compute tags
-        id: tags
+      # + the sha — so feature branches build runnable images WITHOUT clobbering the shared :latest
+      # that other experiments depend on. The agent/gateway derive FROM the service tag we just
+      # built, so compute one SAFE tag and reuse it for all three images.
+      - name: Compute tag
+        id: tag
         run: |
-          SAFE="$(echo "${{ github.ref_name }}" | tr '/' '-')"
           if [ "${{ github.ref }}" = "refs/heads/main" ]; then
-            echo "tags=${IMAGE}:latest,${IMAGE}:${{ github.sha }}" >> "$GITHUB_OUTPUT"
+            echo "tag=latest" >> "$GITHUB_OUTPUT"
           else
-            echo "tags=${IMAGE}:${SAFE},${IMAGE}:${{ github.sha }}" >> "$GITHUB_OUTPUT"
+            echo "tag=$(echo "${{ github.ref_name }}" | tr '/' '-')" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Build and push slack-service
+      - name: Build and push slack-service (base gateway)
         uses: docker/build-push-action@v6
         with:
           context: selfcontained/base
           file: selfcontained/base/Dockerfile.service
-          platforms: linux/amd64
+          platforms: ${{ env.PLATFORMS }}
           push: true
-          tags: ${{ steps.tags.outputs.tags }}
+          tags: |
+            ${{ env.REGISTRY }}/slack-service:${{ steps.tag.outputs.tag }}
+            ${{ env.REGISTRY }}/slack-service:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-# One-time after the first successful run: set the slack-service package visibility to PUBLIC in
-# GitHub → org packages, so Modal/Oddish pull it without credentials. (If kept private, give the
-# runner a read:packages registry secret instead.) Also confirm the abundant-ai org Packages
-# policy allows publishing, or the first push 403s.
+      - name: Build and push slack-agent (thin, data-free agent base)
+        uses: docker/build-push-action@v6
+        with:
+          context: selfcontained/base
+          file: selfcontained/base/Dockerfile.agent
+          platforms: ${{ env.PLATFORMS }}
+          push: true
+          build-args: |
+            SLACK_SERVICE=${{ env.REGISTRY }}/slack-service:${{ steps.tag.outputs.tag }}
+          tags: ${{ env.REGISTRY }}/slack-agent:${{ steps.tag.outputs.tag }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push slack-gateway:empty (mount-target sidecar, no data)
+        uses: docker/build-push-action@v6
+        with:
+          context: selfcontained/base
+          file: selfcontained/base/Dockerfile.empty
+          platforms: ${{ env.PLATFORMS }}
+          push: true
+          build-args: |
+            SLACK_SERVICE=${{ env.REGISTRY }}/slack-service:${{ steps.tag.outputs.tag }}
+          tags: ${{ env.REGISTRY }}/slack-gateway:empty
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+# One-time after the first successful run: set slack-service / slack-agent / slack-gateway package
+# visibility to PUBLIC in GitHub → org packages, so Modal/Oddish pull them without credentials. (If
+# kept private, the tasks fall back to the build:+image: dual in each compose, which builds the
+# gateway locally and never needs a pull.)

@@ -19,7 +19,7 @@ PASS=0; FAIL=0
 log(){ echo "  $*"; }
 
 run_task() {
-  local task="$1" gateway_image="$2" state_mount="$3"
+  local task="$1" gateway_image="$2" state_mount="$3" gw_actor="${4:-agent}"
   local dir="$ROOT/tasks/$task"
   echo "============================================================"
   echo "TASK: $task   (gateway=$gateway_image)"
@@ -36,9 +36,11 @@ run_task() {
   if [ -n "$state_mount" ]; then
     docker run -d --name "$sc" --network "$NET" --network-alias jira \
       -v "$dir/environment/data/state.json:/var/lib/ticketvector/state.json:ro" \
+      -e "WORLD_ISSUES_ACTOR=$gw_actor" \
       "$gateway_image" >/dev/null
   else
     docker run -d --name "$sc" --network "$NET" --network-alias jira \
+      -e "WORLD_ISSUES_ACTOR=$gw_actor" \
       "$gateway_image" >/dev/null
   fi
   local ok=0
@@ -88,8 +90,9 @@ run_task() {
 docker network create "$NET" >/dev/null 2>&1 || true
 trap 'docker network rm "$NET" >/dev/null 2>&1 || true' EXIT
 
-run_task "jira-status-lookup"  "jira-gateway:prod-v1" ""
-run_task "jira-assignee-count" "jira-gateway:empty"   "mount"
+run_task "jira-status-lookup"        "jira-gateway:prod-v1" ""      "agent"
+run_task "jira-assignee-count"       "jira-gateway:empty"   "mount" "agent"
+run_task "jira-transition-roundtrip" "jira-gateway:empty"   "mount" "priya.singh"
 
 echo "============================================================"
 echo "SMOKE SUMMARY: pass=$PASS fail=$FAIL"

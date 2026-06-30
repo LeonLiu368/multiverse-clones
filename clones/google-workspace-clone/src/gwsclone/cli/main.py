@@ -52,6 +52,19 @@ def get(path: str, **params: Any) -> dict:
     return data
 
 
+def post(path: str, body: dict) -> dict:
+    try:
+        r = httpx.post(f"{_api()}{path}", json=body,
+                       headers={"Authorization": f"Bearer {_token()}"}, timeout=30)
+        data = r.json()
+    except Exception as e:
+        typer.secho(f"error: {e}", fg="red", err=True); raise typer.Exit(1)
+    if r.status_code >= 400 or (isinstance(data, dict) and "error" in data):
+        msg = data.get("error", {}).get("message", f"HTTP {r.status_code}") if isinstance(data, dict) else r.status_code
+        typer.secho(f"error: {msg}", fg="red", err=True); raise typer.Exit(1)
+    return data
+
+
 def get_text(path: str, **params: Any) -> str:
     """GET an endpoint that returns plain text (e.g. files.export)."""
     clean = {k: v for k, v in params.items() if v is not None}
@@ -137,6 +150,22 @@ def cal_events(calendar: str = typer.Option("primary", "--calendar", "-c"),
 @cal_app.command("get")
 def cal_get(event_id: str, calendar: str = typer.Option("primary", "--calendar", "-c")) -> None:
     _emit(get(f"/calendar/v3/calendars/{calendar}/events/{event_id}"))
+
+
+@cal_app.command("create")
+def cal_create(summary: str = typer.Option(..., "--summary", "-s", help="event title"),
+               start: str = typer.Option(..., "--start", help="RFC-3339 dateTime or YYYY-MM-DD"),
+               end: str = typer.Option(..., "--end", help="RFC-3339 dateTime or YYYY-MM-DD"),
+               calendar: str = typer.Option("primary", "--calendar", "-c"),
+               location: str = typer.Option(None, "--location"),
+               description: str = typer.Option(None, "--description")) -> None:
+    """Create a Calendar event (events.insert). Prints the created event resource."""
+    body: dict = {"summary": summary, "start": start, "end": end}
+    if location is not None:
+        body["location"] = location
+    if description is not None:
+        body["description"] = description
+    _emit(post(f"/calendar/v3/calendars/{calendar}/events", body))
 
 
 # ---------------- gmail ----------------

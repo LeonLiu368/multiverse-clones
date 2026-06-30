@@ -320,8 +320,30 @@ def seed_logs(state: dict[str, Any], clients: dict[str, Any]) -> None:
                 {"timestamp": _timestamp_ms(event["timestamp"]), "message": str(event["message"])}
                 for event in stream.get("events", [])
             ]
+            events = _clamp_log_event_window(events)
             if events:
                 logs.put_log_events(logGroupName=group["name"], logStreamName=stream["name"], logEvents=sorted(events, key=lambda item: item["timestamp"]))
+
+
+def _clamp_log_event_window(events: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """CloudWatch (and LocalStack) silently DROP log events whose timestamp is more
+    than ~14 days in the past or >2h in the future relative to wall-clock. Seed
+    corpora carry fixed dates, so as the corpus ages the events stop ingesting
+    (storedBytes=0) and ``filter-log-events`` returns nothing. To keep the corpus
+    durable, shift the whole batch (preserving relative ordering + spacing) so its
+    NEWEST event lands ~5 minutes ago whenever any event would fall outside the
+    accepted window. Within-window batches are left byte-identical."""
+    if not events:
+        return events
+    now_ms = int(time.time() * 1000)
+    floor_ms = now_ms - 13 * 24 * 3600 * 1000  # stay safely inside the 14-day window
+    ceil_ms = now_ms + 90 * 60 * 1000
+    timestamps = [int(e["timestamp"]) for e in events]
+    if all(floor_ms <= ts <= ceil_ms for ts in timestamps):
+        return events
+    newest = max(timestamps)
+    shift = (now_ms - 5 * 60 * 1000) - newest  # land newest event ~5 min ago
+    return [{**e, "timestamp": max(floor_ms, int(e["timestamp"]) + shift)} for e in events]
 
 
 def seed_ssm(state: dict[str, Any], clients: dict[str, Any]) -> None:

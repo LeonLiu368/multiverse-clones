@@ -1,0 +1,12 @@
+# logfire-service:prod-v1 — the BASE API with a REAL incident corpus BAKED IN.
+#
+# Bakes the gzipped corpus to $LOGFIRE_BAKED; the entrypoint serves it as-is and
+# IGNORES any per-task mount, so this image serves the full corpus from a cold
+# `docker compose up` with NO mount. A task switches empty<->prod-v1 by the tag alone.
+# Build context must contain corpus/records.json.gz.
+ARG BASE=ghcr.io/abundant-ai/logfire-service:latest
+FROM ${BASE}
+
+COPY corpus/records.json.gz /data/records.json.gz
+ENV LOGFIRE_BAKED=/data/records.json.gz
+# (entrypoint, port, healthcheck inherited from the base)

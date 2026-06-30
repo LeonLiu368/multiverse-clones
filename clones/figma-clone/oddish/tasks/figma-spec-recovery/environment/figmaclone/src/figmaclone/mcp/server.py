@@ -48,6 +48,12 @@ async def _post(path: str, body: dict) -> dict:
         return r.json()
 
 
+async def _delete(path: str) -> dict:
+    async with _client() as client:
+        r = await client.delete(path)
+        return r.json()
+
+
 async def _document(file_key: str) -> dict:
     data = await _get(f"/v1/files/{file_key}")
     return data.get("document", {})
@@ -115,11 +121,21 @@ def build_server() -> FastMCP:
             body["comment_id"] = reply_to
         return await _post(f"/v1/files/{file_key}/comments", body)
 
+    @mcp.tool()
+    async def figma_delete_comment(file_key: str, comment_id: str) -> dict:
+        """Delete a comment (or reply) by id from a file."""
+        return await _delete(f"/v1/files/{file_key}/comments/{comment_id}")
+
     # ---- components / styles / versions / images ----
     @mcp.tool()
     async def figma_list_components(file_key: str) -> dict:
         """List the published components in a file."""
         return await _get(f"/v1/files/{file_key}/components")
+
+    @mcp.tool()
+    async def figma_list_component_sets(file_key: str) -> dict:
+        """List the published component sets (variant groups) in a file."""
+        return await _get(f"/v1/files/{file_key}/component_sets")
 
     @mcp.tool()
     async def figma_list_styles(file_key: str) -> dict:
@@ -135,6 +151,22 @@ def build_server() -> FastMCP:
     async def figma_get_images(file_key: str, ids: str, img_format: str = "png") -> dict:
         """Get rendered image URLs for node ids (comma-separated)."""
         return await _get(f"/v1/images/{file_key}", ids=ids, format=img_format)
+
+    # ---- teams / projects / identity ----
+    @mcp.tool()
+    async def figma_list_projects(team_id: str) -> dict:
+        """List the projects in a team."""
+        return await _get(f"/v1/teams/{team_id}/projects")
+
+    @mcp.tool()
+    async def figma_list_project_files(project_id: str) -> dict:
+        """List the files in a project."""
+        return await _get(f"/v1/projects/{project_id}/files")
+
+    @mcp.tool()
+    async def figma_me() -> dict:
+        """Get the authenticated user's profile (id, handle, email)."""
+        return await _get("/v1/me")
 
     return mcp
 
