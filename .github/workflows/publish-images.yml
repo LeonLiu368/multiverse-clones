@@ -9,15 +9,16 @@ name: publish-images
 # packages AND Actions-pushed images auto-link to this repo (via org.opencontainers.image.source) —
 # no PAT needed. (Images pushed manually from a laptop won't auto-link; a CI publish links them.)
 #
-# ⚠️ CLOBBER NOTE: clones cloned FROM abundant-ai (figma, google-workspace, gh-cli, sentry, aws,
-# logfire) already have abundant-ai/<svc>-service packages — publishing UPDATES them. notion + grafana
-# are new. Use the `only:` dispatch input to publish one clone at a time until you're sure.
+# NO-CLOBBER NAMING: several clones' plain image names are PACKAGES OWNED BY THEIR OWN abundant-ai
+# repos (figma-service→figma-clone, sentry-clone-service→sentry-clone, aws-clone-service→aws-clone,
+# ghc-service→gh-cli-clone). multiverse-clones can't (and shouldn't) push to those. So those clones
+# publish under a distinct `-mv` package name this repo OWNS (figma-service-mv, …) — coexisting with
+# the canonical images, never overwriting them. Clones multiverse-clones owns outright keep plain
+# names (notion-service, grafana-service, logfire-service). Tasks pull whichever name applies.
 #
 # Scope: the 8 standalone clones. jira + slack are separate (publish-jira-slack.yml).
 
-# Dispatch-only ON PURPOSE: most target images already exist as live abundant-ai packages, so an
-# auto-publish on every push to main would clobber them unintentionally. Publish DELIBERATELY,
-# clone-by-clone, via the `only:` input.
+# Dispatch-only: publish deliberately, clone-by-clone, via the `only:` input.
 on:
   workflow_dispatch:
     inputs:
@@ -48,27 +49,27 @@ jobs:
             corpus_prep: ""
             platforms: linux/amd64,linux/arm64
           - clone: figma-clone
-            service: figma-service
+            service: figma-service-mv
             context: clones/figma-clone
             base_file: docker/Dockerfile
             empty_file: docker/Dockerfile.empty
             prodv1_file: docker/Dockerfile.prod-v1
             agent_file: docker/Dockerfile.agent
-            agent_image: figma-agent
+            agent_image: figma-agent-mv
             corpus_prep: 'pip install -e ".[mcp]" && python scripts/build_corpus.py --out figma_corpus.db'
             platforms: linux/amd64,linux/arm64
           - clone: google-workspace-clone
-            service: gworkspace-service
+            service: gworkspace-service-mv
             context: clones/google-workspace-clone/docker
             base_file: Dockerfile
             empty_file: Dockerfile
             prodv1_file: Dockerfile.prod-v1
             agent_file: Dockerfile.agent
-            agent_image: gworkspace-agent
+            agent_image: gworkspace-agent-mv
             corpus_prep: ""        # gws_corpus.db is committed under docker/
             platforms: linux/amd64,linux/arm64
           - clone: sentry-clone
-            service: sentry-clone-service
+            service: sentry-clone-service-mv
             context: clones/sentry-clone
             base_file: Dockerfile.service
             empty_file: Dockerfile.empty
@@ -94,7 +95,7 @@ jobs:
             corpus_prep: ""        # corpus/records.json.gz committed
             platforms: linux/amd64,linux/arm64
           - clone: gh-cli-clone
-            service: ghc-service
+            service: ghc-service-mv
             context: clones/gh-cli-clone
             base_file: selfcontained/gateway/Dockerfile
             empty_file: selfcontained/gateway/Dockerfile
@@ -102,7 +103,7 @@ jobs:
             corpus_prep: ""        # prod-v1 bakes a seeded Forgejo data dir at build time
             platforms: linux/amd64   # Forgejo bake under QEMU arm64 is impractically slow
           - clone: aws-clone
-            service: aws-clone-service
+            service: aws-clone-service-mv
             context: clones/aws-clone
             base_file: Dockerfile.service
             empty_file: Dockerfile.empty
