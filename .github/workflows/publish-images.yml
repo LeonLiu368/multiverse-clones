@@ -4,11 +4,10 @@ name: publish-images
 # repo OWNER's GHCR namespace (ghcr.io/<owner>, lowercased — i.e. ghcr.io/leonliu368 for this
 # fork). Images are pushed PUBLIC (best-effort auto-flip + a documented one-time manual fallback).
 #
-# Scope (v1): the 8 clones whose images build standalone. Two are intentionally EXCLUDED because
-# their :prod-v1 builds FROM a PRIVATE abundant-ai base image we can't pull into this registry yet:
-#   - abundant-jira-clone   (FROM ghcr.io/abundant-ai/ticketvector-service; also amd64-only upstream)
-#   - abundant-slack-clone  (:prod-v1 imports ghcr.io/abundant-ai/slack-seed)
-# Re-enable them once those bases are mirrored to the owner's registry.
+# Scope: the 8 clones whose images build standalone. jira + slack are handled SEPARATELY by
+# publish-jira-slack.yml because their builds are bespoke (external private base + multi-image) and
+# depend on mirror-upstream-bases.yml having mirrored ghcr.io/abundant-ai/{ticketvector-service,
+# slack-seed} into the owner namespace first. Nothing here ever writes to abundant-ai.
 
 on:
   push:
@@ -168,16 +167,8 @@ jobs:
           tags: |
             ${{ steps.ns.outputs.ns }}/${{ matrix.service }}:prod-v1
 
-      - name: Make package public (best-effort; flip manually once if this can't)
+      - name: Visibility reminder (owner flips to Public once, manually)
         if: steps.gate.outputs.run == 'true'
-        continue-on-error: true
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          pkg="${{ matrix.service }}"
-          echo "Attempting to set ghcr.io/${{ github.repository_owner }}/$pkg visibility=public ..."
-          # User-owned container package visibility (best-effort; endpoint may require a PAT with
-          # admin:packages, or a one-time manual flip in Package settings -> Change visibility).
-          gh api --method PATCH "user/packages/container/$pkg" -f visibility=public \
-            || gh api --method PATCH "users/${{ github.repository_owner }}/packages/container/$pkg" -f visibility=public \
-            || echo "::warning::Could not auto-set $pkg public. Flip it once in GitHub -> Packages -> $pkg -> Package settings -> Change visibility -> Public."
+          echo "::notice::Published ghcr.io/${{ github.repository_owner }}/${{ matrix.service }}:{latest,empty,prod-v1}."
+          echo "::notice::First publish creates a PRIVATE package — flip it to Public once in GitHub -> Packages -> ${{ matrix.service }} -> Package settings -> Change visibility -> Public."

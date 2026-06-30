@@ -1,0 +1,80 @@
+name: publish-jira-slack
+
+# Publish the jira + slack gateway images to the OWNER's GHCR namespace (ghcr.io/<owner>), built
+# FROM the owner-mirrored private bases (see mirror-upstream-bases.yml). These two clones are split
+# out of publish-images.yml because their builds are bespoke (external base + multi-image) and depend
+# on the mirror having run first.
+#
+# SAFETY: every push target is ghcr.io/<owner>/... only. Nothing is ever pushed to abundant-ai.
+# PREREQ: run mirror-upstream-bases.yml once so ghcr.io/<owner>/{ticketvector-service:latest,
+# slack-seed:eng-2021q1} exist. All builds here are linux/amd64 (the ticketvector base is amd64-only).
+#
+# Package visibility: flip each new package to Public once in GitHub -> Packages (owner does this).
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "clones/abundant-jira-clone/**"
+      - "clones/abundant-slack-clone/**"
+      - ".github/workflows/publish-jira-slack.yml"
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  jira:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - id: ns
+        run: echo "ns=ghcr.io/$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with: { registry: ghcr.io, username: "${{ github.actor }}", password: "${{ secrets.GITHUB_TOKEN }}" }
+      - name: Build & push jira-gateway:{empty,prod-v1} FROM owner-mirrored ticketvector (amd64)
+        env:
+          NS: ${{ steps.ns.outputs.ns }}
+          CTX: clones/abundant-jira-clone/selfcontained/base
+        run: |
+          set -euo pipefail
+          TV="$NS/ticketvector-service:latest"   # the owner mirror (read-only source for these builds)
+          docker buildx build --platform linux/amd64 --build-arg TICKETVECTOR_SERVICE="$TV" \
+            -f "$CTX/Dockerfile.empty"   -t "$NS/jira-gateway:empty"   --push "$CTX"
+          docker buildx build --platform linux/amd64 --build-arg TICKETVECTOR_SERVICE="$TV" \
+            -f "$CTX/Dockerfile.gateway" -t "$NS/jira-gateway:prod-v1" --push "$CTX"
+          echo "::notice::Published $NS/jira-gateway:{empty,prod-v1} — flip to Public once in Packages."
+
+  slack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - id: ns
+        run: echo "ns=ghcr.io/$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with: { registry: ghcr.io, username: "${{ github.actor }}", password: "${{ secrets.GITHUB_TOKEN }}" }
+      - name: Build & push slack-service (standalone base, amd64)
+        env:
+          NS: ${{ steps.ns.outputs.ns }}
+          CTX: clones/abundant-slack-clone/selfcontained/base
+        run: |
+          set -euo pipefail
+          docker buildx build --platform linux/amd64 \
+            -f "$CTX/Dockerfile.service" \
+            -t "$NS/slack-service:latest" -t "$NS/slack-service:slack-mcp-oss" --push "$CTX"
+      - name: Build & push slack-gateway:{empty,prod-v1} FROM owner slack-service + owner-mirrored seed (amd64)
+        env:
+          NS: ${{ steps.ns.outputs.ns }}
+          CTX: clones/abundant-slack-clone/selfcontained/base
+        run: |
+          set -euo pipefail
+          SVC="$NS/slack-service:latest"
+          SEED="$NS/slack-seed:eng-2021q1"        # owner mirror
+          docker buildx build --platform linux/amd64 --build-arg SLACK_SERVICE="$SVC" \
+            -f "$CTX/Dockerfile.empty"   -t "$NS/slack-gateway:empty"   --push "$CTX"
+          docker buildx build --platform linux/amd64 --build-arg SLACK_SERVICE="$SVC" --build-arg SEED="$SEED" \
+            -f "$CTX/Dockerfile.gateway" -t "$NS/slack-gateway:prod-v1" --push "$CTX"
+          echo "::notice::Published $NS/slack-{service,gateway} — flip to Public once in Packages."

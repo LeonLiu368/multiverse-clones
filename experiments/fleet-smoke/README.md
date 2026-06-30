@@ -23,13 +23,23 @@ The point is a single, cheap signal that the whole fleet is runnable end-to-end 
 | logfire-incident-rca | abundant-logfire-clone | read: SQL RCA → fix |
 | aws-payment-reconcile | aws-clone | write→read: reconcile payment via SQS/S3/DynamoDB |
 
-### Deferred (re-add as they're unblocked)
-- **gh-cli-clone** — its runnable 2-container task (`examples/oddish-tasks/incident-isolated`) needs
-  `ghclone` vendored into `environment/` before `compose build` (an undocumented prereq); fold it in
-  once that's scripted.
-- **abundant-jira-clone**, **abundant-slack-clone** — their gateway `:prod-v1` builds **FROM a private
-  abundant-ai base image** (`ticketvector-service` / `slack-seed`). They'll run here once those bases
-  are mirrored to the owner's registry (the same blocker called out in `publish-images.yml`).
+### The other 3 clones (gh-cli, jira, slack): join via PULL once images are published
+These three tasks aren't self-contained the way the 7 above are — their gateway `build:` context is the
+clone's **shared** `selfcontained/`/`docker/` dir (relative path outside the task), and their agents
+pull CLI binaries from images. So rather than vendoring build contexts, they fold into the smoke by
+**pulling the published owner images** once the CI has run:
+
+1. Run `mirror-upstream-bases.yml` (mirrors the private `ticketvector-service` + `slack-seed` bases
+   into `ghcr.io/leonliu368`, read-only — never touches abundant-ai).
+2. Run `publish-images.yml` (gh-cli image) + `publish-jira-slack.yml` (jira/slack images) → all gateway
+   images live public under `ghcr.io/leonliu368`.
+3. Add their tasks here with the gateway pinned to the published image, e.g.
+   `image: ghcr.io/leonliu368/jira-gateway:prod-v1` (pull, no `build:`), and the agent built from the
+   clone's vendored tools. (gh-cli also needs `scripts/vendor-tasks.sh` run to vendor `ghclone`.)
+
+Keeping them pull-based keeps the smoke self-hosted in your registry and avoids re-vendoring shared
+build contexts. They're left out of v1 only because that repoint can't be validated until the images
+are actually published.
 
 ## Running
 This is an oddish experiment manifest. Point your oddish/Harbor runner at it
