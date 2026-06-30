@@ -1,0 +1,41 @@
+# Two-container smoke for the notion agent/gateway split (read + write).
+#   main   — the agent (thin notion-agent: notion-cli + notion-mcp, NO api/seed source, no data on
+#            disk). Reaches the notion gateway over HTTP at http://notion:3000.
+#   notion — the gateway sidecar (notion-service:prod-v1): serves the baked Tasks-database corpus
+#            mount-free (R2.j). Notion data lives only here, never on the agent FS.
+#
+# custom_docker_compose = true; NO `networks:` block (the harness injects network_mode on `main`,
+# mutually exclusive with an explicit networks: key); pinned linux/amd64.
+#
+# Both services carry `build:`+`image:`: the provider runs `docker compose build` then `up`; the
+# build tags each image with its `image:` name, so `up` uses the local build and never needs GHCR
+# auth (R1.5). The `image:` names still match the published packages for pull-based consumers.
+services:
+  main:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${APEX_TASK_DOCKER_CLIENT_IMAGE_NAME:-notion-smoke-main:local}
+    platform: linux/amd64
+    environment:
+      - NOTION_API_URL=http://notion:3000
+      - NOTION_TOKEN=notion-clone-token
+    depends_on:
+      notion:
+        condition: service_healthy
+
+  notion:
+    image: ${NOTION_GATEWAY_IMAGE:-ghcr.io/abundant-ai/notion-service:prod-v1}
+    build:
+      context: .
+      dockerfile: notion.Dockerfile
+    hostname: notion
+    platform: linux/amd64
+    expose:
+      - "3000"
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:3000/health')\" || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
