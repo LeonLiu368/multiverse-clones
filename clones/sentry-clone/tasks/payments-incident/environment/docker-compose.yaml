@@ -1,20 +1,6 @@
-# Merged on top of Harbor's base compose. Harbor auto-builds the `main` (agent)
-# container from environment/Dockerfile; here we OVERRIDE `main` (point it at the
-# service + wait for health) and ADD the `sentry` gateway service.
-#
-# No `networks:` — Harbor wires networking (and injects network_mode on `main`, which
-# is mutually exclusive with an explicit networks: key). The agent reaches the gateway
-# by name at http://sentry.
-#
-# The `sentry` service carries BOTH `build:` and `image:`. Harbor runs `docker compose
-# build` then `up`; the build tags the image with the `image:` name, so `up` uses the
-# local build and never pulls from GHCR (no registry auth — R1.5). The `image:` name
-# still matches the published ghcr.io/abundant-ai/sentry-clone-service:empty for anyone
-# who prefers to pull it.
-#
-# This task's incident data is provided PER TASK by mounting fixture.json into the
-# `sentry` service ONLY — never into `main` — so the agent reaches the seeded incident
-# solely through the API.
+# Image-pull pattern — NO clone source in environment/. The sentry gateway is PULLED as
+# sentry-clone-service-mv:empty and seeded by the per-task fixture mount; agent is FROM
+# sentry-clone-agent-mv. (fixture.json is per-task data.)
 services:
   main:
     environment:
@@ -26,10 +12,7 @@ services:
         condition: service_healthy
 
   sentry:
-    image: ghcr.io/abundant-ai/sentry-clone-service:empty
-    build:
-      context: .
-      dockerfile: sentry.Dockerfile
+    image: ghcr.io/abundant-ai/sentry-clone-service-mv:empty
     hostname: sentry
     environment:
       - SENTRY_CLONE_STATE_FILE=/data/sentry-clone/state.json
@@ -40,8 +23,7 @@ services:
       - SENTRY_ORG=acme
     volumes:
       - ./fixture.json:/data/sentry-clone/state.json:ro
-    expose:
-      - "80"
+    expose: ["80"]
     healthcheck:
       test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost/api/healthz', timeout=1).read()\""]
       interval: 2s
