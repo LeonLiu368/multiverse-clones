@@ -1,0 +1,171 @@
+{
+  "team": {"id": "T_ACME", "name": "Acme Design"},
+  "projects": [{"id": "P_WEB", "name": "Marketing Web", "files": ["Pr1cingCardSpecFile001"]}],
+  "files": [
+    {
+      "key": "Pr1cingCardSpecFile001",
+      "name": "Pricing Page Redesign",
+      "version": "7",
+      "lastModified": "2026-05-04T10:20:00Z",
+      "thumbnailUrl": "/static/Pr1cingCardSpecFile001/thumb.png",
+      "editorType": "figma",
+      "role": "owner",
+      "document": {
+        "type": "DOCUMENT",
+        "id": "0:0",
+        "name": "Document",
+        "children": [
+          {
+            "type": "CANVAS",
+            "id": "0:1",
+            "name": "Pricing",
+            "backgroundColor": {"r": 1, "g": 1, "b": 1, "a": 1},
+            "children": [
+              {
+                "type": "FRAME",
+                "id": "1:1",
+                "name": "Pricing / Desktop",
+                "layoutMode": "HORIZONTAL",
+                "itemSpacing": 24,
+                "paddingLeft": 64, "paddingRight": 64, "paddingTop": 64, "paddingBottom": 64,
+                "fills": [{"type": "SOLID", "color": {"r": 0.9529, "g": 0.9569, "b": 0.9647, "a": 1}}],
+                "absoluteBoundingBox": {"x": 0, "y": 0, "width": 1280, "height": 720},
+                "children": [
+                  {
+                    "type": "COMPONENT",
+                    "id": "1:2",
+                    "name": "PricingCard",
+                    "layoutMode": "VERTICAL",
+                    "itemSpacing": 16,
+                    "paddingLeft": 24, "paddingRight": 24, "paddingTop": 24, "paddingBottom": 24,
+                    "cornerRadius": 12,
+                    "primaryAxisAlignItems": "MIN",
+                    "counterAxisAlignItems": "MIN",
+                    "fills": [{"type": "SOLID", "color": {"r": 1, "g": 1, "b": 1, "a": 1}}],
+                    "strokes": [{"type": "SOLID", "color": {"r": 0.9529, "g": 0.9569, "b": 0.9647, "a": 1}}],
+                    "strokeWeight": 1,
+                    "absoluteBoundingBox": {"x": 64, "y": 64, "width": 320, "height": 420},
+                    "children": [
+                      {
+                        "type": "TEXT",
+                        "id": "1:3",
+                        "name": "Plan name",
+                        "characters": "Pro",
+                        "style": {"fontFamily": "Inter", "fontWeight": 700, "fontSize": 24, "lineHeightPx": 32, "letterSpacing": 0, "textAlignHorizontal": "LEFT"},
+                        "fills": [{"type": "SOLID", "color": {"r": 0.0667, "g": 0.0745, "b": 0.0902, "a": 1}}],
+                        "absoluteBoundingBox": {"x": 88, "y": 88, "width": 272, "height": 32}
+                      },
+                      {
+                        "type": "TEXT",
+                        "id": "1:4",
+                        "name": "Price",
+                        "characters": "$29/mo",
+                        "style": {"fontFamily": "Inter", "fontWeight": 700, "fontSize": 32, "lineHeightPx": 40, "letterSpacing": 0, "textAlignHorizontal": "LEFT"},
+                        "fills": [{"type": "SOLID", "color": {"r": 0.0667, "g": 0.0745, "b": 0.0902, "a": 1}}],
+                        "absoluteBoundingBox": {"x": 88, "y": 136, "width": 272, "height": 40}
+                      },
+                      {
+                        "type": "TEXT",
+                        "id": "1:5",
+                        "name": "Features",
+                        "characters": "Everything in Basic, plus priority support",
+                        "style": {"fontFamily": "Inter", "fontWeight": 400, "fontSize": 14, "lineHeightPx": 20, "letterSpacing": 0, "textAlignHorizontal": "LEFT"},
+                        "fills": [{"type": "SOLID", "color": {"r": 0.4196, "g": 0.4471, "b": 0.502, "a": 1}}],
+                        "absoluteBoundingBox": {"x": 88, "y": 192, "width": 272, "height": 40}
+                      },
+                      {
+                        "type": "FRAME",
+                        "id": "1:6",
+                        "name": "CTA Button",
+                        "layoutMode": "HORIZONTAL",
+                        "itemSpacing": 8,
+                        "paddingLeft": 16, "paddingRight": 16, "paddingTop": 12, "paddingBottom": 12,
+                        "cornerRadius": 8,
+                        "primaryAxisAlignItems": "CENTER",
+                        "counterAxisAlignItems": "CENTER",
+                        "fills": [{"type": "SOLID", "color": {"r": 0.1137, "g": 0.3059, "b": 0.8471, "a": 1}}],
+                        "absoluteBoundingBox": {"x": 88, "y": 416, "width": 272, "height": 44},
+                        "children": [
+                          {
+                            "type": "TEXT",
+                            "id": "1:7",
+                            "name": "CTA Label",
+                            "characters": "Sign up",
+                            "style": {"fontFamily": "Inter", "fontWeight": 600, "fontSize": 16, "lineHeightPx": 24, "letterSpacing": 0, "textAlignHorizontal": "CENTER"},
+                            "fills": [{"type": "SOLID", "color": {"r": 1, "g": 1, "b": 1, "a": 1}}],
+                            "absoluteBoundingBox": {"x": 104, "y": 426, "width": 240, "height": 24}
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "components": {
+        "1:2": {"key": "comp12", "name": "PricingCard", "description": "Pricing tier card", "containing_frame": {"name": "Pricing / Desktop", "nodeId": "1:1"}},
+        "1:6": {"key": "comp16", "name": "CTA Button", "description": "Primary call-to-action button", "containing_frame": {"name": "PricingCard", "nodeId": "1:2"}}
+      },
+      "componentSets": {},
+      "styles": {
+        "S1": {"key": "styPrimary500", "name": "Primary/500", "styleType": "FILL", "description": "Brand primary — #1D4ED8"},
+        "S2": {"key": "styNeutral900", "name": "Neutral/900", "styleType": "FILL", "description": "Text default — #111317"},
+        "S3": {"key": "stySurface100", "name": "Surface/100", "styleType": "FILL", "description": "Card border — #F3F4F6"},
+        "S4": {"key": "styNeutral500", "name": "Neutral/500", "styleType": "FILL", "description": "Muted text — #6B7280"}
+      },
+      "images": {
+        "1:2": "/static/Pr1cingCardSpecFile001/1-2.png",
+        "1:6": "/static/Pr1cingCardSpecFile001/1-6.png"
+      },
+      "comments": [
+        {
+          "id": "1",
+          "message": "v1 card: padding 16, gap 12, corner radius 8. rough first pass, will revisit after review.",
+          "user": {"id": "U1", "handle": "maya.designer", "email": "maya@acme.example"},
+          "client_meta": {"node_id": "1:2"},
+          "created_at": "2026-05-01T09:00:00Z",
+          "order_id": 1
+        },
+        {
+          "id": "2",
+          "message": "CTA button locked: corner radius 8, fill = Primary/500 (#1D4ED8), white label text.",
+          "user": {"id": "U3", "handle": "sam.eng", "email": "sam@acme.example"},
+          "client_meta": {"node_id": "1:6"},
+          "created_at": "2026-05-02T11:00:00Z",
+          "order_id": 2
+        },
+        {
+          "id": "3",
+          "message": "Review outcome — card geometry FINAL: padding 24 on all sides, gap 16 between rows, card corner radius 12. Please ignore the v1 numbers above.",
+          "user": {"id": "U2", "handle": "devon.pm", "email": "devon@acme.example"},
+          "client_meta": {"node_id": "1:2"},
+          "created_at": "2026-05-03T14:30:00Z",
+          "order_id": 3
+        },
+        {
+          "id": "4",
+          "message": "Copy change: the CTA label must read 'Start free trial' (not 'Sign up'). The mock still shows the old text.",
+          "user": {"id": "U2", "handle": "devon.pm", "email": "devon@acme.example"},
+          "client_meta": {"node_id": "1:7"},
+          "created_at": "2026-05-04T10:15:00Z",
+          "order_id": 4
+        },
+        {
+          "id": "5",
+          "message": "Heading copy confirmed: 'Pro'.",
+          "user": {"id": "U1", "handle": "maya.designer", "email": "maya@acme.example"},
+          "client_meta": {"node_id": "1:3"},
+          "created_at": "2026-05-04T10:20:00Z",
+          "order_id": 5
+        }
+      ],
+      "versions": [
+        {"id": "v7", "label": "Final spec", "description": "Card geometry + CTA copy locked", "created_at": "2026-05-04T10:20:00Z", "user": {"handle": "devon.pm"}},
+        {"id": "v1", "label": "First draft", "description": "Initial pricing card", "created_at": "2026-05-01T09:00:00Z", "user": {"handle": "maya.designer"}}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+schema_version = "1.2"
+name = "abundant-grafana-clone/gauge-annotation-roundtrip"
+description = "Observability tool-use task. A payment-webhook Grafana alert is firing. The agent must use the grafana tools (gcx CLI + mcp-grafana MCP server) to (1) find the firing alert instance and its rule uid, (2) query Loki logs to recover the root-cause keyword (lock_conflict) buried in a warning line, and (3) post a Grafana annotation on dash-payment-webhooks panel 1 that references the alert rule uid AND the root-cause keyword, tagged 'incident'. The annotation is read back through the API (write->read round-trip); narration is not trusted. The agent has only the HTTP tools, no local data. nop=0, oracle=1."
+
+[metadata]
+category = "software-engineering"
+service = "grafana"
+tools = ["gcx", "mcp-grafana"]
+tags = ["grafana", "grafana-clone", "grafana", "observability", "tool-use", "annotations", "alerting", "loki", "isolated"]
+
+[agent]
+timeout_sec = 1800
+
+[verifier]
+timeout_sec = 300
+
+[environment]
+cpus = 2
+memory_mb = 2048
+storage_mb = 8192
+gpus = 0
+allow_internet = true
+workdir = "/home/agent"
+build_timeout_sec = 1800
+
+# The agent operates Grafana through the `gcx` CLI and this MCP server (stdio). mcp-grafana
+# is installed in the agent image and reaches the grafana service via the baked GRAFANA_URL /
+# GRAFANA_TOKEN env.
+[[environment.mcp_servers]]
+name = "grafana"
+transport = "stdio"
+command = "mcp-grafana"

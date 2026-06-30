@@ -53,3 +53,10 @@ leak_controls:
   - no corpus on agent (/data sealed)
   - no seed generator (deterministic generator absent)
   - answer not greppable on agent code paths
+
+real_service:                            # R4.0 — named real API this clone is measured against
+  name: Pydantic Logfire Query API
+  api_base: https://logfire-api.pydantic.dev
+  reference: https://logfire.pydantic.dev/docs/
+  version: v2/query
+  snapshot_date: 2026-06-30

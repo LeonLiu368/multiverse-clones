@@ -59,3 +59,10 @@ operator_only:                            # deliberately NOT exposed to the agen
   - seed.load
   - _control.seed
   - _control.reset
+
+real_service:                            # R4.0 — named real API this clone is measured against
+  name: Notion API
+  api_base: https://api.notion.com/v1
+  reference: https://developers.notion.com/reference
+  version: 2022-06-28 (Notion-Version)
+  snapshot_date: 2026-06-30

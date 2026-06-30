@@ -14,6 +14,16 @@ divergence (e.g. you declare T2 but expose no query grammar → `observed: T1`, 
 clone: figma-clone                      # folder name
 service: Figma REST API                 # real product cloned
 standard_version: clone-standard-v1
+
+# R4.0 — the named real API this clone is measured against (parity/coverage/realism).
+# Mirror this block as a `## Real service` header in docs/COVERAGE.md. Every clone maps to a real
+# service — a codename (the old `gauge`) is not allowed.
+real_service:
+  name: Figma REST API
+  api_base: https://api.figma.com/v1
+  reference: https://www.figma.com/developers/api
+  version: v1
+  snapshot_date: 2026-06-30
 fidelity_tier: T1                       # T0..T3 (declared); auditor records observed
 backed_by: handwritten                  # "handwritten" | "oss:<engine>" e.g. oss:forgejo, oss:localstack
 

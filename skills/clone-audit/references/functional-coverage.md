@@ -4,8 +4,13 @@ Goal: an **audited coverage matrix** proving the clone covers the real service's
 through **both** a CLI and an MCP server in parity, with enough **assessment-grade** endpoints to
 discriminate agents. Fill every cell by **calling the tool**, never by reading source.
 
-## Step 1 — Establish the target surface (R4.1)
-Prefer the clone's `docs/COVERAGE.md`. If it's missing or thin, reconstruct the "API surface agents
+## Step 1 — Establish the target surface (R4.0, R4.1)
+First read the `## Real service` block at the top of `docs/COVERAGE.md` — `name`, `api_base`,
+`reference`, `version`, `snapshot_date` (R4.0). **This is your comparison anchor**: every parity (R3),
+coverage (R4), and realism (R5) judgement is *against this named real API*, so pull up its real docs
+(`reference`) and diff envelopes/surface against them, not against your intuition. A clone with no
+real-service declaration (a codename, not a real API) fails R4.0 — flag it.
+Then take the matrix itself. If it's missing or thin, reconstruct the "API surface agents
 actually use" from the real product (Stage-0 study in `service-clone-builder`). Capture, per
 capability: the real endpoint, the real CLI verb, whether agents read or write it, and the real
 response envelope (id prefixes, error codes, pagination). A missing/insufficient `COVERAGE.md` is an

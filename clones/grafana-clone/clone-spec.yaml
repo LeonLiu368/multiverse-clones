@@ -1,0 +1,55 @@
+clone: grafana-clone
+service: grafana
+upstream: Grafana HTTP API (+ Loki / Prometheus query APIs) — gcx CLI + mcp-grafana MCP
+fidelity_tier: T2            # handwritten stdlib HTTP API + embedded PromQL/LogQL-style query engine over JSON state
+read_only: false            # dashboards/datasources read-only; annotations are write->read
+
+real_service:
+  name: Grafana HTTP API (+ Loki / Prometheus query APIs)
+  api_base: "{gateway}/api"
+  reference: https://grafana.com/docs/grafana/latest/developers/http_api/
+  version: Grafana 11.x compatibility subset
+  snapshot_date: 2026-06-30
+
+runtime:
+  shape: agent + gateway      # canon two-container Harbor task
+  agent:
+    image_role: main          # Harbor force-builds from environment/Dockerfile
+    base: python:3.13-slim    # neutral, data-free (server.* stripped)
+    tools: [gcx, mcp-grafana]
+    data_on_disk: none        # state reachable only over HTTP
+  gateway:
+    api: Grafana HTTP API subset under /api (search, dashboards, datasources, query, alerts, annotations, links), GET /api/healthz
+    store: JSON state file (GRAFANA_STATE_FILE), in-process HTTP server
+    auth: bearer token (GRAFANA_TOKEN); admin via GRAFANA_ADMIN_TOKEN
+
+images:
+  trio:
+    base:     ghcr.io/abundant-ai/grafana-service:latest    # data-free
+    empty:    ghcr.io/abundant-ai/grafana-service:empty      # mount target (/data/grafana/state.json)
+    prod_v1:  ghcr.io/abundant-ai/grafana-service:prod-v1     # observability corpus baked (examples/data/grafana/state.json), served mount-free
+  agent:      ghcr.io/abundant-ai/grafana-agent:latest        # client only; server.* stripped (import leak sealed)
+  multi_arch: [linux/amd64, linux/arm64]                       # CI declaration (.github/workflows/build-service-image.yml)
+  publish: "build:+image: dual (local trio) + CI on push-to-main"
+
+seeding:
+  baked:  prod-v1 bakes examples/data/grafana/state.json -> /srv/grafana/state.json; served as-is, mount ignored
+  mount:  empty + a per-task state.json/fixture.json mounted at /data/grafana/state.json
+  switch: empty <-> prod-v1 is the image tag + GRAFANA_STATE_FILE alone
+
+tasks:
+  - name: gauge-annotation-roundtrip
+    kind: observability + SWE (annotation write->read round-trip)
+    image: prod-v1 (baked corpus, mount-free) + thin agent
+    nop: 0.0
+    oracle: 1.0
+
+coverage_doc: docs/COVERAGE.md
+tests: tests/   # pytest: api + cli/mcp parity + isolation/import-leak
+assessment_grade: 8   # dashboard variables, panel query exec, PromQL/LogQL grammar, label-values, alert-instances, annotation RT
+
+leak_controls:
+  - agent strips grafana/server/* (import grafana.server.state raises ModuleNotFoundError)
+  - no corpus on agent (/data/grafana sealed)
+  - only links.py + __init__.py survive in grafana/server on the agent
+  - gcx + mcp-grafana still load; grafanactl absent on the agent

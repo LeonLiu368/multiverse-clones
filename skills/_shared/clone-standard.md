@@ -119,6 +119,12 @@ There is a written **coverage matrix** (`docs/COVERAGE.md`, machine-checkable) e
 real service's **agent-used surface** and mapping each capability to its endpoint + CLI command +
 MCP tool + fidelity grade.
 
+- **R4.0 (G)** **Real-service declaration.** `docs/COVERAGE.md` opens with a `## Real service` block
+  naming the real API the clone is measured against — `name`, `api_base`, `reference` (docs URL),
+  `version`, `snapshot_date`. This is the **named comparison target**: R3 (parity), R4 (coverage), and
+  R5 (realism) are all judged against *this* real API, not a vibe. A clone with a codename instead of a
+  real-service identity (the old `gauge`) fails R4.0 — every clone maps to a real service. Mirror the
+  same block as a `real_service:` field in `clone-spec.yaml`.
 - **R4.1 (G)** The matrix exists and lists every capability an agent realistically needs (read paths
   at minimum; write paths where the task family requires mutation).
 - **R4.2 (G)** Each row maps to a real HTTP endpoint **and** a CLI command **and** an MCP tool

@@ -1,0 +1,32 @@
+metadata:
+  name: fleet-smoke
+  enable_image_push: true
+  description: |
+    Fleet smoke across the multiverse clones: one bundled read/write task per clone, run with
+    nop + oracle + gemini at 1 trial each. Each task is the agent+gateway two-container shape
+    (thin agent `main` + the clone's gateway sidecar over HTTP), vendored self-contained under
+    tasks/ (build:+image dual, no networks:). Every task is deterministic nop=0 / oracle=1 and was
+    independently audited to meet Clone Standard v1.
+
+    v1 covers the 7 clones whose tasks build standalone. Deferred (need work before they fit a
+    uniform smoke): gh-cli-clone (task needs ghclone vendored into environment/), abundant-jira-clone
+    + abundant-slack-clone (gateway :prod-v1 builds FROM a private abundant-ai base image —
+    ticketvector-service / slack-seed — not yet mirrored to this registry). See README.md.
+  task_path: experiments/fleet-smoke/tasks
+  n_trials: 1
+  skip_trajectory_analysis: false
+
+tasks:
+  - notion-db-triage            # Notion: query Tasks DB -> mark Done -> comment 'rotated'
+  - figma-spec-recovery         # Figma: recover a design spec via figma-cli/mcp, apply to code
+  - gws-launch-date-prod-v1     # Google Workspace: recover a launch date from Drive/Docs
+  - sentry-payments-incident    # Sentry: triage an incident, resolve + comment
+  - grafana-annotation-roundtrip  # Grafana: find firing alert, post incident annotation
+  - logfire-incident-rca        # Logfire: SQL over telemetry to root-cause + fix
+  - aws-payment-reconcile       # AWS: reconcile a stuck payment via SQS/S3/DynamoDB
+
+agents:
+  - name: nop
+  - name: oracle
+  - name: gemini-cli
+    model_name: gemini/gemini-3.1-pro-preview

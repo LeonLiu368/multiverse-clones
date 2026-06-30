@@ -1,5 +1,12 @@
 # Logfire Query API — coverage matrix
 
+## Real service
+- name: Pydantic Logfire Query API
+- api_base: https://logfire-api.pydantic.dev
+- reference: https://logfire.pydantic.dev/docs/
+- version: v2/query
+- snapshot_date: 2026-06-30
+
 Faithful to the real [Pydantic Logfire Query API](https://logfire.pydantic.dev/docs/reference/query-api/)
 and the [Logfire MCP server](https://github.com/pydantic/logfire-mcp). The agent operates
 the clone through the **`logfire` CLI** and the **`logfire-mcp` server**, both **thin

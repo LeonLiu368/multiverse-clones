@@ -73,3 +73,10 @@ tasks:
   - incident-fix-report    # fix SLO monitor + post a notification (write->read round-trip)
   - rw-large-slack-read
   - rw-small-slack-read
+
+real_service:                            # R4.0 — named real API this clone is measured against
+  name: Slack Web API
+  api_base: https://slack.com/api
+  reference: https://api.slack.com/web
+  version: Web API (current)
+  snapshot_date: 2026-06-30

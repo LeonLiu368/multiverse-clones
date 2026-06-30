@@ -1,0 +1,200 @@
+name: publish-images
+
+# Build each clone's gateway image trio (base / :empty / :prod-v1) PLUS the thin <svc>-agent (where
+# defined) and publish to ghcr.io/abundant-ai. Every image carries org.opencontainers.image.source so
+# the package links to THIS repo. Together the gateway + agent images let a task run with NO clone
+# source vendored into environment/ (the image-pull pattern — see experiments/pull-smoke).
+#
+# Auth: this repo lives in the abundant-ai org, so the default GITHUB_TOKEN can write the org's
+# packages AND Actions-pushed images auto-link to this repo (via org.opencontainers.image.source) —
+# no PAT needed. (Images pushed manually from a laptop won't auto-link; a CI publish links them.)
+#
+# ⚠️ CLOBBER NOTE: clones cloned FROM abundant-ai (figma, google-workspace, gh-cli, sentry, aws,
+# logfire) already have abundant-ai/<svc>-service packages — publishing UPDATES them. notion + grafana
+# are new. Use the `only:` dispatch input to publish one clone at a time until you're sure.
+#
+# Scope: the 8 standalone clones. jira + slack are separate (publish-jira-slack.yml).
+
+# Dispatch-only ON PURPOSE: most target images already exist as live abundant-ai packages, so an
+# auto-publish on every push to main would clobber them unintentionally. Publish DELIBERATELY,
+# clone-by-clone, via the `only:` input.
+on:
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "Optional: build only this clone (dir name). Empty = all."
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - clone: notion-clone
+            service: notion-service
+            context: clones/notion-clone
+            base_file: docker/Dockerfile
+            empty_file: docker/Dockerfile.empty
+            prodv1_file: docker/Dockerfile.prod-v1
+            agent_file: docker/Dockerfile.agent
+            agent_image: notion-agent
+            corpus_prep: ""
+            platforms: linux/amd64,linux/arm64
+          - clone: figma-clone
+            service: figma-service
+            context: clones/figma-clone
+            base_file: docker/Dockerfile
+            empty_file: docker/Dockerfile.empty
+            prodv1_file: docker/Dockerfile.prod-v1
+            agent_file: docker/Dockerfile.agent
+            agent_image: figma-agent
+            corpus_prep: 'pip install -e ".[mcp]" && python scripts/build_corpus.py --out figma_corpus.db'
+            platforms: linux/amd64,linux/arm64
+          - clone: google-workspace-clone
+            service: gworkspace-service
+            context: clones/google-workspace-clone/docker
+            base_file: Dockerfile
+            empty_file: Dockerfile
+            prodv1_file: Dockerfile.prod-v1
+            agent_file: Dockerfile.agent
+            agent_image: gworkspace-agent
+            corpus_prep: ""        # gws_corpus.db is committed under docker/
+            platforms: linux/amd64,linux/arm64
+          - clone: sentry-clone
+            service: sentry-clone-service
+            context: clones/sentry-clone
+            base_file: Dockerfile.service
+            empty_file: Dockerfile.empty
+            prodv1_file: Dockerfile.prod-v1
+            corpus_prep: ""        # corpus/state.json committed
+            platforms: linux/amd64,linux/arm64
+          - clone: grafana-clone
+            service: grafana-service
+            context: clones/grafana-clone
+            base_file: Dockerfile.service
+            empty_file: Dockerfile.service
+            prodv1_file: Dockerfile.prod-v1
+            corpus_prep: ""        # examples/data/grafana/state.json committed
+            platforms: linux/amd64,linux/arm64
+          - clone: abundant-logfire-clone
+            service: logfire-service
+            context: clones/abundant-logfire-clone
+            base_file: docker/Dockerfile
+            empty_file: docker/Dockerfile.empty
+            prodv1_file: docker/Dockerfile.prod-v1
+            agent_file: docker/Dockerfile.agent
+            agent_image: logfire-agent
+            corpus_prep: ""        # corpus/records.json.gz committed
+            platforms: linux/amd64,linux/arm64
+          - clone: gh-cli-clone
+            service: ghc-service
+            context: clones/gh-cli-clone
+            base_file: selfcontained/gateway/Dockerfile
+            empty_file: selfcontained/gateway/Dockerfile
+            prodv1_file: selfcontained/gateway/Dockerfile.prod-v1
+            corpus_prep: ""        # prod-v1 bakes a seeded Forgejo data dir at build time
+            platforms: linux/amd64   # Forgejo bake under QEMU arm64 is impractically slow
+          - clone: aws-clone
+            service: aws-clone-service
+            context: clones/aws-clone
+            base_file: Dockerfile.service
+            empty_file: Dockerfile.empty
+            prodv1_file: Dockerfile.prod-v1
+            corpus_prep: ""        # examples/data/aws-clone/state.json committed
+            platforms: linux/amd64   # LocalStack base; pin amd64 for reliability
+
+    steps:
+      - name: Skip if a single-clone dispatch filter excludes this clone
+        id: gate
+        run: |
+          only="${{ github.event.inputs.only }}"
+          if [ -n "$only" ] && [ "$only" != "${{ matrix.clone }}" ]; then
+            echo "run=false" >> "$GITHUB_OUTPUT"; echo "skipping ${{ matrix.clone }} (filter=$only)"
+          else
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.gate.outputs.run == 'true'
+
+      - name: Registry namespace (abundant-ai org)
+        if: steps.gate.outputs.run == 'true'
+        id: ns
+        run: echo "ns=ghcr.io/abundant-ai" >> "$GITHUB_OUTPUT"
+
+      - uses: docker/setup-qemu-action@v3
+        if: steps.gate.outputs.run == 'true'
+      - uses: docker/setup-buildx-action@v3
+        if: steps.gate.outputs.run == 'true'
+
+      - name: Log in to GHCR
+        if: steps.gate.outputs.run == 'true'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}   # repo is in abundant-ai → can write org packages
+
+      - name: Corpus prep (only clones that generate their baked corpus)
+        if: steps.gate.outputs.run == 'true' && matrix.corpus_prep != ''
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build baked corpus
+        if: steps.gate.outputs.run == 'true' && matrix.corpus_prep != ''
+        working-directory: clones/${{ matrix.clone }}
+        run: |
+          python -m pip install --upgrade pip
+          bash -c '${{ matrix.corpus_prep }}'
+
+      - name: Build & push BASE + :empty (multi-arch)
+        if: steps.gate.outputs.run == 'true'
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.context }}/${{ matrix.base_file }}
+          platforms: ${{ matrix.platforms }}
+          push: true
+          labels: org.opencontainers.image.source=https://github.com/${{ github.repository }}
+          tags: |
+            ${{ steps.ns.outputs.ns }}/${{ matrix.service }}:latest
+            ${{ steps.ns.outputs.ns }}/${{ matrix.service }}:empty
+
+      - name: Build & push :prod-v1 (FROM :empty, multi-arch)
+        if: steps.gate.outputs.run == 'true'
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.context }}/${{ matrix.prodv1_file }}
+          platforms: ${{ matrix.platforms }}
+          push: true
+          labels: org.opencontainers.image.source=https://github.com/${{ github.repository }}
+          build-args: |
+            BASE=${{ steps.ns.outputs.ns }}/${{ matrix.service }}:empty
+          tags: |
+            ${{ steps.ns.outputs.ns }}/${{ matrix.service }}:prod-v1
+
+      - name: Build & push thin <svc>-agent (tools only; enables the no-source pull pattern)
+        if: steps.gate.outputs.run == 'true' && matrix.agent_file != ''
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.context }}/${{ matrix.agent_file }}
+          platforms: ${{ matrix.platforms }}
+          push: true
+          labels: org.opencontainers.image.source=https://github.com/${{ github.repository }}
+          tags: |
+            ${{ steps.ns.outputs.ns }}/${{ matrix.agent_image }}:latest
+
+      - name: Visibility reminder (flip packages to Public once, manually)
+        if: steps.gate.outputs.run == 'true'
+        run: |
+          echo "::notice::Published ghcr.io/abundant-ai/${{ matrix.service }}:{latest,empty,prod-v1}${{ matrix.agent_file != '' && format(' + {0}:latest', matrix.agent_image) || '' }}."
+          echo "::notice::First publish creates a PRIVATE package — flip it to Public once in GitHub -> abundant-ai -> Packages -> Package settings -> Change visibility -> Public."

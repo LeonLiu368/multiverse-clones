@@ -1,0 +1,28 @@
+schema_version = "1.2"
+name = "gworkspace/gws-launch-date-prod-v1"
+description = "PROD-V1 (harder) variant of gws-launch-date on the Google Workspace clone. Same task — recover the Q3 launch date from the 'Q3 Launch Plan' Google Doc and implement launch_date() — but the gworkspace service runs the :prod-v1 image, so Drive holds a full corpus: the needle is buried among decoy launch docs carrying plausible-but-wrong dates (a superseded Q3 draft at 2026-09-08, Q2/Q4 plans, a mobile track) plus bulk filler. The agent must disambiguate to the doc named exactly 'Q3 Launch Plan' (2026-09-15). Hidden grader pins the date. nop=0, oracle=1."
+
+[metadata]
+category = "observability"
+failure_mode = "info-in-doc-only"
+tags = ["gworkspace", "google-drive", "google-docs", "gws-clone", "observability"]
+
+[agent]
+timeout_sec = 1200
+
+[verifier]
+timeout_sec = 180
+
+[environment]
+cpus = 2
+memory_mb = 4096
+storage_mb = 12288
+gpus = 0
+allow_internet = true
+workdir = "/app"
+build_timeout_sec = 2400
+
+[[environment.mcp_servers]]
+name = "gws"
+transport = "stdio"
+command = "gws-mcp"

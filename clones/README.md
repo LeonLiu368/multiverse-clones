@@ -19,7 +19,7 @@ re-pull from the repo/commit recorded there and replace the folder.
 | [`google-workspace-clone`](google-workspace-clone) | Gmail / Calendar / Drive | `docker/Dockerfile{,.agent,.prod-v1}` | ⚠️ per-task only (`oddish/tasks/*/environment`) |
 | [`abundant-jira-clone`](abundant-jira-clone) | Jira / Linear issue tracker | `selfcontained/base/Dockerfile*`, `linear/Dockerfile` | ⚠️ per-task only (`tasks/*/environment`) |
 | [`abundant-logfire-clone`](abundant-logfire-clone) | Pydantic Logfire observability | `Dockerfile`, `Dockerfile.agent` | ❌ none |
-| [`gauge`](gauge) | Grafana / Loki (CLI + MCP) | `Dockerfile.service` | ✅ `examples/docker-compose.yaml` |
+| [`grafana-clone`](grafana-clone) | Grafana HTTP API (+ Loki / Prometheus query APIs) | `Dockerfile.service` | ✅ `examples/docker-compose.yaml` |
 | [`sentry-clone`](sentry-clone) | Sentry | `Dockerfile.service` | ✅ `examples/docker-compose.yaml` |
 | [`aws-clone`](aws-clone) | AWS APIs (S3 / Kinesis / IAM …) | `Dockerfile.service`, `Dockerfile.tools` | ✅ `examples/docker-compose.yaml` |
 

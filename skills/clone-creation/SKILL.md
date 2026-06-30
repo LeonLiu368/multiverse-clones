@@ -42,9 +42,12 @@ skill makes the build **standard and loop-ready** by fixing four things up front
 
 ### Decision 1 — Scope: the agent-used surface (R4)
 Do the Stage-0 study (`service-clone-builder/references/study-the-real-service.md`). Produce
-`docs/COVERAGE.md`: every capability an agent realistically uses → endpoint + intended CLI verb + MCP
-tool + read/write + real envelope. **This file is also the audit's target list** — write it first, not
-last. Bias toward the surface agents *actually* touch; don't clone the whole product.
+`docs/COVERAGE.md`, opening with a `## Real service` block (R4.0: `name`, `api_base`, `reference`,
+`version`, `snapshot_date`) — the **named real API** this clone is measured against — then the matrix:
+every capability an agent realistically uses → endpoint + intended CLI verb + MCP tool + read/write +
+real envelope. **This file is also the audit's target list** — write it first, not last. Name the real
+service explicitly (no codenames); bias toward the surface agents *actually* touch; don't clone the
+whole product.
 
 ### Decision 2 — Fidelity tier (T1/T2/T3)  → `references/fidelity-and-oss.md`
 - **T1** stateful handwritten (own HTTP API + embedded store) — the default; lean, deterministic.

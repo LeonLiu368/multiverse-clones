@@ -1,5 +1,12 @@
 # Notion API coverage matrix
 
+## Real service
+- name: Notion API
+- api_base: https://api.notion.com/v1
+- reference: https://developers.notion.com/reference
+- version: 2022-06-28 (Notion-Version)
+- snapshot_date: 2026-06-30
+
 Faithful to the agent-used surface of the [Notion API](https://developers.notion.com/reference).
 Auth mirrors the integration token: requests carry `Authorization: Bearer <token>`
 and `Notion-Version: 2022-06-28`; a non-empty token is accepted (presence == valid,

@@ -1,0 +1,14 @@
+# Harbor/Oddish task: notion-db-triage
+#
+# Two containers: `main` (the agent, built by Harbor from environment/Dockerfile)
+# and `notion` (the gateway sidecar, the notion-service image with a baked corpus).
+# The agent uses notion-cli / notion-mcp to query the Tasks database, find the right
+# task, mark it done, and post a confirmation comment. The verifier reads the state
+# back through the public API (write -> read round-trip, R5.2).
+name = "notion-db-triage"
+custom_docker_compose = true
+
+[metadata]
+clone = "notion-clone"
+service = "Notion API"
+assessment_grade = ["databases.query", "pages.update", "comments.create"]

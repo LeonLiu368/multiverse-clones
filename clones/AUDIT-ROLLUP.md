@@ -14,7 +14,7 @@ full evidence. `meets_standard` = every **gating** requirement passes, independe
 | google-workspace-clone | ✅ 6/6 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | gh-cli-clone | ✅ 6/6 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | sentry-clone | ✅ 6/6 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| gauge | ✅ 6/6 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| grafana-clone | ✅ 6/6 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | abundant-logfire-clone | ✅ 6/6 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | abundant-slack-clone | ✅ 6/6 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | aws-clone | ✅ 6/6 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -49,7 +49,7 @@ re-audit closed them:
   time when CI runs on push-to-main. **abundant-jira-clone has a real upstream blocker:** its
   `ticketvector-service` base is published amd64-only, so arm64 can't be produced until ticketvector
   republishes multi-arch.
-- A few P2s noted in individual reports (docker-compose test races in aws/gauge that self-skip; stale
+- A few P2s noted in individual reports (docker-compose test races in aws/grafana-clone that self-skip; stale
   secondary docs in slack; help-string byte-faithfulness untested in figma).
 
 ## Reproduce

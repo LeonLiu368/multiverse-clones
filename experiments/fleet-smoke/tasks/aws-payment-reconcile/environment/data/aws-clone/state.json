@@ -1,0 +1,146 @@
+{
+  "meta": {
+    "account_id": "000000000000",
+    "region": "us-east-1",
+    "now": "2026-06-30T09:00:00Z"
+  },
+  "s3": {
+    "buckets": [
+      {
+        "name": "acme-payment-exports",
+        "objects": [
+          {
+            "key": "runbooks/reconcile.json",
+            "body_json": {
+              "procedure": "payment-reconcile-v3",
+              "resolved_state": "reconciled",
+              "note": "On a validation_conflict, write state=reconciled and set reconciled_batch to the batch_id from the failing SQS message."
+            },
+            "metadata": {
+              "owner": "payments-oncall"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "sqs": {
+    "queues": [
+      {
+        "name": "payment-webhook-retry",
+        "attributes": {
+          "VisibilityTimeout": "30"
+        },
+        "messages": [
+          {
+            "id": "msg-042",
+            "body_json": {
+              "event_id": "evt_042",
+              "batch_id": "pay-20260630-batch7",
+              "status_code": 409
+            },
+            "attributes": {
+              "error_type": "validation_conflict"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "sns": {
+    "topics": []
+  },
+  "dynamodb": {
+    "tables": [
+      {
+        "name": "payment-idempotency",
+        "key_schema": [
+          {
+            "AttributeName": "event_id",
+            "KeyType": "HASH"
+          }
+        ],
+        "attribute_definitions": [
+          {
+            "AttributeName": "event_id",
+            "AttributeType": "S"
+          }
+        ],
+        "billing_mode": "PAY_PER_REQUEST",
+        "items": [
+          {
+            "event_id": {
+              "S": "evt_042"
+            },
+            "state": {
+              "S": "stuck"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "eventbridge": {
+    "rules": []
+  },
+  "cloudwatch_logs": {
+    "groups": [
+      {
+        "name": "/aws/lambda/payment-webhook-worker",
+        "streams": [
+          {
+            "name": "2026/06/30/[$LATEST]abc",
+            "events": [
+              {
+                "timestamp": "2026-06-30T08:59:15Z",
+                "message": "ERROR validation_conflict for event=evt_042 batch=pay-20260630-batch7; manual reconcile required (see runbooks/reconcile.json)"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "ssm": {
+    "parameters": [
+      {
+        "name": "/payments/retry/max_attempts",
+        "type": "String",
+        "value": "3"
+      }
+    ]
+  },
+  "secretsmanager": {
+    "secrets": []
+  },
+  "iam": {
+    "roles": [
+      {
+        "name": "payment-worker-role",
+        "policies": [
+          {
+            "name": "payment-worker-policy",
+            "statements": [
+              {
+                "Effect": "Allow",
+                "Action": [
+                  "dynamodb:GetItem",
+                  "dynamodb:PutItem",
+                  "sqs:ReceiveMessage"
+                ],
+                "Resource": "*"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "lambda": {
+    "functions": []
+  },
+  "kinesis": {
+    "streams": []
+  },
+  "mutation_log": []
+}

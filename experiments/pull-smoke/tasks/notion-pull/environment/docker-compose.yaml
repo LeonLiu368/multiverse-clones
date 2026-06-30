@@ -1,0 +1,30 @@
+# Image-pulling pattern: NO clone source in this task's environment/.
+#   main   — FROM ghcr.io/abundant-ai/notion-agent:latest (tools only; built per Harbor from Dockerfile)
+#   notion — image: ghcr.io/abundant-ai/notion-service:prod-v1, PULLED as-is (corpus baked in), NO build:
+# The agent reaches the gateway over HTTP at http://notion:3000. No vendored notionclone/, no
+# notion_corpus.db, no Dockerfile for the gateway — everything comes from the published images.
+services:
+  main:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${APEX_TASK_DOCKER_CLIENT_IMAGE_NAME:-notion-pull-main:local}
+    platform: linux/amd64
+    environment:
+      - NOTION_API_URL=http://notion:3000
+      - NOTION_TOKEN=notion-clone-token
+    depends_on:
+      notion:
+        condition: service_healthy
+
+  notion:
+    image: ghcr.io/abundant-ai/notion-service:prod-v1
+    platform: linux/amd64
+    expose:
+      - "3000"
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:3000/health')\" || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s

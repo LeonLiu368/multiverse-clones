@@ -1,7 +1,7 @@
 """Thin Logfire clone — serves Logfire's Query API (`POST /v2/query`: SQL over a `records`
 table) backed by DuckDB, so an agent debugs the way an Abundant SWE actually does:
 `SELECT … FROM records WHERE …`, with real traces/spans/exceptions/http columns — unlike
-the gauge/Loki flattening. Read-token Bearer auth; offline; data sealed behind the API.
+the Grafana/Loki flattening. Read-token Bearer auth; offline; data sealed behind the API.
 
 Faithful surface: same endpoint, same `{schema, data}` response, same required body
 (`sql` + `min_timestamp`, optional `max_timestamp`/`limit`), same time-window scoping
