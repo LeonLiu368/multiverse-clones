@@ -5,8 +5,9 @@ name: publish-images
 # the package links to THIS repo. Together the gateway + agent images let a task run with NO clone
 # source vendored into environment/ (the image-pull pattern — see experiments/pull-smoke).
 #
-# Auth: pushing to the abundant-ai ORG needs a PAT with write:packages on abundant-ai — secret
-# GHCR_PUSH_TOKEN (the default GITHUB_TOKEN is scoped to this repo's owner and can't write org pkgs).
+# Auth: this repo lives in the abundant-ai org, so the default GITHUB_TOKEN can write the org's
+# packages AND Actions-pushed images auto-link to this repo (via org.opencontainers.image.source) —
+# no PAT needed. (Images pushed manually from a laptop won't auto-link; a CI publish links them.)
 #
 # ⚠️ CLOBBER NOTE: clones cloned FROM abundant-ai (figma, google-workspace, gh-cli, sentry, aws,
 # logfire) already have abundant-ai/<svc>-service packages — publishing UPDATES them. notion + grafana
@@ -141,7 +142,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_PUSH_TOKEN }}   # PAT w/ write:packages on abundant-ai
+          password: ${{ secrets.GITHUB_TOKEN }}   # repo is in abundant-ai → can write org packages
 
       - name: Corpus prep (only clones that generate their baked corpus)
         if: steps.gate.outputs.run == 'true' && matrix.corpus_prep != ''
