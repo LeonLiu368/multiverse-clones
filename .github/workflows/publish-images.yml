@@ -89,7 +89,7 @@ jobs:
             empty_file: docker/Dockerfile.empty
             prodv1_file: docker/Dockerfile.prod-v1
             agent_file: docker/Dockerfile.agent
-            agent_image: logfire-agent
+            agent_image: logfire-agent-mv   # logfire-agent pre-exists unlinked → -mv so CI owns it
             corpus_prep: ""        # corpus/records.json.gz committed
             platforms: linux/amd64,linux/arm64
           - clone: gh-cli-clone
