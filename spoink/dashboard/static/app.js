@@ -426,7 +426,8 @@ $("#refreshPub").onclick = loadPublished;
 // ---------------------------------------------------------------- task creator: candidate queue
 let DONE_RUNS = {};   // source -> [runs] for attach dropdowns
 
-const FEED_LABEL = { github_revert: "GitHub revert/hotfix", github_ci: "CI failure → fix", logfire_anomaly: "Logfire anomaly" };
+const FEED_LABEL = { github_revert: "GitHub revert/hotfix", github_ci: "CI failure → fix", logfire_anomaly: "Logfire anomaly",
+                     slack_incident: "Slack incident thread", linear_sev: "Linear SEV ticket" };
 async function loadFeeds() {
   const sel = $("#discFeed"); if (sel.dataset.loaded) return;
   try {

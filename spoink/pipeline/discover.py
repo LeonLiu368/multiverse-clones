@@ -150,6 +150,7 @@ def github_revert(token: str, org: str, window_days: int = 120, per_repo: int = 
                         "github": {"org": owner, "repos": [name], "as_of": t},   # SUT @ incident tip (REQUIRED)
                         "logfire": {"as_of": t, "incident_hours": 2, "period_days": 30},  # symptom (optional)
                         "slack":   {"as_of": t},                                  # chatter (optional)
+                        "linear":  {"as_of": t},                                  # tickets (optional)
                     },
                     resolution={"repo": repo["full_name"], "pr": num,
                                 "base_sha": (pr.get("base") or {}).get("sha", ""),
@@ -214,7 +215,7 @@ def github_ci(token: str, org: str, window_days: int = 120, per_repo: int = 80,
                         required_data={
                             "github": {"org": owner, "repos": [name], "as_of": created},
                             "logfire": {"as_of": created, "incident_hours": 2, "period_days": 30},
-                            "slack": {"as_of": created}},
+                            "slack": {"as_of": created}, "linear": {"as_of": created}},
                         resolution={"repo": repo["full_name"], "pr": None, "base_sha": base,
                                     "head_sha": head, "merged_at": nxt.get("created_at"),
                                     "workflow": wfname, "has_tests": True},
@@ -264,9 +265,120 @@ def logfire_anomaly(token: str, window_days: int = 14, max_candidates: int = 40,
     return cands
 
 
+# single words only — Slack search returns nothing for quoted phrases mixed with OR
+_SLACK_INCIDENT_Q = ("incident OR outage OR SEV OR sev1 OR pager OR paged OR hotfix OR "
+                     "rollback OR regression OR downtime OR degraded OR firefighting")
+
+
+@feed("slack_incident")
+def slack_incident(token: str, window_days: int = 30, max_candidates: int = 40, **_) -> List[Candidate]:
+    """Live scan of Slack: messages that read like an incident being called become DIAGNOSIS
+    candidates anchored at the message time. Ground truth = the incident + how it was resolved
+    (from the thread); no code oracle. Needs search.messages (user token)."""
+    from datetime import datetime, timedelta, timezone
+    from ..slack_export import SlackClient, SlackError
+    after = (datetime.now(timezone.utc) - timedelta(days=window_days)).strftime("%Y-%m-%d")
+    client = SlackClient(token)
+    try:
+        # NB: sort="timestamp" mysteriously zeroes results for OR queries — default (relevance) works
+        resp = client.ok_call("search.messages", query=f"{_SLACK_INCIDENT_Q} after:{after}", count=100)
+    except SlackError:
+        client.close(); return []                       # search denied -> feed unavailable
+    client.close()
+    matches = ((resp.get("messages") or {}).get("matches")) or []
+    cands: List[Candidate] = []
+    seen: set = set()
+    for m in matches:
+        ch = m.get("channel") or {}
+        chan = ch.get("name") or ch.get("id") or "?"
+        ts = m.get("ts") or ""
+        text = (m.get("text") or "").replace("\n", " ").strip()
+        key = (chan, text[:50])
+        if not ts or key in seen:
+            continue
+        seen.add(key)
+        try:
+            t = datetime.fromtimestamp(float(ts), tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        except Exception:
+            continue
+        cands.append(Candidate(
+            id=_cid("slack_incident", chan, ts),
+            feed="slack_incident", t=t,
+            title=f"#{chan}: {text[:60]}",
+            summary=(f"Slack #{chan}: '{text[:120]}'. Diagnose the incident being discussed and "
+                     f"identify the root cause / resolution."),
+            required_data={"slack": {"channels": [chan], "as_of": t},
+                           "logfire": {"as_of": t, "incident_hours": 3, "period_days": 30},
+                           "github": {"as_of": t}, "linear": {"as_of": t}},
+            resolution={"channel": chan, "ts": ts, "kind": "diagnosis"},
+            score=2.0, signals=["slack", chan]))
+        if len(cands) >= max_candidates:
+            break
+    return cands
+
+
+Q_LINEAR_SEV = (
+    "query($after:String){ issues(first:50, after:$after, filter:{ completedAt:{ null:false }, "
+    "or:[ {priority:{eq:1}}, {labels:{some:{name:{containsIgnoreCase:\"incident\"}}}}, "
+    "{labels:{some:{name:{containsIgnoreCase:\"sev\"}}}}, {labels:{some:{name:{containsIgnoreCase:\"outage\"}}}}, "
+    "{labels:{some:{name:{containsIgnoreCase:\"regression\"}}}} ] }){ "
+    "pageInfo{ hasNextPage endCursor } nodes { identifier title description priority createdAt "
+    "completedAt state{ name type } labels{ nodes{ name } } team{ key } } } }")
+
+
+@feed("linear_sev")
+def linear_sev(token: str, window_days: int = 120, max_candidates: int = 40, **_) -> List[Candidate]:
+    """Live scan of Linear: completed SEV/incident/urgent issues become DIAGNOSIS candidates
+    anchored at the report time (createdAt). Ground truth = the issue's resolution."""
+    from datetime import datetime, timedelta, timezone
+    from ..linear_export import LinearClient, LinearError
+    cutoff = datetime.now(timezone.utc) - timedelta(days=window_days)
+    client = LinearClient(token)
+    cands: List[Candidate] = []
+    try:
+        seen_pages = 0
+        for it in client.paginate(Q_LINEAR_SEV, "issues"):
+            seen_pages += 1
+            if seen_pages > 500:
+                break
+            ca = it.get("createdAt") or ""
+            if not ca:
+                continue
+            try:
+                if datetime.fromisoformat(ca.replace("Z", "+00:00")) < cutoff:
+                    continue
+            except Exception:
+                continue
+            ident = it.get("identifier") or "?"
+            title = (it.get("title") or "").strip()
+            labels = [l.get("name") for l in (it.get("labels") or {}).get("nodes", [])]
+            t = ca[:19] + "Z" if not ca.endswith("Z") else ca
+            cands.append(Candidate(
+                id=_cid("linear_sev", ident),
+                feed="linear_sev", t=t,
+                title=f"{ident}: {title[:60]}",
+                summary=(f"Linear {ident} '{title}' (labels: {', '.join(labels) or 'urgent'}). "
+                         f"Diagnose the reported incident and its resolution."),
+                required_data={"linear": {"as_of": t}, "slack": {"as_of": t},
+                               "logfire": {"as_of": t, "incident_hours": 3, "period_days": 30},
+                               "github": {"as_of": t}},
+                resolution={"issue": ident, "team": (it.get("team") or {}).get("key"),
+                            "labels": labels, "completed_at": it.get("completedAt"), "kind": "diagnosis"},
+                score=3.0 if labels else 1.5,          # labelled incidents rank above urgent-only
+                signals=["linear"] + (labels[:2] or ["urgent"])))
+            if len(cands) >= max_candidates:
+                break
+    except LinearError:
+        return []
+    finally:
+        client.close()
+    return cands
+
+
 # which env credential each feed needs (the server resolves + passes it as `token`)
 FEED_ENV = {"github_revert": "GITHUB_TOKEN", "github_ci": "GITHUB_TOKEN",
-            "logfire_anomaly": "LOGFIRE_READ_TOKEN"}
+            "logfire_anomaly": "LOGFIRE_READ_TOKEN",
+            "slack_incident": "SLACK_USER_TOKEN", "linear_sev": "LINEAR_API_KEY"}
 
 
 def discover(feed_name: str, token: str, **kw) -> List[Candidate]:
