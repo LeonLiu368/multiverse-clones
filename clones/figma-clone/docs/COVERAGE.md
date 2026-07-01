@@ -39,6 +39,14 @@ walk is the same HTTP read as `figma_get_file`, so it has no separate MCP tool;
 every other capability is CLI↔MCP parity), parity_ok **17**, assessment_grade
 **6**, tested **17**.
 
+> **Envelope caveat (parity check, 2026-07-01).** The `Envelope ✅` marks above cover the
+> **payload agents read** (`meta.components`, the bare Comment object, etc.), which are faithful.
+> A few responses omit real Figma **wrapper/sibling fields** that agents rarely touch and that we
+> deliberately do **not** add (cosmetic for eval use): `components`/`component_sets`/`styles` omit the
+> `{status:200, error:false}` envelope siblings (clone returns only `{meta:{…}}`); `DELETE comment`
+> omits `error:false`; comment objects omit the `reactions` array; POST-comment 400 uses `{status,err}`
+> rather than Figma's `{error:true,status,message}`. Don't build a verifier that asserts on these.
+
 ## Assessment-grade set (R5, ≥5 required)
 
 Each has ≥3 of {stateful, multi-step, realistic errors, query grammar,

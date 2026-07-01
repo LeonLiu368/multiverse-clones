@@ -7,6 +7,16 @@
 - version: v3
 - snapshot_date: 2026-06-30
 
+> **Fidelity scope (read this first).** This clone is a **Jira/Linear-*flavored* issue tool over
+> the ticketvector engine — NOT a Jira Cloud REST v3 emulator.** It gives faithful issue-tracking
+> *semantics* (JQL grammar, `PROJ-###` issue keys, stateful transitions/comments, write→read round-trips),
+> but presents **ticketvector-native shapes**, not Jira REST shapes: envelope `{results, next_cursor}`
+> (not Jira's `{issues, nextPageToken, isLast}` / `{startAt, total}`), errors `{ok:false, error_type, error}`
+> (not Jira's `{errorMessages, errors}`), transitions by state-name (not the transition-id workflow), and
+> flat issue payloads with plain-text bodies (no `fields` wrapper / ADF). **Author tasks against the
+> `jira`/`linear` CLI + `jira-mcp` surface this clone actually exposes — do NOT feed agents real Jira REST
+> payloads or assert Jira REST envelopes.** The `reference:` above is the semantic model, not a byte-parity target.
+
 The agent-used surface of the Jira/Linear tooling layered on the **ticketvector** issue
 engine. Every capability maps to a real ticketvector `/rpc` method **and** a `jira`/`linear`
 CLI command **and** a `jira-mcp` MCP tool. CLI and MCP are thin clients of the **same**
@@ -20,9 +30,11 @@ repo owns the converters, the image trio Dockerfiles, **the MCP server (`mcp/`)*
 tasks. The clone surface scored here is "the jira/linear tooling on the ticketvector
 engine" — see `docs/PROD-OVERLAY.md` for the explicit boundary decision.
 
-Fidelity tier: **T2** (real JQL query grammar). Envelope shape is the product's: issue ids
-`ENG-####`, `{results, next_cursor}` pagination, error envelopes `{ok:false, error_type,
-error}` with `error_type ∈ {NotFoundError, ConflictError, UnsupportedCommandError, ...}`.
+Fidelity tier: **T2** (real JQL query grammar). Issue keys are real Jira-shaped `PROJ-###`
+(e.g. `WEB-1`, `ENG-42`) — this matches Jira's key format. The *envelopes* are ticketvector-native
+(not Jira REST): `{results, next_cursor}` pagination and error envelopes `{ok:false, error_type,
+error}` with `error_type ∈ {NotFoundError, ConflictError, UnsupportedCommandError, ...}`. See the
+fidelity-scope note above.
 
 ## Matrix
 
