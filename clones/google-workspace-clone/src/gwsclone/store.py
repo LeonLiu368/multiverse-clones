@@ -405,9 +405,11 @@ def message_resource(m: GmailMessage, fmt: str = "full") -> dict[str, Any]:
 
 
 def list_messages(s: Session, q: str | None, page_size: int) -> list[GmailMessage]:
-    """`messages.list` — Gmail search: from:/to:/subject:/label: operators + bare
-    free-text (over from+to+subject+body), combined with implicit AND (space),
-    explicit ``OR``, and parentheses."""
+    """`messages.list` — Gmail search: from:/to:/subject:/label:/in:/is:/after:/before:
+    operators + bare free-text (over from+to+subject+body), combined with implicit AND
+    (space), explicit ``OR``, and parentheses. Operators that cannot be evaluated against
+    the modeled data (e.g. ``has:attachment``) raise QueryError (HTTP 400) rather than
+    silently matching everything."""
     pred = _compile_bool(q, _gmail_term, tokenizer=_tokenize_gmail)
     rows = s.scalars(select(GmailMessage)).all()
     if pred is not None:
@@ -421,6 +423,34 @@ def thread_messages(s: Session, thread_id: str) -> list[GmailMessage]:
     return sorted(rows, key=lambda m: m.internal_date or "")
 
 
+def _msg_has_label(m: GmailMessage, label: str) -> bool:
+    return label.upper() in [l.upper() for l in (m.label_ids or [])]
+
+
+def _msg_epoch_ms(m: GmailMessage) -> int | None:
+    """Parse the message's internalDate (epoch ms as a string) to an int, or None."""
+    raw = (m.internal_date or "").strip()
+    if not raw:
+        return None
+    try:
+        return int(raw)
+    except ValueError:
+        return None
+
+
+def _date_bound_ms(spec: str) -> int:
+    """Parse a Gmail `after:`/`before:` date operand to an epoch-ms boundary.
+
+    Accepts ``YYYY/MM/DD`` and ``YYYY-MM-DD`` (Google accepts both). Interpreted at
+    UTC midnight, matching Gmail's day-granularity date filters."""
+    s = spec.strip().strip("'\"").replace("-", "/")
+    try:
+        dt = datetime.strptime(s, "%Y/%m/%d").replace(tzinfo=timezone.utc)
+    except ValueError as exc:
+        raise QueryError(f"Invalid date in query term: {spec!r}") from exc
+    return int(dt.timestamp() * 1000)
+
+
 def _gmail_term(term: str):
     t = term.strip()
     low = t.lower()
@@ -431,8 +461,37 @@ def _gmail_term(term: str):
     if low.startswith("label:"):
         v = t[6:].strip().strip("'\"").upper()
         return lambda m, _x, v=v: v in [l.upper() for l in (m.label_ids or [])]
-    if low.split(":", 1)[0] in ("newer_than", "older_than", "after", "before", "in", "has", "is"):
-        return lambda m, _x: True  # accepted but not enforced
+    if low.startswith("is:"):
+        # is:unread/is:read map to the UNREAD label; is:starred to STARRED, etc.
+        v = low[3:].strip().strip("'\"")
+        if v in ("unread", "read"):
+            want_unread = v == "unread"
+            return lambda m, _x, w=want_unread: _msg_has_label(m, "UNREAD") == w
+        state_label = {"starred": "STARRED", "important": "IMPORTANT",
+                       "sent": "SENT", "draft": "DRAFT", "chat": "CHAT",
+                       "trash": "TRASH", "spam": "SPAM"}.get(v)
+        if state_label:
+            return lambda m, _x, lbl=state_label: _msg_has_label(m, lbl)
+        raise QueryError(f"Unsupported is: filter: {term!r}")
+    if low.startswith("after:") or low.startswith("older_than:"):
+        # (older_than is duration-based in Gmail; unsupported against the seed.)
+        if low.startswith("older_than:"):
+            raise QueryError(f"Unsupported query term: {term!r}")
+        bound = _date_bound_ms(t[len("after:"):])
+        return lambda m, _x, b=bound: (_msg_epoch_ms(m) or 0) >= b
+    if low.startswith("before:") or low.startswith("newer_than:"):
+        if low.startswith("newer_than:"):
+            raise QueryError(f"Unsupported query term: {term!r}")
+        bound = _date_bound_ms(t[len("before:"):])
+        return lambda m, _x, b=bound: (_msg_epoch_ms(m) or 0) < b
+    if low.startswith("has:"):
+        # No attachment/part data is modeled on messages, so this operator cannot be
+        # evaluated against the seed. Raise 400 rather than silently return everything.
+        raise QueryError(f"Unsupported query term (no attachment data modeled): {term!r}")
+    if low.startswith("in:"):
+        # in:LABEL is a location filter equivalent to label: for our flat store.
+        v = low[3:].strip().strip("'\"").upper()
+        return lambda m, _x, v=v: v in [l.upper() for l in (m.label_ids or [])]
     v = t.strip("'\"").lower()
     return lambda m, _x, v=v: v in f"{m.from_addr} {m.to_addr} {m.subject} {m.body_text}".lower()
 
