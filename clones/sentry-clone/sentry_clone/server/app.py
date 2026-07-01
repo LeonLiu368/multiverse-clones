@@ -32,7 +32,10 @@ def make_handler(store: SentryStore) -> type[BaseHTTPRequestHandler]:
         def _dispatch(self, method: str) -> None:
             parsed = urllib.parse.urlparse(self.path)
             path = parsed.path.rstrip("/") or "/"
-            params = urllib.parse.parse_qs(parsed.query)
+            # keep_blank_values so an explicit blank param (e.g. ``?query=``) is
+            # preserved as "" and can be distinguished from an omitted param,
+            # matching real Sentry's "omitted query -> is:unresolved" default.
+            params = urllib.parse.parse_qs(parsed.query, keep_blank_values=True)
 
             if path.startswith("/api/_clone"):
                 auth = check_admin_authorization(self.headers.get("Authorization"))

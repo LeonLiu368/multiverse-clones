@@ -6,7 +6,20 @@ from typing import Any
 from .state import SentryStore
 
 
-SORT_FIELDS = {"lastSeen": "lastSeen", "firstSeen": "firstSeen", "events": "count", "users": "userCount"}
+SORT_FIELDS = {
+    "lastSeen": "lastSeen",
+    "firstSeen": "firstSeen",
+    "events": "count",
+    "users": "userCount",
+    # Real Sentry sort aliases (kept alongside the names above).
+    "date": "lastSeen",
+    "new": "firstSeen",
+    "freq": "count",
+    "user": "userCount",
+}
+
+# Sort fields that hold numeric values and must be compared numerically (not lexicographically).
+_NUMERIC_SORT_FIELDS = {"count", "userCount"}
 
 
 def list_project_issues(
@@ -82,7 +95,16 @@ def mark_regressed(store: SentryStore, issue_ref: str) -> dict[str, Any]:
 def _shape_issues(items: list[dict[str, Any]], sort: str | None, stats_period: str | None) -> list[dict[str, Any]]:
     field = SORT_FIELDS.get(sort or "lastSeen", "lastSeen")
     shaped = [_shape_issue(item, stats_period=stats_period) for item in items]
+    if field in _NUMERIC_SORT_FIELDS:
+        return sorted(shaped, key=lambda item: _as_number(item.get(field)), reverse=True)
     return sorted(shaped, key=lambda item: item.get(field) or "", reverse=True)
+
+
+def _as_number(value: Any) -> float:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return 0.0
 
 
 def _shape_issue(issue: dict[str, Any], stats_period: str | None = None) -> dict[str, Any]:
@@ -95,6 +117,12 @@ def _shape_issue(issue: dict[str, Any], stats_period: str | None = None) -> dict
 
 
 def _filter_issues(items: list[dict[str, Any]], query: str | None) -> list[dict[str, Any]]:
+    # Match real Sentry: when the caller omits ``query`` entirely, default to
+    # ``is:unresolved`` so "the open issues" excludes resolved/ignored ones.
+    # An explicitly-passed query (even an empty string, used to broaden to all
+    # issues) is honored as-is.
+    if query is None:
+        query = "is:unresolved"
     if not query:
         return list(items)
     terms = [term.strip() for term in query.split() if term.strip()]

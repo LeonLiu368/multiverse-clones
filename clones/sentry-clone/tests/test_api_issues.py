@@ -1,6 +1,40 @@
 from __future__ import annotations
 
-from .helpers import TestServer, api
+from .helpers import TestServer, api, fresh_state
+
+
+def test_absent_query_defaults_to_unresolved() -> None:
+    # Real Sentry: omitting `query` entirely means `is:unresolved`, so a listing
+    # without a query must exclude the resolved PAYMENTS-487 issue.
+    with TestServer() as server:
+        status, issues = api(server.url, "/api/0/projects/acme/payments-api/issues/")
+        assert status == 200
+        short_ids = {item["shortId"] for item in issues}
+        assert short_ids == {"PAYMENTS-501"}
+        assert all(item["status"] == "unresolved" for item in issues)
+
+        # An explicit empty query broadens back to all issues (honored as-is).
+        status, all_issues = api(server.url, "/api/0/projects/acme/payments-api/issues/?query=")
+        assert status == 200
+        assert {item["shortId"] for item in all_issues} == {"PAYMENTS-501", "PAYMENTS-487"}
+
+
+def test_sort_freq_orders_by_numeric_count_desc() -> None:
+    # Seed two unresolved issues with counts where lexicographic order would be
+    # wrong (9 > 100 as strings) to prove the sort is numeric.
+    state = fresh_state()
+    for issue in state["issues"]:
+        issue["status"] = "unresolved"
+        issue["substatus"] = "ongoing"
+    state["issues"][0]["count"] = 9      # PAYMENTS-501
+    state["issues"][1]["count"] = 100    # PAYMENTS-487
+    with TestServer(state=state) as server:
+        # `freq` is the real Sentry alias for sort=events.
+        status, issues = api(server.url, "/api/0/projects/acme/payments-api/issues/?query=&sort=freq")
+        assert status == 200
+        counts = [item["count"] for item in issues]
+        assert counts == [100, 9]
+        assert issues[0]["shortId"] == "PAYMENTS-487"
 
 
 def test_project_and_org_issue_listing_query_and_sorting() -> None:
