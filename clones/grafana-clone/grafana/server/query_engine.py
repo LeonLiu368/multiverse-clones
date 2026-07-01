@@ -253,14 +253,96 @@ def ds_query(store: GrafanaStore, payload: dict[str, Any]) -> dict[str, Any]:
         query_type = query.get("queryType") or query.get("type") or _infer_query_type(store, datasource_uid)
         expr = str(query.get("expr") or query.get("query") or "")
         try:
+            data_block = _run_query_type(store, query_type, expr, datasource_uid, query)
             results[ref_id] = {
                 "status": 200,
-                "frames": [],
-                "data": _run_query_type(store, query_type, expr, datasource_uid, query),
+                # Real Grafana returns dataframes under `frames`; keep the clone-native
+                # `data` block too so the gcx CLI / MCP (which read it) don't break.
+                "frames": _frames_from_result(ref_id, query_type, data_block),
+                "data": data_block,
             }
         except ValueError as exc:
             results[ref_id] = {"status": 400, "error": str(exc)}
     return {"results": results}
+
+
+def _epoch_ms(ts: Any) -> int | None:
+    dt = _parse_time(str(ts))
+    return int(dt.timestamp() * 1000) if dt is not None else None
+
+
+def _frames_from_result(ref_id: str, query_type: str, data_block: dict[str, Any]) -> list[dict[str, Any]]:
+    """Convert a query result into real Grafana dataframes (schema.fields + data.values)."""
+    inner = data_block.get("data") if isinstance(data_block, dict) else None
+    if not isinstance(inner, dict):
+        return []
+    series = inner.get("result") or []
+    frames: list[dict[str, Any]] = []
+
+    if query_type in {"metrics", "prometheus", "promql"}:
+        for item in series:
+            labels = {str(k): str(v) for k, v in (item.get("metric") or {}).items()}
+            pairs = item.get("values")
+            if pairs is None and item.get("value") is not None:
+                pairs = [item["value"]]
+            times: list[int] = []
+            vals: list[float | None] = []
+            for pair in pairs or []:
+                if not (isinstance(pair, (list, tuple)) and len(pair) == 2):
+                    continue
+                ms = _epoch_ms(pair[0])
+                if ms is None:
+                    continue
+                times.append(ms)
+                try:
+                    vals.append(float(pair[1]))
+                except (TypeError, ValueError):
+                    vals.append(None)
+            value_name = labels.get("__name__") or "Value"
+            frames.append({
+                "schema": {
+                    "refId": ref_id,
+                    "fields": [
+                        {"name": "Time", "type": "time", "typeInfo": {"frame": "time.Time"}},
+                        {"name": value_name, "type": "number", "labels": labels, "typeInfo": {"frame": "float64"}},
+                    ],
+                },
+                "data": {"values": [times, vals]},
+            })
+        return frames
+
+    if query_type in {"logs", "loki", "logql"}:
+        times = []
+        lines: list[str] = []
+        labels_col: list[dict[str, str]] = []
+        for stream in series:
+            stream_labels = {str(k): str(v) for k, v in (stream.get("stream") or {}).items()}
+            for pair in stream.get("values") or []:
+                if not (isinstance(pair, (list, tuple)) and len(pair) == 2):
+                    continue
+                ms = _epoch_ms(pair[0])
+                if ms is None:
+                    continue
+                times.append(ms)
+                lines.append(str(pair[1]))
+                labels_col.append(stream_labels)
+        if not times:
+            return []
+        frames.append({
+            "schema": {
+                "refId": ref_id,
+                "meta": {"preferredVisualisationType": "logs"},
+                "fields": [
+                    {"name": "labels", "type": "other", "typeInfo": {"frame": "json.RawMessage"}},
+                    {"name": "Time", "type": "time", "typeInfo": {"frame": "time.Time"}},
+                    {"name": "Line", "type": "string", "typeInfo": {"frame": "string"}},
+                ],
+            },
+            "data": {"values": [labels_col, times, lines]},
+        })
+        return frames
+
+    return []
 
 
 def _run_query_type(

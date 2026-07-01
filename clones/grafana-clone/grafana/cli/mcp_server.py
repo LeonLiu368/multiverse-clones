@@ -228,6 +228,18 @@ TOOLS: dict[str, Callable[..., Any]] = {
     if callable(obj) and not name.startswith("_") and name in TOOL_NAMES
 }
 
+# Real mcp-grafana tool-name aliases: an agent prompted with the upstream schema reaches a
+# working tool. The clone-native names above still work, so existing tasks don't break.
+_ALIASES: dict[str, str] = {
+    "run_panel_query": "run_dashboard_panel_query",
+    "get_datasource_by_uid": "get_datasource",
+    "list_alert_rules": "alerting_list_rules",
+    "get_alert_rule_by_uid": "alerting_get_rule",
+}
+for _alias, _target in _ALIASES.items():
+    if _target in TOOLS:
+        TOOLS[_alias] = TOOLS[_target]
+
 
 def tool_set(disable_write: bool = False) -> dict[str, Callable[..., Any]]:
     if not disable_write:

@@ -73,16 +73,20 @@ def make_handler(store: GrafanaStore) -> type[BaseHTTPRequestHandler]:
             if path.startswith("/api/datasources/uid/"):
                 uid = path.rsplit("/", 1)[-1]
                 return _found(datasources.get_datasource(store, uid))
-            if path == "/api/alert-rules":
+            # Real Grafana alerting paths (provisioning + Prometheus-compatible); the
+            # /api/alert-* forms are kept as clone-native aliases for back-compat.
+            if path == "/api/prometheus/grafana/api/v1/rules":
+                return 200, alerts.prometheus_rules(store, _param(params, "state"))
+            if path in ("/api/alert-rules", "/api/v1/provisioning/alert-rules"):
                 return 200, alerts.list_rules(store, _param(params, "state"))
             if path == "/api/alert-instances":
                 return 200, alerts.list_instances(store, _param(params, "state"))
             if path.startswith("/api/alert-rules/") and path.endswith("/history"):
                 uid = path.split("/api/alert-rules/", 1)[1].rsplit("/history", 1)[0]
                 return 200, alerts.state_history(store, uid)
-            if path.startswith("/api/alert-rules/"):
-                uid = path.rsplit("/", 1)[-1]
-                return _found(alerts.get_rule(store, uid))
+            for _prefix in ("/api/alert-rules/", "/api/v1/provisioning/alert-rules/"):
+                if path.startswith(_prefix):
+                    return _found(alerts.get_rule(store, path.rsplit("/", 1)[-1]))
             if path == "/api/annotations":
                 tags = _csv(_param(params, "tags"))
                 return 200, annotations.list_annotations(store, _param(params, "dashboardUID") or _param(params, "dashboard"), tags)

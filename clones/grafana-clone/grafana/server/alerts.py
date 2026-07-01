@@ -39,3 +39,43 @@ def instance_payload(instance: dict[str, Any]) -> dict[str, Any]:
     item.setdefault("labels", {})
     item.setdefault("annotations", {})
     return item
+
+
+def prometheus_rules(store: GrafanaStore, state_filter: str | None = None) -> dict[str, Any]:
+    """The Prometheus-compatible alerting shape served by real Grafana at
+    /api/prometheus/grafana/api/v1/rules: {status, data:{groups:[{name,file,rules:[...]}]}}."""
+    groups: dict[tuple[str, str], list[dict[str, Any]]] = {}
+    for rule in store.alerts():
+        if state_filter and rule.get("state") != state_filter:
+            continue
+        uid = rule.get("uid") or rule.get("id")
+        folder = str(rule.get("folderUID") or rule.get("dashboard_uid") or "general")
+        group = str(rule.get("ruleGroup") or rule.get("rule_group") or "default")
+        alerts_for_rule = [
+            {
+                "labels": inst.get("labels", {}),
+                "annotations": inst.get("annotations", {}),
+                "state": inst.get("state", rule.get("state")),
+                "activeAt": inst.get("activeAt") or inst.get("active_at"),
+            }
+            for inst in store.alert_instances(None)
+            if (inst.get("rule_uid") or inst.get("ruleUID")) == uid
+        ]
+        groups.setdefault((group, folder), []).append(
+            {
+                "name": rule.get("title") or rule.get("name") or str(uid),
+                "state": rule.get("state"),
+                "labels": rule.get("labels", {}),
+                "annotations": rule.get("annotations", {}),
+                "alerts": alerts_for_rule,
+            }
+        )
+    return {
+        "status": "success",
+        "data": {
+            "groups": [
+                {"name": name, "file": folder, "rules": rules}
+                for (name, folder), rules in groups.items()
+            ]
+        },
+    }

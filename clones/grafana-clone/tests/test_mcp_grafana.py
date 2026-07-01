@@ -42,7 +42,11 @@ def test_mcp_required_tools_registered() -> None:
         "get_annotations",
         "create_annotation",
     }
-    assert required == set(mcp_server.TOOLS)
+    registered = set(mcp_server.TOOLS)
+    assert required <= registered
+    # Real mcp-grafana tool-name aliases must also be registered (reliability: an agent
+    # prompted with the upstream schema reaches a working tool).
+    assert {"run_panel_query", "get_datasource_by_uid", "list_alert_rules", "get_alert_rule_by_uid"} <= registered
 
 
 def test_mcp_smoke_calls(monkeypatch) -> None:

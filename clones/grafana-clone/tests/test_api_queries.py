@@ -115,3 +115,31 @@ def test_log_labels_and_values() -> None:
         assert labels["labels"] == ["level", "service"]
         values = first_data(post(server.url, {"queries": [{"refId": "A", "queryType": "log_label_values", "label": "level"}]}))
         assert values["values"] == ["warn"]
+
+
+def test_ds_query_returns_real_grafana_frames() -> None:
+    """Reliability: /api/ds/query must populate real Grafana dataframes (schema.fields +
+    data.values), not just the clone-native `data` block."""
+    with TestServer() as server:
+        resp = post(
+            server.url,
+            {
+                "queries": [
+                    {
+                        "refId": "A",
+                        "queryType": "metrics",
+                        "datasource": {"uid": "prom-payments"},
+                        "expr": 'sum by (status_code)(increase(payment_gateway_responses_total{service="payments",route="webhook"}[5m]))',
+                    }
+                ]
+            },
+        )
+        frames = resp["results"]["A"]["frames"]
+        assert frames, "frames must be populated"
+        fields = frames[0]["schema"]["fields"]
+        assert [f["name"] for f in fields][0] == "Time" and fields[0]["type"] == "time"
+        # data.values is column-oriented: [times, values]
+        times, values = frames[0]["data"]["values"]
+        assert len(times) == len(values) and times and values
+        # native data block still present (back-compat for gcx/mcp)
+        assert resp["results"]["A"]["data"]["data"]["result"]
