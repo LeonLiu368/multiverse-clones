@@ -9,6 +9,7 @@ import { GithubApp } from "./apps/github/GithubApp";
 import { LogfireApp } from "./apps/logfire/LogfireApp";
 import { GworkspaceApp } from "./apps/gworkspace/GworkspaceApp";
 import { GenericApp } from "./apps/GenericApp";
+import { BrandIcon } from "./apps/icons";
 
 // Visual metadata per app id. A new clone adds one entry; everything else is generic.
 const APP_META: Record<string, { glyph: string; color: string; blurb: string }> = {
@@ -45,8 +46,8 @@ function Launcher({ apps, onOpen }: { apps: AppInfo[]; onOpen: (a: AppInfo) => v
               disabled={!active}
               onClick={() => active && onOpen(a)}
             >
-              <span className="tile-glyph" style={{ background: meta.color }}>
-                {meta.glyph}
+              <span className="tile-glyph">
+                <BrandIcon id={a.id} />
               </span>
               <span className="tile-name">{a.display_name}</span>
               <span className="tile-blurb">{active ? meta.blurb : "Coming soon"}</span>

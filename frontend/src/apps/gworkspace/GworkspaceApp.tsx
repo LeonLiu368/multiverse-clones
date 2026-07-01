@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { api } from "../../api";
 import { SeedFileBar } from "../SeedFileBar";
+import { FileIcon } from "../icons";
 
 type Owner = { displayName?: string; emailAddress?: string };
 type GFile = {
@@ -178,7 +179,10 @@ export function GworkspaceApp({ appId }: { appId: string }) {
             <div className="gws-drive">
               <aside className="gws-tree">
                 <div className={`gws-tnode ${!folder ? "on" : ""}`} onClick={() => setFolder("")}>
-                  <span className="gws-ticon">🗂</span> My Drive
+                  <span className="gws-ticon">
+                    <FileIcon mimeType="application/vnd.google-apps.folder" size={16} />
+                  </span>
+                  My Drive
                 </div>
                 {folders.map((f) => (
                   <div
@@ -187,7 +191,10 @@ export function GworkspaceApp({ appId }: { appId: string }) {
                     style={{ paddingLeft: 12 + f.parents.filter((p) => byId[p]).length * 14 }}
                     onClick={() => setFolder(f.id)}
                   >
-                    <span className="gws-ticon">📁</span> {f.name}
+                    <span className="gws-ticon">
+                      <FileIcon mimeType="application/vnd.google-apps.folder" size={16} />
+                    </span>
+                    {f.name}
                   </div>
                 ))}
               </aside>
@@ -221,8 +228,8 @@ export function GworkspaceApp({ appId }: { appId: string }) {
                       title={m.label}
                     >
                       <span className="gws-fname">
-                        <span className="gws-ficon" style={{ color: m.color }}>
-                          {m.icon}
+                        <span className="gws-ficon">
+                          <FileIcon mimeType={f.mimeType} />
                         </span>
                         {f.name}
                       </span>
@@ -247,7 +254,9 @@ export function GworkspaceApp({ appId }: { appId: string }) {
                     className={`gws-docitem ${d.documentId === selDoc ? "on" : ""}`}
                     onClick={() => setSelDoc(d.documentId)}
                   >
-                    <span className="gws-ficon" style={{ color: "#1a73e8" }}>📄</span>
+                    <span className="gws-ficon">
+                      <FileIcon mimeType="application/vnd.google-apps.document" />
+                    </span>
                     <span className="gws-docitem-t">{d.title}</span>
                   </div>
                 ))}
