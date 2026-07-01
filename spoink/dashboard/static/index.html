@@ -31,6 +31,10 @@
           <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M8 1.6 13.7 5v6L8 14.4 2.3 11V5z"/><path d="M2.4 5 8 8.3 13.6 5M8 8.3v6.1"/></svg>
           <span>Task&nbsp;Creator</span>
         </button>
+        <button data-tab="generated">
+          <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 2.5h11v11h-11z"/><path d="M5 6h6M5 8.5h6M5 11h4"/></svg>
+          <span>Tasks</span>
+        </button>
       </nav>
 
       <div class="side-t">
@@ -62,21 +66,23 @@
 
       <!-- TASK CREATOR -->
       <section id="tab-tasks" class="tab">
-        <p class="hint">Bundle snapshotted surfaces into an agent-eval task.</p>
-        <div class="task-grid">
-          <div class="panel">
-            <h2 class="grp">1 · Pick surfaces</h2>
-            <div id="taskRuns" class="picklist"></div>
-          </div>
-          <div class="panel">
-            <h2 class="grp">2 · Code anchor</h2>
-            <div class="field"><label>SUT repo</label><input id="anchorRepo" placeholder="abundant-ai/oddish" /></div>
-            <div class="field"><label>Incident-tip commit</label><input id="anchorSha" placeholder="16595d17…" /></div>
-            <div class="field"><label>Resolution PR (for the verifier)</label><input id="anchorPr" placeholder="#468" /></div>
-            <button id="genPlan">Generate spec</button>
-            <div id="planOut" class="plan" hidden></div>
-          </div>
+        <p class="hint">Scan points in time for unresolved incidents, then snapshot &amp; process them into tasks.</p>
+        <div class="disc-bar">
+          <select id="discFeed" class="tzsel" aria-label="feed"><option value="github_revert">GitHub revert/hotfix</option></select>
+          <input id="discOrg" value="abundant-ai" placeholder="org / owner" />
+          <label class="disc-days">window <input id="discDays" type="number" value="120" /> d</label>
+          <button id="discGo">Discover incidents</button>
         </div>
+        <div class="grp-row"><h2 class="grp">Candidate queue</h2><button id="refreshCands" class="ghost sm">Refresh</button></div>
+        <div id="candList" class="runs"></div>
+        <p id="candEmpty" class="muted sm">No candidates yet — run Discover.</p>
+      </section>
+
+      <!-- GENERATED TASKS -->
+      <section id="tab-generated" class="tab">
+        <div class="grp-row"><h2 class="grp">Generated tasks</h2><button id="refreshTasks" class="ghost sm">Refresh</button></div>
+        <div id="taskList" class="runs"></div>
+        <p id="taskEmpty" class="muted sm">No tasks yet — process a candidate from the Task Creator.</p>
       </section>
 
       <!-- PUBLISHED -->
@@ -103,6 +109,16 @@
       </div>
       <div class="sheet-foot">
         <button id="pubGo">Publish to GHCR</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASK SOURCE MODAL -->
+  <div id="taskModal" class="modal" hidden>
+    <div class="sheet sheet-wide">
+      <div class="sheet-head"><h3 id="taskModalTitle">Task source</h3><button id="taskClose" class="x">×</button></div>
+      <div class="sheet-body">
+        <div class="src-view"><div id="taskFiles" class="src-files"></div><pre id="taskCode" class="src-code"></pre></div>
       </div>
     </div>
   </div>

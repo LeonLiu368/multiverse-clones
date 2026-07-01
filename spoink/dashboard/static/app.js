@@ -94,14 +94,15 @@ function setupTz() {
   }
 }
 
-let SOURCES = [], OPTCACHE = {}, TASKRUNS = [];
+let SOURCES = [], OPTCACHE = {};
 
 // ---------------------------------------------------------------- tabs
 $$(".tabs button").forEach((b) => (b.onclick = () => {
   $$(".tabs button").forEach((x) => x.classList.toggle("active", x === b));
   $$(".tab").forEach((s) => s.classList.toggle("active", s.id === "tab-" + b.dataset.tab));
   if (b.dataset.tab === "runs") loadRuns();
-  if (b.dataset.tab === "tasks") loadTaskRuns();
+  if (b.dataset.tab === "tasks") loadCandidates();
+  if (b.dataset.tab === "generated") loadTasks();
   if (b.dataset.tab === "published") loadPublished();
 }));
 
@@ -399,47 +400,124 @@ function pubRow(p) {
 }
 $("#refreshPub").onclick = loadPublished;
 
-// ---------------------------------------------------------------- task creator
-async function loadTaskRuns() {
-  const { runs } = await api("/api/runs");
-  TASKRUNS = runs.filter((r) => r.status === "done");
-  const host = $("#taskRuns"); host.innerHTML = "";
-  if (!TASKRUNS.length) { host.append(el("p", { className: "muted sm", textContent: "No completed runs to bundle yet." })); return; }
-  for (const j of TASKRUNS) {
-    const cb = el("input", { type: "checkbox", value: j.id });
-    host.append(el("label", {}, [cb,
-      el("span", { className: "run-icon", innerHTML: SRC_ICON[j.source] || "" }),
-      el("span", { textContent: j.name || svcLabel(j.source) }),
-      el("span", { className: "ct muted sm", style: "margin-left:auto", textContent: (j.metadata || {})["as of"] || "" })]));
-  }
+// ---------------------------------------------------------------- task creator: candidate queue
+let DONE_RUNS = {};   // source -> [runs] for attach dropdowns
+
+async function loadCandidates() {
+  const [{ candidates }, { runs }] = await Promise.all([api("/api/candidates"), api("/api/runs")]);
+  DONE_RUNS = {};
+  for (const r of runs.filter((r) => r.status === "done")) (DONE_RUNS[r.source] ||= []).push(r);
+  const host = $("#candList"); host.innerHTML = "";
+  $("#candEmpty").hidden = candidates.length > 0;
+  for (const c of candidates) host.append(candRow(c));
 }
-$("#genPlan").onclick = async () => {
-  const ids = $$("#taskRuns input:checked").map((c) => c.value);
-  if (!ids.length) return toast("Pick at least one run", true);
-  const firstAsOf = (TASKRUNS.find((r) => ids.includes(r.id))?.metadata || {})["as of"] || nowIso();
+
+function candRow(c) {
+  const row = el("div", { className: "run cand" });
+  const pill = el("span", { className: "pill pill-" + (c.status || "new"), textContent: c.status || "new" });
+  row.append(el("div", { className: "run-top" }, [
+    el("span", { className: "cand-score", textContent: Math.round(c.score) }),
+    el("span", { className: "run-name", textContent: c.title }),
+    pill,
+    el("span", { className: "run-when muted sm", textContent: (c.t || "").slice(0, 10) }),
+  ]));
+  const body = el("div", { className: "run-body" });
+  body.append(el("div", { className: "cand-sum muted sm", textContent: c.summary || "" }));
+  if ((c.signals || []).length)
+    body.append(el("div", { className: "cand-sigs" }, c.signals.map((s) => el("span", { className: "sig", textContent: s }))));
+
+  // required surfaces + attach/capture state
+  const surf = el("div", { className: "cand-surfaces" });
+  for (const src of Object.keys(c.required_data || {})) {
+    const attached = (c.snapshots || {})[src];
+    const chip = el("div", { className: "surf-chip" }, [
+      el("span", { className: "src-icon", innerHTML: SRC_ICON[src] || "" }),
+      el("span", { className: "sm", textContent: svcLabel(src) })]);
+    if (attached) chip.append(el("span", { className: "surf-ok", textContent: "✓" }));
+    else {
+      const opts = DONE_RUNS[src] || [];
+      const sel = el("select", { className: "tzsel surf-sel" },
+        [el("option", { value: "", textContent: opts.length ? "attach…" : "none captured" }),
+         ...opts.map((r) => el("option", { value: r.id, textContent: (r.name || r.id).slice(0, 28) }))]);
+      sel.onchange = async () => {
+        if (!sel.value) return;
+        try { await api(`/api/candidates/${c.id}/attach`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ snapshots: { [src]: sel.value } }) }); toast(`attached ${src}`); loadCandidates(); }
+        catch (e) { toast(e.message, true); }
+      };
+      chip.append(sel);
+    }
+    surf.append(chip);
+  }
+  body.append(surf);
+
+  const cap = el("button", { className: "sm", textContent: "Capture batch @ T" });
+  cap.onclick = async () => {
+    const name = prompt("Batch name for these snapshots:", (c.title || "").slice(0, 32));
+    if (name === null) return;
+    cap.disabled = true;
+    try { const r = await api(`/api/candidates/${c.id}/capture`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name }) });
+      toast(`capturing ${Object.keys(r.started).join(", ") || "—"} at T`); loadCandidates(); }
+    catch (e) { toast(e.message, true); cap.disabled = false; }
+  };
+  const gen = el("button", { className: "sm", textContent: "Process → task" });
+  gen.onclick = async () => {
+    gen.disabled = true;
+    try { const r = await api(`/api/candidates/${c.id}/generate`, { method: "POST" });
+      toast(`task generated: ${r.task.name}`); loadCandidates(); }
+    catch (e) { toast(e.message, true); gen.disabled = false; }
+  };
+  const del = el("button", { className: "ghost sm danger", textContent: "Delete" });
+  del.onclick = async () => { if (!confirm("Remove this candidate?")) return; await api(`/api/candidates/${c.id}`, { method: "DELETE" }); loadCandidates(); };
+  body.append(el("div", { className: "cand-actions" }, [cap, gen, del]));
+  row.append(body);
+  return row;
+}
+
+$("#discGo").onclick = async () => {
+  const btn = $("#discGo"); btn.disabled = true; btn.textContent = "Scanning…";
   try {
-    const r = await api("/api/tasks/spec", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        run_ids: ids,
-        name: ($("#anchorRepo").value.split("/").pop() || "incident") + "/new-task",
-        kind: "observability", incident_t: firstAsOf,
-        anchor_repo: $("#anchorRepo").value, anchor_commit: $("#anchorSha").value, resolution_pr: $("#anchorPr").value,
-      }),
-    });
-    const o = $("#planOut"); o.hidden = false; o.innerHTML = "";
-    const specText = JSON.stringify(r.spec, null, 2);
-    const copy = el("button", { className: "ghost sm", textContent: "Copy" });
-    copy.onclick = () => { navigator.clipboard?.writeText(specText); toast("spec.json copied"); };
-    o.append(
-      el("div", { className: "plan-head" }, [el("span", { className: "plan-title", textContent: "spec.json" }), copy]),
-      el("pre", { className: "plan-pre", textContent: specText }),
-      el("div", { className: "grp", textContent: "To finish before generating" }),
-      el("ul", { className: "plan-todos" }, (r.todos || []).map((t) => el("li", { textContent: t }))),
-      el("div", { className: "plan-cmd", textContent: "python -m spoink.pipeline spec.json --out generated-tasks/" }),
-    );
+    const r = await api("/api/candidates/discover", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ feed: $("#discFeed").value, org: $("#discOrg").value.trim(), window_days: +$("#discDays").value || 120 }) });
+    toast(`discovered ${r.discovered}, ${r.added} new`); loadCandidates();
   } catch (e) { toast(e.message, true); }
+  finally { btn.disabled = false; btn.textContent = "Discover incidents"; }
 };
+$("#refreshCands").onclick = loadCandidates;
+
+// ---------------------------------------------------------------- generated tasks
+async function loadTasks() {
+  const { tasks } = await api("/api/tasks");
+  const host = $("#taskList"); host.innerHTML = "";
+  $("#taskEmpty").hidden = tasks.length > 0;
+  for (const t of tasks) host.append(taskRow(t));
+}
+function taskRow(t) {
+  const row = el("div", { className: "run" });
+  row.append(el("div", { className: "run-top" }, [
+    el("span", { className: "run-name mono", textContent: t.name }),
+    el("span", { className: "pill", textContent: t.verifier }),
+    el("span", { className: "run-when muted sm", textContent: (t.surfaces || []).join(", ") }),
+  ]));
+  const view = el("button", { className: "ghost sm", textContent: "View source" });
+  view.onclick = () => openTaskSource(t);
+  const body = el("div", { className: "run-body" }, [
+    el("div", { className: "muted sm mono", textContent: t.task_dir }),
+    el("div", { className: "cand-actions" }, [view])]);
+  row.append(body);
+  return row;
+}
+async function openTaskSource(t) {
+  const { files } = await api(`/api/tasks/${t.id}/source`);
+  $("#taskModalTitle").textContent = t.name;
+  const list = $("#taskFiles"), code = $("#taskCode"); list.innerHTML = ""; code.textContent = "";
+  const names = Object.keys(files).sort();
+  const show = (n) => { code.textContent = files[n]; $$("#taskFiles .fitem").forEach((x) => x.classList.toggle("active", x.dataset.n === n)); };
+  for (const n of names) { const it = el("div", { className: "fitem", textContent: n }); it.dataset.n = n; it.onclick = () => show(n); list.append(it); }
+  $("#taskModal").hidden = false;
+  if (names.length) show(names.find((n) => n.endsWith("task.toml")) || names[0]);
+}
+$("#taskClose").onclick = () => ($("#taskModal").hidden = true);
+$("#refreshTasks").onclick = loadTasks;
 
 $("#refresh").onclick = loadRuns;
 loadSources().then(loadRuns).catch((e) => toast(e.message, true));

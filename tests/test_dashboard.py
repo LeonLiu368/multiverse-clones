@@ -75,6 +75,37 @@ def test_github_org_is_suggestion_combo(tmp_path, monkeypatch):
     assert org.kind == "combo" and org.discover == "orgs" and org.required
 
 
+def test_task_creator_flow(tmp_path, monkeypatch):
+    """Discover (mocked feed) -> queue -> guards -> the Tasks list starts empty."""
+    monkeypatch.setenv("GITHUB_TOKEN", "ghp_test")
+    c = _client(tmp_path, monkeypatch)
+    from spoink.pipeline import discover as disc
+
+    # a fake feed so the test never hits the live GitHub API
+    def _fake(token, org, **kw):
+        return [disc.Candidate(
+            id="github_revert-deadbeef00", feed="github_revert", t="2026-06-01T00:00:00Z",
+            title="revert: broke widgets (acme/x#7)", summary="...",
+            required_data={"github": {"org": "acme", "repos": ["x"], "as_of": "2026-06-01T00:00:00Z"}},
+            resolution={"repo": "acme/x", "pr": 7, "base_sha": "b", "head_sha": "h", "has_tests": True},
+            score=6, signals=["revert", "has_tests"])]
+    monkeypatch.setitem(disc.FEEDS, "github_revert", _fake)
+
+    r = c.post("/api/candidates/discover", json={"feed": "github_revert", "org": "acme"})
+    assert r.status_code == 200 and r.json()["added"] == 1
+    cid = r.json()["candidates"][0]["id"]
+    assert c.get("/api/candidates").json()["candidates"][0]["title"].startswith("revert")
+
+    # generate with nothing attached -> clear 400 (not a 500)
+    assert c.post(f"/api/candidates/{cid}/generate").status_code == 400
+    # attach a nonexistent run -> 400
+    assert c.post(f"/api/candidates/{cid}/attach",
+                  json={"snapshots": {"github": "nope"}}).status_code == 400
+    assert c.get("/api/tasks").json() == {"tasks": []}
+    assert c.delete(f"/api/candidates/{cid}").status_code == 200
+    assert c.get("/api/candidates").json()["candidates"] == []
+
+
 def test_ghc_hydrate_cmd_resolution(tmp_path, monkeypatch):
     """github capture resolves the snapshot CLI: explicit bin > PATH > importable package."""
     _client(tmp_path, monkeypatch)

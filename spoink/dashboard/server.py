@@ -27,6 +27,9 @@ from pydantic import BaseModel
 import threading
 
 from ..slice import parse_cutoff
+from ..pipeline import discover as disc
+from ..pipeline import generate as gen
+from ..pipeline import spec as spc
 from . import publish as pub
 from .jobs import Job, JobStore
 from .pipelines import plan_task_from_run
@@ -57,6 +60,9 @@ async def _no_store(request, call_next):
     return resp
 store = JobStore(RUNS_DIR)
 published = pub.PublishedRegistry(str(Path(RUNS_DIR) / "_published.json"))
+candidates = disc.CandidateQueue(str(Path(RUNS_DIR) / "_candidates.json"))
+TASKS_DIR = Path(RUNS_DIR) / "_tasks"
+tasks_reg = pub.PublishedRegistry(str(Path(RUNS_DIR) / "_tasks.json"))   # same persisted-list shape
 
 
 # ----------------------------------------------------------------- request bodies
@@ -314,6 +320,149 @@ def task_spec(body: SpecBody):
     todos.append(f"verifier ({vkind}) — fill in per the comments")
     return {"spec": spec, "todos": todos,
             "next": "save as spec.json, complete the TODOs, then: python -m spoink.pipeline spec.json --out generated-tasks/"}
+
+
+# ================================================================= Task Creator
+class DiscoverBody(BaseModel):
+    feed: str = "github_revert"
+    org: str = "abundant-ai"
+    window_days: int = 120
+    max_repos: int = 40
+    max_candidates: int = 60
+
+
+class AttachBody(BaseModel):
+    snapshots: Dict[str, str] = {}          # source -> run_id
+
+
+class CaptureBatchBody(BaseModel):
+    name: str = ""                          # batch label; sources default to the candidate's required_data
+
+
+@app.post("/api/candidates/discover")
+def candidates_discover(body: DiscoverBody):
+    """Run a discovery feed over the live upstreams and merge new incidents into the queue."""
+    if body.feed not in disc.FEEDS:
+        raise HTTPException(404, f"unknown feed {body.feed!r}; have {sorted(disc.FEEDS)}")
+    tok = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+    if not tok:
+        raise HTTPException(400, "GITHUB_TOKEN not set in .env")
+    try:
+        found = disc.discover(body.feed, tok, org=body.org, window_days=body.window_days,
+                              max_repos=body.max_repos, max_candidates=body.max_candidates)
+    except Exception as e:  # noqa: BLE001
+        raise HTTPException(502, f"discovery failed: {e}")
+    added = candidates.merge(found)
+    return {"discovered": len(found), "added": added, "candidates": candidates.list()}
+
+
+@app.get("/api/candidates")
+def candidates_list():
+    return {"candidates": candidates.list()}
+
+
+@app.delete("/api/candidates/{cid}")
+def candidates_delete(cid: str):
+    if not candidates.remove(cid):
+        raise HTTPException(404, "no such candidate")
+    return {"deleted": cid}
+
+
+@app.post("/api/candidates/{cid}/attach")
+def candidates_attach(cid: str, body: AttachBody):
+    """Attach existing (done) runs to a candidate's required surfaces."""
+    c = candidates.get(cid)
+    if not c:
+        raise HTTPException(404, "no such candidate")
+    snaps = dict(c.get("snapshots") or {})
+    for source, rid in body.snapshots.items():
+        j = store.get(rid)
+        if not j or j.status != "done":
+            raise HTTPException(400, f"run {rid} not found or not done")
+        snaps[source] = rid
+    status = "attached" if snaps else c.get("status", "new")
+    return {"candidate": candidates.update(cid, snapshots=snaps, status=status)}
+
+
+@app.post("/api/candidates/{cid}/capture")
+def candidates_capture(cid: str, body: CaptureBatchBody):
+    """Batch-capture the candidate's required surfaces at its incident time T. Reuses the capture
+    jobs; each source's params come from the candidate's required_data (so as_of == T)."""
+    c = candidates.get(cid)
+    if not c:
+        raise HTTPException(404, "no such candidate")
+    batch = body.name.strip() or (c.get("title", cid)[:40])
+    started: Dict[str, str] = {}
+    skipped: Dict[str, str] = {}
+    for source, params in (c.get("required_data") or {}).items():
+        src = SOURCES.get(source)
+        if not src or not src.has_key():
+            skipped[source] = "no source/key"
+            continue
+
+        def _do(job: Job, _src=src, _params=params) -> Dict[str, Any]:
+            return _src.capture(str(store.run_dir(job.id)), _params)
+
+        job = store.submit("capture", src.id, params, _do, name=f"{batch} · {source}")
+        started[source] = job.id
+    snaps = {**(c.get("snapshots") or {}), **started}
+    candidates.update(cid, snapshots=snaps, status="capturing")
+    return {"candidate": candidates.get(cid), "started": started, "skipped": skipped}
+
+
+@app.post("/api/candidates/{cid}/generate")
+def candidates_generate(cid: str):
+    """Process the candidate into a Harbor-format task dir under runs/_tasks/. Attached snapshots
+    must be done. Emits the preview-500s shape (environment/ + task.toml + tests/ + solution/)."""
+    c = candidates.get(cid)
+    if not c:
+        raise HTTPException(404, "no such candidate")
+    attached = []
+    for source, rid in (c.get("snapshots") or {}).items():
+        j = store.get(rid)
+        if not j or j.status != "done":
+            continue
+        art = j.report.get("artifact") or (SOURCES.get(source) and SOURCES[source].artifact)
+        attached.append({"source": source,
+                         "overlay": str((store.run_dir(rid) / art).resolve()) if art else str(store.run_dir(rid))})
+    if not attached:
+        raise HTTPException(400, "no done snapshots attached — capture or attach first")
+    gateway_for = {s: f"ghcr.io/abundant-ai/{pub.DEFAULT_REPO.get(s, s + '-gateway')}:TODO-bake"
+                   for s in (c.get("required_data") or {})}
+    spec = spc.spec_from_candidate(c, attached, gateway_for)
+    TASKS_DIR.mkdir(parents=True, exist_ok=True)
+    out = TASKS_DIR / spec.slug()
+    res = gen.generate_task(spec, str(out))
+    rec = {"image": spec.name, "id": cid, "name": spec.name, "task_dir": res["task_dir"],
+           "surfaces": res["surfaces"], "verifier": res["verifier"],
+           "resolution": c.get("resolution", {}), "created_at": _now_iso()}
+    tasks_reg.add(rec)
+    candidates.update(cid, status="generated")
+    return {"task": rec}
+
+
+@app.get("/api/tasks")
+def tasks_list():
+    return {"tasks": tasks_reg.list()}
+
+
+@app.get("/api/tasks/{cid}/source")
+def task_source(cid: str):
+    """The generated task's source tree (relative path -> file text) for the Tasks browser."""
+    rec = next((t for t in tasks_reg.list() if t.get("id") == cid), None)
+    if not rec:
+        raise HTTPException(404, "no such task")
+    root = Path(rec["task_dir"])
+    files = {}
+    for p in sorted(root.rglob("*")):
+        if p.is_file() and p.stat().st_size < 200_000:
+            files[str(p.relative_to(root))] = p.read_text(errors="replace")
+    return {"task_dir": str(root), "files": files}
+
+
+def _now_iso() -> str:
+    import time
+    return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
 
 
 # ----------------------------------------------------------------- static frontend

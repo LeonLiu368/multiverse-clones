@@ -91,6 +91,50 @@ def spec_from_runs(name: str, kind: str, incident_t: str, instruction: str,
                     surfaces=surfaces, verifier=verifier, anchor=anchor, **meta)
 
 
+def spec_from_candidate(cand: Dict[str, Any], attached: List[Dict[str, Any]],
+                        gateway_for: Dict[str, str], instruction: str = "") -> TaskSpec:
+    """Turn a discovered Candidate (+ its attached snapshot runs) into a TaskSpec.
+
+    - surfaces  = the attached runs (each a captured overlay + its baked gateway image)
+    - anchor    = the github snapshot's git.bundle @ the incident-tip (resolution.base_sha)
+    - verifier  = ADAPTIVE: pytest_pr (F2P from the PR's tests) if the fix shipped tests, else module_check
+    The resolution refs are carried through so a build step can derive exact F2P/P2P (verifier.derive_pr_verifier).
+    """
+    res = cand.get("resolution", {})
+    repo = res.get("repo", "")
+    slug = (repo.split("/")[-1] or "incident") + "-" + cand["id"].split("-")[-1]
+    surfaces = [Surface(source=r["source"], overlay=r["overlay"],
+                        gateway_image=gateway_for.get(r["source"], f"ghcr.io/abundant-ai/{r['source']}-gateway:TODO"))
+                for r in attached]
+
+    anchor = None
+    gh = next((r for r in attached if r["source"] == "github"), None)
+    if gh and res.get("base_sha"):
+        # the github snapshot ships a per-repo git.bundle; the task checks out the incident tip
+        bundle = str(Path(gh["overlay"]) / (repo.replace("/", "__")) / "git.bundle")
+        anchor = Anchor(bundle=bundle, commit=res["base_sha"])
+
+    if res.get("has_tests"):
+        verifier = VerifierSpec(kind="pytest_pr")   # f2p/p2p derived at build from base<->head (see refs below)
+    else:
+        verifier = VerifierSpec(kind="module_check", grader_script="")
+
+    return TaskSpec(
+        name=f"spoink-incidents/{slug}", kind="observability",
+        incident_t=cand.get("t", DEFAULT_T),
+        instruction=instruction or _default_instruction(cand),
+        surfaces=surfaces, verifier=verifier, anchor=anchor,
+        source_repo=repo, fixed_by_pr=f"#{res.get('pr')}" if res.get("pr") else "",
+        oracle_steps=(f"# resolution: {repo}#{res.get('pr')} "
+                      f"base={res.get('base_sha','')[:12]} head={res.get('head_sha','')[:12]}\n"))
+
+
+def _default_instruction(cand: Dict[str, Any]) -> str:
+    return (f"Something is broken in production. Investigate the available surfaces "
+            f"(telemetry, chat, the codebase) and fix the underlying bug.\n\n"
+            f"Incident: {cand.get('title','')}\n")
+
+
 def load_spec(path: str) -> TaskSpec:
     d = json.loads(Path(path).read_text())
     d["surfaces"] = [Surface(**s) for s in d.get("surfaces", [])]
