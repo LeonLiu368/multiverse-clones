@@ -300,11 +300,19 @@ class CandidateQueue:
         self.path.write_text(json.dumps(ordered, indent=2))
 
     def merge(self, cands: List[Candidate]) -> int:
-        """Add new candidates; keep any that already have status/snapshots (don't clobber triage)."""
+        """Add new candidates and REFRESH existing ones with the latest discovered fields (t,
+        summary, resolution, score, …) — so anchor/heuristic fixes reach already-queued items —
+        while preserving triage state (status + attached snapshots)."""
         added = 0
         for c in cands:
-            if c.id not in self.items:
-                self.items[c.id] = to_dict(c); added += 1
+            d = to_dict(c)
+            old = self.items.get(c.id)
+            if old:
+                d["snapshots"] = old.get("snapshots") or {}
+                d["status"] = old.get("status", "new")   # keep where it is in the pipeline
+            else:
+                added += 1
+            self.items[c.id] = d
         self._save()
         return added
 

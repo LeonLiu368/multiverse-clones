@@ -78,6 +78,23 @@ def test_promote_guards_without_docker(tmp_path):
     assert P.promote(str(task)).get("status") == "skipped"
 
 
+def test_queue_refresh_updates_anchor_keeps_triage(tmp_path):
+    """Re-discovering refreshes stale fields (e.g. the fixed anchor T) but keeps attachments."""
+    from spoink.pipeline import discover as D
+    q = D.CandidateQueue(str(tmp_path / "cq.json"))
+
+    def cand(t):
+        return D.Candidate(id="github_revert-abc", feed="github_revert", t=t,
+                           title="x", summary="s", required_data={"github": {}},
+                           resolution={"repo": "o/r", "pr": 1})
+    q.merge([cand("2026-01-01T10:08:00Z")])          # stale created_at anchor
+    q.update("github_revert-abc", snapshots={"github": "run1"}, status="attached")
+    q.merge([cand("2026-07-01T09:21:00Z")])          # re-discover with the corrected merge anchor
+    c = q.get("github_revert-abc")
+    assert c["t"] == "2026-07-01T09:21:00Z"           # anchor refreshed
+    assert c["snapshots"] == {"github": "run1"} and c["status"] == "attached"   # triage preserved
+
+
 def test_report_accepts_only_when_critical_gates_pass(tmp_path):
     # a report whose only failing gate is non-critical (verifier) is still accepted
     rep = V.Report(gates=[V.Gate("contract", "pass"), V.Gate("code_cut", "pass"),
