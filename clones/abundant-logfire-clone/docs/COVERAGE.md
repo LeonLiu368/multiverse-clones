@@ -19,9 +19,9 @@ scoping) over the `records` table.
 
 | Capability | Endpoint | CLI | MCP tool | Envelope | Assessment-grade | Tested |
 |---|---|---|---|---|---|---|
-| Arbitrary SQL over `records` | `POST /v2/query` | `logfire query <sql> [--since --until --limit]` | `arbitrary_query(sql, min_timestamp?, max_timestamp?, limit?)` | `{schema:{fields:[{name,data_type}]}, data:[…]}` | **yes** — stateful-read, multi-step, query grammar, realistic errors (1,3,4,5) | `test_api`, `test_cli_mcp` |
-| Recent exceptions | `POST /v2/query` (canned SQL) | `logfire exceptions [--since --limit]` | `find_exceptions(min_timestamp?, limit?)` | `[{start_timestamp, exception_type, exception_message, service_name, url_path, http_response_status_code}]` | **yes** — multi-step, query grammar, devops-investigation shape (2,4,5) | `test_api`, `test_cli_mcp` |
-| Records schema | `POST /v2/query` (`limit 0`) | `logfire schema` | `get_logfire_records_schema()` | `{fields:[{name,data_type}]}` | **yes** — devops-investigation entry point; chains into query construction (multi-step + grammar precursor, 2,4) | `test_cli_mcp` (parity) |
+| Arbitrary SQL over `records` | `POST /v2/query` | `logfire query <sql> [--since --until --limit]` | `arbitrary_query(query\|sql, age?, min_timestamp?, max_timestamp?, limit?)` | `{schema:{fields:[{name,data_type}]}, data:[…]}` | **yes** — stateful-read, multi-step, query grammar, realistic errors (1,3,4,5) | `test_api`, `test_cli_mcp` |
+| Recent exceptions | `POST /v2/query` (canned SQL) | `logfire exceptions [--since --limit]` | `find_exceptions_in_file(filepath?, …)` (real upstream name; `find_exceptions` kept as alias) | `[{start_timestamp, exception_type, exception_message, service_name, url_path, http_response_status_code}]` | **yes** — multi-step, query grammar, devops-investigation shape (2,4,5) | `test_api`, `test_cli_mcp` |
+| Records schema | `POST /v2/query` (`limit 0`) | `logfire schema` | `get_logfire_records_schema()` (alias `schema_reference` for logfire-mcp `main`) | `{fields:[{name,data_type}]}` | **yes** — devops-investigation entry point; chains into query construction (multi-step + grammar precursor, 2,4) | `test_cli_mcp` (parity) |
 | Health | `GET /health` | — | — | `{ok, records}` | — (operator) | `test_api` |
 | Auth / read-only / validation | `POST /v2/query` (error paths) | (surfaced verbatim, exit 1) | (raises) | `401 {detail}`, `400 {error[,details]}`, `404 {error}` | **yes** — realistic product error envelopes, not 500s (3) | `test_api`, `test_cli_mcp` |
 

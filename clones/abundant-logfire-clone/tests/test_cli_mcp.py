@@ -71,6 +71,22 @@ def test_mcp_schema(mcp):
     assert "service_name" in names
 
 
+# ---- Upstream logfire-mcp tool names / params (agent-facing reliability) ----
+def test_mcp_find_exceptions_in_file(mcp):
+    # Real logfire-mcp exposes `find_exceptions_in_file`, not `find_exceptions`.
+    res = json.loads(mcp.find_exceptions_in_file(min_timestamp="2026-06-24T00:00:00Z"))
+    assert isinstance(res, list) and res and all(r["exception_type"] for r in res)
+
+
+def test_mcp_arbitrary_query_upstream_params(mcp):
+    # Real logfire-mcp signature is arbitrary_query(query=..., age=...); both must work
+    # and return the {schema, data} envelope.
+    res = json.loads(mcp.arbitrary_query(query="SELECT count(*) n FROM records",
+                                         age=60 * 24 * 3650))
+    assert "schema" in res and "data" in res
+    assert res["data"][0]["n"] == 4
+
+
 # ---- MCP error (gateway 400 surfaces as an exception) ----
 def test_mcp_bad_sql_raises(mcp):
     with pytest.raises(Exception):
