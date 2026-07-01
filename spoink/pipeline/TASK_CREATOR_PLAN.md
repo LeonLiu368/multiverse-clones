@@ -121,13 +121,31 @@ Verified on real `abundant-ai/oddish#468`: the slice excludes the fix (`code_cut
 "fixed in #468" Slack line is caught (`surface_leakage` fail), and the contract lint caught a real
 missing-`custom_docker_compose` bug in the generator.
 
-Still deferred (honest): the **docker nop=0/oracle=1** run (the ultimate empirical gate) and **exact
-F2P/P2P** run at task BUILD (`derive_pr_verifier`), where the env exists — gen-time stays cheap +
-reliable (git plumbing + grep, no pytest). Determinism check + more feeds (logfire/slack/linear/CI)
-are next.
+### Promote gate (promote.py) — the empirical nop=0/oracle=1 proof, IMPLEMENTED
+`validate` proves a task is well-formed; `promote` proves the **code contract** empirically in docker:
+clone the shipped SUT at the incident tip, run the fix's tests (expect FAIL = nop), apply the oracle
+patch (`solution/fix.patch`, the base..head diff generation now ships), re-run (expect PASS = oracle).
+`proven` iff nop fails and oracle passes. Runs in one throwaway container (the code fix is what
+nop/oracle grades; sidecar retrieval is a separate concern the validation gates cover). A SUT that
+can't build reports `errored` — honest signal about which candidates yield runnable tasks. Wired as a
+background **Promote (nop/oracle)** action; the Tasks tab shows proven/failed/errored.
+
+Verified on a synthetic task: `nop_exit=1` (tests fail on the bug), `oracle_exit=0` (pass after the
+patch) -> `proven`.
+
+### Feeds (discover.py) — now three, live
+- **github_revert** — merged revert/hotfix/fix PRs (base->head oracle, F2P from the PR's tests).
+- **github_ci** — a CI run red-then-green on the default branch; the red commit is the tip, the green
+  commit is the fix (the "bad deploy / CI failure" feed). Verified on real oddish Supabase/Modal reds.
+- **logfire_anomaly** — distinct exception signatures become DIAGNOSIS candidates (no code oracle;
+  ground truth = signature + service). Verified on real oddish-worker `asyncpg`/`daytona` errors.
+Each declares its credential (`FEED_ENV`); the UI feed dropdown lists them + key presence.
+
+Still deferred (honest): **multi-sidecar** promote (retrieval-dependent verifiers) + **exact F2P/P2P**
+run at task BUILD (`derive_pr_verifier`); a determinism check; Slack/Linear feeds.
 
 - **Feed interface**: `@feed("name")` -> `List[Candidate]`; discovery is a live lightweight scan.
-- `validate_task` is the quality bar — the UI shows the gate report per task (Tasks tab).
+- `validate_task` is the quality bar; `promote` is the empirical proof — both shown per task (Tasks tab).
 
 ---
 

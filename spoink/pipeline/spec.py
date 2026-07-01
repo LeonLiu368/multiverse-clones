@@ -73,6 +73,7 @@ class TaskSpec:
     # the oracle's actions: a shell snippet that fixes the code / drives the tools (the agent has the same CLIs)
     oracle_steps: str = ""
     changed_files: List[str] = field(default_factory=list)   # files the fix touched (for verifier + leakage audit)
+    fix_patch: str = ""                                       # the resolution diff (base..head) = the oracle
 
     def slug(self) -> str:
         return self.name.split("/")[-1]
@@ -110,13 +111,13 @@ def spec_from_candidate(cand: Dict[str, Any], attached: List[Dict[str, Any]],
                 for r in attached]
 
     anchor = None
-    changed, changed_tests = [], []
+    changed, changed_tests, patch = [], [], ""
     gh = next((r for r in attached if r["source"] == "github"), None)
     if gh and res.get("base_sha"):
         full = Path(gh["overlay"]) / repo.replace("/", "__") / "git.bundle"
-        # slice the SUT to the incident tip (fix EXCLUDED) + read the fix's changed files from the
-        # full mirror — the served bundle must not contain the answer (clone-task-builder non-neg #2)
-        sliced, changed = _prepare_sut(full, res["base_sha"], res.get("head_sha", ""))
+        # slice the SUT to the incident tip (fix EXCLUDED) + read the fix's changed files + the fix
+        # PATCH (the oracle) from the full mirror — served bundle must not contain the answer (non-neg #2)
+        sliced, changed, patch = _prepare_sut(full, res["base_sha"], res.get("head_sha", ""))
         changed_tests = [f for f in changed if re.search(r"(^|/)tests?/|_test\.|test_.*\.py|\.test\.", f)]
         anchor = Anchor(bundle=str(sliced or full), commit=res["base_sha"])
 
@@ -129,31 +130,37 @@ def spec_from_candidate(cand: Dict[str, Any], attached: List[Dict[str, Any]],
         name=f"spoink-incidents/{slug}", kind="observability",
         incident_t=cand.get("t", DEFAULT_T),
         instruction=instruction or _default_instruction(cand),
-        surfaces=surfaces, verifier=verifier, anchor=anchor, changed_files=changed,
+        surfaces=surfaces, verifier=verifier, anchor=anchor, changed_files=changed, fix_patch=patch,
         source_repo=repo, fixed_by_pr=f"#{res.get('pr')}" if res.get("pr") else "",
         oracle_steps=(f"# resolution: {repo}#{res.get('pr')} "
                       f"base={res.get('base_sha','')[:12]} head={res.get('head_sha','')[:12]}\n"))
 
 
 def _prepare_sut(full_bundle: Path, base_sha: str, head_sha: str):
-    """From the snapshot's full mirror bundle, produce (sliced_bundle_at_base, changed_files[base..head]).
-    Slicing excludes the fix from the shipped SUT; the diff feeds the verifier + leakage audit."""
+    """From the snapshot's full mirror bundle, produce (sliced_bundle_at_base, changed_files, fix_patch).
+    Slicing excludes the fix from the shipped SUT; the diff/patch feed the verifier, leakage audit,
+    and the oracle (solution/fix.patch)."""
     import shutil
     import subprocess
     import tempfile
     if not full_bundle.exists():
-        return None, []
+        return None, [], ""
     tmp = tempfile.mkdtemp(prefix="spoink-sut-")
     changed: List[str] = []
+    patch = ""
     try:
         if subprocess.run(["git", "clone", "--quiet", "--mirror", str(full_bundle), tmp],
                           capture_output=True, text=True).returncode != 0:
-            return None, []
+            return None, [], ""
         if head_sha:
             d = subprocess.run(["git", "-C", tmp, "diff", "--name-only", f"{base_sha}..{head_sha}"],
                                capture_output=True, text=True)
             if d.returncode == 0:
                 changed = [ln for ln in d.stdout.splitlines() if ln.strip()]
+            p = subprocess.run(["git", "-C", tmp, "diff", f"{base_sha}..{head_sha}"],
+                               capture_output=True, text=True)
+            if p.returncode == 0:
+                patch = p.stdout
         sliced = full_bundle.with_name("git.sliced.bundle")
         # a bare sha isn't a ref, and `git bundle` needs refs — point a branch at the incident tip,
         # then bundle history reachable from it (the fix commit is NOT included)
@@ -161,8 +168,8 @@ def _prepare_sut(full_bundle: Path, base_sha: str, head_sha: str):
                        capture_output=True, text=True)
         if subprocess.run(["git", "-C", tmp, "bundle", "create", str(sliced.resolve()), "incident-tip"],
                           capture_output=True, text=True).returncode == 0:
-            return sliced, changed
-        return None, changed
+            return sliced, changed, patch
+        return None, changed, patch
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 

@@ -106,6 +106,16 @@ def test_task_creator_flow(tmp_path, monkeypatch):
     assert c.get("/api/candidates").json()["candidates"] == []
 
 
+def test_feeds_endpoint(tmp_path, monkeypatch):
+    """All discovery feeds are exposed with their credential presence."""
+    monkeypatch.setenv("GITHUB_TOKEN", "ghp_test")
+    c = _client(tmp_path, monkeypatch)
+    feeds = {f["name"]: f for f in c.get("/api/feeds").json()["feeds"]}
+    assert {"github_revert", "github_ci", "logfire_anomaly"} <= set(feeds)
+    assert feeds["github_ci"]["env"] == "GITHUB_TOKEN" and feeds["github_ci"]["has_key"]
+    assert feeds["logfire_anomaly"]["env"] == "LOGFIRE_READ_TOKEN"
+
+
 def test_ghc_hydrate_cmd_resolution(tmp_path, monkeypatch):
     """github capture resolves the snapshot CLI: explicit bin > PATH > importable package."""
     _client(tmp_path, monkeypatch)

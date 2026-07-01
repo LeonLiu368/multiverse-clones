@@ -194,8 +194,20 @@ def _manifest(spec: TaskSpec) -> str:
 
 
 def _solve(spec: TaskSpec) -> str:
-    body = spec.oracle_steps.strip() or "echo 'TODO: oracle steps (fix code / drive tools via the same CLIs)'"
-    return "#!/usr/bin/env bash\n# Oracle — generated. Drives the SAME CLIs the agent has.\nset -uo pipefail\n" + body + "\n"
+    lines = ["#!/usr/bin/env bash",
+             "# Oracle — generated. Applies the real fix, then drives any tool actions via the agent's CLIs.",
+             "set -uo pipefail",
+             spec.oracle_steps.rstrip()]
+    if spec.fix_patch:
+        wd = spec.anchor.workdir if spec.anchor else "/app"
+        sub = spec.anchor.backend_subdir if spec.anchor else ""
+        target = f"{wd}/{sub}".rstrip("/")
+        lines += [f'cd "{target}" || cd "{wd}"',
+                  "git apply --whitespace=nowarn /solution/fix.patch "
+                  "|| patch -p1 < /solution/fix.patch"]
+    else:
+        lines.append("echo 'TODO: no fix.patch — author the oracle (fix code / drive tools)'")
+    return "\n".join(lines) + "\n"
 
 
 # --------------------------------------------------------------- entry
@@ -224,6 +236,19 @@ def generate_task(spec: TaskSpec, out_dir: str) -> Dict[str, str]:
     (root / "solution" / "solve.sh").write_text(_solve(spec))
     for p in (root / "tests" / "test.sh", root / "solution" / "solve.sh"):
         p.chmod(0o755)
+
+    # oracle patch (the fix) — lives in solution/, NEVER given to the agent's container
+    if spec.fix_patch:
+        (root / "solution" / "fix.patch").write_text(spec.fix_patch)
+
+    # harness manifest for the docker nop/oracle promote gate (promote.py)
+    (root / ".promote.json").write_text(json.dumps({
+        "base_commit": spec.anchor.commit if spec.anchor else "",
+        "backend_subdir": spec.anchor.backend_subdir if spec.anchor else "",
+        "workdir": spec.anchor.workdir if spec.anchor else "/app",
+        "verifier": spec.verifier.kind, "f2p": spec.verifier.f2p,
+        "test_cmd": spec.verifier.test_cmd, "has_patch": bool(spec.fix_patch),
+    }, indent=2))
 
     return {"task_dir": str(root), "manifest": str(Path(out_dir) / "manifest.yaml"),
             "surfaces": [s.source for s in spec.surfaces], "verifier": spec.verifier.kind}

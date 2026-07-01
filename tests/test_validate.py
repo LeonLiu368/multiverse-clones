@@ -66,6 +66,18 @@ def test_contract_lint_flags_missing_pieces(tmp_path):
     assert "custom_docker_compose" in joined and "linux/amd64" in joined and "reward.txt" in joined
 
 
+def test_promote_guards_without_docker(tmp_path):
+    """promote() short-circuits cleanly (no docker) for non-runnable tasks."""
+    from spoink.pipeline import promote as P
+    # missing manifest/bundle -> errored
+    assert P.promote(str(tmp_path)).get("status") == "errored"
+    # a module_check task (no F2P tests) -> skipped, never touches docker
+    task = tmp_path / "t"; (task / "environment").mkdir(parents=True)
+    (task / "environment" / "codebase.bundle").write_text("x")
+    (task / ".promote.json").write_text('{"verifier":"module_check","f2p":[]}')
+    assert P.promote(str(task)).get("status") == "skipped"
+
+
 def test_report_accepts_only_when_critical_gates_pass(tmp_path):
     # a report whose only failing gate is non-critical (verifier) is still accepted
     rep = V.Report(gates=[V.Gate("contract", "pass"), V.Gate("code_cut", "pass"),

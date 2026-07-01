@@ -29,6 +29,7 @@ import threading
 from ..slice import parse_cutoff
 from ..pipeline import discover as disc
 from ..pipeline import generate as gen
+from ..pipeline import promote as prom
 from ..pipeline import spec as spc
 from ..pipeline import validate
 from . import publish as pub
@@ -340,14 +341,25 @@ class CaptureBatchBody(BaseModel):
     name: str = ""                          # batch label; sources default to the candidate's required_data
 
 
+@app.get("/api/feeds")
+def feeds_list():
+    """Discovery feeds + whether their credential is present."""
+    out = []
+    for name in sorted(disc.FEEDS):
+        env = disc.FEED_ENV.get(name, "GITHUB_TOKEN")
+        out.append({"name": name, "env": env, "has_key": bool(os.environ.get(env))})
+    return {"feeds": out}
+
+
 @app.post("/api/candidates/discover")
 def candidates_discover(body: DiscoverBody):
     """Run a discovery feed over the live upstreams and merge new incidents into the queue."""
     if body.feed not in disc.FEEDS:
         raise HTTPException(404, f"unknown feed {body.feed!r}; have {sorted(disc.FEEDS)}")
-    tok = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+    env = disc.FEED_ENV.get(body.feed, "GITHUB_TOKEN")
+    tok = os.environ.get(env) or (os.environ.get("GH_TOKEN") if env == "GITHUB_TOKEN" else None)
     if not tok:
-        raise HTTPException(400, "GITHUB_TOKEN not set in .env")
+        raise HTTPException(400, f"{env} not set in .env")
     try:
         found = disc.discover(body.feed, tok, org=body.org, window_days=body.window_days,
                               max_repos=body.max_repos, max_candidates=body.max_candidates)
@@ -454,6 +466,27 @@ def candidates_generate(cid: str):
 @app.get("/api/tasks")
 def tasks_list():
     return {"tasks": tasks_reg.list()}
+
+
+@app.post("/api/tasks/{cid}/promote")
+def task_promote(cid: str):
+    """Empirical nop=0/oracle=1 in docker: prove the fix's tests fail on the SUT, pass after the
+    oracle patch. Runs in the background; poll GET /api/tasks for the result."""
+    rec = next((t for t in tasks_reg.list() if t.get("id") == cid), None)
+    if not rec:
+        raise HTTPException(404, "no such task")
+    tasks_reg.add({**rec, "promote": {"status": "running"}})
+
+    def _bg():
+        try:
+            res = prom.promote(rec["task_dir"])
+        except Exception as e:  # noqa: BLE001
+            res = {"status": "errored", "detail": str(e)[:300]}
+        cur = next((t for t in tasks_reg.list() if t.get("id") == cid), rec)
+        tasks_reg.add({**cur, "promote": {k: v for k, v in res.items() if k != "log"}})
+
+    threading.Thread(target=_bg, daemon=True).start()
+    return {"status": "running"}
 
 
 @app.get("/api/tasks/{cid}/source")

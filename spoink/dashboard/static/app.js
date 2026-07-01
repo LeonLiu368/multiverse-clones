@@ -403,7 +403,23 @@ $("#refreshPub").onclick = loadPublished;
 // ---------------------------------------------------------------- task creator: candidate queue
 let DONE_RUNS = {};   // source -> [runs] for attach dropdowns
 
+const FEED_LABEL = { github_revert: "GitHub revert/hotfix", github_ci: "CI failure → fix", logfire_anomaly: "Logfire anomaly" };
+async function loadFeeds() {
+  const sel = $("#discFeed"); if (sel.dataset.loaded) return;
+  try {
+    const { feeds } = await api("/api/feeds");
+    sel.innerHTML = "";
+    for (const f of feeds) {
+      const o = el("option", { value: f.name, textContent: (FEED_LABEL[f.name] || f.name) + (f.has_key ? "" : " (no key)") });
+      if (!f.has_key) o.disabled = true;
+      sel.append(o);
+    }
+    sel.dataset.loaded = "1";
+  } catch { /* keep the static option */ }
+}
+
 async function loadCandidates() {
+  loadFeeds();
   const [{ candidates }, { runs }] = await Promise.all([api("/api/candidates"), api("/api/runs")]);
   DONE_RUNS = {};
   for (const r of runs.filter((r) => r.status === "done")) (DONE_RUNS[r.source] ||= []).push(r);
@@ -498,10 +514,15 @@ function taskRow(t) {
   const verdict = val.accepted === false
     ? el("span", { className: "pill pill-rejected", textContent: "rejected" })
     : val.accepted ? el("span", { className: "pill pill-generated", textContent: "validated" }) : "";
+  const prom = t.promote || {};
+  const promPill = prom.status
+    ? el("span", { className: "pill pill-" + (prom.status === "proven" ? "generated" : prom.status === "running" ? "capturing" : "rejected"),
+                   title: prom.detail || "", textContent: prom.status })
+    : "";
   row.append(el("div", { className: "run-top" }, [
     el("span", { className: "run-name mono", textContent: t.name }),
     el("span", { className: "pill", textContent: t.verifier }),
-    verdict,
+    verdict, promPill,
     el("span", { className: "run-when muted sm", textContent: (t.surfaces || []).join(", ") }),
   ]));
   const gates = el("div", { className: "gate-row" }, (val.gates || []).map((g) =>
@@ -509,10 +530,18 @@ function taskRow(t) {
       `${GATE_ICON[g.status] || "?"} ${g.name}`)));
   const view = el("button", { className: "ghost sm", textContent: "View source" });
   view.onclick = () => openTaskSource(t);
+  const promote = el("button", { className: "sm", textContent: "Promote (nop/oracle)" });
+  promote.disabled = prom.status === "running";
+  promote.onclick = async () => {
+    promote.disabled = true; promote.textContent = "Running nop/oracle…";
+    try { await api(`/api/tasks/${t.id}/promote`, { method: "POST" }); toast("promote started (docker)"); setTimeout(loadTasks, 4000); }
+    catch (e) { toast(e.message, true); promote.disabled = false; }
+  };
+  const detail = prom.detail ? el("div", { className: "muted sm", textContent: prom.detail }) : "";
   const body = el("div", { className: "run-body" }, [
-    gates,
+    gates, detail,
     el("div", { className: "muted sm mono", textContent: t.task_dir }),
-    el("div", { className: "cand-actions" }, [view])]);
+    el("div", { className: "cand-actions" }, [view, promote])]);
   row.append(body);
   return row;
 }

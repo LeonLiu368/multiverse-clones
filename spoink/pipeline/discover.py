@@ -161,6 +161,111 @@ def github_revert(token: str, org: str, window_days: int = 120, per_repo: int = 
     return cands
 
 
+@feed("github_ci")
+def github_ci(token: str, org: str, window_days: int = 120, per_repo: int = 80,
+              max_repos: int = 30, max_candidates: int = 60, **_) -> List[Candidate]:
+    """Live scan: a CI run that went red on the default branch then green again. The failing
+    commit is the incident tip; the commit that turned it green is the fix (base->head oracle).
+    This is the 'bad deploy / CI failure' feed."""
+    from datetime import datetime, timedelta, timezone
+    cutoff = datetime.now(timezone.utc) - timedelta(days=window_days)
+    cands: List[Candidate] = []
+    with _client(token) as c:
+        for repo in _org_repos(c, org, max_repos):
+            owner, name = repo["full_name"].split("/", 1)
+            if repo.get("archived"):
+                continue
+            branch = repo.get("default_branch") or "main"
+            r = c.get(f"{GITHUB_API}/repos/{owner}/{name}/actions/runs",
+                      params={"branch": branch, "event": "push", "status": "completed", "per_page": per_repo})
+            if r.status_code != 200:
+                continue
+            runs = [w for w in r.json().get("workflow_runs", [])
+                    if w.get("conclusion") in ("success", "failure")]
+            # per workflow, walk oldest->newest looking for failure then a later success
+            by_wf: Dict[Any, List[Dict[str, Any]]] = {}
+            for w in runs:
+                by_wf.setdefault(w.get("workflow_id"), []).append(w)
+            for wf, ws in by_wf.items():
+                ws.sort(key=lambda w: w.get("created_at") or "")
+                for i, w in enumerate(ws):
+                    if w.get("conclusion") != "failure":
+                        continue
+                    created = w.get("created_at") or ""
+                    if not created or datetime.fromisoformat(created.replace("Z", "+00:00")) < cutoff:
+                        continue
+                    nxt = next((n for n in ws[i + 1:] if n.get("conclusion") == "success"), None)
+                    if not nxt:
+                        continue
+                    base = w.get("head_sha", ""); head = nxt.get("head_sha", "")
+                    if not base or not head or base == head:
+                        continue
+                    wfname = w.get("name") or "CI"
+                    msg = ((w.get("head_commit") or {}).get("message") or "").splitlines()[0][:60]
+                    cands.append(Candidate(
+                        id=_cid("github_ci", repo["full_name"], base[:12]),
+                        feed="github_ci", t=created,
+                        title=f"{wfname} red on {name}@{base[:8]}: {msg}",
+                        summary=(f"{repo['full_name']} '{wfname}' failed at {base[:8]} ({created[:10]}), "
+                                 f"went green at {head[:8]}. Snapshot at T shows the broken tree."),
+                        required_data={
+                            "github": {"org": owner, "repos": [name], "as_of": created},
+                            "logfire": {"as_of": created, "incident_hours": 2, "period_days": 30},
+                            "slack": {"as_of": created}},
+                        resolution={"repo": repo["full_name"], "pr": None, "base_sha": base,
+                                    "head_sha": head, "merged_at": nxt.get("created_at"),
+                                    "workflow": wfname, "has_tests": True},
+                        score=2.0, signals=["ci_failure"]))
+                    break   # one candidate per workflow is plenty
+            if len(cands) >= max_candidates:
+                break
+    return cands[:max_candidates]
+
+
+@feed("logfire_anomaly")
+def logfire_anomaly(token: str, window_days: int = 14, max_candidates: int = 40, **_) -> List[Candidate]:
+    """Live scan of Logfire: distinct error/exception signatures in the window become DIAGNOSIS
+    candidates anchored at each signature's first-seen. No code oracle — ground truth is the
+    signature + service (a readback/diagnosis task)."""
+    from datetime import datetime, timedelta, timezone
+    from .. import logfire_export as gx
+    now = datetime.now(timezone.utc)
+    fz = lambda d: d.strftime("%Y-%m-%dT%H:%M:%SZ")
+    client = gx.LogfireClient(token)
+    try:
+        # discovery only needs the SIGNATURE overview — skip the heavy paged incident pull
+        overview = client.query(gx.OVERVIEW_SQL, fz(now - timedelta(days=window_days)), fz(now), limit=2000)
+    finally:
+        client.close()
+    cands: List[Candidate] = []
+    for sig in (overview or []):
+        if not sig.get("exception_type"):
+            continue
+        first = (sig.get("first_seen") or "")[:19]
+        t = (first + "Z") if first and not first.endswith("Z") else (first or fz(now))
+        svc = sig.get("service_name") or "?"
+        cands.append(Candidate(
+            id=_cid("logfire_anomaly", svc, sig.get("exception_type"), sig.get("message", "")[:40]),
+            feed="logfire_anomaly", t=t,
+            title=f"{sig['exception_type']} in {svc} (x{sig.get('n', '?')})",
+            summary=(f"{svc}: {sig['exception_type']} — {(sig.get('exception_message') or '')[:80]}. "
+                     f"{sig.get('n', '?')} occurrences from {first[:10]}. Diagnose the root cause."),
+            required_data={"logfire": {"as_of": t, "incident_hours": 3, "period_days": 30},
+                           "slack": {"as_of": t}},
+            resolution={"service": svc, "exception_type": sig.get("exception_type"),
+                        "signature": sig.get("message", ""), "count": sig.get("n"), "kind": "diagnosis"},
+            score=min(5.0, 1.0 + (sig.get("n") or 0) / 50.0), signals=["exception", svc]))
+        if len(cands) >= max_candidates:
+            break
+    cands.sort(key=lambda x: -x.score)
+    return cands
+
+
+# which env credential each feed needs (the server resolves + passes it as `token`)
+FEED_ENV = {"github_revert": "GITHUB_TOKEN", "github_ci": "GITHUB_TOKEN",
+            "logfire_anomaly": "LOGFIRE_READ_TOKEN"}
+
+
 def discover(feed_name: str, token: str, **kw) -> List[Candidate]:
     fn = FEEDS.get(feed_name)
     if not fn:
