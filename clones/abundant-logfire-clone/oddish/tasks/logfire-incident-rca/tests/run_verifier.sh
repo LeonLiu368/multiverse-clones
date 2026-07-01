@@ -21,6 +21,8 @@ cp /workspace/incident_rca.py "$GRADE/incident_rca.py"
 cp "$HERE/trusted/test_grade_rca.py" "$GRADE/test_grade_rca.py"
 
 reward=0
+# ensure pytest (thin pulled agent may not ship it)
+python3 -c "import pytest" 2>/dev/null || python3 -m pip install -q --disable-pip-version-check pytest >/dev/null 2>&1 || true
 ( cd "$GRADE" && PYTHONPATH="$GRADE" python3 -m pytest -q test_grade_rca.py ) \
   > /logs/verifier/pytest.log 2>&1 && reward=1
 echo "[verifier] reward=$reward"

@@ -16,7 +16,10 @@
 # image: name still matches the published ghcr.io/abundant-ai/ghc-service:empty.
 services:
   api:
-    image: ghcr.io/abundant-ai/ghc-service-mv:empty   # PULLED (no build)
+    image: ghcr.io/abundant-ai/ghc-service:empty
+    build:
+      context: ../../../..            # repo root (so ghclone/ is in context)
+      dockerfile: selfcontained/gateway/Dockerfile
     environment:
       GHC_FIXTURE: /fixture
     volumes:

@@ -1,0 +1,18 @@
+# Discrimination sweep across all 10 clones: a weak->strong model ladder + nop/oracle floor/ceiling.
+# The goal is to show the clones DISCRIMINATE (pass rates spread by capability) with nop=0/oracle=1.
+#   oddish run experiments/fleet-smoke/tasks -c experiments/fleet-smoke/fleet-sweep.yaml \
+#     --registry-login "username=<gh-user>,token=<PAT read:packages>,registry=ghcr.io"
+agents:
+  - name: nop
+    n_trials: 1
+  - name: oracle
+    n_trials: 1
+  - name: claude-code           # weak end of the ladder
+    model_name: anthropic/claude-haiku-4-5
+    n_trials: 2
+  - name: gemini-cli            # mid
+    model_name: google/gemini-3.1-pro-preview
+    n_trials: 2
+  - name: claude-code           # strong end
+    model_name: anthropic/claude-opus-4-8
+    n_trials: 2
