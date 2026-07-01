@@ -23,6 +23,8 @@ mkdir -p "$GRADE"
 cp -r /workspace/pricing_card "$GRADE/pricing_card"
 cp "$HERE/trusted/test_card.py" "$HERE/trusted/test_grade_card.py" "$GRADE/"
 code_ok=0
+# ensure pytest (thin pulled agent may not ship it)
+python3 -c "import pytest" 2>/dev/null || python3 -m pip install -q --disable-pip-version-check pytest >/dev/null 2>&1 || true
 ( cd "$GRADE" && python3 -m pytest -q ) > /logs/verifier/pytest.log 2>&1 && code_ok=1
 echo "[verifier] code_ok=$code_ok" ; tail -n 3 /logs/verifier/pytest.log
 

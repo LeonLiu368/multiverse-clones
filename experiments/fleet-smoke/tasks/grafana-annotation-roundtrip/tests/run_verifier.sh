@@ -15,7 +15,7 @@ API="${GRAFANA_URL:-http://grafana}"
 TOKEN="${GRAFANA_TOKEN:-test-token-acme-eval}"
 KEY="dash-payment-webhooks"
 
-annotations_json="$(curl -sf -H "Authorization: Bearer $TOKEN" "$API/api/annotations?dashboardUID=$KEY" || echo '[]')"
+annotations_json="$(python3 -c "import urllib.request as u; req=u.Request('$API/api/annotations?dashboardUID=$KEY', headers={'Authorization':'Bearer $TOKEN'}); print(u.urlopen(req, timeout=10).read().decode())" 2>/dev/null || echo '[]')"
 
 reward="$(python3 - "$annotations_json" <<'PY'
 import json, sys

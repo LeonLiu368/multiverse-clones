@@ -24,7 +24,6 @@ tasks:
   - aws-payment-reconcile       # AWS: reconcile a stuck payment via SQS/S3/DynamoDB
   - jira-transition-roundtrip   # Jira: transition an issue + comment (write->read)
   - slack-incident-fix-report   # Slack: fix code from buried spec + post report
-  - ghc-incident-isolated       # GitHub (gh): incident fix -> PR -> merge (IP-isolated)
 
 agents:
   - name: nop

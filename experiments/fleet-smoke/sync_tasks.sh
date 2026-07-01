@@ -14,7 +14,6 @@ logfire-incident-rca	abundant-logfire-clone/oddish/tasks/logfire-incident-rca
 aws-payment-reconcile	aws-clone/oddish/tasks/payment-reconcile
 jira-transition-roundtrip	abundant-jira-clone/tasks/jira-transition-roundtrip
 slack-incident-fix-report	abundant-slack-clone/oddish/tasks/incident-fix-report
-ghc-incident-isolated	gh-cli-clone/examples/oddish-tasks/incident-isolated
 EOF
 )
 printf '%s\n' "$map" | while IFS=$'\t' read -r name src; do
