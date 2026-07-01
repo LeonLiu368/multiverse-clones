@@ -6,6 +6,8 @@ import { FigmaApp } from "./apps/figma/FigmaApp";
 import { GaugeApp } from "./apps/gauge/GaugeApp";
 import { SentryApp } from "./apps/sentry/SentryApp";
 import { GithubApp } from "./apps/github/GithubApp";
+import { LogfireApp } from "./apps/logfire/LogfireApp";
+import { GworkspaceApp } from "./apps/gworkspace/GworkspaceApp";
 import { GenericApp } from "./apps/GenericApp";
 
 // Visual metadata per app id. A new clone adds one entry; everything else is generic.
@@ -16,6 +18,8 @@ const APP_META: Record<string, { glyph: string; color: string; blurb: string }> 
   gauge: { glyph: "G", color: "#f46800", blurb: "Logs & dashboards (gauge state.json)" },
   sentry: { glyph: "S", color: "#362d59", blurb: "Issues & events (Sentry state.json)" },
   github: { glyph: "G", color: "#24292f", blurb: "Repos/issues/PRs (gh seed.sh)" },
+  logfire: { glyph: "🔥", color: "#e5202e", blurb: "Traces & spans (Logfire records.json)" },
+  gworkspace: { glyph: "W", color: "#1a73e8", blurb: "Drive / Docs / Calendar / Gmail (gws fixture or gws.db)" },
   echo: { glyph: "E", color: "#1264a3", blurb: "Demo adapter (extension-point proof)" },
 };
 
@@ -83,6 +87,10 @@ export default function App() {
           <SentryApp appId={open.id} />
         ) : open.ui_module === "github" ? (
           <GithubApp appId={open.id} />
+        ) : open.ui_module === "logfire" ? (
+          <LogfireApp appId={open.id} />
+        ) : open.ui_module === "gworkspace" ? (
+          <GworkspaceApp appId={open.id} />
         ) : (
           <GenericApp appId={open.id} />
         )}

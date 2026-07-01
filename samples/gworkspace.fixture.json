@@ -1,0 +1,333 @@
+{
+ "drive": [
+  {
+   "id": "FOLDER_LAUNCH",
+   "name": "Launch",
+   "mimeType": "application/vnd.google-apps.folder",
+   "parents": [
+    "root"
+   ],
+   "modifiedTime": "2026-06-01T09:00:00Z",
+   "owners": [
+    {
+     "displayName": "Mira Devon",
+     "emailAddress": "mira@acme.example"
+    }
+   ]
+  },
+  {
+   "id": "DOC_Q3PLAN_0001",
+   "name": "Q3 Launch Plan",
+   "mimeType": "application/vnd.google-apps.document",
+   "parents": [
+    "FOLDER_LAUNCH"
+   ],
+   "modifiedTime": "2026-06-01T10:00:00Z",
+   "owners": [
+    {
+     "displayName": "Mira Devon",
+     "emailAddress": "mira@acme.example"
+    }
+   ]
+  },
+  {
+   "id": "DOC_RUNBOOK_003",
+   "name": "Incident Runbook",
+   "mimeType": "application/vnd.google-apps.document",
+   "parents": [
+    "FOLDER_LAUNCH"
+   ],
+   "modifiedTime": "2026-06-03T14:20:00Z",
+   "owners": [
+    {
+     "displayName": "Omar Reyes",
+     "emailAddress": "omar@acme.example"
+    }
+   ]
+  },
+  {
+   "id": "FILE_BUDGET_002",
+   "name": "Q3 Budget",
+   "mimeType": "application/vnd.google-apps.spreadsheet",
+   "parents": [
+    "FOLDER_LAUNCH"
+   ],
+   "modifiedTime": "2026-05-20T09:00:00Z",
+   "owners": [
+    {
+     "displayName": "Mira Devon",
+     "emailAddress": "mira@acme.example"
+    }
+   ]
+  },
+  {
+   "id": "FILE_DECK_004",
+   "name": "Launch Deck",
+   "mimeType": "application/vnd.google-apps.presentation",
+   "parents": [
+    "root"
+   ],
+   "modifiedTime": "2026-06-04T11:00:00Z",
+   "owners": [
+    {
+     "displayName": "Omar Reyes",
+     "emailAddress": "omar@acme.example"
+    }
+   ]
+  },
+  {
+   "id": "FILE_LOGO_005",
+   "name": "logo.png",
+   "mimeType": "image/png",
+   "parents": [
+    "root"
+   ],
+   "modifiedTime": "2026-05-18T08:00:00Z",
+   "owners": [
+    {
+     "displayName": "Mira Devon",
+     "emailAddress": "mira@acme.example"
+    }
+   ],
+   "size": "48213"
+  }
+ ],
+ "documents": [
+  {
+   "documentId": "DOC_Q3PLAN_0001",
+   "title": "Q3 Launch Plan",
+   "revisionId": "7",
+   "body": {
+    "content": [
+     {
+      "sectionBreak": {}
+     },
+     {
+      "paragraph": {
+       "paragraphStyle": {
+        "namedStyleType": "HEADING_1"
+       },
+       "elements": [
+        {
+         "textRun": {
+          "content": "Q3 Launch Plan\n"
+         }
+        }
+       ]
+      }
+     },
+     {
+      "paragraph": {
+       "paragraphStyle": {
+        "namedStyleType": "NORMAL_TEXT"
+       },
+       "elements": [
+        {
+         "textRun": {
+          "content": "Owner: Mira Devon\n"
+         }
+        }
+       ]
+      }
+     },
+     {
+      "paragraph": {
+       "paragraphStyle": {
+        "namedStyleType": "NORMAL_TEXT"
+       },
+       "elements": [
+        {
+         "textRun": {
+          "content": "Launch date: 2026-09-15\n"
+         }
+        }
+       ]
+      }
+     },
+     {
+      "paragraph": {
+       "paragraphStyle": {
+        "namedStyleType": "HEADING_2"
+       },
+       "elements": [
+        {
+         "textRun": {
+          "content": "Goals\n"
+         }
+        }
+       ]
+      }
+     },
+     {
+      "paragraph": {
+       "paragraphStyle": {
+        "namedStyleType": "NORMAL_TEXT"
+       },
+       "elements": [
+        {
+         "textRun": {
+          "content": "Ship the new onboarding flow and hit 95% activation.\n"
+         }
+        }
+       ]
+      }
+     },
+     {
+      "paragraph": {
+       "paragraphStyle": {
+        "namedStyleType": "HEADING_2"
+       },
+       "elements": [
+        {
+         "textRun": {
+          "content": "Status\n"
+         }
+        }
+       ]
+      }
+     },
+     {
+      "paragraph": {
+       "paragraphStyle": {
+        "namedStyleType": "NORMAL_TEXT"
+       },
+       "elements": [
+        {
+         "textRun": {
+          "content": "On track. Payments integration is the main risk.\n"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  {
+   "documentId": "DOC_RUNBOOK_003",
+   "title": "Incident Runbook",
+   "revisionId": "3",
+   "body": {
+    "content": [
+     {
+      "sectionBreak": {}
+     },
+     {
+      "paragraph": {
+       "paragraphStyle": {
+        "namedStyleType": "HEADING_1"
+       },
+       "elements": [
+        {
+         "textRun": {
+          "content": "Incident Runbook\n"
+         }
+        }
+       ]
+      }
+     },
+     {
+      "paragraph": {
+       "paragraphStyle": {
+        "namedStyleType": "HEADING_2"
+       },
+       "elements": [
+        {
+         "textRun": {
+          "content": "Severity levels\n"
+         }
+        }
+       ]
+      }
+     },
+     {
+      "paragraph": {
+       "paragraphStyle": {
+        "namedStyleType": "NORMAL_TEXT"
+       },
+       "elements": [
+        {
+         "textRun": {
+          "content": "SEV1: customer-facing outage. Page on-call immediately.\n"
+         }
+        }
+       ]
+      }
+     },
+     {
+      "paragraph": {
+       "paragraphStyle": {
+        "namedStyleType": "HEADING_2"
+       },
+       "elements": [
+        {
+         "textRun": {
+          "content": "Escalation\n"
+         }
+        }
+       ]
+      }
+     },
+     {
+      "paragraph": {
+       "paragraphStyle": {
+        "namedStyleType": "NORMAL_TEXT"
+       },
+       "elements": [
+        {
+         "textRun": {
+          "content": "Notify #incidents and the EM. Open a ticket in the tracker.\n"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "calendar": [
+  {
+   "id": "EVT_LAUNCHSYNC",
+   "summary": "Q3 Launch Sync",
+   "location": "Meet",
+   "status": "confirmed",
+   "start": {
+    "dateTime": "2026-06-08T15:00:00Z"
+   },
+   "end": {
+    "dateTime": "2026-06-08T15:30:00Z"
+   },
+   "organizer": {
+    "displayName": "Mira Devon",
+    "emailAddress": "mira@acme.example"
+   },
+   "attendees": [
+    {
+     "displayName": "Mira Devon",
+     "emailAddress": "mira@acme.example"
+    },
+    {
+     "displayName": "Omar Reyes",
+     "emailAddress": "omar@acme.example"
+    }
+   ]
+  }
+ ],
+ "gmail": [
+  {
+   "id": "MSG_0001",
+   "threadId": "T1",
+   "labelIds": [
+    "INBOX",
+    "IMPORTANT"
+   ],
+   "from": "omar@acme.example",
+   "to": "mira@acme.example",
+   "subject": "Re: Q3 launch \u2014 payments risk",
+   "date": "2026-06-05T17:42:00Z",
+   "snippet": "Heads up: Stripe is declining test cards intermittently\u2026",
+   "bodyText": "Heads up: Stripe is declining test cards intermittently. Filed a ticket; runbook updated. \u2014 Omar"
+  }
+ ]
+}

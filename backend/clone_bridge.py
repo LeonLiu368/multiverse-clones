@@ -9,8 +9,24 @@ import os
 import sys
 from functools import lru_cache
 
-DEFAULT_SLACK_CLONE_BASE = (
-    "/Users/leonliu/projects/abundant-slack-clone-mattermost/selfcontained/base"
+# Canonical clone source now lives in ~/projects/multiverse-clones/clones (see the repo's
+# MANIFEST.json). We prefer it and fall back to the older standalone abundant-* checkouts so the
+# viewer keeps working on a box that only has one of them.
+MULTIVERSE = os.path.expanduser(
+    os.environ.get("MULTIVERSE_CLONES", "/Users/leonliu/projects/multiverse-clones/clones")
+)
+
+
+def _first_existing(*paths: str) -> str:
+    for p in paths:
+        if p and os.path.isdir(p):
+            return p
+    return paths[0]  # a stable default even if missing (callers raise a clear error)
+
+
+DEFAULT_SLACK_CLONE_BASE = _first_existing(
+    os.path.join(MULTIVERSE, "abundant-slack-clone", "selfcontained", "base"),
+    "/Users/leonliu/projects/abundant-slack-clone-mattermost/selfcontained/base",
 )
 
 
@@ -44,8 +60,14 @@ def load_slack_clone():
 # writes it is ticketvector's FakePlaneBackend — we import it by path (zero vendoring), exactly like
 # the Slack store bridge. JIRA_DATA_BASE points at the abundant-jira-clone checkout (state.json
 # fixtures + the jira-gateway images); TICKETVECTOR_BASE points at the ticketvector checkout.
+# state.json + apply_state_patch.py + jira-gateway images now live in the multiverse jira clone;
+# the read/write engine (ticketvector's FakePlaneBackend) is not vendored there, so it stays on the
+# standalone ticketvector checkout (the state.json format is identical, so this is drift-free).
 DEFAULT_TICKETVECTOR_BASE = "/Users/leonliu/projects/ticketvector"
-DEFAULT_JIRA_DATA_BASE = "/Users/leonliu/projects/abundant-jira-clone"
+DEFAULT_JIRA_DATA_BASE = _first_existing(
+    os.path.join(MULTIVERSE, "abundant-jira-clone"),
+    "/Users/leonliu/projects/abundant-jira-clone",
+)
 
 
 def ticketvector_base() -> str:

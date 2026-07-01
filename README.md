@@ -68,14 +68,30 @@ Pick a bundled sample (under `samples/`) or **upload** any seed file (`POST /api
   node), and a **Thumbnail** view of the file's rendered image. Besides a local `fixture.json`, it can
   **Pull from GHCR** / load the upstream **`figma-service:prod-v1`** image — extracting its baked
   `/srv/figma.db` corpus (read with stdlib sqlite3) and showing the real Figma thumbnail.
-- **gauge** (`gauge.state.json` **or** a `gauge-gateway` image) — Loki/Grafana shape: a dark **log
-  explorer** (LogQL selector → level-colored lines), a **metrics explorer** (PromQL query → series
-  with sparklines + min/max/last + data points), plus dashboards (panels + exprs) and datasources
-  (Loki + Prometheus).
-- **Sentry** (`sentry.state.json`) — an **issue list + detail** with events and **stack traces**
-  (frames + code context).
+- **gauge** (`state.json` **or** a `grafana-service` image) — Loki/Grafana shape, a real Grafana
+  dark theme: a **log explorer** (LogQL selector → level-colored lines), a **metrics explorer**
+  (PromQL query → series with sparklines + min/max/last + data points), plus dashboards (panels +
+  exprs) and datasources (Loki + Prometheus).
+- **Sentry** (`state.json` **or** a `sentry-clone-service` image) — a dark "Sentry purple" **issue
+  list + detail** with events and **stack traces** (frames + code context). Conforms to the
+  multiverse corpus shape (top-level `events[]` joined to `issues[]` by `issue_id`).
 - **GitHub** (`seed.sh`) — parses the `gh` API calls into a **preview** of repos / issues / PRs (with
   nested reviews), plus the **raw script**.
+- **Logfire** (`records.json` **or** a `logfire-service` image) — the `abundant-logfire-clone` OTel
+  `records` corpus (Pydantic Logfire): a **live feed** (Traces / Records, filter by level + service
+  + text), a **trace waterfall** (spans nested by `parent_span_id`, duration bars, level colors,
+  exceptions flagged) and a **span detail** (exception stacktrace, HTTP, timing, ids, attributes).
+  The image bakes a **gzipped** `/data/records.json.gz` (transparently gunzipped).
+- **Workspace** (Google Workspace — `fixture.json` `{drive, documents}` **or** a `gworkspace-service`
+  image's baked `/srv/gws.db`) — a Google-Material UI with **Drive** (folder tree + file browser),
+  **Docs** (the `body.content` structural tree as a Doc page + outline), **Calendar** and **Gmail**.
+
+All clone image names + baked paths track **`~/projects/multiverse-clones`** (the canonical clone
+source): `grafana-service` `/srv/grafana/state.json`, `sentry-clone-service`
+`/srv/sentry-clone/corpus-state.json`, `logfire-service` `/data/records.json.gz`,
+`gworkspace-service` `/srv/gws.db`, `figma-service` `/srv/figma.db`, `jira-gateway`
+`/var/lib/ticketvector/state.json`; the Slack/Jira code bridges import from the multiverse checkouts
+(`MULTIVERSE_CLONES` overrides the base).
 
 ## Scaling to other clones
 

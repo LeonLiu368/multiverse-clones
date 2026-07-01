@@ -1,63 +1,565 @@
 {
-  "org": "acme",
-  "project": "web",
-  "issues": [
+  "activity": [],
+  "comments": [],
+  "commits": [],
+  "deploys": [],
+  "events": [
     {
-      "id": "ISSUE-1",
-      "shortId": "WEB-7K2",
-      "title": "TimeoutError: upstream read timeout after 5s calling payments",
-      "culprit": "checkout.charge",
-      "level": "error",
-      "status": "unresolved",
-      "count": 142,
-      "userCount": 37,
-      "firstSeen": "2026-06-20T16:30:10Z",
-      "lastSeen": "2026-06-20T17:02:44Z",
-      "tags": { "environment": "production", "release": "web@2026.06.20" },
-      "events": [
+      "breadcrumbs": [
         {
-          "id": "ev-1a2b",
-          "timestamp": "2026-06-20T17:02:44Z",
-          "message": "upstream read timeout after 5s calling payments; deadline exceeded",
-          "tags": { "environment": "production", "transaction": "POST /checkout" },
-          "exception": {
-            "type": "TimeoutError",
-            "value": "read timeout after 5s (deadline exceeded)",
-            "stacktrace": [
-              { "filename": "app/checkout.py", "function": "charge", "lineno": 88, "context": "resp = http.post(PAYMENTS_URL, json=body, timeout=5)" },
-              { "filename": "app/http.py", "function": "post", "lineno": 41, "context": "return self._session.post(url, timeout=timeout)" }
-            ]
-          }
+          "category": "gateway.response",
+          "level": "info",
+          "message": "provider returned 409 validation_conflict",
+          "timestamp": "2026-06-07T11:59:10Z"
+        },
+        {
+          "category": "retry.scheduler",
+          "level": "warning",
+          "message": "retry scheduled for non-lock conflict",
+          "timestamp": "2026-06-07T11:59:12Z"
         }
-      ]
+      ],
+      "contexts": {
+        "runtime": {
+          "name": "CPython",
+          "version": "3.11"
+        },
+        "trace": {
+          "span_id": "sp-1",
+          "trace_id": "tr-501"
+        }
+      },
+      "exception": {
+        "mechanism": {
+          "handled": false
+        },
+        "type": "RuntimeError",
+        "value": "unsafe retry for validation conflict"
+      },
+      "id": "evt-1001-latest",
+      "issue_id": "1001",
+      "message": "RuntimeError: unsafe retry for validation conflict",
+      "project_slug": "payments-api",
+      "stacktrace": {
+        "frames": [
+          {
+            "context_line": "return status in RETRYABLE_STATUSES",
+            "filename": "payments/retry_policy.py",
+            "function": "should_retry_event",
+            "in_app": true,
+            "lineno": 42
+          },
+          {
+            "context_line": "policy = retry_plan(event)",
+            "filename": "payments/worker.py",
+            "function": "schedule_retry",
+            "in_app": true,
+            "lineno": 88
+          }
+        ]
+      },
+      "tags": {
+        "environment": "production",
+        "error_type": "validation_conflict",
+        "release": "payments-api@2026.06.07.1",
+        "status_code": "409"
+      },
+      "timestamp": "2026-06-07T11:59:15Z",
+      "user": {
+        "email": "redacted@example.local",
+        "id": "cust-123"
+      }
     },
     {
-      "id": "ISSUE-2",
-      "shortId": "WEB-4Q9",
-      "title": "KeyError: 'idempotency_key' in refund handler",
-      "culprit": "refunds.create",
-      "level": "error",
-      "status": "resolved",
-      "count": 8,
-      "userCount": 5,
-      "firstSeen": "2026-06-19T11:04:00Z",
-      "lastSeen": "2026-06-19T13:20:00Z",
-      "tags": { "environment": "production" },
-      "events": [
+      "breadcrumbs": [
         {
-          "id": "ev-9c8d",
-          "timestamp": "2026-06-19T13:20:00Z",
-          "message": "KeyError: 'idempotency_key'",
-          "tags": { "environment": "production", "transaction": "POST /refunds" },
-          "exception": {
-            "type": "KeyError",
-            "value": "'idempotency_key'",
-            "stacktrace": [
-              { "filename": "app/refunds.py", "function": "create", "lineno": 53, "context": "key = payload['idempotency_key']" }
-            ]
-          }
+          "category": "replay",
+          "level": "info",
+          "message": "token age exceeded replay ttl",
+          "timestamp": "2026-06-05T10:00:10Z"
         }
-      ]
+      ],
+      "contexts": {},
+      "exception": {
+        "mechanism": {
+          "handled": false
+        },
+        "type": "ValueError",
+        "value": "expired replay token"
+      },
+      "id": "evt-1000-latest",
+      "issue_id": "1000",
+      "message": "ValueError: expired replay token",
+      "project_slug": "payments-api",
+      "stacktrace": {
+        "frames": [
+          {
+            "context_line": "raise ValueError(\"expired replay token\")",
+            "filename": "payments/replay.py",
+            "function": "parse_token",
+            "in_app": true,
+            "lineno": 25
+          }
+        ]
+      },
+      "tags": {
+        "environment": "production",
+        "error_type": "expired_token",
+        "release": "payments-api@2026.06.06.3"
+      },
+      "timestamp": "2026-06-05T10:00:15Z",
+      "user": {
+        "email": "redacted@example.local",
+        "id": "cust-456"
+      }
+    },
+    {
+      "breadcrumbs": [
+        {
+          "category": "app",
+          "level": "info",
+          "message": "context for 2001",
+          "timestamp": "2026-06-07T08:59:10Z"
+        }
+      ],
+      "contexts": {
+        "runtime": {
+          "name": "node",
+          "version": "20"
+        }
+      },
+      "exception": {
+        "mechanism": {
+          "handled": false
+        },
+        "type": "TypeError",
+        "value": "cannot read properties of undefined (reading 'token')"
+      },
+      "id": "evt-2001-latest",
+      "issue_id": "2001",
+      "message": "TypeError: cannot read properties of undefined (reading 'token')",
+      "project_slug": "checkout-web",
+      "stacktrace": {
+        "frames": [
+          {
+            "context_line": "const t = session.token;",
+            "filename": "checkout/charge.js",
+            "function": "submitCharge",
+            "in_app": true,
+            "lineno": 57
+          }
+        ]
+      },
+      "tags": {
+        "environment": "production",
+        "error_type": "x",
+        "release": "checkout-web@2026.06.07.4"
+      },
+      "timestamp": "2026-06-07T08:59:10Z",
+      "user": {
+        "email": "redacted@example.local",
+        "id": "cust-2001"
+      }
+    },
+    {
+      "breadcrumbs": [
+        {
+          "category": "app",
+          "level": "info",
+          "message": "context for 2002",
+          "timestamp": "2026-06-06T00:00:00Z"
+        }
+      ],
+      "contexts": {
+        "runtime": {
+          "name": "node",
+          "version": "20"
+        }
+      },
+      "exception": {
+        "mechanism": {
+          "handled": false
+        },
+        "type": "Warning",
+        "value": "deprecated payment provider SDK"
+      },
+      "id": "evt-2002-latest",
+      "issue_id": "2002",
+      "message": "Warning: deprecated payment provider SDK",
+      "project_slug": "checkout-web",
+      "stacktrace": {
+        "frames": [
+          {
+            "context_line": "sdk.legacyInit();",
+            "filename": "checkout/provider.js",
+            "function": "initSdk",
+            "in_app": true,
+            "lineno": 12
+          }
+        ]
+      },
+      "tags": {
+        "environment": "production",
+        "error_type": "x",
+        "release": "checkout-web@2026.06.07.4"
+      },
+      "timestamp": "2026-06-06T00:00:00Z",
+      "user": {
+        "email": "redacted@example.local",
+        "id": "cust-2002"
+      }
+    },
+    {
+      "breadcrumbs": [
+        {
+          "category": "app",
+          "level": "info",
+          "message": "context for 1002",
+          "timestamp": "2026-06-07T11:58:05Z"
+        }
+      ],
+      "contexts": {
+        "runtime": {
+          "name": "CPython",
+          "version": "3.11"
+        }
+      },
+      "exception": {
+        "mechanism": {
+          "handled": false
+        },
+        "type": "TimeoutError",
+        "value": "upstream provider timeout"
+      },
+      "id": "evt-1002-latest",
+      "issue_id": "1002",
+      "message": "TimeoutError: upstream provider timeout",
+      "project_slug": "payments-api",
+      "stacktrace": {
+        "frames": [
+          {
+            "context_line": "resp = client.post(url, timeout=2)",
+            "filename": "payments/gateway.py",
+            "function": "call_provider",
+            "in_app": true,
+            "lineno": 71
+          }
+        ]
+      },
+      "tags": {
+        "environment": "staging",
+        "error_type": "x",
+        "release": "payments-api@2026.06.07.1"
+      },
+      "timestamp": "2026-06-07T11:58:05Z",
+      "user": {
+        "email": "redacted@example.local",
+        "id": "cust-1002"
+      }
+    }
+  ],
+  "issues": [
+    {
+      "assignedTo": null,
+      "count": 37,
+      "culprit": "payments.retry_policy in should_retry_event",
+      "environment": "production",
+      "firstSeen": "2026-06-07T11:54:00Z",
+      "id": "1001",
+      "lastSeen": "2026-06-07T11:59:00Z",
+      "latestEventId": "evt-1001-latest",
+      "level": "error",
+      "owner": {
+        "slug": "payments",
+        "type": "team"
+      },
+      "priority": "high",
+      "project_slug": "payments-api",
+      "shortId": "PAYMENTS-501",
+      "status": "unresolved",
+      "substatus": "new",
+      "suspectCommits": [
+        {
+          "author": "dev@example.local",
+          "files": [
+            "payments/retry_policy.py"
+          ],
+          "id": "abc1234",
+          "message": "Tighten webhook retry handling",
+          "repository": "acme/payments-api"
+        }
+      ],
+      "tags": {
+        "environment": "production",
+        "error_type": "validation_conflict",
+        "release": "payments-api@2026.06.07.1",
+        "route": "/webhooks",
+        "service": "payments",
+        "status_code": "409"
+      },
+      "title": "RuntimeError: unsafe retry for validation conflict",
+      "type": "error",
+      "userCount": 12
+    },
+    {
+      "assignedTo": {
+        "slug": "payments",
+        "type": "team"
+      },
+      "count": 4,
+      "culprit": "payments.replay in parse_token",
+      "environment": "production",
+      "firstSeen": "2026-06-05T09:00:00Z",
+      "id": "1000",
+      "lastSeen": "2026-06-05T10:00:00Z",
+      "latestEventId": "evt-1000-latest",
+      "level": "error",
+      "owner": {
+        "slug": "payments",
+        "type": "team"
+      },
+      "priority": "low",
+      "project_slug": "payments-api",
+      "resolvedInRelease": "payments-api@2026.06.06.3",
+      "shortId": "PAYMENTS-487",
+      "status": "resolved",
+      "substatus": "resolved",
+      "suspectCommits": [],
+      "tags": {
+        "environment": "production",
+        "error_type": "expired_token",
+        "release": "payments-api@2026.06.06.3",
+        "service": "payments"
+      },
+      "title": "ValueError: expired replay token",
+      "type": "error",
+      "userCount": 1
+    },
+    {
+      "assignedTo": null,
+      "count": 21,
+      "culprit": "checkout/charge.js in submitCharge",
+      "environment": "production",
+      "firstSeen": "2026-06-07T08:30:00Z",
+      "id": "2001",
+      "lastSeen": "2026-06-07T08:59:00Z",
+      "latestEventId": "evt-2001-latest",
+      "level": "error",
+      "owner": {
+        "slug": "checkout",
+        "type": "team"
+      },
+      "priority": "high",
+      "project_slug": "checkout-web",
+      "shortId": "CHECKOUT-12",
+      "status": "unresolved",
+      "substatus": "ongoing",
+      "suspectCommits": [
+        {
+          "author": "dev2@example.local",
+          "files": [
+            "checkout/charge.js"
+          ],
+          "id": "ck00aa1",
+          "message": "Add idempotency key to charge submit",
+          "repository": "acme/checkout-web"
+        }
+      ],
+      "tags": {
+        "environment": "production",
+        "error_type": "type_error",
+        "release": "checkout-web@2026.06.07.4",
+        "route": "/charge",
+        "service": "checkout",
+        "status_code": "500"
+      },
+      "title": "TypeError: cannot read properties of undefined (reading 'token')",
+      "type": "error",
+      "userCount": 9
+    },
+    {
+      "assignedTo": {
+        "slug": "checkout",
+        "type": "team"
+      },
+      "count": 200,
+      "culprit": "checkout/provider.js in initSdk",
+      "environment": "production",
+      "firstSeen": "2026-06-01T00:00:00Z",
+      "id": "2002",
+      "ignoreReason": "noise",
+      "lastSeen": "2026-06-06T00:00:00Z",
+      "latestEventId": "evt-2002-latest",
+      "level": "warning",
+      "owner": {
+        "slug": "checkout",
+        "type": "team"
+      },
+      "priority": "low",
+      "project_slug": "checkout-web",
+      "shortId": "CHECKOUT-7",
+      "status": "ignored",
+      "substatus": "until_escalating",
+      "suspectCommits": [],
+      "tags": {
+        "environment": "production",
+        "error_type": "deprecation",
+        "release": "checkout-web@2026.06.07.4",
+        "service": "checkout"
+      },
+      "title": "Warning: deprecated payment provider SDK",
+      "type": "default",
+      "userCount": 50
+    },
+    {
+      "assignedTo": null,
+      "count": 8,
+      "culprit": "payments.gateway in call_provider",
+      "environment": "staging",
+      "firstSeen": "2026-06-07T11:50:00Z",
+      "id": "1002",
+      "lastSeen": "2026-06-07T11:58:00Z",
+      "latestEventId": "evt-1002-latest",
+      "level": "error",
+      "owner": {
+        "slug": "payments",
+        "type": "team"
+      },
+      "priority": "medium",
+      "project_slug": "payments-api",
+      "shortId": "PAYMENTS-510",
+      "status": "unresolved",
+      "substatus": "ongoing",
+      "suspectCommits": [],
+      "tags": {
+        "environment": "staging",
+        "error_type": "timeout",
+        "release": "payments-api@2026.06.07.1",
+        "route": "/charge",
+        "service": "payments",
+        "status_code": "504"
+      },
+      "title": "TimeoutError: upstream provider timeout",
+      "type": "error",
+      "userCount": 5
+    }
+  ],
+  "meta": {
+    "corpus": "prod-v1",
+    "now": "2026-06-07T12:00:00Z",
+    "organization": "acme"
+  },
+  "mutation_log": [],
+  "ownership_rules": [
+    {
+      "match": "payments/**",
+      "owner": "team:payments",
+      "project_slug": "payments-api"
+    },
+    {
+      "match": "checkout/**",
+      "owner": "team:checkout",
+      "project_slug": "checkout-web"
+    }
+  ],
+  "projects": [
+    {
+      "id": "proj-payments",
+      "name": "Payments API",
+      "platform": "python",
+      "slug": "payments-api",
+      "team_slug": "payments"
+    },
+    {
+      "id": "proj-checkout",
+      "name": "Checkout Web",
+      "platform": "javascript",
+      "slug": "checkout-web",
+      "team_slug": "checkout"
+    }
+  ],
+  "releases": [
+    {
+      "commits": [
+        {
+          "author": "dev@example.local",
+          "files": [
+            "payments/retry_policy.py"
+          ],
+          "id": "abc1234",
+          "message": "Tighten webhook retry handling",
+          "repository": "acme/payments-api"
+        }
+      ],
+      "dateCreated": "2026-06-07T11:43:00Z",
+      "lastDeploy": {
+        "commit": "abc1234",
+        "dateFinished": "2026-06-07T11:45:00Z",
+        "environment": "production"
+      },
+      "project_slug": "payments-api",
+      "version": "payments-api@2026.06.07.1"
+    },
+    {
+      "commits": [
+        {
+          "author": "dev@example.local",
+          "files": [
+            "payments/worker.py"
+          ],
+          "id": "old4321",
+          "message": "Previous stable deploy",
+          "repository": "acme/payments-api"
+        }
+      ],
+      "dateCreated": "2026-06-06T22:10:00Z",
+      "lastDeploy": {
+        "commit": "old4321",
+        "dateFinished": "2026-06-06T22:14:00Z",
+        "environment": "production"
+      },
+      "project_slug": "payments-api",
+      "version": "payments-api@2026.06.06.3"
+    },
+    {
+      "commits": [
+        {
+          "author": "dev2@example.local",
+          "files": [
+            "checkout/charge.js"
+          ],
+          "id": "ck00aa1",
+          "message": "Add idempotency key to charge submit",
+          "repository": "acme/checkout-web"
+        }
+      ],
+      "dateCreated": "2026-06-07T09:00:00Z",
+      "lastDeploy": {
+        "commit": "ck00aa1",
+        "dateFinished": "2026-06-07T09:05:00Z",
+        "environment": "production"
+      },
+      "project_slug": "checkout-web",
+      "version": "checkout-web@2026.06.07.4"
+    }
+  ],
+  "teams": [
+    {
+      "id": "team-payments",
+      "name": "Payments",
+      "slug": "payments"
+    },
+    {
+      "id": "team-checkout",
+      "name": "Checkout",
+      "slug": "checkout"
+    }
+  ],
+  "users": [
+    {
+      "email": "agent@example.local",
+      "id": "u-agent",
+      "name": "Agent User"
     }
   ]
 }

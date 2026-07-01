@@ -20,14 +20,16 @@ from adapters.echo import EchoAdapter
 from adapters.figma import FigmaAdapter
 from adapters.gauge import GaugeAdapter
 from adapters.github import GithubAdapter
+from adapters.gworkspace import GworkspaceAdapter
 from adapters.jira import JiraAdapter
+from adapters.logfire import LogfireAdapter
 from adapters.sentry import SentryAdapter
 from adapters.slack import SlackAdapter
 
 # --- registry: the one place clones are wired in -----------------------------
 ADAPTERS: dict[str, CloneAdapter] = {a.id: a for a in [
     SlackAdapter(), JiraAdapter(), FigmaAdapter(), GaugeAdapter(), SentryAdapter(),
-    GithubAdapter(), EchoAdapter(),
+    GithubAdapter(), LogfireAdapter(), GworkspaceAdapter(), EchoAdapter(),
 ]}
 
 app = FastAPI(title="seed-dashboard")

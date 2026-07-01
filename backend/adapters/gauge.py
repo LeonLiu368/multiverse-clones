@@ -14,10 +14,12 @@ class GaugeAdapter(FileSeedAdapter):
     status = "active"
     ui_module = "gauge"
     sample_files = ("gauge.state.json",)
-    # gauge-gateway:<dataset> bakes its seed at GAUGE_STATE_FILE; the runtime copy lives at the
-    # other path. Either is the same gauge state.json this adapter parses.
-    image_substrings = ("gauge-gateway", "gauge-service", "gauge-seed")
-    image_state_paths = ("/data/gauge/state.json", "/var/lib/gauge/state.json")
+    # multiverse-clones renamed this clone gauge → grafana-clone: image `grafana-service`, state
+    # baked at /srv/grafana/state.json (Dockerfile.prod-v1, ENV GRAFANA_STATE_FILE). The state.json
+    # shape (logs.queries / metrics.queries / datasources / dashboards) is unchanged. Older gauge-*
+    # names/paths are kept for back-compat.
+    image_substrings = ("grafana-service", "grafana-clone", "gauge-gateway", "gauge-service", "gauge-seed")
+    image_state_paths = ("/srv/grafana/state.json", "/data/gauge/state.json", "/var/lib/gauge/state.json")
 
     def _norm_lines(self, val: Any) -> list[dict]:
         """A LogQL query value -> a flat list of {ts, labels, line}. The seed varies: the sample

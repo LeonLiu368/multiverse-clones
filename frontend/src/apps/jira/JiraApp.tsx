@@ -20,6 +20,36 @@ function stateClass(cat?: string) {
   );
 }
 
+// Jira-style priority glyphs (chevrons for severity).
+const PRIO_GLYPH: Record<string, string> = {
+  urgent: "⏫",
+  high: "↑",
+  medium: "=",
+  low: "↓",
+  none: "–",
+};
+
+const AVA_PALETTE = ["#0052cc", "#36b37e", "#ff7452", "#6554c0", "#00b8d9", "#ffab00", "#de350b"];
+function avaColor(s: string) {
+  let h = 0;
+  for (const ch of s) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return AVA_PALETTE[h % AVA_PALETTE.length];
+}
+
+function Assignees({ people }: { people: { id?: string; name?: string }[] }) {
+  if (!people.length) return <span className="ji-ava ji-ava-empty" title="Unassigned">∅</span>;
+  const first = people[0];
+  const label = first.name || first.id || "?";
+  return (
+    <span className="ji-ava-wrap" title={people.map((p) => p.name || p.id).join(", ")}>
+      <span className="ji-ava" style={{ background: avaColor(label) }}>
+        {label[0]?.toUpperCase()}
+      </span>
+      {people.length > 1 && <span className="ji-ava-more">+{people.length - 1}</span>}
+    </span>
+  );
+}
+
 export function JiraApp({ appId }: { appId: string }) {
   const [meta, setMeta] = useState<JiraMeta | null>(null);
   const [project, setProject] = useState<JiraProject | null>(null);
@@ -221,14 +251,14 @@ export function JiraApp({ appId }: { appId: string }) {
                   onClick={() => setSelected(i.identifier)}
                 >
                   <span className="ji-key">{i.identifier}</span>
-                  <span className={`ji-state ${stateClass(i.state.category)}`}>{i.state.name}</span>
-                  <span className={`ji-prio prio-${i.priority}`}>{i.priority}</span>
                   <span className="ji-title">{i.title}</span>
                   {i.origin === "overlay" && <span className="badge ov">overlay</span>}
                   {i.edited && <span className="badge edited">edited</span>}
-                  <span className="ji-assignee">
-                    {i.assignees.map((a) => a.name).join(", ")}
+                  <span className={`ji-prio prio-${i.priority}`} title={`Priority: ${i.priority}`}>
+                    {PRIO_GLYPH[i.priority] ?? "="}
                   </span>
+                  <span className={`ji-state ${stateClass(i.state.category)}`}>{i.state.name}</span>
+                  <Assignees people={i.assignees} />
                 </div>
               ))}
               {deletedTombstones.map((d) => (

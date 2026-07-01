@@ -34,7 +34,7 @@ function Sparkline({ values }: { values: [string | number, number | string][] })
     .join(" ");
   return (
     <svg className="g-spark" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none">
-      <polyline points={pts} fill="none" stroke="#e6522c" strokeWidth="1.5" />
+      <polyline points={pts} fill="none" stroke="#73bf69" strokeWidth="1.5" />
     </svg>
   );
 }

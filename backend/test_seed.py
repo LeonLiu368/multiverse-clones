@@ -165,20 +165,31 @@ def test_slack_edit_delete_message_patch_roundtrip():
     patch = client.get("/api/slack/overlay/patch").json()
     assert {(o["op"], o["entity"]) for o in patch["ops"]} >= {("update", "message"), ("delete", "message")}
 
-    # round-trips through the clone's own import_export.py --patch
+    # The multiverse abundant-slack-clone dropped import_export.apply_patch, so the patch op-list is
+    # a seed-dashboard artifact; apply it onto a fresh clone-imported DB the way a task would
+    # (update text / delete row) to prove the op-list round-trips.
     if CLONE not in sys.path:
         sys.path.insert(0, CLONE)
     from slackgw.store import Store  # type: ignore
     import import_export  # type: ignore
 
     with tempfile.TemporaryDirectory() as d:
-        db, pf = os.path.join(d, "slack.db"), os.path.join(d, "patch.json")
+        db = os.path.join(d, "slack.db")
         st = Store(db)
         import_export.import_export(st, os.path.abspath(TINY), None, None, None, overlay=False)
         st.commit()
-        json.dump(patch, open(pf, "w"))
-        import_export.apply_patch(st, pf)
-        rows = st.history(st.channel_by_ref("all-worldsdatatest")["id"], limit=10)
+        cid = st.channel_by_ref("all-worldsdatatest")["id"]
+        for o in patch["ops"]:
+            if o["entity"] != "message":
+                continue
+            if o["op"] == "update":
+                st.conn.execute("UPDATE messages SET text=? WHERE channel_id=? AND ts=?",
+                                (o["set"]["text"], cid, o["match"]["ts"]))
+            elif o["op"] == "delete":
+                st.conn.execute("DELETE FROM messages WHERE channel_id=? AND ts=?",
+                                (cid, o["match"]["ts"]))
+        st.commit()
+        rows = st.history(cid, limit=10)
         texts = {m["ts"]: m["text"] for m in rows}
         assert texts.get(edit_ts) == "[redacted]" and del_ts not in texts
 

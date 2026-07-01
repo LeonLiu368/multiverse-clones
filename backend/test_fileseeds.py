@@ -61,10 +61,16 @@ def test_gauge_overlay_merges_streams_and_datasources():
 
 
 def test_sentry_parses_issues_and_stacktrace():
+    # the canonical multiverse sentry-clone corpus: top-level events joined to issues by issue_id
     v = _load_sample("sentry")
-    assert v["stats"]["issues"] == 2 and v["stats"]["events"] == 2
+    assert v["org"] == "acme"
+    assert v["stats"]["issues"] == 5 and v["stats"]["events"] == 5
     iss = v["issues"][0]
-    assert iss["events"][0]["exception"]["stacktrace"][0]["filename"].endswith(".py")
+    assert iss["shortId"] and iss["title"] and isinstance(iss["tags"], dict)
+    ev = iss["events"][0]
+    assert ev["exception"]["type"] and ev["exception"]["value"]
+    frame = ev["exception"]["stacktrace"][0]
+    assert frame["filename"].endswith(".py") and frame["context"]
 
 
 def test_figma_parses_workspace_and_node_tree():

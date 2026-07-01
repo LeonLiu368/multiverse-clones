@@ -9,6 +9,7 @@ is a single per-task file. So the adapter loads the file and exposes the parsed 
     `image_state_paths`); we extract that file and parse it the same way."""
 from __future__ import annotations
 
+import gzip
 import os
 import tempfile
 import uuid
@@ -18,6 +19,16 @@ import dockerutil
 from adapters.base import BaseOption, CloneAdapter, LoadResult
 
 SAMPLES_DIR = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "..", "samples"))
+
+
+def _read_seed_text(path: str) -> str:
+    """Read a seed file as text, transparently gunzipping a gzip-compressed one (some clones bake
+    their corpus compressed, e.g. logfire-service's /data/records.json.gz)."""
+    with open(path, "rb") as fh:
+        data = fh.read()
+    if data[:2] == b"\x1f\x8b":  # gzip magic
+        data = gzip.decompress(data)
+    return data.decode("utf-8", errors="replace")
 
 
 class FileSeedAdapter(CloneAdapter):
@@ -52,7 +63,7 @@ class FileSeedAdapter(CloneAdapter):
             path = os.path.abspath(os.path.expanduser(path))
             if not os.path.isfile(path):
                 raise RuntimeError(f"seed file not found: {path}")
-            src, raw = path, open(path, encoding="utf-8", errors="replace").read()
+            src, raw = path, _read_seed_text(path)
         else:  # docker image — extract the baked state file
             if not self.image_state_paths:
                 raise RuntimeError(f"{self.id} does not support image bases")
@@ -69,7 +80,7 @@ class FileSeedAdapter(CloneAdapter):
                 raise RuntimeError(
                     f"no baked state in {base_id} (probed {self.image_state_paths}). {last}"
                 )
-            src, raw = base_id, open(dest, encoding="utf-8", errors="replace").read()
+            src, raw = base_id, _read_seed_text(dest)
 
         parsed = self._parse(raw, src)
         if overlay_path:  # optional overlay file, merged by the clone-specific _merge

@@ -402,7 +402,11 @@ class SlackAdapter(CloneAdapter):
             raise RuntimeError("unknown channel")
         cid, name, ts = ch["id"], ch["name"], str(p.get("ts"))
         text = p.get("text", "")
-        if not s["store"].update_message(cid, ts, text=text):
+        # multiverse abundant-slack-clone's Store has no update_message — edit the merged working DB
+        # directly (same conn the Store commits; this is a viewer-only working copy, never the corpus).
+        if not s["store"].conn.execute(
+            "UPDATE messages SET text=? WHERE channel_id=? AND ts=?", (text, cid, ts)
+        ).rowcount:
             raise RuntimeError(f"message not found: {name}@{ts}")
         s["store"].commit()
         if ts in s["overlay"]["ts_by_channel"].get(name, set()):
@@ -423,7 +427,10 @@ class SlackAdapter(CloneAdapter):
             raise RuntimeError("unknown channel")
         cid, name, ts = ch["id"], ch["name"], str(ts)
         is_overlay = ts in s["overlay"]["ts_by_channel"].get(name, set())
-        if not s["store"].delete_message(cid, ts):
+        # multiverse Store has no delete_message — delete from the merged working DB directly.
+        if not s["store"].conn.execute(
+            "DELETE FROM messages WHERE channel_id=? AND ts=?", (cid, ts)
+        ).rowcount:
             raise RuntimeError(f"message not found: {name}@{ts}")
         s["store"].recount_members([cid])
         s["store"].commit()
