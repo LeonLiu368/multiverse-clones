@@ -1,0 +1,7 @@
+{
+  "title": "Multiverse Clones — Parity Dashboard",
+  "subtitle": "Each clone's seed data, an agent's CLI/MCP call, the real endpoint it maps to, and real-vs-clone output — proving parity with the real service.",
+  "clones": [
+    { "file": "grafana-clone.json", "product": "Grafana", "verdict": "HIGH", "accent": "#f46800" }
+  ]
+}

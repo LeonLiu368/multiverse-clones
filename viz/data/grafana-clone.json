@@ -1,0 +1,535 @@
+{
+  "clone": "grafana-clone",
+  "product": "Grafana",
+  "real_service": {
+    "name": "Grafana HTTP API 11.x (+ Loki / Prometheus)",
+    "reference": "https://grafana.com/docs/grafana/latest/developers/http_api/",
+    "api_base": "{gateway}/api"
+  },
+  "parity": {
+    "verdict": "HIGH after reliability pass",
+    "note": "ds/query now returns real dataframes; real provisioning/prometheus alerting paths served."
+  },
+  "seed_file": "examples/data/grafana/state.json",
+  "surfaces": {
+    "cli": "gcx",
+    "mcp": "mcp-grafana"
+  },
+  "demos": [
+    {
+      "id": "dashboard-search",
+      "title": "Search dashboards",
+      "method": "GET",
+      "capability": "Dashboard search",
+      "seed_excerpt": {
+        "dashboards": [
+          {
+            "uid": "dash-payment-webhooks",
+            "title": "Payment Webhook Reliability",
+            "tags": [
+              "payments",
+              "webhooks",
+              "oncall"
+            ]
+          }
+        ]
+      },
+      "ui": {
+        "type": "list",
+        "title": "Grafana \u203a Dashboards",
+        "rows": [
+          {
+            "icon": "\u25a6",
+            "title": "Payment Webhook Reliability",
+            "sub": "dash-payment-webhooks",
+            "tags": [
+              "payments",
+              "webhooks",
+              "oncall"
+            ]
+          }
+        ]
+      },
+      "agent": {
+        "cli": "gcx dashboards search payment",
+        "mcp": {
+          "tool": "search_dashboards",
+          "args": {
+            "query": "payment"
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "GET /api/search?query=payment&type=dash-db",
+        "mcp": "mcp-grafana \u203a search_dashboards",
+        "doc": "https://grafana.com/docs/grafana/latest/developers/http_api/folder_dashboard_search/"
+      },
+      "clone_output": [
+        {
+          "id": null,
+          "uid": "dash-payment-webhooks",
+          "title": "Payment Webhook Reliability",
+          "type": "dash-db",
+          "folderTitle": "Payments",
+          "tags": [
+            "payments",
+            "webhooks",
+            "oncall"
+          ],
+          "url": "/d/dash-payment-webhooks/payment-webhook-reliability"
+        }
+      ],
+      "real_output": [
+        {
+          "id": 1,
+          "uid": "dash-payment-webhooks",
+          "title": "Payment Webhook Reliability",
+          "uri": "db/dash-payment-webhooks",
+          "url": "/d/dash-payment-webhooks/dash-payment-webhooks",
+          "slug": "",
+          "type": "dash-db",
+          "tags": [
+            "payments",
+            "webhooks",
+            "oncall"
+          ],
+          "isStarred": false,
+          "folderTitle": "General",
+          "folderUid": "",
+          "sortMeta": 0
+        }
+      ]
+    },
+    {
+      "id": "panel-query",
+      "title": "Run a panel query (PromQL)",
+      "method": "GET",
+      "capability": "Panel query exec \u2192 dataframes",
+      "seed_excerpt": {
+        "metrics": {
+          "queries": {
+            "sum by (status_code)(increase(payment_gateway_responses_total{service=\"payments\"}[5m]))": {
+              "resultType": "matrix",
+              "series": [
+                {
+                  "metric": {
+                    "status_code": "425"
+                  },
+                  "values": [
+                    [
+                      "2026-06-07T10:00:00Z",
+                      3
+                    ],
+                    [
+                      "2026-06-07T11:55:00Z",
+                      31
+                    ]
+                  ]
+                },
+                {
+                  "metric": {
+                    "status_code": "409"
+                  },
+                  "values": [
+                    [
+                      "2026-06-07T11:55:00Z",
+                      18
+                    ]
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      },
+      "ui": {
+        "type": "chart",
+        "title": "payment_gateway_responses_total",
+        "series": [
+          {
+            "name": "status_code=425",
+            "points": [
+              [
+                1780826400000,
+                3.0
+              ],
+              [
+                1780833300000,
+                31.0
+              ]
+            ]
+          },
+          {
+            "name": "status_code=409",
+            "points": [
+              [
+                1780833300000,
+                18.0
+              ]
+            ]
+          }
+        ]
+      },
+      "agent": {
+        "cli": "gcx dashboards query-panel dash-payment-webhooks 1",
+        "mcp": {
+          "tool": "run_panel_query",
+          "args": {
+            "dashboard_uid": "dash-payment-webhooks",
+            "panel_id": 1
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "POST /api/ds/query",
+        "mcp": "mcp-grafana \u203a run_panel_query",
+        "doc": "https://grafana.com/docs/grafana/latest/developers/http_api/data_source/"
+      },
+      "clone_output": {
+        "results": {
+          "A": {
+            "status": 200,
+            "frames": [
+              {
+                "schema": {
+                  "refId": "A",
+                  "fields": [
+                    {
+                      "name": "Time",
+                      "type": "time",
+                      "typeInfo": {
+                        "frame": "time.Time"
+                      }
+                    },
+                    {
+                      "name": "Value",
+                      "type": "number",
+                      "labels": {
+                        "status_code": "425"
+                      },
+                      "typeInfo": {
+                        "frame": "float64"
+                      }
+                    }
+                  ]
+                },
+                "data": {
+                  "values": [
+                    [
+                      1780826400000,
+                      1780833300000
+                    ],
+                    [
+                      3.0,
+                      31.0
+                    ]
+                  ]
+                }
+              },
+              {
+                "schema": {
+                  "refId": "A",
+                  "fields": [
+                    {
+                      "name": "Time",
+                      "type": "time",
+                      "typeInfo": {
+                        "frame": "time.Time"
+                      }
+                    },
+                    {
+                      "name": "Value",
+                      "type": "number",
+                      "labels": {
+                        "status_code": "409"
+                      },
+                      "typeInfo": {
+                        "frame": "float64"
+                      }
+                    }
+                  ]
+                },
+                "data": {
+                  "values": [
+                    [
+                      1780833300000
+                    ],
+                    [
+                      18.0
+                    ]
+                  ]
+                }
+              }
+            ],
+            "data": {
+              "status": "success",
+              "datasource_uid": "prom-payments",
+              "query": "sum by (status_code)(increase(payment_gateway_responses_total{service=\"payments\"}[5m]))",
+              "match": "exact",
+              "range": {
+                "from": null,
+                "to": null
+              },
+              "data": {
+                "resultType": "matrix",
+                "result": [
+                  {
+                    "metric": {
+                      "status_code": "425"
+                    },
+                    "values": [
+                      [
+                        "2026-06-07T10:00:00Z",
+                        3
+                      ],
+                      [
+                        "2026-06-07T11:55:00Z",
+                        31
+                      ]
+                    ]
+                  },
+                  {
+                    "metric": {
+                      "status_code": "409"
+                    },
+                    "values": [
+                      [
+                        "2026-06-07T11:55:00Z",
+                        18
+                      ]
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "real_output": {
+        "results": {
+          "A": {
+            "status": 200,
+            "frames": [
+              {
+                "schema": {
+                  "refId": "A",
+                  "fields": [
+                    {
+                      "name": "Time",
+                      "type": "time"
+                    },
+                    {
+                      "name": "Value",
+                      "type": "number",
+                      "labels": {
+                        "status_code": "425"
+                      }
+                    }
+                  ]
+                },
+                "data": {
+                  "values": [
+                    [
+                      1780826400000,
+                      1780833300000
+                    ],
+                    [
+                      3,
+                      31
+                    ]
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "alert-rules",
+      "title": "List alert rules",
+      "method": "GET",
+      "capability": "Alerting rules (real provisioning path)",
+      "seed_excerpt": {
+        "alerts": [
+          {
+            "uid": "alert-payment-retry-burn",
+            "title": null,
+            "state": "firing"
+          },
+          {
+            "uid": "alert-payment-latency-watch",
+            "title": null,
+            "state": "normal"
+          }
+        ]
+      },
+      "ui": {
+        "type": "list",
+        "title": "Grafana \u203a Alerting \u203a Rules",
+        "rows": [
+          {
+            "icon": "\ud83d\udd34",
+            "title": null,
+            "sub": "alert-payment-retry-burn",
+            "tags": [
+              "firing"
+            ]
+          },
+          {
+            "icon": "\ud83d\udfe2",
+            "title": null,
+            "sub": "alert-payment-latency-watch",
+            "tags": [
+              "normal"
+            ]
+          }
+        ]
+      },
+      "agent": {
+        "cli": "gcx alerts rules",
+        "mcp": {
+          "tool": "list_alert_rules",
+          "args": {}
+        }
+      },
+      "real_mapping": {
+        "api": "GET /api/v1/provisioning/alert-rules",
+        "mcp": "mcp-grafana \u203a list_alert_rules",
+        "doc": "https://grafana.com/docs/grafana/latest/developers/http_api/alerting_provisioning/"
+      },
+      "clone_output": [
+        {
+          "uid": "alert-payment-retry-burn",
+          "name": "Payment webhook retry error budget burn",
+          "state": "firing",
+          "health": "ok",
+          "dashboard_uid": "dash-payment-webhooks",
+          "panel_id": 1,
+          "query": "sum(rate(payment_webhook_failures_total[5m]))",
+          "labels": {
+            "service": "payments",
+            "severity": "page"
+          },
+          "folderUID": "dash-payment-webhooks",
+          "condition": "A",
+          "data": [
+            {
+              "refId": "A",
+              "query": "sum(rate(payment_webhook_failures_total[5m]))"
+            }
+          ],
+          "annotations": {}
+        },
+        {
+          "uid": "alert-payment-latency-watch",
+          "name": "Payment webhook latency watch",
+          "state": "normal",
+          "health": "ok",
+          "dashboard_uid": "dash-payment-webhooks",
+          "panel_id": 1,
+          "query": "histogram_quantile(0.95, rate(payment_webhook_latency_seconds_bucket[5m]))",
+          "labels": {
+            "service": "payments",
+            "severity": "ticket"
+          },
+          "folderUID": "dash-payment-webhooks",
+          "condition": "A",
+          "data": [
+            {
+              "refId": "A",
+              "query": "histogram_quantile(0.95, rate(payment_webhook_latency_seconds_bucket[5m]))"
+            }
+          ],
+          "annotations": {}
+        }
+      ],
+      "real_output": [
+        {
+          "uid": "alert-payment-retry-burn",
+          "title": null,
+          "condition": "A",
+          "folderUID": "",
+          "ruleGroup": "default",
+          "state": "firing",
+          "for": "5m",
+          "annotations": {},
+          "labels": {}
+        }
+      ]
+    },
+    {
+      "id": "annotation-create",
+      "title": "Create an annotation",
+      "method": "POST",
+      "capability": "Annotation write\u2192read round-trip",
+      "seed_excerpt": {
+        "annotations_before": 0
+      },
+      "ui": {
+        "type": "timeline",
+        "title": "Grafana \u203a Payment Webhook Reliability (annotations)",
+        "before": [],
+        "after": [
+          {
+            "id": 1,
+            "text": "deploy: payments v2.3.1",
+            "tags": [
+              "deploy"
+            ],
+            "time": "2026-06-07T12:00:00Z"
+          }
+        ],
+        "new_id": 1
+      },
+      "agent": {
+        "cli": "gcx annotations add dash-payment-webhooks \"deploy: payments v2.3.1\" --tag deploy",
+        "mcp": {
+          "tool": "create_annotation",
+          "args": {
+            "dashboard_uid": "dash-payment-webhooks",
+            "text": "deploy: payments v2.3.1",
+            "tags": [
+              "deploy"
+            ]
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "POST /api/annotations",
+        "mcp": "mcp-grafana \u203a create_annotation",
+        "doc": "https://grafana.com/docs/grafana/latest/developers/http_api/annotations/"
+      },
+      "clone_output": {
+        "dashboardUID": "dash-payment-webhooks",
+        "text": "deploy: payments v2.3.1",
+        "tags": [
+          "deploy"
+        ],
+        "id": 1,
+        "time": "2026-06-07T12:00:00Z",
+        "createdBy": "agent"
+      },
+      "real_output": {
+        "message": "Annotation added",
+        "id": 1
+      },
+      "change": {
+        "before": [],
+        "after": [
+          {
+            "dashboardUID": "dash-payment-webhooks",
+            "text": "deploy: payments v2.3.1",
+            "tags": [
+              "deploy"
+            ],
+            "id": 1,
+            "time": "2026-06-07T12:00:00Z",
+            "createdBy": "agent"
+          }
+        ],
+        "new_id": 1
+      }
+    }
+  ]
+}
