@@ -97,6 +97,7 @@ function setupTz() {
 }
 
 let SOURCES = [], OPTCACHE = {};
+const SRC_CARDS = {};   // source id -> { open, setAsOf, setName, setText } for batch autofill
 
 // ---------------------------------------------------------------- tabs
 $$(".tabs button").forEach((b) => (b.onclick = () => {
@@ -119,27 +120,34 @@ async function loadSources() {
 
 function sourceCard(s) {
   const body = el("div", { className: "src-body" });
-  const inputs = {}, loaders = [];
+  const inputs = {}, loaders = [], textInputs = {};
+  let asOfInput = null;
   const deps = () => { const o = {}; for (const [k, g] of Object.entries(inputs)) { const v = g(); if (typeof v === "string" && v) o[k] = v; } return o; };
+
+  // name the capture directly here (autofilled when arriving from "Capture batch @ T")
+  const nameInput = el("input", { type: "text", placeholder: `${s.label} snapshot` });
+  body.append(el("div", { className: "field" }, [el("label", { textContent: "Name" }), nameInput]));
+
   for (const p of s.params) {
     const f = el("div", { className: "field" });
     f.append(el("label", { textContent: p.label + (p.required ? " *" : "") }));
     if (p.discover && p.kind === "multiselect") inputs[p.name] = multiselect(f, s, p, loaders, deps);
     else if (p.discover && p.kind === "select") inputs[p.name] = discoverSelect(f, s, p, loaders);
-    else if (p.discover && p.kind === "combo") inputs[p.name] = comboField(f, s, p, loaders);
+    else if (p.discover && p.kind === "combo") { inputs[p.name] = comboField(f, s, p, loaders); textInputs[p.name] = f.querySelector("input"); }
     else if (p.kind === "datetime") {
       const i = el("input", { type: "datetime-local", step: "60" });
       f.append(i); inputs[p.name] = zonedInput(i, p.default === "now" ? nowIso() : (p.default || ""));
+      if (p.name === "as_of") asOfInput = i;
       if (p.default === "now") { const now = el("button", { className: "ghost sm nowbtn", textContent: "Now" }); now.onclick = () => { i._iso = nowIso(); i.value = isoToWall(i._iso, TZ); }; f.append(now); }
     } else {
       const i = el("input", { type: p.kind === "number" ? "number" : "text", value: p.default || "", placeholder: p.help || "" });
-      f.append(i); inputs[p.name] = () => i.value;
+      f.append(i); inputs[p.name] = () => i.value; textInputs[p.name] = i;
     }
     if (p.help && p.kind !== "multiselect") f.append(el("div", { className: "help", textContent: p.help }));
     body.append(f);
   }
   const btn = el("button", { textContent: `Capture ${s.label}`, disabled: !s.has_key });
-  btn.onclick = () => capture(s, inputs, btn);
+  btn.onclick = () => capture(s, inputs, btn, () => nameInput.value.trim());
   body.append(btn);
   if (s.note) body.prepend(el("div", { className: "src-note", textContent: s.note }));
 
@@ -154,9 +162,21 @@ function sourceCard(s) {
   ]);
   const card = el("div", { className: "src" }, [head, body]);
   let loaded = false;
+  const openAndLoad = () => {
+    card.classList.add("open");
+    if (!loaded && s.has_key) { loaded = true; loaders.forEach((fn) => fn()); }
+  };
   head.onclick = () => {
     card.classList.toggle("open");
     if (card.classList.contains("open") && !loaded && s.has_key) { loaded = true; loaders.forEach((fn) => fn()); }
+  };
+
+  // batch autofill hooks: prefill T + name (+ any known text params like the github org)
+  SRC_CARDS[s.id] = {
+    open: openAndLoad,
+    setAsOf: (iso) => { if (asOfInput && iso) { asOfInput._iso = iso; asOfInput.value = isoToWall(iso, TZ); } },
+    setName: (n) => { if (n) nameInput.value = n; },
+    setText: (name, val) => { const i = textInputs[name]; if (i && val != null) i.value = val; },
   };
   return card;
 }
@@ -239,13 +259,14 @@ function discoverSelect(field, s, p, loaders) {
   return () => sel.value;
 }
 
-async function capture(s, inputs, btn) {
+async function capture(s, inputs, btn, getName) {
   const params = {};
   for (const [k, get] of Object.entries(inputs)) params[k] = get();
+  const name = (getName && getName()) || "";
   btn.disabled = true;
   try {
     await api("/api/capture", { method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ source: s.id, params }) });
+      body: JSON.stringify({ source: s.id, name, params }) });
     toast(`${s.label} capture queued`);
     $$(".tabs button").find((b) => b.dataset.tab === "runs").click();
   } catch (e) { toast(`Capture failed: ${e.message}`, true); }
@@ -476,13 +497,22 @@ function candRow(c) {
   body.append(surf);
 
   const cap = el("button", { className: "sm", textContent: "Capture batch @ T" });
-  cap.onclick = async () => {
-    const name = prompt("Batch name for these snapshots:", (c.title || "").slice(0, 32));
-    if (name === null) return;
-    cap.disabled = true;
-    try { const r = await api(`/api/candidates/${c.id}/capture`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name }) });
-      toast(`capturing ${Object.keys(r.started).join(", ") || "—"} at T`); loadCandidates(); }
-    catch (e) { toast(e.message, true); cap.disabled = false; }
+  cap.onclick = () => {
+    const base = (c.title || "").split("(")[0].trim().slice(0, 40) || c.id;
+    // go to Sources with T + name prefilled on each required surface; user adjusts windows + captures
+    $$(".tabs button").find((b) => b.dataset.tab === "sources").click();
+    const filled = [];
+    for (const [src, params] of Object.entries(c.required_data || {})) {
+      const card = SRC_CARDS[src];
+      if (!card) continue;
+      card.open();
+      card.setAsOf(c.t);
+      card.setName(base);
+      if (src === "github" && params.org) card.setText("org", params.org);   // seed the org so repos load
+      filled.push(svcLabel(src));
+    }
+    toast(filled.length ? `Prefilled ${filled.join(", ")} @ T — adjust windows, then Capture each` : "no matching sources", false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
   const gen = el("button", { className: "sm", textContent: "Process → task" });
   gen.onclick = async () => {
