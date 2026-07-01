@@ -448,3 +448,9 @@ button.sm { padding: 5px 11px; font-size: 12px; }
 .gate-fail { color: var(--err); border-color: var(--err-line); }
 .gate-warn { color: var(--warn); border-color: var(--warn-line); }
 .pill-rejected { color: var(--err); border-color: var(--err); }
+
+/* candidate capture-time (T) */
+.cand-t { display: flex; align-items: baseline; gap: 8px; margin: 2px 0 8px; flex-wrap: wrap; }
+.cand-t-lbl { font: 700 10px var(--mono); text-transform: uppercase; letter-spacing: .5px; color: var(--faint); }
+.cand-t-val { font: 600 13px var(--mono); color: var(--accent); }
+.cand-t-utc { font: 10px var(--mono); color: var(--faint); }

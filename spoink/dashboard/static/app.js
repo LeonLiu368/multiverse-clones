@@ -77,6 +77,8 @@ const wallToIso = (wall, zone) => {
   return inst.toISOString().slice(0, 19) + "Z";
 };
 const nowIso = () => new Date().toISOString().slice(0, 19) + "Z";
+const tzLabel = () => (ZONES.find((z) => z[0] === TZ) || [, TZ])[1];
+const fmtT = (iso) => iso ? `${isoToWall(iso, TZ).replace("T", " ")} ${tzLabel()}` : "—";
 function zonedInput(input, iso) {
   input._iso = iso || "";
   input.value = isoToWall(input._iso, TZ);
@@ -435,9 +437,13 @@ function candRow(c) {
     el("span", { className: "cand-score", textContent: Math.round(c.score) }),
     el("span", { className: "run-name", textContent: c.title }),
     pill,
-    el("span", { className: "run-when muted sm", textContent: (c.t || "").slice(0, 10) }),
   ]));
   const body = el("div", { className: "run-body" });
+  body.append(el("div", { className: "cand-t", title: c.t || "" }, [
+    el("span", { className: "cand-t-lbl", textContent: "Snapshot @ T" }),
+    el("span", { className: "cand-t-val", textContent: fmtT(c.t) }),
+    el("span", { className: "cand-t-utc muted", textContent: c.t || "" }),
+  ]));
   body.append(el("div", { className: "cand-sum muted sm", textContent: c.summary || "" }));
   if ((c.signals || []).length)
     body.append(el("div", { className: "cand-sigs" }, c.signals.map((s) => el("span", { className: "sig", textContent: s }))));

@@ -412,6 +412,16 @@ def candidates_capture(cid: str, body: CaptureBatchBody):
         if not src or not src.has_key():
             skipped[source] = "no source/key"
             continue
+        params = dict(params)
+        # slack needs channels — default to ALL channels in the workspace at capture time
+        if source == "slack" and not params.get("channels"):
+            try:
+                opts = src.options("channels").get("options", []) if src.options else []
+                params["channels"] = [o["value"] for o in opts if o.get("value")]
+            except Exception as e:  # noqa: BLE001
+                skipped[source] = f"channel list failed: {e}"; continue
+            if not params["channels"]:
+                skipped[source] = "no channels found"; continue
 
         def _do(job: Job, _src=src, _params=params) -> Dict[str, Any]:
             return _src.capture(str(store.run_dir(job.id)), _params)
