@@ -8,10 +8,8 @@ metadata:
     tasks/ (build:+image dual, no networks:). Every task is deterministic nop=0 / oracle=1 and was
     independently audited to meet Clone Standard v1.
 
-    v1 covers the 7 clones whose tasks build standalone. Deferred (need work before they fit a
-    uniform smoke): gh-cli-clone (task needs ghclone vendored into environment/), abundant-jira-clone
-    + abundant-slack-clone (gateway :prod-v1 builds FROM a private abundant-ai base image —
-    ticketvector-service / slack-seed — not yet mirrored to this registry). See README.md.
+    All 10 clones. Every task pulls its gateway + agent from ghcr.io/abundant-ai (no vendored
+    clone source in environment/). Requires the packages to be pullable by the runner (see README).
   task_path: experiments/fleet-smoke/tasks
   n_trials: 1
   skip_trajectory_analysis: false
@@ -24,6 +22,9 @@ tasks:
   - grafana-annotation-roundtrip  # Grafana: find firing alert, post incident annotation
   - logfire-incident-rca        # Logfire: SQL over telemetry to root-cause + fix
   - aws-payment-reconcile       # AWS: reconcile a stuck payment via SQS/S3/DynamoDB
+  - jira-transition-roundtrip   # Jira: transition an issue + comment (write->read)
+  - slack-incident-fix-report   # Slack: fix code from buried spec + post report
+  - ghc-incident-isolated       # GitHub (gh): incident fix -> PR -> merge (IP-isolated)
 
 agents:
   - name: nop

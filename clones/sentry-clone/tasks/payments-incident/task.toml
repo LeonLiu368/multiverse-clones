@@ -1,0 +1,30 @@
+schema_version = "1.2"
+name = "sentry-clone/payments-incident"
+description = "Read + write incident-triage on a Sentry-clone workspace (image-pull). The agent uses sentry / sentry-mcp (pulled sentry-clone-agent-mv) against the pulled sentry-clone-service-mv gateway to investigate PAYMENTS-501, resolve it in the fix release, and comment. The verifier reads state back through the Sentry API. nop=0, oracle=1."
+
+[metadata]
+category = "software-engineering"
+service = "sentry"
+clone = "sentry-clone"
+tools = ["sentry", "sentry-mcp"]
+tags = ["sentry", "observability", "incident", "read-write", "round-trip", "image-pull"]
+
+[agent]
+timeout_sec = 900
+
+[verifier]
+timeout_sec = 300
+
+[environment]
+cpus = 2
+memory_mb = 4096
+storage_mb = 12288
+gpus = 0
+allow_internet = true
+workdir = "/workspace"
+build_timeout_sec = 1800
+
+[[environment.mcp_servers]]
+name = "sentry"
+transport = "stdio"
+command = "sentry-mcp"

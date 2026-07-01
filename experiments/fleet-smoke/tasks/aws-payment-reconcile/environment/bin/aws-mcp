@@ -1,6 +1,0 @@
-#!/usr/bin/env sh
-# Thin launcher for the aws-clone MCP server (stdio). Same surface as the
-# aws/awslocal CLI: it speaks boto3 to AWS_ENDPOINT_URL (LocalStack), so the
-# IAM hybrid shim on /opt/awscli must be importable for simulate-*/cred-report.
-export PYTHONPATH="/opt/aws-clone:/opt/awscli${PYTHONPATH:+:$PYTHONPATH}"
-exec python -m aws_clone.mcp.server "$@"

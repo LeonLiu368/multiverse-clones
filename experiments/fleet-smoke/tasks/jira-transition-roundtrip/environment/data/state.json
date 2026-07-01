@@ -1,0 +1,323 @@
+{
+  "workspace": "askzeta",
+  "base_url": "https://askzeta.atlassian.net",
+  "project": {
+    "id": "proj-web",
+    "key": "WEB",
+    "name": "Web Frontend",
+    "archived": false
+  },
+  "users": [
+    {
+      "id": "user-priya.singh",
+      "handle": "priya.singh",
+      "name": "Priya Singh"
+    },
+    {
+      "id": "user-diego.brooks",
+      "handle": "diego.brooks",
+      "name": "Diego Brooks"
+    },
+    {
+      "id": "user-hana.nakamura",
+      "handle": "hana.nakamura",
+      "name": "Hana Nakamura"
+    },
+    {
+      "id": "user-omar.fischer",
+      "handle": "omar.fischer",
+      "name": "Omar Fischer"
+    }
+  ],
+  "states": [
+    {
+      "id": "state-todo",
+      "name": "To Do",
+      "category": "unstarted"
+    },
+    {
+      "id": "state-prog",
+      "name": "In Progress",
+      "category": "started"
+    },
+    {
+      "id": "state-done",
+      "name": "Done",
+      "category": "completed"
+    }
+  ],
+  "labels": [],
+  "modules": [],
+  "cycles": [],
+  "relations": {},
+  "links": {},
+  "history": [],
+  "attachments": {},
+  "issues": [
+    {
+      "id": "issue-web-1",
+      "identifier": "WEB-1",
+      "title": "Fix navbar overflow on mobile",
+      "description": "",
+      "state": {
+        "id": "state-done",
+        "name": "Done"
+      },
+      "assignees": [
+        {
+          "id": "user-priya.singh",
+          "handle": "priya.singh",
+          "name": "Priya Singh"
+        }
+      ],
+      "labels": [],
+      "priority": "high",
+      "created_at": "2026-05-01T09:00:00Z",
+      "updated_at": "2026-05-02T09:00:00Z",
+      "comments_count": 0
+    },
+    {
+      "id": "issue-web-2",
+      "identifier": "WEB-2",
+      "title": "Add dark mode toggle",
+      "description": "",
+      "state": {
+        "id": "state-prog",
+        "name": "In Progress"
+      },
+      "assignees": [
+        {
+          "id": "user-diego.brooks",
+          "handle": "diego.brooks",
+          "name": "Diego Brooks"
+        }
+      ],
+      "labels": [],
+      "priority": "medium",
+      "created_at": "2026-05-01T09:00:00Z",
+      "updated_at": "2026-05-02T09:00:00Z",
+      "comments_count": 0
+    },
+    {
+      "id": "issue-web-3",
+      "identifier": "WEB-3",
+      "title": "Upgrade webpack to v5",
+      "description": "",
+      "state": {
+        "id": "state-todo",
+        "name": "To Do"
+      },
+      "assignees": [
+        {
+          "id": "user-hana.nakamura",
+          "handle": "hana.nakamura",
+          "name": "Hana Nakamura"
+        }
+      ],
+      "labels": [],
+      "priority": "low",
+      "created_at": "2026-05-01T09:00:00Z",
+      "updated_at": "2026-05-02T09:00:00Z",
+      "comments_count": 0
+    },
+    {
+      "id": "issue-web-4",
+      "identifier": "WEB-4",
+      "title": "Cart total miscalculates tax",
+      "description": "",
+      "state": {
+        "id": "state-prog",
+        "name": "In Progress"
+      },
+      "assignees": [
+        {
+          "id": "user-priya.singh",
+          "handle": "priya.singh",
+          "name": "Priya Singh"
+        }
+      ],
+      "labels": [],
+      "priority": "high",
+      "created_at": "2026-05-01T09:00:00Z",
+      "updated_at": "2026-05-02T09:00:00Z",
+      "comments_count": 0
+    },
+    {
+      "id": "issue-web-5",
+      "identifier": "WEB-5",
+      "title": "Lazy-load product images",
+      "description": "",
+      "state": {
+        "id": "state-todo",
+        "name": "To Do"
+      },
+      "assignees": [
+        {
+          "id": "user-omar.fischer",
+          "handle": "omar.fischer",
+          "name": "Omar Fischer"
+        }
+      ],
+      "labels": [],
+      "priority": "medium",
+      "created_at": "2026-05-01T09:00:00Z",
+      "updated_at": "2026-05-02T09:00:00Z",
+      "comments_count": 0
+    },
+    {
+      "id": "issue-web-6",
+      "identifier": "WEB-6",
+      "title": "Broken 404 page styling",
+      "description": "",
+      "state": {
+        "id": "state-done",
+        "name": "Done"
+      },
+      "assignees": [
+        {
+          "id": "user-diego.brooks",
+          "handle": "diego.brooks",
+          "name": "Diego Brooks"
+        }
+      ],
+      "labels": [],
+      "priority": "low",
+      "created_at": "2026-05-01T09:00:00Z",
+      "updated_at": "2026-05-02T09:00:00Z",
+      "comments_count": 0
+    },
+    {
+      "id": "issue-web-7",
+      "identifier": "WEB-7",
+      "title": "Checkout button unresponsive on Safari",
+      "description": "",
+      "state": {
+        "id": "state-todo",
+        "name": "To Do"
+      },
+      "assignees": [
+        {
+          "id": "user-priya.singh",
+          "handle": "priya.singh",
+          "name": "Priya Singh"
+        }
+      ],
+      "labels": [],
+      "priority": "urgent",
+      "created_at": "2026-05-01T09:00:00Z",
+      "updated_at": "2026-05-02T09:00:00Z",
+      "comments_count": 0
+    },
+    {
+      "id": "issue-web-8",
+      "identifier": "WEB-8",
+      "title": "Add analytics consent banner",
+      "description": "",
+      "state": {
+        "id": "state-prog",
+        "name": "In Progress"
+      },
+      "assignees": [
+        {
+          "id": "user-hana.nakamura",
+          "handle": "hana.nakamura",
+          "name": "Hana Nakamura"
+        }
+      ],
+      "labels": [],
+      "priority": "medium",
+      "created_at": "2026-05-01T09:00:00Z",
+      "updated_at": "2026-05-02T09:00:00Z",
+      "comments_count": 0
+    },
+    {
+      "id": "issue-web-9",
+      "identifier": "WEB-9",
+      "title": "Refactor auth context provider",
+      "description": "",
+      "state": {
+        "id": "state-todo",
+        "name": "To Do"
+      },
+      "assignees": [
+        {
+          "id": "user-omar.fischer",
+          "handle": "omar.fischer",
+          "name": "Omar Fischer"
+        }
+      ],
+      "labels": [],
+      "priority": "medium",
+      "created_at": "2026-05-01T09:00:00Z",
+      "updated_at": "2026-05-02T09:00:00Z",
+      "comments_count": 0
+    },
+    {
+      "id": "issue-web-10",
+      "identifier": "WEB-10",
+      "title": "Search bar ignores trailing spaces",
+      "description": "",
+      "state": {
+        "id": "state-todo",
+        "name": "To Do"
+      },
+      "assignees": [
+        {
+          "id": "user-priya.singh",
+          "handle": "priya.singh",
+          "name": "Priya Singh"
+        }
+      ],
+      "labels": [],
+      "priority": "low",
+      "created_at": "2026-05-01T09:00:00Z",
+      "updated_at": "2026-05-02T09:00:00Z",
+      "comments_count": 0
+    },
+    {
+      "id": "issue-web-11",
+      "identifier": "WEB-11",
+      "title": "Footer links 404 in prod",
+      "description": "",
+      "state": {
+        "id": "state-done",
+        "name": "Done"
+      },
+      "assignees": [
+        {
+          "id": "user-diego.brooks",
+          "handle": "diego.brooks",
+          "name": "Diego Brooks"
+        }
+      ],
+      "labels": [],
+      "priority": "medium",
+      "created_at": "2026-05-01T09:00:00Z",
+      "updated_at": "2026-05-02T09:00:00Z",
+      "comments_count": 0
+    },
+    {
+      "id": "issue-web-12",
+      "identifier": "WEB-12",
+      "title": "Improve Lighthouse perf score",
+      "description": "",
+      "state": {
+        "id": "state-prog",
+        "name": "In Progress"
+      },
+      "assignees": [
+        {
+          "id": "user-omar.fischer",
+          "handle": "omar.fischer",
+          "name": "Omar Fischer"
+        }
+      ],
+      "labels": [],
+      "priority": "high",
+      "created_at": "2026-05-01T09:00:00Z",
+      "updated_at": "2026-05-02T09:00:00Z",
+      "comments_count": 0
+    }
+  ],
+  "comments": {}
+}

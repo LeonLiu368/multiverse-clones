@@ -1,0 +1,9 @@
+# Keep the `main` (agent) build context lean and deterministic. The Slack export + seed generator
+# live ONLY in the `slack` sidecar (mounted into the gateway); the agent image must never carry them.
+data
+**/__pycache__
+**/*.pyc
+**/.venv
+**/.git
+**/.pytest_cache
+**/*.egg-info

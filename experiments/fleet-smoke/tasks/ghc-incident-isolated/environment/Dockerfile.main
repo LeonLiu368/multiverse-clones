@@ -1,0 +1,8 @@
+# Image-pull pattern: agent PULLED (ghc CLI + ghc-mcp; `gh` symlinked). NO clone source vendored.
+FROM ghcr.io/abundant-ai/ghc-agent-mv:latest
+ENV GH_HOST=http://10.88.0.2
+RUN git config --system user.email agent@local && git config --system user.name agent
+COPY main-entrypoint.sh /usr/local/bin/main-entrypoint.sh
+RUN chmod +x /usr/local/bin/main-entrypoint.sh
+WORKDIR /app
+CMD ["/usr/local/bin/main-entrypoint.sh"]

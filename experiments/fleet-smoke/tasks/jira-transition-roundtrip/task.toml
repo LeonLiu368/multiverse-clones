@@ -1,0 +1,25 @@
+schema_version = "1.2"
+name = "jira-clone/jira-transition-roundtrip"
+description = "Write→read round-trip over the Jira clone (R5.2). The agent must find the WEB issue for the unresponsive checkout button (via the jira CLI/MCP over HTTP), transition it to 'Done', and leave a comment noting the fix shipped. The verifier reads the issue's state and comments back through the SAME tool — a write the agent makes, observed on a later read. The project lives only in the sidecar (jira-gateway:empty + mounted state.json); the agent has no state.json on disk. nop=0, oracle=1."
+
+[metadata]
+category = "devops"
+source_repo = "askzeta/web"
+failure_mode = "tool-required-mutation"
+tags = ["jira", "ticketvector", "write", "transition", "round-trip", "assessment-grade"]
+
+[agent]
+timeout_sec = 900
+
+[verifier]
+timeout_sec = 300
+
+[environment]
+cpus = 2
+memory_mb = 4096
+storage_mb = 20480
+gpus = 0
+allow_internet = true
+workdir = "/workspace"
+build_timeout_sec = 1800
+custom_docker_compose = true
