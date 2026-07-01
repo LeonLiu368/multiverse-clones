@@ -84,7 +84,7 @@ function hlJson(obj) {
 function agentBlock(a) {
   if (!a) return '';
   let h = '';
-  if (a.cli) h += `<div class="label">CLI</div><pre class="code"><span class="cli-prompt">$ </span><span class="cli-cmd">${esc(a.cli)}</span></pre>`;
+  if (a.cli) h += `<div class="label">CLI</div><pre class="code wrap"><span class="cli-prompt">$ </span><span class="cli-cmd">${esc(a.cli)}</span></pre>`;
   if (a.mcp) h += `<div class="label">MCP tool call</div><pre class="code">${hlJson(a.mcp)}</pre>`;
   return h;
 }
