@@ -143,9 +143,9 @@ def github_revert(token: str, org: str, window_days: int = 120, per_repo: int = 
                     id=_cid("github_revert", repo["full_name"], num),
                     feed="github_revert", t=t,
                     title=f"{title.strip()}  ({repo['full_name']}#{num})",
-                    summary=(f"{repo['full_name']}#{num} '{title.strip()}' merged {merged[:10]}; "
-                             f"signals={','.join(signals) or 'fix'}. Snapshot at {t[:10]} shows the SUT "
-                             f"before the fix landed."),
+                    summary=(f"{repo['full_name']}#{num} '{title.strip()}' — "
+                             f"signals={','.join(signals) or 'fix'}. The snapshot is the SUT just before "
+                             f"this fix landed."),
                     required_data={
                         "github": {"org": owner, "repos": [name], "as_of": t},   # SUT @ incident tip (REQUIRED)
                         "logfire": {"as_of": t, "incident_hours": 2, "period_days": 30},  # symptom (optional)
@@ -209,8 +209,8 @@ def github_ci(token: str, org: str, window_days: int = 120, per_repo: int = 80,
                         id=_cid("github_ci", repo["full_name"], base[:12]),
                         feed="github_ci", t=created,
                         title=f"{wfname} red on {name}@{base[:8]}: {msg}",
-                        summary=(f"{repo['full_name']} '{wfname}' failed at {base[:8]} ({created[:10]}), "
-                                 f"went green at {head[:8]}. Snapshot at T shows the broken tree."),
+                        summary=(f"{repo['full_name']} '{wfname}' failed at {base[:8]}, went green at "
+                                 f"{head[:8]}. The snapshot at T is the broken tree, before the fix."),
                         required_data={
                             "github": {"org": owner, "repos": [name], "as_of": created},
                             "logfire": {"as_of": created, "incident_hours": 2, "period_days": 30},
@@ -252,7 +252,7 @@ def logfire_anomaly(token: str, window_days: int = 14, max_candidates: int = 40,
             feed="logfire_anomaly", t=t,
             title=f"{sig['exception_type']} in {svc} (x{sig.get('n', '?')})",
             summary=(f"{svc}: {sig['exception_type']} — {(sig.get('exception_message') or '')[:80]}. "
-                     f"{sig.get('n', '?')} occurrences from {first[:10]}. Diagnose the root cause."),
+                     f"{sig.get('n', '?')} occurrences; first seen at T. Diagnose the root cause."),
             required_data={"logfire": {"as_of": t, "incident_hours": 3, "period_days": 30},
                            "slack": {"as_of": t}},
             resolution={"service": svc, "exception_type": sig.get("exception_type"),
