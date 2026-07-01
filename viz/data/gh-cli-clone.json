@@ -1,0 +1,557 @@
+{
+  "clone": "gh-cli-clone",
+  "product": "GitHub",
+  "real_service": {
+    "name": "GitHub via the gh CLI (REST 2022-11-28), Forgejo-backed",
+    "reference": "https://cli.github.com/manual/",
+    "api_base": "{gateway}/api/v1  (Forgejo/Gitea-compatible)"
+  },
+  "parity": {
+    "verdict": "HIGH",
+    "note": "gh --json field schema: nameWithOwner, state OPEN/CLOSED, PR MERGED, label color sans #, visibility PUBLIC."
+  },
+  "seed_file": "tests/test_client.py",
+  "surfaces": {
+    "cli": "ghc",
+    "mcp": "ghc-mcp"
+  },
+  "capture_note": "No Docker/Forgejo here \u2014 clone_output is produced by the clone's real gh-shaping code (ForgejoClient/ghjson) over recorded Forgejo responses from the clone's test fixtures.",
+  "demos": [
+    {
+      "id": "repo-view",
+      "title": "View a repository (gh --json field schema)",
+      "method": "GET",
+      "capability": "repo view \u2192 nameWithOwner / visibility PUBLIC",
+      "seed_excerpt": {
+        "full_name": "acme/payments-api",
+        "private": false,
+        "owner": {
+          "id": 7,
+          "login": "acme"
+        },
+        "description": "Payment processing service (webhooks, ledger, payouts)"
+      },
+      "ui": {
+        "type": "list",
+        "title": "gh \u203a repo view acme/payments-api",
+        "rows": [
+          {
+            "icon": "\ud83d\udce6",
+            "title": "acme/payments-api",
+            "sub": "Payment processing service (webhooks, ledger, payouts)",
+            "tags": [
+              "PUBLIC",
+              "@acme"
+            ]
+          }
+        ]
+      },
+      "agent": {
+        "cli": "ghc repo view acme/payments-api --json nameWithOwner,owner,visibility,description,defaultBranchRef,url",
+        "mcp": {
+          "tool": "repo_view",
+          "args": {
+            "repo": "acme/payments-api"
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "gh repo view acme/payments-api --json nameWithOwner,owner,visibility,description,defaultBranchRef,url",
+        "mcp": "gh-mcp \u203a get_repository",
+        "cli": "gh api repos/acme/payments-api  (REST 2022-11-28)",
+        "doc": "https://cli.github.com/manual/gh_repo_view"
+      },
+      "clone_output": {
+        "defaultBranchRef": {
+          "name": "main"
+        },
+        "description": "Payment processing service (webhooks, ledger, payouts)",
+        "nameWithOwner": "acme/payments-api",
+        "owner": {
+          "id": "7",
+          "login": "acme"
+        },
+        "url": "http://forge.test/acme/payments-api",
+        "visibility": "PUBLIC"
+      },
+      "real_output": {
+        "defaultBranchRef": {
+          "name": "main"
+        },
+        "description": "Payment processing service (webhooks, ledger, payouts)",
+        "nameWithOwner": "acme/payments-api",
+        "owner": {
+          "id": "MDQ6VXNlcjc=",
+          "login": "acme"
+        },
+        "url": "https://github.com/acme/payments-api",
+        "visibility": "PUBLIC"
+      }
+    },
+    {
+      "id": "issue-list",
+      "title": "List issues (gh --json state OPEN/CLOSED)",
+      "method": "GET",
+      "capability": "issue list \u2192 state uppercased, labels color sans '#'",
+      "seed_excerpt": {
+        "issues": [
+          {
+            "number": 128,
+            "title": "Webhook retries are not idempotent",
+            "state": "open",
+            "labels": [
+              {
+                "name": "bug",
+                "color": "#d73a4a"
+              },
+              {
+                "name": "p1",
+                "color": "#b60205"
+              }
+            ]
+          },
+          {
+            "number": 127,
+            "title": "Payout ledger rounds down sub-cent amounts",
+            "state": "closed",
+            "labels": [
+              {
+                "name": "bug",
+                "color": "#d73a4a"
+              }
+            ]
+          }
+        ]
+      },
+      "ui": {
+        "type": "table",
+        "title": "gh \u203a issue list -R acme/payments-api --state all",
+        "columns": [
+          "number",
+          "state",
+          "title",
+          "labels",
+          "author"
+        ],
+        "rows": [
+          {
+            "number": 128,
+            "state": "OPEN",
+            "title": "Webhook retries are not idempotent",
+            "labels": "bug, p1",
+            "author": "priya-n"
+          },
+          {
+            "number": 127,
+            "state": "CLOSED",
+            "title": "Payout ledger rounds down sub-cent amounts",
+            "labels": "bug",
+            "author": "sam-w"
+          }
+        ]
+      },
+      "agent": {
+        "cli": "ghc issue list -R acme/payments-api --state all --json number,title,state,labels,author,assignees",
+        "mcp": {
+          "tool": "issue_list",
+          "args": {
+            "repo": "acme/payments-api",
+            "state": "all"
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "gh issue list -R acme/payments-api --state all --json number,title,state,labels,author,assignees",
+        "mcp": "gh-mcp \u203a list_issues",
+        "cli": "gh api repos/acme/payments-api/issues  (REST 2022-11-28)",
+        "doc": "https://cli.github.com/manual/gh_issue_list"
+      },
+      "clone_output": [
+        {
+          "assignees": [
+            {
+              "id": "12",
+              "is_bot": false,
+              "login": "dave-k",
+              "name": "Dave K"
+            }
+          ],
+          "author": {
+            "id": "11",
+            "is_bot": false,
+            "login": "priya-n",
+            "name": "Priya N"
+          },
+          "labels": [
+            {
+              "id": "5",
+              "name": "bug",
+              "description": "Something is broken",
+              "color": "d73a4a"
+            },
+            {
+              "id": "6",
+              "name": "p1",
+              "description": "High priority",
+              "color": "b60205"
+            }
+          ],
+          "number": 128,
+          "state": "OPEN",
+          "title": "Webhook retries are not idempotent"
+        },
+        {
+          "assignees": [],
+          "author": {
+            "id": "13",
+            "is_bot": false,
+            "login": "sam-w",
+            "name": "Sam W"
+          },
+          "labels": [
+            {
+              "id": "5",
+              "name": "bug",
+              "description": "Something is broken",
+              "color": "d73a4a"
+            }
+          ],
+          "number": 127,
+          "state": "CLOSED",
+          "title": "Payout ledger rounds down sub-cent amounts"
+        }
+      ],
+      "real_output": [
+        {
+          "author": {
+            "id": "",
+            "is_bot": false,
+            "login": "priya-n",
+            "name": "Priya N"
+          },
+          "assignees": [
+            {
+              "id": "",
+              "is_bot": false,
+              "login": "dave-k",
+              "name": "Dave K"
+            }
+          ],
+          "labels": [
+            {
+              "id": "LA_x",
+              "name": "bug",
+              "description": "Something is broken",
+              "color": "d73a4a"
+            },
+            {
+              "id": "LA_y",
+              "name": "p1",
+              "description": "High priority",
+              "color": "b60205"
+            }
+          ],
+          "number": 128,
+          "state": "OPEN",
+          "title": "Webhook retries are not idempotent"
+        },
+        {
+          "author": {
+            "id": "",
+            "is_bot": false,
+            "login": "sam-w",
+            "name": "Sam W"
+          },
+          "assignees": [],
+          "labels": [
+            {
+              "id": "LA_z",
+              "name": "bug",
+              "description": "Something is broken",
+              "color": "d73a4a"
+            }
+          ],
+          "number": 127,
+          "state": "CLOSED",
+          "title": "Payout ledger rounds down sub-cent amounts"
+        }
+      ]
+    },
+    {
+      "id": "pr-list",
+      "title": "List pull requests (gh --json state MERGED)",
+      "method": "GET",
+      "capability": "pr list \u2192 state MERGED for merged PRs",
+      "seed_excerpt": {
+        "pulls": [
+          {
+            "number": 130,
+            "title": "fix: make webhook retry idempotent",
+            "state": "open",
+            "merged": false,
+            "head": {
+              "ref": "fix/webhook-retry-idempotency"
+            }
+          },
+          {
+            "number": 129,
+            "title": "chore: bump httpx to 0.27",
+            "state": "closed",
+            "merged": true,
+            "head": {
+              "ref": "renovate/httpx-0.x"
+            }
+          }
+        ]
+      },
+      "ui": {
+        "type": "table",
+        "title": "gh \u203a pr list -R acme/payments-api --state all",
+        "columns": [
+          "number",
+          "state",
+          "title",
+          "headRefName",
+          "author"
+        ],
+        "rows": [
+          {
+            "number": 130,
+            "state": "OPEN",
+            "title": "fix: make webhook retry idempotent",
+            "headRefName": "fix/webhook-retry-idempotency",
+            "author": "priya-n"
+          },
+          {
+            "number": 129,
+            "state": "MERGED",
+            "title": "chore: bump httpx to 0.27",
+            "headRefName": "renovate/httpx-0.x",
+            "author": "renovate"
+          }
+        ]
+      },
+      "agent": {
+        "cli": "ghc pr list -R acme/payments-api --state all --json number,title,state,headRefName,baseRefName,isDraft,merged,author",
+        "mcp": {
+          "tool": "pr_list",
+          "args": {
+            "repo": "acme/payments-api",
+            "state": "all"
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "gh pr list -R acme/payments-api --state all --json number,title,state,headRefName,baseRefName,isDraft,merged,author",
+        "mcp": "gh-mcp \u203a list_pull_requests",
+        "cli": "gh api repos/acme/payments-api/pulls  (REST 2022-11-28)",
+        "doc": "https://cli.github.com/manual/gh_pr_list"
+      },
+      "clone_output": [
+        {
+          "author": {
+            "id": "11",
+            "is_bot": false,
+            "login": "priya-n",
+            "name": "Priya N"
+          },
+          "baseRefName": "main",
+          "headRefName": "fix/webhook-retry-idempotency",
+          "isDraft": false,
+          "merged": false,
+          "number": 130,
+          "state": "OPEN",
+          "title": "fix: make webhook retry idempotent"
+        },
+        {
+          "author": {
+            "id": "14",
+            "is_bot": true,
+            "login": "renovate",
+            "name": "Renovate Bot"
+          },
+          "baseRefName": "main",
+          "headRefName": "renovate/httpx-0.x",
+          "isDraft": false,
+          "merged": true,
+          "number": 129,
+          "state": "MERGED",
+          "title": "chore: bump httpx to 0.27"
+        }
+      ],
+      "real_output": [
+        {
+          "author": {
+            "id": "",
+            "is_bot": false,
+            "login": "priya-n",
+            "name": "Priya N"
+          },
+          "baseRefName": "main",
+          "headRefName": "fix/webhook-retry-idempotency",
+          "isDraft": false,
+          "merged": false,
+          "number": 130,
+          "state": "OPEN",
+          "title": "fix: make webhook retry idempotent"
+        },
+        {
+          "author": {
+            "id": "",
+            "is_bot": true,
+            "login": "renovate",
+            "name": "Renovate Bot"
+          },
+          "baseRefName": "main",
+          "headRefName": "renovate/httpx-0.x",
+          "isDraft": false,
+          "merged": true,
+          "number": 129,
+          "state": "MERGED",
+          "title": "chore: bump httpx to 0.27"
+        }
+      ]
+    },
+    {
+      "id": "issue-create",
+      "title": "Create an issue (write \u2192 created resource URL)",
+      "method": "POST",
+      "capability": "issue create \u2192 new resource, gh-shaped",
+      "seed_excerpt": {
+        "created_issue": {
+          "number": 131,
+          "title": "Add dead-letter queue for failed webhooks",
+          "state": "open",
+          "html_url": "http://forge.test/acme/payments-api/issues/131"
+        }
+      },
+      "ui": {
+        "type": "timeline",
+        "title": "gh \u203a issue create -R acme/payments-api",
+        "before": [
+          {
+            "id": 128,
+            "title": "Webhook retries are not idempotent",
+            "tags": [
+              "OPEN"
+            ]
+          },
+          {
+            "id": 127,
+            "title": "Payout ledger rounds down sub-cent amounts",
+            "tags": [
+              "CLOSED"
+            ]
+          }
+        ],
+        "after": [
+          {
+            "id": 128,
+            "title": "Webhook retries are not idempotent",
+            "tags": [
+              "OPEN"
+            ]
+          },
+          {
+            "id": 127,
+            "title": "Payout ledger rounds down sub-cent amounts",
+            "tags": [
+              "CLOSED"
+            ]
+          },
+          {
+            "id": 131,
+            "title": "Add dead-letter queue for failed webhooks",
+            "tags": [
+              "OPEN"
+            ]
+          }
+        ],
+        "new_id": 131
+      },
+      "agent": {
+        "cli": "ghc issue create -R acme/payments-api -t \"Add dead-letter queue for failed webhooks\" -b \"Failed webhook deliveries should land in a DLQ, not silently drop.\"",
+        "mcp": {
+          "tool": "issue_create",
+          "args": {
+            "repo": "acme/payments-api",
+            "title": "Add dead-letter queue for failed webhooks",
+            "body": "Failed webhook deliveries should land in a DLQ, not silently drop."
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "gh issue create -R acme/payments-api -t '\u2026' -b '\u2026'  (prints the new issue URL)",
+        "mcp": "gh-mcp \u203a create_issue",
+        "cli": "gh api -X POST repos/acme/payments-api/issues -f title=\u2026 -f body=\u2026  (REST 2022-11-28)",
+        "doc": "https://cli.github.com/manual/gh_issue_create"
+      },
+      "clone_output": {
+        "author": {
+          "id": "12",
+          "is_bot": false,
+          "login": "dave-k",
+          "name": "Dave K"
+        },
+        "number": 131,
+        "state": "OPEN",
+        "title": "Add dead-letter queue for failed webhooks",
+        "url": "http://forge.test/acme/payments-api/issues/131"
+      },
+      "real_output": {
+        "author": {
+          "id": "",
+          "is_bot": false,
+          "login": "dave-k",
+          "name": "Dave K"
+        },
+        "number": 131,
+        "state": "OPEN",
+        "title": "Add dead-letter queue for failed webhooks",
+        "url": "https://github.com/acme/payments-api/issues/131"
+      },
+      "change": {
+        "before": [
+          {
+            "id": 128,
+            "title": "Webhook retries are not idempotent",
+            "tags": [
+              "OPEN"
+            ]
+          },
+          {
+            "id": 127,
+            "title": "Payout ledger rounds down sub-cent amounts",
+            "tags": [
+              "CLOSED"
+            ]
+          }
+        ],
+        "after": [
+          {
+            "id": 128,
+            "title": "Webhook retries are not idempotent",
+            "tags": [
+              "OPEN"
+            ]
+          },
+          {
+            "id": 127,
+            "title": "Payout ledger rounds down sub-cent amounts",
+            "tags": [
+              "CLOSED"
+            ]
+          },
+          {
+            "id": 131,
+            "title": "Add dead-letter queue for failed webhooks",
+            "tags": [
+              "OPEN"
+            ]
+          }
+        ],
+        "new_id": 131
+      }
+    }
+  ]
+}

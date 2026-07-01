@@ -1,0 +1,530 @@
+{
+  "clone": "abundant-jira-clone",
+  "product": "Jira",
+  "real_service": {
+    "name": "Jira Cloud REST API v3 (semantic model; clone serves ticketvector-native shapes)",
+    "reference": "https://developer.atlassian.com/cloud/jira/platform/rest/v3/",
+    "api_base": "https://<your-domain>.atlassian.net/rest/api/3"
+  },
+  "parity": {
+    "verdict": "LOW (ticketvector-native shapes, not Jira REST) \u2014 faithful issue-tracking semantics + JQL grammar",
+    "note": "What IS faithful: real JQL grammar, PROJ-### issue keys (WEB-1), and stateful write\u2192read transitions/comments; the ENVELOPE differs (ticketvector {results,next_cursor} / {ok:false,error_type} / flat issue vs Jira {issues,nextPageToken} / {errorMessages} / fields+ADF)."
+  },
+  "seed_file": "tasks/jira-transition-roundtrip/environment/data/state.json",
+  "surfaces": {
+    "cli": "jira / linear",
+    "mcp": "jira-mcp"
+  },
+  "capture_note": "No Docker/ticketvector here \u2014 clone_output is the clone's served ticketvector-native shape (from mcp client marshalling / seed state.json). REAL column is real Jira REST v3, so the comparison honestly shows the envelope gap.",
+  "demos": [
+    {
+      "id": "get-issue",
+      "title": "Get one issue",
+      "method": "GET",
+      "capability": "Get issue (state, assignees, priority)",
+      "seed_excerpt": {
+        "issues": [
+          {
+            "identifier": "WEB-1",
+            "title": "Fix navbar overflow on mobile",
+            "state": {
+              "id": "state-done",
+              "name": "Done"
+            },
+            "priority": "high"
+          }
+        ]
+      },
+      "ui": {
+        "type": "list",
+        "title": "Jira \u203a WEB \u203a WEB-1",
+        "rows": [
+          {
+            "icon": "\ud83d\udfe0",
+            "title": "WEB-1  Fix navbar overflow on mobile",
+            "sub": "Done",
+            "tags": [
+              "priya.singh",
+              "high"
+            ]
+          }
+        ]
+      },
+      "agent": {
+        "cli": "jira issue view WEB-1",
+        "mcp": {
+          "tool": "get_issue",
+          "args": {
+            "identifier": "WEB-1"
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "GET /rest/api/3/issue/{issueIdOrKey}",
+        "mcp": "jira-mcp \u203a get_issue",
+        "cli": "curl -u email:token '.../rest/api/3/issue/WEB-1'",
+        "doc": "https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issues/#api-rest-api-3-issue-issueidorkey-get"
+      },
+      "clone_output": {
+        "id": "issue-web-1",
+        "identifier": "WEB-1",
+        "title": "Fix navbar overflow on mobile",
+        "description": "",
+        "state": {
+          "id": "state-done",
+          "name": "Done"
+        },
+        "assignees": [
+          {
+            "id": "user-priya.singh",
+            "handle": "priya.singh",
+            "name": "Priya Singh"
+          }
+        ],
+        "labels": [],
+        "priority": "high",
+        "created_at": "2026-05-01T09:00:00Z",
+        "updated_at": "2026-05-02T09:00:00Z",
+        "comments_count": 0
+      },
+      "real_output": {
+        "id": "10001",
+        "key": "WEB-1",
+        "self": "https://your-domain.atlassian.net/rest/api/3/issue/10001",
+        "fields": {
+          "summary": "Fix navbar overflow on mobile",
+          "status": {
+            "name": "Done",
+            "statusCategory": {
+              "key": "done",
+              "name": "Done"
+            }
+          },
+          "assignee": {
+            "accountId": "5b10a2844c20165700ede21g",
+            "displayName": "Priya Singh",
+            "emailAddress": "priya.singh@example.com"
+          },
+          "priority": {
+            "id": "2",
+            "name": "High"
+          },
+          "labels": [],
+          "created": "2026-05-01T09:00:00Z",
+          "updated": "2026-05-02T09:00:00Z"
+        }
+      }
+    },
+    {
+      "id": "search-jql",
+      "title": "Search issues with JQL",
+      "method": "GET",
+      "capability": "JQL query (real grammar) \u2192 issue table",
+      "seed_excerpt": {
+        "jql": "status = \"In Progress\" ORDER BY updated desc",
+        "parsed_filters": {
+          "state": "In Progress"
+        }
+      },
+      "ui": {
+        "type": "table",
+        "title": "Jira \u203a WEB \u203a JQL: status = \"In Progress\" ORDER BY updated desc",
+        "columns": [
+          "key",
+          "title",
+          "status",
+          "priority"
+        ],
+        "rows": [
+          {
+            "key": "WEB-2",
+            "title": "Add dark mode toggle",
+            "status": "In Progress",
+            "priority": "medium"
+          },
+          {
+            "key": "WEB-4",
+            "title": "Cart total miscalculates tax",
+            "status": "In Progress",
+            "priority": "high"
+          },
+          {
+            "key": "WEB-8",
+            "title": "Add analytics consent banner",
+            "status": "In Progress",
+            "priority": "medium"
+          },
+          {
+            "key": "WEB-12",
+            "title": "Improve Lighthouse perf score",
+            "status": "In Progress",
+            "priority": "high"
+          }
+        ]
+      },
+      "agent": {
+        "cli": "jira jql \"status = \"In Progress\" ORDER BY updated desc\"",
+        "mcp": {
+          "tool": "search_issues",
+          "args": {
+            "jql": "status = \"In Progress\" ORDER BY updated desc"
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "POST /rest/api/3/search/jql",
+        "mcp": "jira-mcp \u203a search_issues",
+        "cli": "curl -u email:token -X POST '.../rest/api/3/search/jql' -d '{\"jql\":\"...\"}'",
+        "doc": "https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issue-search/#api-rest-api-3-search-jql-post"
+      },
+      "clone_output": {
+        "results": [
+          {
+            "id": "issue-web-2",
+            "identifier": "WEB-2",
+            "title": "Add dark mode toggle",
+            "description": "",
+            "state": {
+              "id": "state-done",
+              "name": "Done"
+            },
+            "assignees": [
+              {
+                "id": "user-diego.brooks",
+                "handle": "diego.brooks",
+                "name": "Diego Brooks"
+              }
+            ],
+            "labels": [],
+            "priority": "medium",
+            "created_at": "2026-05-01T09:00:00Z",
+            "updated_at": "2026-05-02T09:00:00Z",
+            "comments_count": 0
+          },
+          {
+            "id": "issue-web-4",
+            "identifier": "WEB-4",
+            "title": "Cart total miscalculates tax",
+            "description": "",
+            "state": {
+              "id": "state-prog",
+              "name": "In Progress"
+            },
+            "assignees": [
+              {
+                "id": "user-priya.singh",
+                "handle": "priya.singh",
+                "name": "Priya Singh"
+              }
+            ],
+            "labels": [],
+            "priority": "high",
+            "created_at": "2026-05-01T09:00:00Z",
+            "updated_at": "2026-05-02T09:00:00Z",
+            "comments_count": 0
+          },
+          {
+            "id": "issue-web-8",
+            "identifier": "WEB-8",
+            "title": "Add analytics consent banner",
+            "description": "",
+            "state": {
+              "id": "state-prog",
+              "name": "In Progress"
+            },
+            "assignees": [
+              {
+                "id": "user-hana.nakamura",
+                "handle": "hana.nakamura",
+                "name": "Hana Nakamura"
+              }
+            ],
+            "labels": [],
+            "priority": "medium",
+            "created_at": "2026-05-01T09:00:00Z",
+            "updated_at": "2026-05-02T09:00:00Z",
+            "comments_count": 0
+          },
+          {
+            "id": "issue-web-12",
+            "identifier": "WEB-12",
+            "title": "Improve Lighthouse perf score",
+            "description": "",
+            "state": {
+              "id": "state-prog",
+              "name": "In Progress"
+            },
+            "assignees": [
+              {
+                "id": "user-omar.fischer",
+                "handle": "omar.fischer",
+                "name": "Omar Fischer"
+              }
+            ],
+            "labels": [],
+            "priority": "high",
+            "created_at": "2026-05-01T09:00:00Z",
+            "updated_at": "2026-05-02T09:00:00Z",
+            "comments_count": 0
+          }
+        ],
+        "next_cursor": null
+      },
+      "real_output": {
+        "issues": [
+          {
+            "id": "10002",
+            "key": "WEB-2",
+            "fields": {
+              "summary": "Add dark mode toggle",
+              "status": {
+                "name": "In Progress"
+              },
+              "priority": {
+                "name": "Medium"
+              }
+            }
+          },
+          {
+            "id": "10002",
+            "key": "WEB-4",
+            "fields": {
+              "summary": "Cart total miscalculates tax",
+              "status": {
+                "name": "In Progress"
+              },
+              "priority": {
+                "name": "High"
+              }
+            }
+          },
+          {
+            "id": "10002",
+            "key": "WEB-8",
+            "fields": {
+              "summary": "Add analytics consent banner",
+              "status": {
+                "name": "In Progress"
+              },
+              "priority": {
+                "name": "Medium"
+              }
+            }
+          },
+          {
+            "id": "10002",
+            "key": "WEB-12",
+            "fields": {
+              "summary": "Improve Lighthouse perf score",
+              "status": {
+                "name": "In Progress"
+              },
+              "priority": {
+                "name": "High"
+              }
+            }
+          }
+        ],
+        "nextPageToken": null,
+        "isLast": true
+      }
+    },
+    {
+      "id": "list-projects",
+      "title": "List projects",
+      "method": "GET",
+      "capability": "Project list",
+      "seed_excerpt": {
+        "project": {
+          "key": "WEB",
+          "name": "Web Frontend"
+        }
+      },
+      "ui": {
+        "type": "list",
+        "title": "Jira \u203a Projects",
+        "rows": [
+          {
+            "icon": "\u25a3",
+            "title": "Web Frontend",
+            "sub": "WEB",
+            "tags": []
+          }
+        ]
+      },
+      "agent": {
+        "cli": "jira project list",
+        "mcp": {
+          "tool": "list_projects",
+          "args": {}
+        }
+      },
+      "real_mapping": {
+        "api": "GET /rest/api/3/project/search",
+        "mcp": "jira-mcp \u203a list_projects",
+        "cli": "curl -u email:token '.../rest/api/3/project/search'",
+        "doc": "https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-projects/#api-rest-api-3-project-search-get"
+      },
+      "clone_output": [
+        {
+          "id": "proj-web",
+          "key": "WEB",
+          "name": "Web Frontend",
+          "archived": false
+        }
+      ],
+      "real_output": {
+        "self": "https://your-domain.atlassian.net/rest/api/3/project/search?startAt=0",
+        "maxResults": 50,
+        "startAt": 0,
+        "total": 1,
+        "isLast": true,
+        "values": [
+          {
+            "id": "10000",
+            "key": "WEB",
+            "name": "Web Frontend",
+            "projectTypeKey": "software",
+            "simplified": false,
+            "style": "next-gen"
+          }
+        ]
+      }
+    },
+    {
+      "id": "transition-issue",
+      "title": "Transition an issue to a new state",
+      "method": "POST",
+      "capability": "Stateful transition (write\u2192read round-trip)",
+      "seed_excerpt": {
+        "issue": "WEB-2",
+        "state_before": {
+          "id": "state-prog",
+          "name": "In Progress"
+        },
+        "target": "Done"
+      },
+      "ui": {
+        "type": "timeline",
+        "title": "Jira \u203a WEB-2 (workflow transition)",
+        "before": [
+          {
+            "id": "WEB-2",
+            "text": "WEB-2 \u2192 In Progress",
+            "tags": [
+              "medium"
+            ]
+          }
+        ],
+        "after": [
+          {
+            "id": "WEB-2",
+            "text": "WEB-2 \u2192 Done",
+            "tags": [
+              "medium"
+            ]
+          }
+        ],
+        "new_id": "WEB-2"
+      },
+      "agent": {
+        "cli": "jira issue transition WEB-2 \"Done\"",
+        "mcp": {
+          "tool": "transition_issue",
+          "args": {
+            "identifier": "WEB-2",
+            "state": "Done"
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "POST /rest/api/3/issue/{issueIdOrKey}/transitions",
+        "mcp": "jira-mcp \u203a transition_issue",
+        "cli": "curl -u email:token -X POST '.../issue/WEB-2/transitions' -d '{\"transition\":{\"id\":\"31\"}}'",
+        "doc": "https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issues/#api-rest-api-3-issue-issueidorkey-transitions-post"
+      },
+      "clone_output": {
+        "ok": true,
+        "action": "issue.transition",
+        "target": "WEB-2",
+        "before": {
+          "id": "issue-web-2",
+          "identifier": "WEB-2",
+          "title": "Add dark mode toggle",
+          "state": {
+            "id": "state-prog",
+            "name": "In Progress"
+          },
+          "priority": "medium",
+          "assignees": [
+            {
+              "id": "user-diego.brooks",
+              "handle": "diego.brooks",
+              "name": "Diego Brooks"
+            }
+          ],
+          "labels": [],
+          "updated_at": "2026-05-02T09:00:00Z",
+          "url": null
+        },
+        "after": {
+          "id": "issue-web-2",
+          "identifier": "WEB-2",
+          "title": "Add dark mode toggle",
+          "state": {
+            "id": "state-done",
+            "name": "Done"
+          },
+          "priority": "medium",
+          "assignees": [
+            {
+              "id": "user-diego.brooks",
+              "handle": "diego.brooks",
+              "name": "Diego Brooks"
+            }
+          ],
+          "labels": [],
+          "updated_at": "2026-05-02T09:00:00Z",
+          "url": null
+        },
+        "warnings": [],
+        "dry_run": false
+      },
+      "real_output": {
+        "id": "10002",
+        "key": "WEB-2",
+        "fields": {
+          "summary": "Add dark mode toggle",
+          "status": {
+            "name": "Done",
+            "statusCategory": {
+              "key": "done",
+              "name": "Done"
+            }
+          }
+        }
+      },
+      "change": {
+        "before": [
+          {
+            "id": "WEB-2",
+            "title": "Add dark mode toggle",
+            "tags": [
+              "In Progress"
+            ]
+          }
+        ],
+        "after": [
+          {
+            "id": "WEB-2",
+            "title": "Add dark mode toggle",
+            "tags": [
+              "Done"
+            ]
+          }
+        ],
+        "new_id": "WEB-2"
+      }
+    }
+  ]
+}

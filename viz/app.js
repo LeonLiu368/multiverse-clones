@@ -39,7 +39,8 @@ function renderClone(m, c) {
       <span>surfaces: <code>${esc(m.surfaces?.cli || '')}</code> CLI · <code>${esc(m.surfaces?.mcp || '')}</code> MCP</span>
       <span>seed: <code>${esc(m.seed_file || '')}</code></span>
     </div>
-    ${m.parity?.note ? `<div class="parity-note">✔ ${esc(m.parity.note)}</div>` : ''}`;
+    ${m.parity?.note ? `<div class="parity-note">✔ ${esc(m.parity.note)}</div>` : ''}
+    ${m.capture_note ? `<div class="parity-note" style="color:var(--dim2)">◔ capture: ${esc(m.capture_note)}</div>` : ''}`;
   main.appendChild(head);
   m.demos.forEach(d => main.appendChild(renderDemo(d)));
   main.appendChild(el('div', 'foot', `Seed data loaded in-process from <code>${esc(m.seed_file)}</code> and served through the clone — the CLONE column is real captured output, verifying the seed format is accepted. REAL column is a golden sample from the linked docs.`));
@@ -107,37 +108,51 @@ function compareBlock(real, clone) {
       <div class="side clone"><h5></h5>${jsonBlock(clone)}</div>
     </div>`;
 }
-// Parity = same response SHAPE (field paths + types). Values differ (the REAL column is a
-// golden doc sample), so we compare structure recursively, not literal values.
+// Parity = same response ENVELOPE (the set of field NAMES + their types), not literal values or
+// deep data trees. The REAL column is a golden doc sample, and clones emit far richer nested data
+// than a golden sketch, so a full deep-path diff is dominated by sample-depth noise. Comparing the
+// recursive set of field names (with the types each is seen as) captures what "shape parity" means:
+// does the clone speak the real API's vocabulary? Faithful clones (even lean subsets) → ~100%;
+// a divergent clone that renames the envelope (jira: identifier/results vs key/issues) → low.
 function typeOf(v) { return v === null ? 'null' : Array.isArray(v) ? 'array' : typeof v; }
-function shapePaths(v, prefix, out, depth) {
+function keyTypes(v, out, depth) {
   out = out || {}; depth = depth || 0;
   const t = typeOf(v);
-  if (prefix) out[prefix] = t;
-  if (depth > 5) return out;
-  if (t === 'array') { if (v.length) shapePaths(v[0], prefix + '[]', out, depth + 1); }
-  else if (t === 'object') { for (const k of Object.keys(v)) shapePaths(v[k], prefix ? prefix + '.' + k : k, out, depth + 1); }
+  if (depth > 7) return out;
+  if (t === 'array') { v.forEach(x => keyTypes(x, out, depth + 1)); }
+  else if (t === 'object') {
+    for (const k of Object.keys(v)) { (out[k] = out[k] || new Set()).add(typeOf(v[k])); keyTypes(v[k], out, depth + 1); }
+  }
   return out;
 }
 function parityCheck(real, clone) {
-  const rp = shapePaths(real, ''), cp = shapePaths(clone, '');
-  const all = [...new Set([...Object.keys(rp), ...Object.keys(cp)])].filter(Boolean).sort();
-  let match = 0, shared = 0;
-  const chipArr = all.map(p => {
-    const inR = p in rp, inC = p in cp;
-    const label = esc(p.replace(/\[\]/g, '[ ]'));
-    if (inR && inC) {
-      shared++;
-      const same = rp[p] === cp[p];
-      if (same) match++;
-      return `<span class="pc ${same ? 'match' : 'diff'}" title="${rp[p]} vs ${cp[p]}">${same ? '✓' : '≈'} ${label}</span>`;
+  const rk = keyTypes(real), ck = keyTypes(clone);
+  const realKeys = Object.keys(rk);
+  // Coverage of the real API's envelope: of the field names the real sample presents, how many
+  // does the clone reproduce (same name + a shared type)? Denominator is the REAL keys, so a
+  // clone emitting EXTRA real fields the golden sketch omitted is never punished (shown as ＋extra,
+  // informational). Only genuinely-missing / renamed fields count against it — which is exactly
+  // where a divergent clone (jira: key→identifier, issues→results, fields wrapper absent) fails.
+  let matched = 0;
+  // order: matched/diverged real keys first, then clone extras
+  const realChips = realKeys.sort().map(k => {
+    if (k in ck) {
+      const share = [...ck[k]].some(t => rk[k].has(t));
+      if (share) matched++;
+      return `<span class="pc ${share ? 'match' : 'diff'}" title="real ${[...rk[k]].join('|')} vs clone ${[...ck[k]].join('|')}">${share ? '✓' : '≈'} ${esc(k)}</span>`;
     }
-    return `<span class="pc only">${inC ? '＋clone' : '＋real'} ${label}</span>`;
+    return `<span class="pc" style="color:var(--warn);background:#241d12" title="real API returns this field; the clone renames/omits it">✗ ${esc(k)}</span>`;
   });
-  const shown = chipArr.slice(0, 18).join('') + (chipArr.length > 18 ? `<span class="pc" style="color:var(--dim2)">+${chipArr.length - 18} more</span>` : '');
-  const pct = shared ? Math.round(100 * match / shared) : 100;
-  const cloneOnly = all.filter(p => !(p in rp)).length;
-  const summaryHtml = `<div class="summary">Response-shape parity: <b class="ok">${match}/${shared} shared field paths identical in type</b> (${pct}%)${cloneOnly ? ` · ${cloneOnly} clone-only field${cloneOnly > 1 ? 's' : ''}` : ''}. ✓ same shape · ≈ type differs · ＋ one-side-only.</div>`;
+  const extraKeys = Object.keys(ck).filter(k => !(k in rk)).sort();
+  const extraChips = extraKeys.map(k => `<span class="pc only" title="clone also returns this (extra / native field)">＋${esc(k)}</span>`);
+  const chipArr = [...realChips, ...extraChips];
+  const shown = chipArr.slice(0, 28).join('') + (chipArr.length > 28 ? `<span class="pc" style="color:var(--dim2)">+${chipArr.length - 28} more</span>` : '');
+  const missing = realKeys.length - matched;
+  const pct = realKeys.length ? Math.round(100 * matched / realKeys.length) : 100;
+  const grade = pct >= 85 ? 'ok' : pct >= 55 ? '' : 'bad';
+  const summaryHtml = `<div class="summary">Envelope fidelity: <b class="${grade === 'ok' ? 'ok' : ''}" style="${grade === 'bad' ? 'color:var(--bad)' : ''}">clone reproduces ${matched}/${realKeys.length} of the real API's fields</b> (${pct}%)` +
+    `${missing ? ` · <span style="color:var(--warn)">${missing} real field${missing > 1 ? 's' : ''} renamed/absent</span>` : ''}` +
+    `${extraKeys.length ? ` · +${extraKeys.length} extra` : ''}. ✓ match · ≈ type differs · ✗ real field the clone renames/omits · ＋ clone extra.</div>`;
   return { chips: shown, summaryHtml };
 }
 

@@ -1,0 +1,496 @@
+{
+  "clone": "aws-clone",
+  "product": "AWS",
+  "real_service": {
+    "name": "AWS (S3 / SQS / DynamoDB / CloudWatch Logs / IAM-STS)",
+    "reference": "https://docs.aws.amazon.com/",
+    "api_base": "{AWS_ENDPOINT_URL}"
+  },
+  "parity": {
+    "verdict": "HIGH",
+    "note": "S3/SQS/DynamoDB served by moto (the clone's real engine class); IAM simulate is the clone's own shim, now folding group-granted allows."
+  },
+  "seed_file": "examples/data/aws-clone/state.json",
+  "surfaces": {
+    "cli": "awslocal / aws",
+    "mcp": "aws-mcp"
+  },
+  "capture_note": "S3/SQS/DynamoDB captured in-process via moto (the same engine class the clone runs on LocalStack/moto); IAM simulate is the clone's own in-process shim.",
+  "demos": [
+    {
+      "id": "s3-list-objects",
+      "title": "List objects in an S3 bucket",
+      "method": "GET",
+      "capability": "S3 ListObjectsV2",
+      "seed_excerpt": {
+        "s3": {
+          "buckets": [
+            {
+              "name": "acme-payment-exports",
+              "objects": [
+                {
+                  "key": "exports/2026-06-07/manifest.json"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "ui": {
+        "type": "table",
+        "title": "S3 \u203a acme-payment-exports",
+        "columns": [
+          "Key",
+          "Size",
+          "LastModified"
+        ],
+        "rows": [
+          {
+            "Key": "exports/2026-06-07/manifest.json",
+            "Size": 44,
+            "LastModified": "2026-07-01 18:45:01+00:00"
+          }
+        ]
+      },
+      "agent": {
+        "cli": "awslocal s3api list-objects-v2 --bucket acme-payment-exports",
+        "mcp": {
+          "tool": "aws_s3_list_objects",
+          "args": {
+            "bucket": "acme-payment-exports"
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "GET /{bucket}?list-type=2  (S3 ListObjectsV2)",
+        "mcp": "aws-mcp \u203a aws_s3_list_objects",
+        "cli": "aws s3api list-objects-v2 --bucket acme-payment-exports",
+        "doc": "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html"
+      },
+      "clone_output": {
+        "ResponseMetadata": {
+          "RequestId": "MqjT2xOhL7W67uIB9YqVdItD7mqoPAXZT1QUYwVIoCyoRs9hKzWX",
+          "HTTPStatusCode": 200,
+          "HTTPHeaders": {
+            "content-type": "application/xml",
+            "server": "amazon.com",
+            "date": "Wed, 01 Jul 2026 18:45:01 GMT",
+            "x-amzn-requestid": "MqjT2xOhL7W67uIB9YqVdItD7mqoPAXZT1QUYwVIoCyoRs9hKzWX"
+          },
+          "RetryAttempts": 0
+        },
+        "IsTruncated": false,
+        "Contents": [
+          {
+            "Key": "exports/2026-06-07/manifest.json",
+            "LastModified": "2026-07-01 18:45:01+00:00",
+            "ETag": "\"041a3d4d6c74b51e52df306de393ce42\"",
+            "ChecksumAlgorithm": [
+              "CRC32"
+            ],
+            "Size": 44,
+            "StorageClass": "STANDARD"
+          }
+        ],
+        "Name": "acme-payment-exports",
+        "Prefix": "",
+        "MaxKeys": 1000,
+        "EncodingType": "url",
+        "KeyCount": 1
+      },
+      "real_output": {
+        "Name": "acme-payment-exports",
+        "Prefix": "",
+        "KeyCount": 1,
+        "MaxKeys": 1000,
+        "IsTruncated": false,
+        "Contents": [
+          {
+            "Key": "exports/2026-06-07/manifest.json",
+            "LastModified": "2026-06-07T12:00:00+00:00",
+            "ETag": "\"9a0364b9e99bb480dd25e1f0284c8555\"",
+            "Size": 44,
+            "StorageClass": "STANDARD"
+          }
+        ]
+      }
+    },
+    {
+      "id": "dynamodb-get-item",
+      "title": "Get one DynamoDB item by key",
+      "method": "GET",
+      "capability": "DynamoDB GetItem",
+      "seed_excerpt": {
+        "dynamodb": {
+          "tables": [
+            {
+              "name": "payment-idempotency",
+              "items": [
+                {
+                  "event_id": {
+                    "S": "evt_001"
+                  },
+                  "state": {
+                    "S": "scheduled"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "ui": {
+        "type": "table",
+        "title": "DynamoDB \u203a payment-idempotency",
+        "columns": [
+          "Attribute",
+          "Type",
+          "Value"
+        ],
+        "rows": [
+          {
+            "Attribute": "event_id",
+            "Type": "S",
+            "Value": "evt_001"
+          },
+          {
+            "Attribute": "state",
+            "Type": "S",
+            "Value": "scheduled"
+          }
+        ]
+      },
+      "agent": {
+        "cli": "awslocal dynamodb get-item --table-name payment-idempotency --key '{\"event_id\":{\"S\":\"evt_001\"}}'",
+        "mcp": {
+          "tool": "aws_dynamodb_get_item",
+          "args": {
+            "table_name": "payment-idempotency",
+            "key": {
+              "event_id": {
+                "S": "evt_001"
+              }
+            }
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "POST / (X-Amz-Target: DynamoDB_20120810.GetItem)",
+        "mcp": "aws-mcp \u203a aws_dynamodb_get_item",
+        "cli": "aws dynamodb get-item --table-name payment-idempotency --key ...",
+        "doc": "https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_GetItem.html"
+      },
+      "clone_output": {
+        "Item": {
+          "event_id": {
+            "S": "evt_001"
+          },
+          "state": {
+            "S": "scheduled"
+          }
+        },
+        "ResponseMetadata": {
+          "RequestId": "etJlwVNvvoYjLU9LJYspeXAuwUzk0r2obkhetBZlBj0PSMs928o7",
+          "HTTPStatusCode": 200,
+          "HTTPHeaders": {
+            "content-type": "application/x-amz-json-1.0",
+            "server": "amazon.com",
+            "date": "Wed, 01 Jul 2026 18:45:01 GMT",
+            "x-amzn-requestid": "etJlwVNvvoYjLU9LJYspeXAuwUzk0r2obkhetBZlBj0PSMs928o7",
+            "x-amz-crc32": "2213169368"
+          },
+          "RetryAttempts": 0
+        }
+      },
+      "real_output": {
+        "Item": {
+          "event_id": {
+            "S": "evt_001"
+          },
+          "state": {
+            "S": "scheduled"
+          }
+        },
+        "ResponseMetadata": {
+          "HTTPStatusCode": 200
+        }
+      }
+    },
+    {
+      "id": "iam-simulate",
+      "title": "Simulate a principal's effective policy",
+      "method": "GET",
+      "capability": "IAM SimulatePrincipalPolicy (clone shim; group-granted allow)",
+      "seed_excerpt": {
+        "iam": {
+          "users": [
+            {
+              "name": "legacy-batch-uploader",
+              "groups": [
+                "payments-readers"
+              ]
+            }
+          ],
+          "groups": [
+            {
+              "name": "payments-readers",
+              "policy": {
+                "Effect": "Allow",
+                "Action": [
+                  "s3:GetObject",
+                  "s3:ListBucket"
+                ],
+                "Resource": "*"
+              }
+            }
+          ]
+        }
+      },
+      "ui": {
+        "type": "list",
+        "title": "IAM \u203a Policy Simulator (legacy-batch-uploader)",
+        "rows": [
+          {
+            "icon": "\ud83d\udfe2",
+            "title": "s3:GetObject",
+            "sub": "arn:aws:s3:::acme-payment-exports/exports/2026-06-07/manifest.json",
+            "tags": [
+              "allowed"
+            ]
+          },
+          {
+            "icon": "\ud83d\udd34",
+            "title": "s3:DeleteObject",
+            "sub": "arn:aws:s3:::acme-payment-exports/exports/2026-06-07/manifest.json",
+            "tags": [
+              "implicitDeny"
+            ]
+          }
+        ]
+      },
+      "agent": {
+        "cli": "aws-clonectl iam simulate-principal-policy --principal-arn arn:aws:iam::123456789012:user/legacy-batch-uploader --action-names s3:GetObject s3:DeleteObject",
+        "mcp": {
+          "tool": "aws_iam_simulate_principal_policy",
+          "args": {
+            "policy_source_arn": "arn:aws:iam::123456789012:user/legacy-batch-uploader",
+            "action_names": [
+              "s3:GetObject",
+              "s3:DeleteObject"
+            ]
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "POST / (Action=SimulatePrincipalPolicy)",
+        "mcp": "aws-mcp \u203a aws_iam_simulate_principal_policy",
+        "cli": "aws iam simulate-principal-policy --policy-source-arn arn:aws:iam::123456789012:user/legacy-batch-uploader --action-names s3:GetObject s3:DeleteObject",
+        "doc": "https://docs.aws.amazon.com/IAM/latest/APIReference/API_SimulatePrincipalPolicy.html"
+      },
+      "clone_output": {
+        "EvaluationResults": [
+          {
+            "EvalActionName": "s3:GetObject",
+            "EvalResourceName": "arn:aws:s3:::acme-payment-exports/exports/2026-06-07/manifest.json",
+            "EvalDecision": "allowed",
+            "MatchedStatements": [
+              {
+                "SourcePolicyId": "aws-clone-policy",
+                "SourcePolicyType": "IAM Policy",
+                "StartPosition": {
+                  "Line": 1,
+                  "Column": 1
+                },
+                "EndPosition": {
+                  "Line": 1,
+                  "Column": 1
+                }
+              }
+            ],
+            "MissingContextValues": [],
+            "ResourceSpecificResults": [
+              {
+                "EvalResourceName": "arn:aws:s3:::acme-payment-exports/exports/2026-06-07/manifest.json",
+                "EvalResourceDecision": "allowed",
+                "MatchedStatements": [
+                  {
+                    "SourcePolicyId": "aws-clone-policy",
+                    "SourcePolicyType": "IAM Policy",
+                    "StartPosition": {
+                      "Line": 1,
+                      "Column": 1
+                    },
+                    "EndPosition": {
+                      "Line": 1,
+                      "Column": 1
+                    }
+                  }
+                ],
+                "MissingContextValues": []
+              }
+            ]
+          },
+          {
+            "EvalActionName": "s3:DeleteObject",
+            "EvalResourceName": "arn:aws:s3:::acme-payment-exports/exports/2026-06-07/manifest.json",
+            "EvalDecision": "implicitDeny",
+            "MatchedStatements": [],
+            "MissingContextValues": [],
+            "ResourceSpecificResults": [
+              {
+                "EvalResourceName": "arn:aws:s3:::acme-payment-exports/exports/2026-06-07/manifest.json",
+                "EvalResourceDecision": "implicitDeny",
+                "MatchedStatements": [],
+                "MissingContextValues": []
+              }
+            ]
+          }
+        ],
+        "IsTruncated": false,
+        "ResponseMetadata": {
+          "RequestId": "aws-clone-shim",
+          "HTTPStatusCode": 200
+        }
+      },
+      "real_output": {
+        "EvaluationResults": [
+          {
+            "EvalActionName": "s3:GetObject",
+            "EvalResourceName": "arn:aws:s3:::acme-payment-exports/exports/2026-06-07/manifest.json",
+            "EvalDecision": "allowed",
+            "MatchedStatements": [
+              {
+                "SourcePolicyId": "s3-read",
+                "SourcePolicyType": "IAM Policy",
+                "StartPosition": {
+                  "Line": 1,
+                  "Column": 1
+                },
+                "EndPosition": {
+                  "Line": 1,
+                  "Column": 1
+                }
+              }
+            ],
+            "MissingContextValues": []
+          },
+          {
+            "EvalActionName": "s3:DeleteObject",
+            "EvalResourceName": "arn:aws:s3:::acme-payment-exports/exports/2026-06-07/manifest.json",
+            "EvalDecision": "implicitDeny",
+            "MatchedStatements": [],
+            "MissingContextValues": []
+          }
+        ],
+        "IsTruncated": false
+      }
+    },
+    {
+      "id": "sqs-send-message",
+      "title": "Send an SQS message (write\u2192read round-trip)",
+      "method": "POST",
+      "capability": "SQS SendMessage \u2192 ReceiveMessage",
+      "seed_excerpt": {
+        "sqs": {
+          "queues": [
+            {
+              "name": "payment-webhook-retry",
+              "messages": [
+                {
+                  "body_json": {
+                    "event_id": "evt_001",
+                    "status_code": 409
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "ui": {
+        "type": "timeline",
+        "title": "SQS \u203a payment-webhook-retry",
+        "before": [
+          {
+            "id": "9a51d37f-3f0a-4355-b8f0-886e15b6eee3",
+            "text": "evt_001 \u00b7 status=409",
+            "tags": []
+          }
+        ],
+        "after": [
+          {
+            "id": "9a51d37f-3f0a-4355-b8f0-886e15b6eee3",
+            "text": "evt_001 \u00b7 status=409",
+            "tags": []
+          },
+          {
+            "id": "3736a45e-e393-4c50-aa7f-77b863091b5d",
+            "text": "evt_002 \u00b7 status=503",
+            "tags": []
+          }
+        ],
+        "new_id": "3736a45e-e393-4c50-aa7f-77b863091b5d"
+      },
+      "agent": {
+        "cli": "awslocal sqs send-message --queue-url $(awslocal sqs get-queue-url --queue-name payment-webhook-retry --query QueueUrl --output text) --message-body '{\"event_id\": \"evt_002\", \"status_code\": 503}'",
+        "mcp": {
+          "tool": "aws_sqs_send_message",
+          "args": {
+            "queue_name": "payment-webhook-retry",
+            "body": "{\"event_id\": \"evt_002\", \"status_code\": 503}"
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "POST / (Action=SendMessage)",
+        "mcp": "aws-mcp \u203a aws_sqs_send_message",
+        "cli": "aws sqs send-message --queue-url ... --message-body '{\"event_id\": \"evt_002\", \"status_code\": 503}'",
+        "doc": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_SendMessage.html"
+      },
+      "clone_output": {
+        "MD5OfMessageBody": "63d57ff8b105068f4aa055b2c11d5629",
+        "MessageId": "3736a45e-e393-4c50-aa7f-77b863091b5d",
+        "ResponseMetadata": {
+          "RequestId": "Fw2KDlav5w5wC4mNaFTDTvtE9ZsUMrGWjvLOHlIRFD8W9ZD8o19r",
+          "HTTPStatusCode": 200,
+          "HTTPHeaders": {
+            "content-type": "application/x-amz-json-1.0",
+            "server": "amazon.com",
+            "date": "Wed, 01 Jul 2026 18:45:01 GMT",
+            "x-amzn-requestid": "Fw2KDlav5w5wC4mNaFTDTvtE9ZsUMrGWjvLOHlIRFD8W9ZD8o19r"
+          },
+          "RetryAttempts": 0
+        }
+      },
+      "real_output": {
+        "MD5OfMessageBody": "3d3f1e2b9c8a7d6e5f4c3b2a1908f7e6",
+        "MessageId": "3736a45e-e393-4c50-aa7f-77b863091b5d",
+        "ResponseMetadata": {
+          "HTTPStatusCode": 200
+        }
+      },
+      "change": {
+        "before": [
+          {
+            "id": "9a51d37f-3f0a-4355-b8f0-886e15b6eee3",
+            "text": "evt_001 \u00b7 status=409",
+            "tags": []
+          }
+        ],
+        "after": [
+          {
+            "id": "9a51d37f-3f0a-4355-b8f0-886e15b6eee3",
+            "text": "evt_001 \u00b7 status=409",
+            "tags": []
+          },
+          {
+            "id": "3736a45e-e393-4c50-aa7f-77b863091b5d",
+            "text": "evt_002 \u00b7 status=503",
+            "tags": []
+          }
+        ],
+        "new_id": "3736a45e-e393-4c50-aa7f-77b863091b5d"
+      }
+    }
+  ]
+}
