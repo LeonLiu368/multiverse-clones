@@ -14,21 +14,35 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 SPOINK = Path(__file__).resolve().parents[2]          # repo root (has gateway/)
-LOGFIRE_CLONE = Path(os.environ.get("LOGFIRE_CLONE_DIR", str(Path.home() / "projects" / "abundant-logfire-clone")))
+# canonical clone sources now live under multiverse-clones/clones/<name> (override per-clone)
+CLONES_DIR = Path(os.environ.get("SPOINK_CLONES_DIR",
+                                 str(Path.home() / "projects" / "multiverse-clones" / "clones")))
+
+
+def _clone_dir(name: str) -> Path:
+    """Resolve a clone's source dir: $<NAME>_CLONE_DIR wins, else $SPOINK_CLONES_DIR/<name>."""
+    env = {"abundant-logfire-clone": "LOGFIRE_CLONE_DIR",
+           "abundant-jira-clone": "JIRA_CLONE_DIR"}.get(name)
+    explicit = os.environ.get(env) if env else None
+    return Path(explicit) if explicit else CLONES_DIR / name
+
 
 DEFAULT_REPO = {"slack": "slack-gateway", "linear": "jira-gateway",
-                "logfire": "logfire-gateway", "github": "ghc-service"}
+                "logfire": "logfire-service", "github": "ghc-service"}
 
 
 def _bake_cmd(source: str, run_dir: str, image: str, report: Dict[str, Any]) -> List[str]:
     rd = Path(run_dir)
     if source == "slack":
+        # spoink's own bake, built on the clone's slack-gateway:empty (/opt/import_export.py) contract
         return ["bash", str(SPOINK / "gateway" / "build.sh"), str(rd / "slack-export"), image]
     if source == "linear":
-        proj = report.get("team") or "ABT"
-        return ["bash", str(SPOINK / "gateway" / "build_jira.sh"), str(rd / "state.json"), image, proj]
+        # delegate to the jira clone's canonical bake (linear/build.sh <state.json> <tag>)
+        return ["bash", str(_clone_dir("abundant-jira-clone") / "linear" / "build.sh"),
+                str(rd / "state.json"), image]
     if source == "logfire":
-        return ["bash", str(LOGFIRE_CLONE / "build.sh"), str(rd / "records.json"), image]
+        # bake OUR records via the logfire clone's canonical Dockerfile.prod-v1
+        return ["bash", str(SPOINK / "gateway" / "build_logfire.sh"), str(rd / "records.json"), image]
     if source == "github":
         # boot -> hydrate (apply --as-of T) -> commit a ghc-service (Forgejo) image
         return ["bash", str(SPOINK / "gateway" / "build_forge.sh"),
@@ -46,7 +60,8 @@ def publish(source: str, run_dir: str, image: str, report: Dict[str, Any]) -> Di
     """Bake the overlay into `image` and push it. Returns {image, digest, pushed_at}."""
     cmd = _bake_cmd(source, run_dir, image, report)
     if not Path(cmd[1]).exists():
-        raise RuntimeError(f"bake script not found: {cmd[1]} (set LOGFIRE_CLONE_DIR for logfire)")
+        raise RuntimeError(f"bake script not found: {cmd[1]} — is multiverse-clones present? "
+                           "(override with $SPOINK_CLONES_DIR or a per-clone *_CLONE_DIR)")
     b = subprocess.run(cmd, capture_output=True, text=True, timeout=1800)
     if b.returncode != 0:
         raise RuntimeError(f"bake failed: {(b.stderr or b.stdout)[-600:]}")

@@ -287,7 +287,7 @@ def task_spec(body: SpecBody):
         surfaces.append({
             "source": j.source,
             "overlay": str((store.run_dir(rid) / art).resolve()) if art else str(store.run_dir(rid)),
-            "gateway_image": f"ghcr.io/abundant-ai/{ 'jira' if j.source=='linear' else j.source }-gateway:TODO-bake-{slug}",
+            "gateway_image": f"ghcr.io/abundant-ai/{pub.DEFAULT_REPO.get(j.source, j.source + '-gateway')}:TODO-bake-{slug}",
         })
     vkind = body.verifier_kind or ("pytest_pr" if body.resolution_pr else
                                    "readback" if body.kind == "integration" else "module_check")

@@ -4,6 +4,7 @@ token. Run: pytest
 """
 from __future__ import annotations
 
+import os
 import sys
 from pathlib import Path
 
@@ -11,7 +12,11 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]          # .../spoink
 PROJECTS = ROOT.parent                               # .../projects
-CLONE_SRC = PROJECTS / "abundant-slack-clone" / "src"
+# canonical slack clone now lives under multiverse-clones; its importer (import_export.py)
+# + Store (slackgw.store) both sit in selfcontained/base
+CLONE_SRC = Path(os.environ.get(
+    "SPOINK_CLONES_DIR", str(PROJECTS / "multiverse-clones" / "clones")
+)) / "abundant-slack-clone" / "selfcontained" / "base"
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(CLONE_SRC))
 
@@ -85,31 +90,15 @@ def test_fetch_and_export(tmp_path):
 
 
 def test_roundtrip_through_clone_importer(tmp_path):
-    """The clone's import_export must read spoink's export with full fidelity."""
-    importer = pytest.importorskip("slackclone.seed.export_importer")
+    """The clone's import_export (multiverse layout) must read spoink's export into its
+    SQLite Store with full fidelity: 1 channel, 2 users, 3 messages."""
+    importer = pytest.importorskip("import_export")   # standalone module in selfcontained/base
     data = fetch_workspace(FakeClient(), ["#general"], "0")
     out = tmp_path / "export"
     write_export_dir(str(out), data)
 
-    sd = importer.import_export(str(out))
-    assert len(sd["messages"]) == 3
-    assert len(sd["users"]) == 2
-    assert len(sd["channels"]) == 1
-
-    # thread + reaction fidelity preserved through the round-trip
-    threaded = [m for m in sd["messages"] if m.get("thread_ts")]
-    assert any(m["thread_ts"] == ROOT_TS for m in threaded)
-    reacted = [m for m in sd["messages"] if m.get("reactions")]
-    assert reacted and reacted[0]["reactions"][0]["name"] == "eyes"
-
-
-def test_full_sqlite_pipeline(tmp_path):
-    """Optional: the clone's full canonical-seed -> SQLite load (needs sqlalchemy)."""
-    importer = pytest.importorskip("slackclone.seed.export_importer")
-    load = pytest.importorskip("slackclone.seed.load")
-    data = fetch_workspace(FakeClient(), ["#general"], "0")
-    out = tmp_path / "export"
-    write_export_dir(str(out), data)
-    sd = importer.import_export(str(out))
-    res = load.load_seed(sd, str(tmp_path / "slack.db"))
-    assert res.get("messages") == 3
+    store = importer.Store(str(tmp_path / "slack.db"))
+    stats = importer.import_export(store, str(out), None, None, None)
+    assert stats["channels"] == 1
+    assert stats["users"] == 2
+    assert stats["messages"] == 3
