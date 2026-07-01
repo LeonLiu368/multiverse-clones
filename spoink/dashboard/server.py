@@ -389,11 +389,14 @@ def candidates_attach(cid: str, body: AttachBody):
         raise HTTPException(404, "no such candidate")
     snaps = dict(c.get("snapshots") or {})
     for source, rid in body.snapshots.items():
+        if not rid:                          # empty -> detach / unselect this surface
+            snaps.pop(source, None)
+            continue
         j = store.get(rid)
-        if not j or j.status != "done":
-            raise HTTPException(400, f"run {rid} not found or not done")
+        if not j:
+            raise HTTPException(400, f"run {rid} not found")
         snaps[source] = rid
-    status = "attached" if snaps else c.get("status", "new")
+    status = "attached" if snaps else "new"
     return {"candidate": candidates.update(cid, snapshots=snaps, status=status)}
 
 

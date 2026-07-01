@@ -454,3 +454,7 @@ button.sm { padding: 5px 11px; font-size: 12px; }
 .cand-t-lbl { font: 700 10px var(--mono); text-transform: uppercase; letter-spacing: .5px; color: var(--faint); }
 .cand-t-val { font: 600 13px var(--mono); color: var(--accent); }
 .cand-t-utc { font: 10px var(--mono); color: var(--faint); }
+
+/* attached surface highlight + change/unselect dropdown */
+.surf-chip.on { border-color: var(--ok-line); background: var(--ok-bg); }
+.surf-chip .surf-ok { color: var(--ok); font-weight: 700; min-width: 8px; }

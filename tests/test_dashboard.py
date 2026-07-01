@@ -101,6 +101,11 @@ def test_task_creator_flow(tmp_path, monkeypatch):
     # attach a nonexistent run -> 400
     assert c.post(f"/api/candidates/{cid}/attach",
                   json={"snapshots": {"github": "nope"}}).status_code == 400
+    # detach (empty run id) is always allowed and removes the surface, resetting status
+    r = c.post(f"/api/candidates/{cid}/attach", json={"snapshots": {"github": ""}})
+    assert r.status_code == 200
+    cand = r.json()["candidate"]
+    assert "github" not in (cand.get("snapshots") or {}) and cand["status"] == "new"
     assert c.get("/api/tasks").json() == {"tasks": []}
     assert c.delete(f"/api/candidates/{cid}").status_code == 200
     assert c.get("/api/candidates").json()["candidates"] == []

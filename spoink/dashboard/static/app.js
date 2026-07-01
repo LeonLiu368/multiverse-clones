@@ -448,26 +448,29 @@ function candRow(c) {
   if ((c.signals || []).length)
     body.append(el("div", { className: "cand-sigs" }, c.signals.map((s) => el("span", { className: "sig", textContent: s }))));
 
-  // required surfaces + attach/capture state
+  // required surfaces — each is a dropdown you can change or unselect (— none —)
   const surf = el("div", { className: "cand-surfaces" });
   for (const src of Object.keys(c.required_data || {})) {
     const attached = (c.snapshots || {})[src];
-    const chip = el("div", { className: "surf-chip" }, [
+    const opts = DONE_RUNS[src] || [];
+    const chip = el("div", { className: "surf-chip" + (attached ? " on" : "") }, [
+      el("span", { className: "surf-ok", textContent: attached ? "✓" : "" }),
       el("span", { className: "src-icon", innerHTML: SRC_ICON[src] || "" }),
       el("span", { className: "sm", textContent: svcLabel(src) })]);
-    if (attached) chip.append(el("span", { className: "surf-ok", textContent: "✓" }));
-    else {
-      const opts = DONE_RUNS[src] || [];
-      const sel = el("select", { className: "tzsel surf-sel" },
-        [el("option", { value: "", textContent: opts.length ? "attach…" : "none captured" }),
-         ...opts.map((r) => el("option", { value: r.id, textContent: (r.name || r.id).slice(0, 28) }))]);
-      sel.onchange = async () => {
-        if (!sel.value) return;
-        try { await api(`/api/candidates/${c.id}/attach`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ snapshots: { [src]: sel.value } }) }); toast(`attached ${src}`); loadCandidates(); }
-        catch (e) { toast(e.message, true); }
-      };
-      chip.append(sel);
-    }
+    const sel = el("select", { className: "tzsel surf-sel" },
+      [el("option", { value: "", textContent: opts.length ? "— none —" : "none captured" }),
+       ...opts.map((r) => el("option", { value: r.id, textContent: (r.name || r.id).slice(0, 28) }))]);
+    if (attached && !opts.some((r) => r.id === attached))     // e.g. a still-capturing batch job
+      sel.append(el("option", { value: attached, textContent: attached.slice(0, 10) + " (pending)" }));
+    sel.value = attached || "";
+    sel.onchange = async () => {
+      try {
+        await api(`/api/candidates/${c.id}/attach`, { method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ snapshots: { [src]: sel.value } }) });
+        toast(sel.value ? `attached ${src}` : `detached ${src}`); loadCandidates();
+      } catch (e) { toast(e.message, true); loadCandidates(); }
+    };
+    chip.append(sel);
     surf.append(chip);
   }
   body.append(surf);
