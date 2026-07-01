@@ -1,5 +1,12 @@
 # Reliability pass — triaged from the real-API parity checks (2026-07-01)
 
+> **STATUS: all 13 items complete & committed (2026-07-01).** Each fix is additive/back-compatible
+> and covered by a new regression test; per-clone suites pass (pre-existing env/harness failures
+> noted, not caused by these changes). Commits `d3a68da`..`b7c8a22`.
+> **REMAINING OPERATIONAL STEP:** the touched gateways (grafana, sentry, slack, gws, aws, logfire) +
+> gh-cli agent need their **images rebuilt & republished** to GHCR, then `nop=0/oracle=1` re-validated,
+> before pull-based tasks pick up the fixes. Until then, build/validate tasks against local source.
+
 **Goal:** not perfect fidelity — just enough that each clone can host **reliable, realistically
 difficult devops tasks**. We fix only two classes of divergence:
 
