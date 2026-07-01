@@ -116,7 +116,9 @@ jobs:
             prodv1_file: Dockerfile.prod-v1
             agent_file: examples/task-pack-compose/Dockerfile.agent
             agent_image: aws-clone-agent-mv
-            agent_build_args: TOOLS_IMAGE=ghcr.io/abundant-ai/aws-clone-service-mv:latest
+            agent_build_args: TOOLS_IMAGE=ghcr.io/abundant-ai/aws-clone-tools-mv:latest
+            tools_file: Dockerfile.tools
+            tools_image: aws-clone-tools-mv
             corpus_prep: ""        # examples/data/aws-clone/state.json committed
             platforms: linux/amd64   # LocalStack base; pin amd64 for reliability
 
@@ -190,6 +192,18 @@ jobs:
             BASE=${{ steps.ns.outputs.ns }}/${{ matrix.service }}:empty
           tags: |
             ${{ steps.ns.outputs.ns }}/${{ matrix.service }}:prod-v1
+
+      - name: Build & push <svc>-tools (only when tools_file set; base for the agent)
+        if: steps.gate.outputs.run == 'true' && matrix.tools_file != ''
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.context }}/${{ matrix.tools_file }}
+          platforms: ${{ matrix.platforms }}
+          push: true
+          labels: org.opencontainers.image.source=https://github.com/${{ github.repository }}
+          tags: |
+            ${{ steps.ns.outputs.ns }}/${{ matrix.tools_image }}:latest
 
       - name: Build & push thin <svc>-agent (tools only; enables the no-source pull pattern)
         if: steps.gate.outputs.run == 'true' && matrix.agent_file != ''
