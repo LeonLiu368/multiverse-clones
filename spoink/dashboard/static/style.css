@@ -439,3 +439,12 @@ button.sm { padding: 5px 11px; font-size: 12px; }
 .src-files .fitem.active { background: var(--accent-soft); color: var(--accent); }
 .src-code { flex: 1; margin: 0; padding: 14px 16px; overflow: auto; font: 11.5px/1.6 var(--mono); color: #c3cfde; white-space: pre; }
 .mono { font-family: var(--mono); }
+
+/* validation gates on generated-task rows */
+.gate-row { display: flex; gap: 6px; flex-wrap: wrap; margin: 4px 0 8px; }
+.gate { font: 10px var(--mono); padding: 2px 7px; border-radius: 5px; border: 1px solid var(--line2);
+  color: var(--muted); background: var(--panel2); cursor: default; white-space: nowrap; }
+.gate-pass { color: var(--ok); border-color: var(--ok-line); }
+.gate-fail { color: var(--err); border-color: var(--err-line); }
+.gate-warn { color: var(--warn); border-color: var(--warn-line); }
+.pill-rejected { color: var(--err); border-color: var(--err); }

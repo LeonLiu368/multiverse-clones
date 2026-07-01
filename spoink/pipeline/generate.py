@@ -163,6 +163,7 @@ timeout_sec = 3600
 timeout_sec = 300
 
 [environment]
+custom_docker_compose = true
 cpus = 4
 memory_mb = 6144
 storage_mb = 30720

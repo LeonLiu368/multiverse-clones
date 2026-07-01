@@ -30,6 +30,7 @@ from ..slice import parse_cutoff
 from ..pipeline import discover as disc
 from ..pipeline import generate as gen
 from ..pipeline import spec as spc
+from ..pipeline import validate
 from . import publish as pub
 from .jobs import Job, JobStore
 from .pipelines import plan_task_from_run
@@ -433,11 +434,20 @@ def candidates_generate(cid: str):
     TASKS_DIR.mkdir(parents=True, exist_ok=True)
     out = TASKS_DIR / spec.slug()
     res = gen.generate_task(spec, str(out))
+    # validation gates (clone-task-builder non-negotiables): contract, code-cut, leakage, verifier
+    report = validate.validate_task(
+        res["task_dir"], bundle=str(Path(res["task_dir"]) / "environment" / "codebase.bundle"),
+        resolution=c.get("resolution", {}),
+        # github leakage is governed by code_cut + the forge's apply --as-of T, not the text grep
+        overlays=[r["overlay"] for r in attached if r["source"] != "github"],
+        changed_files=spec.changed_files, title=c.get("title", ""),
+        verifier_kind=spec.verifier.kind, f2p=spec.verifier.f2p).to_dict()
     rec = {"image": spec.name, "id": cid, "name": spec.name, "task_dir": res["task_dir"],
            "surfaces": res["surfaces"], "verifier": res["verifier"],
-           "resolution": c.get("resolution", {}), "created_at": _now_iso()}
+           "resolution": c.get("resolution", {}), "created_at": _now_iso(),
+           "validation": report}
     tasks_reg.add(rec)
-    candidates.update(cid, status="generated")
+    candidates.update(cid, status="generated" if report["accepted"] else "generated-rejected")
     return {"task": rec}
 
 

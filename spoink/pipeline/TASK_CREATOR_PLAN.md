@@ -94,19 +94,40 @@ horizon (single-step → multi-step on-call). Dials let one archetype span a dif
 
 ---
 
-## Pipeline architecture (extends the current seams)
+## Pipeline architecture (extends the current seams) — IMPLEMENTED
 
 ```
-Feed (B1..B6)  ->  candidate{incident_T, anchor, surfaces, ground_truth, archetype}
-  -> spec_from_candidate()      # generalize the existing spec_from_runs()
-  -> generate_task()            # EXISTS: emits Dockerfile/compose/task.toml/manifest/solve
-  -> validate_task()            # NEW gate: docker nop=0 / oracle=1 + leakage audit + determinism
-  -> accept | reject(reason)
+discover(feed) -> Candidate{t, title, summary, required_data, resolution}   # discover.py
+  -> spec_from_candidate(cand, attached)                                    # spec.py
+       - slices the SUT bundle to the incident tip (fix EXCLUDED)           # _prepare_sut
+       - reads the fix's changed files (base..head) -> verifier + leakage tokens
+  -> generate_task(spec)                                                    # generate.py: preview-500s dir
+  -> validate_task(...)                                                     # validate.py: the quality gate
+  -> accept iff no CRITICAL gate fails
 ```
 
-- **Archetype registry**: archetype → {instruction template, verifier kind, required surfaces}.
-- **Feed interface**: `iter_candidates(repo, window, filters) -> Iterable[Candidate]`.
-- `validate_task` is the quality bar — nothing ships without nop/oracle + leakage passing.
+### Validation gates (validate.py) — the clone-task-builder non-negotiables, enforced
+Grounded in the `clone-task-builder` skill. Every generated task carries a gate report; a task is
+**accepted only if no CRITICAL gate fails** (shown per-task in the Tasks tab).
+
+| Gate | Critical | Checks |
+|---|---|---|
+| **contract** | yes | Harbor structure: `custom_docker_compose`, no `networks:`, `linux/amd64`, healthcheck, `test.sh`->`reward.txt`, oracle present |
+| **code_cut** | yes | the shipped SUT bundle does NOT contain the fix commit (agent can't `git log` the answer) — the T-slice |
+| **surface_leakage** | yes | the answer (fix PR#, sha, changed-file names, title words) is absent from every served text overlay |
+| **verifier** | no | tied to the real fix: changed test files for `pytest_pr` (exact F2P/P2P derived at build), else `module_check` |
+
+Verified on real `abundant-ai/oddish#468`: the slice excludes the fix (`code_cut` pass), a planted
+"fixed in #468" Slack line is caught (`surface_leakage` fail), and the contract lint caught a real
+missing-`custom_docker_compose` bug in the generator.
+
+Still deferred (honest): the **docker nop=0/oracle=1** run (the ultimate empirical gate) and **exact
+F2P/P2P** run at task BUILD (`derive_pr_verifier`), where the env exists — gen-time stays cheap +
+reliable (git plumbing + grep, no pytest). Determinism check + more feeds (logfire/slack/linear/CI)
+are next.
+
+- **Feed interface**: `@feed("name")` -> `List[Candidate]`; discovery is a live lightweight scan.
+- `validate_task` is the quality bar — the UI shows the gate report per task (Tasks tab).
 
 ---
 

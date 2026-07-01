@@ -491,16 +491,26 @@ async function loadTasks() {
   $("#taskEmpty").hidden = tasks.length > 0;
   for (const t of tasks) host.append(taskRow(t));
 }
+const GATE_ICON = { pass: "✓", fail: "✕", warn: "!", skip: "·" };
 function taskRow(t) {
   const row = el("div", { className: "run" });
+  const val = t.validation || {};
+  const verdict = val.accepted === false
+    ? el("span", { className: "pill pill-rejected", textContent: "rejected" })
+    : val.accepted ? el("span", { className: "pill pill-generated", textContent: "validated" }) : "";
   row.append(el("div", { className: "run-top" }, [
     el("span", { className: "run-name mono", textContent: t.name }),
     el("span", { className: "pill", textContent: t.verifier }),
+    verdict,
     el("span", { className: "run-when muted sm", textContent: (t.surfaces || []).join(", ") }),
   ]));
+  const gates = el("div", { className: "gate-row" }, (val.gates || []).map((g) =>
+    el("span", { className: "gate gate-" + g.status, title: `${g.name}: ${g.detail}` },
+      `${GATE_ICON[g.status] || "?"} ${g.name}`)));
   const view = el("button", { className: "ghost sm", textContent: "View source" });
   view.onclick = () => openTaskSource(t);
   const body = el("div", { className: "run-body" }, [
+    gates,
     el("div", { className: "muted sm mono", textContent: t.task_dir }),
     el("div", { className: "cand-actions" }, [view])]);
   row.append(body);
