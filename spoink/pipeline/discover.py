@@ -135,7 +135,10 @@ def github_revert(token: str, org: str, window_days: int = 120, per_repo: int = 
                 if re.search(r"#\d+", body):            signals.append("links_issue"); score += 1
                 has_tests = _pr_touches_tests(c, owner, name, num)
                 if has_tests: signals.append("has_tests"); score += 2   # F2P derivable
-                t = pr.get("created_at") or merged            # incident anchor: while the fix was in flight
+                # anchor just BEFORE the fix landed (incident live, fix not yet merged) — not
+                # PR-open time, which can be months earlier for a long-lived branch
+                mdt = datetime.fromisoformat(merged.replace("Z", "+00:00")) - timedelta(minutes=1)
+                t = mdt.strftime("%Y-%m-%dT%H:%M:%SZ")
                 cands.append(Candidate(
                     id=_cid("github_revert", repo["full_name"], num),
                     feed="github_revert", t=t,
