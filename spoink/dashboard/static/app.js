@@ -518,9 +518,19 @@ function candRow(c) {
   const gen = el("button", { className: "sm", textContent: "Process → task" });
   gen.onclick = async () => {
     gen.disabled = true;
-    try { const r = await api(`/api/candidates/${c.id}/generate`, { method: "POST" });
-      toast(`task generated: ${r.task.name}`); loadCandidates(); }
-    catch (e) { toast(e.message, true); gen.disabled = false; }
+    try {
+      const r = await api(`/api/candidates/${c.id}/generate`, { method: "POST" });
+      if (r.status === "needs_publish") {          // evidence images not on GHCR yet
+        const list = r.missing.map((m) => `${svcLabel(m.source)} → ${m.image}`).join("\n");
+        if (confirm(`These evidence images aren't published yet:\n\n${list}\n\nBake + push them to GHCR now? (Then Process → task again once they're done.)`)) {
+          for (const m of r.missing)
+            await api(`/api/runs/${m.run_id}/publish`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ image: m.image }) });
+          toast(`publishing ${r.missing.map((m) => svcLabel(m.source)).join(", ")} — watch Published, then Process → task again`);
+        }
+        gen.disabled = false; return;
+      }
+      toast(`task generated: ${r.task.name}`); loadCandidates();
+    } catch (e) { toast(e.message, true); gen.disabled = false; }
   };
   const del = el("button", { className: "ghost sm danger", textContent: "Delete" });
   del.onclick = async () => { if (!confirm("Remove this candidate?")) return; await api(`/api/candidates/${c.id}`, { method: "DELETE" }); loadCandidates(); };

@@ -436,14 +436,27 @@ def candidates_capture(cid: str, body: CaptureBatchBody):
     return {"candidate": candidates.get(cid), "started": started, "skipped": skipped}
 
 
+SERVED_SURFACES = {"slack", "linear", "logfire"}   # evidence sidecars that need a baked gateway image
+                                                   # (github is shipped as the SUT bundle, not a served image)
+
+
+def _published_image_for(rid: str) -> Optional[str]:
+    """The GHCR image a run was published to, if any (i.e. the gateway image is already present)."""
+    for r in published.list():
+        if r.get("run_id") == rid and r.get("status") == "done" and r.get("image"):
+            return r["image"]
+    return None
+
+
 @app.post("/api/candidates/{cid}/generate")
-def candidates_generate(cid: str):
+def candidates_generate(cid: str, force: bool = False):
     """Process the candidate into a Harbor-format task dir under runs/_tasks/. Attached snapshots
-    must be done. Emits the preview-500s shape (environment/ + task.toml + tests/ + solution/)."""
+    must be done. Uses each evidence surface's PUBLISHED gateway image (pulled at run time); if a
+    surface isn't published yet it returns needs_publish so the UI can offer to bake+push it."""
     c = candidates.get(cid)
     if not c:
         raise HTTPException(404, "no such candidate")
-    attached = []
+    attached, gateway_for, missing = [], {}, []
     for source, rid in (c.get("snapshots") or {}).items():
         j = store.get(rid)
         if not j or j.status != "done":
@@ -451,10 +464,21 @@ def candidates_generate(cid: str):
         art = j.report.get("artifact") or (SOURCES.get(source) and SOURCES[source].artifact)
         attached.append({"source": source,
                          "overlay": str((store.run_dir(rid) / art).resolve()) if art else str(store.run_dir(rid))})
+        if source in SERVED_SURFACES:
+            img = _published_image_for(rid)
+            if img:
+                gateway_for[source] = img                     # present -> the compose pulls it
+            else:
+                missing.append({"source": source, "run_id": rid,
+                                "image": pub.suggest_image(source, j.name or source)})
     if not attached:
         raise HTTPException(400, "no done snapshots attached — capture or attach first")
-    gateway_for = {s: f"ghcr.io/abundant-ai/{pub.DEFAULT_REPO.get(s, s + '-gateway')}:TODO-bake"
-                   for s in (c.get("required_data") or {})}
+    if missing and not force:
+        return {"status": "needs_publish", "missing": missing,
+                "message": "These evidence surfaces aren't published to GHCR yet."}
+    # any surface still without a resolved image (forced, or not a served surface) -> placeholder tag
+    for source in (c.get("required_data") or {}):
+        gateway_for.setdefault(source, f"ghcr.io/abundant-ai/{pub.DEFAULT_REPO.get(source, source + '-gateway')}:TODO-bake")
     spec = spc.spec_from_candidate(c, attached, gateway_for)
     TASKS_DIR.mkdir(parents=True, exist_ok=True)
     out = TASKS_DIR / spec.slug()
@@ -471,9 +495,10 @@ def candidates_generate(cid: str):
            "surfaces": res["surfaces"], "verifier": res["verifier"],
            "resolution": c.get("resolution", {}), "created_at": _now_iso(),
            "validation": report}
+    rec["images"] = gateway_for
     tasks_reg.add(rec)
     candidates.update(cid, status="generated" if report["accepted"] else "generated-rejected")
-    return {"task": rec}
+    return {"task": rec, "images": gateway_for}
 
 
 @app.get("/api/tasks")

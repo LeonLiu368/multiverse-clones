@@ -123,6 +123,37 @@ def test_feeds_endpoint(tmp_path, monkeypatch):
     assert feeds["linear_sev"]["env"] == "LINEAR_API_KEY"
 
 
+def test_generate_needs_publish_then_uses_image(tmp_path, monkeypatch):
+    """Process->task asks to publish an unpublished evidence surface, then uses its image."""
+    monkeypatch.setenv("GITHUB_TOKEN", "ghp_test")
+    c = _client(tmp_path, monkeypatch)
+    from spoink.dashboard import server as S
+    from spoink.pipeline import discover as disc
+
+    monkeypatch.setitem(disc.FEEDS, "github_revert", lambda **k: [disc.Candidate(
+        id="cand1", feed="github_revert", t="2026-06-01T00:00:00Z", title="t", summary="s",
+        required_data={"logfire": {"as_of": "2026-06-01T00:00:00Z"}}, resolution={})])
+    c.post("/api/candidates/discover", json={"feed": "github_revert", "org": "acme"})
+
+    class _Job:
+        id = "run1"; source = "logfire"; status = "done"; name = "lf"
+        report = {"artifact": "logfire.json"}
+    monkeypatch.setattr(S.store, "get", lambda rid: _Job() if rid == "run1" else None)
+    c.post("/api/candidates/cand1/attach", json={"snapshots": {"logfire": "run1"}})
+
+    # not published yet -> needs_publish (no task written)
+    r = c.post("/api/candidates/cand1/generate").json()
+    assert r["status"] == "needs_publish"
+    assert r["missing"][0]["source"] == "logfire"
+    assert c.get("/api/tasks").json()["tasks"] == []
+
+    # publish it -> generate now uses that image
+    S.published.add({"run_id": "run1", "status": "done", "source": "logfire",
+                     "image": "ghcr.io/abundant-ai/logfire-service:lf"})
+    r2 = c.post("/api/candidates/cand1/generate").json()
+    assert "task" in r2 and r2["images"]["logfire"] == "ghcr.io/abundant-ai/logfire-service:lf"
+
+
 def test_ghc_hydrate_cmd_resolution(tmp_path, monkeypatch):
     """github capture resolves the snapshot CLI: explicit bin > PATH > importable package."""
     _client(tmp_path, monkeypatch)
