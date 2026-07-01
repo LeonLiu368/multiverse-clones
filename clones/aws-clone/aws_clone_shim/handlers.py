@@ -101,6 +101,38 @@ def _principal(arn: str) -> tuple[str, str]:
     return parts[0], parts[-1]
 
 
+def _collect_group_statements(iam: Any, user_name: str) -> list[dict[str, Any]]:
+    """Gather inline + managed/attached policy statements for every group the user is in.
+
+    Real AWS evaluates "all policies attached to groups the user is a member of" as part of
+    SimulatePrincipalPolicy. Group memberships have no permission boundary of their own, so
+    only their statements are folded into the identity policy set. Any lookup that fails
+    (e.g. groups unsupported by the backend) is skipped so it can only ADD allows.
+    """
+    statements: list[dict[str, Any]] = []
+    try:
+        groups = iam.list_groups_for_user(UserName=user_name).get("Groups", [])
+    except Exception:
+        return statements
+    for group in groups:
+        group_name = group.get("GroupName") if isinstance(group, dict) else group
+        if not group_name:
+            continue
+        try:
+            for policy_name in iam.list_group_policies(GroupName=group_name).get("PolicyNames", []):
+                statements += _doc_statements(
+                    iam.get_group_policy(GroupName=group_name, PolicyName=policy_name).get("PolicyDocument")
+                )
+        except Exception:
+            pass
+        try:
+            for attached in iam.list_attached_group_policies(GroupName=group_name).get("AttachedPolicies", []):
+                statements += _managed_statements(iam, attached["PolicyArn"])
+        except Exception:
+            pass
+    return statements
+
+
 def _collect_principal_statements(iam: Any, source_arn: str) -> tuple[list[dict[str, Any]], list[dict[str, Any]] | None]:
     kind, name = _principal(source_arn)
     statements: list[dict[str, Any]] = []
@@ -116,6 +148,10 @@ def _collect_principal_statements(iam: Any, source_arn: str) -> tuple[list[dict[
             statements += _doc_statements(iam.get_user_policy(UserName=name, PolicyName=policy_name).get("PolicyDocument"))
         for attached in iam.list_attached_user_policies(UserName=name).get("AttachedPolicies", []):
             statements += _managed_statements(iam, attached["PolicyArn"])
+        # Real AWS also evaluates every policy attached to the groups the user belongs to.
+        # Fold in each group's inline + managed/attached policies so a permission granted
+        # only via a group is not wrongly reported implicitDeny.
+        statements += _collect_group_statements(iam, name)
         principal = iam.get_user(UserName=name)["User"]
     boundary_arn = (principal.get("PermissionsBoundary") or {}).get("PermissionsBoundaryArn")
     if boundary_arn:

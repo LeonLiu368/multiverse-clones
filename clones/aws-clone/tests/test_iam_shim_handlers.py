@@ -9,7 +9,9 @@ from aws_clone_shim import handlers
 
 class FakeIam:
     def __init__(self, *, role_inline=None, role_attached=None, role_boundary_arn=None, managed=None,
-                 users=None, login_profiles=None, mfa=None, access_keys=None):
+                 users=None, login_profiles=None, mfa=None, access_keys=None,
+                 user_inline=None, user_attached=None, user_boundary_arn=None,
+                 user_groups=None, group_inline=None, group_attached=None):
         self.role_inline = role_inline or {}
         self.role_attached = role_attached or []
         self.role_boundary_arn = role_boundary_arn
@@ -18,6 +20,41 @@ class FakeIam:
         self.login_profiles = set(login_profiles or [])
         self.mfa = mfa or {}
         self.access_keys = access_keys or {}
+        # user identity policies
+        self.user_inline = user_inline or {}
+        self.user_attached = user_attached or []
+        self.user_boundary_arn = user_boundary_arn
+        # group membership + group policies
+        self.user_groups = user_groups or {}          # {user_name: [group_name, ...]}
+        self.group_inline = group_inline or {}        # {group_name: {policy_name: doc}}
+        self.group_attached = group_attached or {}    # {group_name: [{"PolicyArn": ...}]}
+
+    def list_user_policies(self, UserName):
+        return {"PolicyNames": list(self.user_inline)}
+
+    def get_user_policy(self, UserName, PolicyName):
+        return {"PolicyDocument": self.user_inline[PolicyName]}
+
+    def list_attached_user_policies(self, UserName):
+        return {"AttachedPolicies": self.user_attached}
+
+    def get_user(self, UserName):
+        user = {"UserName": UserName}
+        if self.user_boundary_arn:
+            user["PermissionsBoundary"] = {"PermissionsBoundaryArn": self.user_boundary_arn}
+        return {"User": user}
+
+    def list_groups_for_user(self, UserName):
+        return {"Groups": [{"GroupName": g} for g in self.user_groups.get(UserName, [])]}
+
+    def list_group_policies(self, GroupName):
+        return {"PolicyNames": list(self.group_inline.get(GroupName, {}))}
+
+    def get_group_policy(self, GroupName, PolicyName):
+        return {"PolicyDocument": self.group_inline[GroupName][PolicyName]}
+
+    def list_attached_group_policies(self, GroupName):
+        return {"AttachedPolicies": self.group_attached.get(GroupName, [])}
 
     def list_role_policies(self, RoleName):
         return {"PolicyNames": list(self.role_inline)}
@@ -97,6 +134,37 @@ def test_simulate_principal_policy_allow_via_managed_and_boundary():
     by_action = {r["EvalActionName"]: r["EvalDecision"] for r in out["EvaluationResults"]}
     assert by_action["s3:GetObject"] == "allowed"
     assert by_action["s3:PutObject"] == "implicitDeny"
+
+
+def test_simulate_principal_policy_allow_via_group_membership():
+    # Regression: a user with NO direct (inline/attached) policy, but a member of a group
+    # whose inline policy grants the action, must simulate `allowed` (was `implicitDeny`).
+    handlers._iam_client_cache = FakeIam(
+        user_groups={"eng": ["s3-readers"]},
+        group_inline={"s3-readers": {"read": _doc([{"Effect": "Allow", "Action": "s3:GetObject", "Resource": "*"}])}},
+    )
+    out = handlers.simulate_principal_policy({
+        "PolicySourceArn": "arn:aws:iam::000000000000:user/eng",
+        "ActionNames": ["s3:GetObject"],
+        "ResourceArns": ["arn:aws:s3:::acme/private"],
+    })
+    result = out["EvaluationResults"][0]
+    assert result["EvalActionName"] == "s3:GetObject"
+    assert result["EvalDecision"] == "allowed"
+
+
+def test_simulate_principal_policy_allow_via_group_managed_policy():
+    # Same, but the group grant comes from a managed/attached policy.
+    handlers._iam_client_cache = FakeIam(
+        user_groups={"eng": ["admins"]},
+        group_attached={"admins": [{"PolicyArn": "arn:aws:iam::aws:policy/AmazonS3FullAccess"}]},
+        managed={"arn:aws:iam::aws:policy/AmazonS3FullAccess": _doc([{"Effect": "Allow", "Action": "s3:*", "Resource": "*"}])},
+    )
+    out = handlers.simulate_principal_policy({
+        "PolicySourceArn": "arn:aws:iam::000000000000:user/eng",
+        "ActionNames": ["s3:PutObject"],
+    })
+    assert out["EvaluationResults"][0]["EvalDecision"] == "allowed"
 
 
 def test_simulate_custom_policy_explicit_deny():
