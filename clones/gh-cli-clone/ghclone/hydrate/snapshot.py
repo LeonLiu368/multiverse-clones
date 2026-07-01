@@ -22,7 +22,32 @@ def _client(token: str | None) -> httpx.Client:
     headers = {"Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"}
     if token:
         headers["Authorization"] = f"Bearer {token}"
-    return httpx.Client(base_url=GITHUB_API, headers=headers, timeout=60)
+    # transport-level retries cover connection setup; _get() adds retries for mid-flight drops
+    return httpx.Client(base_url=GITHUB_API, headers=headers, timeout=60,
+                        transport=httpx.HTTPTransport(retries=3))
+
+
+# transient failures GitHub throws on long snapshots of big repos
+_TRANSIENT = (httpx.RemoteProtocolError, httpx.ReadError, httpx.WriteError,
+              httpx.ConnectError, httpx.ReadTimeout, httpx.PoolTimeout)
+
+
+def _get(c: httpx.Client, path: str, params: dict | None = None, tries: int = 6):
+    """GET with backoff on transient network drops (e.g. 'Server disconnected without a response')
+    and 5xx. Rate-limit 403s are handled by the caller."""
+    last = None
+    for attempt in range(tries):
+        try:
+            r = c.get(path, params=params)
+        except _TRANSIENT as e:
+            last = e
+            time.sleep(min(2 ** attempt, 20))
+            continue
+        if r.status_code >= 500:
+            time.sleep(min(2 ** attempt, 20))
+            continue
+        return r
+    raise last if last else RuntimeError(f"GET {path} failed after {tries} tries")
 
 
 def _paginate(c: httpx.Client, path: str, params: dict | None = None) -> list:
@@ -31,7 +56,7 @@ def _paginate(c: httpx.Client, path: str, params: dict | None = None) -> list:
     page, out = 1, []
     while True:
         params["page"] = page
-        r = c.get(path, params=params)
+        r = _get(c, path, params=params)
         # honor rate limit
         if r.status_code == 403 and r.headers.get("X-RateLimit-Remaining") == "0":
             reset = int(r.headers.get("X-RateLimit-Reset", "0"))
@@ -62,7 +87,7 @@ def snapshot(owner_repo: str, out_dir: str, *, token: str | None = None,
     c = _client(token)
 
     # 1. repo metadata
-    meta = c.get(f"/repos/{owner}/{repo}")
+    meta = _get(c, f"/repos/{owner}/{repo}")
     meta.raise_for_status()
     meta = meta.json()
     _wj(out / "repo.json", {

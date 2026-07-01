@@ -5,9 +5,39 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock
 
+import httpx
+
 from ghclone.hydrate import apply as hap
+from ghclone.hydrate import snapshot as hsnap
 from ghclone.hydrate import temporal
 from ghclone.hydrate import verify as hver
+
+
+def test_get_retries_transient_disconnect():
+    """_get() rides out 'Server disconnected' drops on long snapshots of big repos."""
+    calls = {"n": 0}
+    ok = httpx.Response(200, json={"ok": True})
+
+    class C:
+        def get(self, path, params=None):
+            calls["n"] += 1
+            if calls["n"] < 3:
+                raise httpx.RemoteProtocolError("Server disconnected without sending a response.")
+            return ok
+
+    r = hsnap._get(C(), "/repos/x/y", tries=6)
+    assert r.status_code == 200 and calls["n"] == 3
+
+
+def test_get_gives_up_after_tries():
+    class C:
+        def get(self, path, params=None):
+            raise httpx.ReadError("boom")
+    try:
+        hsnap._get(C(), "/x", tries=2)
+        assert False, "should have raised"
+    except httpx.ReadError:
+        pass
 
 T0 = "2024-01-01T00:00:00Z"
 CUT = temporal.parse_cutoff("2024-02-01T00:00:00Z")
