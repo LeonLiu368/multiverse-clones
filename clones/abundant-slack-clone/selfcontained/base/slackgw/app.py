@@ -12,6 +12,7 @@ import datetime
 import json
 import os
 import re
+import time
 from typing import Any
 
 from fastapi import FastAPI, Request
@@ -204,7 +205,12 @@ async def _dispatch(method: str, request: Request) -> JSONResponse:
             limit = int(p.get("limit", 100))
         except Exception:
             limit = 100
-        msgs = store.history(c["id"], limit)
+        # Honor Slack's ts-window params. oldest/latest are stringified epoch floats; default
+        # latest is "now" so an oldest-only call still excludes nothing that already exists.
+        oldest = str(p.get("oldest", "") or "")
+        latest = str(p.get("latest", "") or "") or f"{time.time():.6f}"
+        inclusive = str(p.get("inclusive", "")).lower() in ("1", "true", "yes")
+        msgs = store.history(c["id"], limit, oldest=oldest, latest=latest, inclusive=inclusive)
         return ok(messages=[_msg(m) for m in msgs], has_more=False,
                   response_metadata={"next_cursor": ""})
 

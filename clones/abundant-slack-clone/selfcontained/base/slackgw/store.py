@@ -151,16 +151,33 @@ class Store:
             ).fetchone()
         return dict(row) if row else None
 
-    def history(self, channel_id: str, limit: int = 100) -> list[dict]:
-        """Top-level messages newest-first (thread replies excluded, like Slack's conversations.history)."""
+    def history(self, channel_id: str, limit: int = 100, *, oldest: str | None = None,
+                latest: str | None = None, inclusive: bool = False) -> list[dict]:
+        """Top-level messages newest-first (thread replies excluded, like Slack's conversations.history).
+
+        `oldest`/`latest` bound the ts window like the real Slack API: by default messages with
+        ts > oldest and ts < latest are returned; `inclusive=True` makes both bounds inclusive
+        (>= / <=). Bounds are compared numerically (ts values are stringified epoch floats and may
+        arrive un-padded from callers), so we CAST for the window predicates while keeping the
+        primary ORDER BY on the raw text ts so the (channel_id, ts) index still serves the sort.
+        """
+        where = ["channel_id = ?", "(thread_ts = '' OR thread_ts = ts)"]
+        args: list[Any] = [channel_id]
+        if oldest not in (None, ""):
+            where.append(f"CAST(ts AS REAL) {'>=' if inclusive else '>'} CAST(? AS REAL)")
+            args.append(oldest)
+        if latest not in (None, ""):
+            where.append(f"CAST(ts AS REAL) {'<=' if inclusive else '<'} CAST(? AS REAL)")
+            args.append(latest)
+        args.append(max(1, min(limit, 1000)))
         rows = self.conn.execute(
             # ORDER BY ts (not CAST(ts AS REAL)) so the (channel_id, ts) index serves the sort —
             # ts is uniformly "<10-digit secs>.<usecs>", so text order == chronological order.
             # This keeps history O(limit) even on huge channels (2s -> ~0s at 2.4M messages).
-            """SELECT * FROM messages
-               WHERE channel_id = ? AND (thread_ts = '' OR thread_ts = ts)
+            f"""SELECT * FROM messages
+               WHERE {' AND '.join(where)}
                ORDER BY ts DESC LIMIT ?""",
-            (channel_id, max(1, min(limit, 1000))),
+            args,
         ).fetchall()
         return [dict(r) for r in rows]
 

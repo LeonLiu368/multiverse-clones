@@ -65,6 +65,39 @@ def test_conversations_history_error(http):
     assert d == {"ok": False, "error": "channel_not_found"}
 
 
+def test_conversations_history_time_window(http):
+    """oldest/latest/inclusive must narrow the returned set like the real Slack API.
+
+    The general fixture channel has two standalone messages:
+      1700000001.000000  "welcome to the workspace"
+      1700000002.000000  "secret marker ZEBRAFISH lives here"
+    """
+    TS1 = "1700000001.000000"
+    TS2 = "1700000002.000000"
+
+    def ts_set(**params):
+        d = http("conversations.history", channel=CH_GENERAL, limit=100, **params)
+        assert d["ok"] is True
+        return {m["ts"] for m in d["messages"]}
+
+    # Baseline: no window -> both present (regression guard for existing limit behavior).
+    assert {TS1, TS2} <= ts_set()
+
+    # oldest is exclusive by default: ts > oldest drops TS1, keeps TS2.
+    assert ts_set(oldest=TS1) == {TS2}
+    # oldest inclusive: ts >= oldest keeps TS1 too.
+    assert ts_set(oldest=TS1, inclusive="true") == {TS1, TS2}
+
+    # latest is exclusive by default: ts < latest drops TS2, keeps TS1.
+    assert ts_set(latest=TS2) == {TS1}
+    # latest inclusive: ts <= latest keeps TS2 too.
+    assert ts_set(latest=TS2, inclusive="true") == {TS1, TS2}
+
+    # Combined window pinning a single message (exclusive bounds around only TS2's neighbors...).
+    assert ts_set(oldest=TS1, latest=TS2, inclusive="true") == {TS1, TS2}
+    assert ts_set(oldest="1700000001.500000", latest="1700000002.500000") == {TS2}
+
+
 # --------------------------------------------------------------------------- conversations.replies
 def test_conversations_replies_happy(http):
     d = http("conversations.replies", channel=CH_ENG, ts=THREAD_TS)
