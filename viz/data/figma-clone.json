@@ -1,0 +1,1278 @@
+{
+  "clone": "figma-clone",
+  "product": "Figma",
+  "real_service": {
+    "name": "Figma REST API v1",
+    "reference": "https://www.figma.com/developers/api",
+    "api_base": "https://api.figma.com/v1"
+  },
+  "parity": {
+    "verdict": "HIGH",
+    "note": "X-Figma-Token auth, node-id 1:19 form, and file+comment envelopes match Figma REST v1."
+  },
+  "seed_file": "figma.db",
+  "surfaces": {
+    "cli": "figma-cli",
+    "mcp": "figma-mcp"
+  },
+  "demos": [
+    {
+      "id": "get-file",
+      "title": "Get a file's node tree",
+      "method": "GET",
+      "capability": "Get file (document tree + components + styles)",
+      "seed_excerpt": {
+        "name": "Acme Design System",
+        "document": {
+          "type": "DOCUMENT",
+          "id": "0:0",
+          "children": [
+            {
+              "type": "CANVAS",
+              "id": "0:1",
+              "name": "Page 1"
+            }
+          ]
+        }
+      },
+      "ui": {
+        "type": "canvas",
+        "title": "Figma \u203a Acme Design System",
+        "nodes": [
+          {
+            "type": "",
+            "name": "Page 1",
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "type": "",
+            "name": "Buttons",
+            "x": 0,
+            "y": 0.0,
+            "w": 900,
+            "h": 420
+          },
+          {
+            "type": "",
+            "name": "Primary",
+            "x": 24.0,
+            "y": 0.0,
+            "w": 160.0,
+            "h": 56.0
+          },
+          {
+            "type": "TEXT",
+            "name": "Label",
+            "x": 40.0,
+            "y": 16.0,
+            "w": 128.0,
+            "h": 24
+          },
+          {
+            "type": "",
+            "name": "Secondary",
+            "x": 216.0,
+            "y": 0.0,
+            "w": 160.0,
+            "h": 56.0
+          },
+          {
+            "type": "TEXT",
+            "name": "Label",
+            "x": 232.0,
+            "y": 16.0,
+            "w": 128.0,
+            "h": 24
+          },
+          {
+            "type": "",
+            "name": "Ghost",
+            "x": 408.0,
+            "y": 0.0,
+            "w": 160.0,
+            "h": 56.0
+          },
+          {
+            "type": "TEXT",
+            "name": "Label",
+            "x": 424.0,
+            "y": 16.0,
+            "w": 128.0,
+            "h": 24
+          }
+        ]
+      },
+      "agent": {
+        "cli": "figma-cli files get OhbVrpoiVgRV5IfLBcbfno",
+        "mcp": {
+          "tool": "figma_get_file",
+          "args": {
+            "key": "OhbVrpoiVgRV5IfLBcbfno"
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "GET /v1/files/{key}",
+        "mcp": "figma-mcp \u203a figma_get_file",
+        "cli": "curl -H 'X-Figma-Token: <PAT>' https://api.figma.com/v1/files/{key}",
+        "doc": "https://www.figma.com/developers/api#files-endpoints"
+      },
+      "clone_output": {
+        "document": {
+          "type": "DOCUMENT",
+          "id": "0:0",
+          "name": "Document",
+          "children": [
+            {
+              "id": "0:1",
+              "name": "Page 1",
+              "type": "CANVAS",
+              "backgroundColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+              },
+              "children": [
+                {
+                  "id": "1:11",
+                  "name": "Buttons",
+                  "type": "FRAME",
+                  "layoutMode": "HORIZONTAL",
+                  "itemSpacing": 32,
+                  "paddingLeft": 24,
+                  "paddingTop": 24,
+                  "paddingRight": 24,
+                  "paddingBottom": 24,
+                  "cornerRadius": 0,
+                  "fills": [
+                    {
+                      "blendMode": "NORMAL",
+                      "type": "SOLID",
+                      "color": {
+                        "r": 0.953,
+                        "g": 0.957,
+                        "b": 0.965,
+                        "a": 1.0
+                      }
+                    }
+                  ],
+                  "absoluteBoundingBox": {
+                    "x": 0,
+                    "y": 0.0,
+                    "width": 900,
+                    "height": 420
+                  },
+                  "children": [
+                    {
+                      "id": "1:12",
+                      "name": "Primary",
+                      "type": "COMPONENT",
+                      "layoutMode": "HORIZONTAL",
+                      "itemSpacing": 8,
+                      "paddingLeft": 16,
+                      "paddingRight": 16,
+                      "paddingTop": 12,
+                      "paddingBottom": 12,
+                      "cornerRadius": 8,
+                      "primaryAxisAlignItems": "CENTER",
+                      "counterAxisAlignItems": "CENTER",
+                      "fills": [
+                        {
+                          "blendMode": "NORMAL",
+                          "type": "SOLID",
+                          "color": {
+                            "r": 0.114,
+                            "g": 0.306,
+                            "b": 0.847,
+                            "a": 1.0
+                          }
+                        }
+                      ],
+                      "strokes": [],
+                      "absoluteBoundingBox": {
+                        "x": 24.0,
+                        "y": 0.0,
+                        "width": 160.0,
+                        "height": 56.0
+                      },
+                      "children": [
+                        {
+                          "id": "1:13",
+                          "name": "Label",
+                          "type": "TEXT",
+                          "characters": "Primary",
+                          "style": {
+                            "fontFamily": "Inter",
+                            "fontWeight": 600,
+                            "fontSize": 16,
+                            "lineHeightPx": 24,
+                            "letterSpacing": 0,
+                            "textAlignHorizontal": "CENTER"
+                          },
+                          "fills": [
+                            {
+                              "blendMode": "NORMAL",
+                              "type": "SOLID",
+                              "color": {
+                                "r": 1.0,
+                                "g": 1.0,
+                                "b": 1.0,
+                                "a": 1.0
+                              }
+                            }
+                          ],
+                          "absoluteBoundingBox": {
+                            "x": 40.0,
+                            "y": 16.0,
+                            "width": 128.0,
+                            "height": 24
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id": "1:14",
+                      "name": "Secondary",
+                      "type": "COMPONENT",
+                      "layoutMode": "HORIZONTAL",
+                      "itemSpacing": 8,
+                      "paddingLeft": 16,
+                      "paddingRight": 16,
+                      "paddingTop": 12,
+                      "paddingBottom": 12,
+                      "cornerRadius": 8,
+                      "primaryAxisAlignItems": "CENTER",
+                      "counterAxisAlignItems": "CENTER",
+                      "fills": [
+                        {
+                          "blendMode": "NORMAL",
+                          "type": "SOLID",
+                          "color": {
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
+                            "a": 1.0
+                          }
+                        }
+                      ],
+                      "strokes": [],
+                      "absoluteBoundingBox": {
+                        "x": 216.0,
+                        "y": 0.0,
+                        "width": 160.0,
+                        "height": 56.0
+                      },
+                      "children": [
+                        {
+                          "id": "1:15",
+                          "name": "Label",
+                          "type": "TEXT",
+                          "characters": "Secondary",
+                          "style": {
+                            "fontFamily": "Inter",
+                            "fontWeight": 600,
+                            "fontSize": 16,
+                            "lineHeightPx": 24,
+                            "letterSpacing": 0,
+                            "textAlignHorizontal": "CENTER"
+                          },
+                          "fills": [
+                            {
+                              "blendMode": "NORMAL",
+                              "type": "SOLID",
+                              "color": {
+                                "r": 1.0,
+                                "g": 1.0,
+                                "b": 1.0,
+                                "a": 1.0
+                              }
+                            }
+                          ],
+                          "absoluteBoundingBox": {
+                            "x": 232.0,
+                            "y": 16.0,
+                            "width": 128.0,
+                            "height": 24
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id": "1:16",
+                      "name": "Ghost",
+                      "type": "COMPONENT",
+                      "layoutMode": "HORIZONTAL",
+                      "itemSpacing": 8,
+                      "paddingLeft": 16,
+                      "paddingRight": 16,
+                      "paddingTop": 12,
+                      "paddingBottom": 12,
+                      "cornerRadius": 8,
+                      "primaryAxisAlignItems": "CENTER",
+                      "counterAxisAlignItems": "CENTER",
+                      "fills": [
+                        {
+                          "blendMode": "NORMAL",
+                          "type": "SOLID",
+                          "color": {
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
+                            "a": 1.0
+                          }
+                        }
+                      ],
+                      "strokes": [],
+                      "absoluteBoundingBox": {
+                        "x": 408.0,
+                        "y": 0.0,
+                        "width": 160.0,
+                        "height": 56.0
+                      },
+                      "children": [
+                        {
+                          "id": "1:17",
+                          "name": "Label",
+                          "type": "TEXT",
+                          "characters": "Ghost",
+                          "style": {
+                            "fontFamily": "Inter",
+                            "fontWeight": 600,
+                            "fontSize": 16,
+                            "lineHeightPx": 24,
+                            "letterSpacing": 0,
+                            "textAlignHorizontal": "CENTER"
+                          },
+                          "fills": [
+                            {
+                              "blendMode": "NORMAL",
+                              "type": "SOLID",
+                              "color": {
+                                "r": 1.0,
+                                "g": 1.0,
+                                "b": 1.0,
+                                "a": 1.0
+                              }
+                            }
+                          ],
+                          "absoluteBoundingBox": {
+                            "x": 424.0,
+                            "y": 16.0,
+                            "width": 128.0,
+                            "height": 24
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "1:18",
+                  "name": "Cards",
+                  "type": "FRAME",
+                  "layoutMode": "HORIZONTAL",
+                  "itemSpacing": 32,
+                  "paddingLeft": 24,
+                  "paddingTop": 24,
+                  "paddingRight": 24,
+                  "paddingBottom": 24,
+                  "cornerRadius": 0,
+                  "fills": [
+                    {
+                      "blendMode": "NORMAL",
+                      "type": "SOLID",
+                      "color": {
+                        "r": 0.953,
+                        "g": 0.957,
+                        "b": 0.965,
+                        "a": 1.0
+                      }
+                    }
+                  ],
+                  "absoluteBoundingBox": {
+                    "x": 0,
+                    "y": 480.0,
+                    "width": 900,
+                    "height": 420
+                  },
+                  "children": [
+                    {
+                      "id": "1:19",
+                      "name": "PricingCard",
+                      "type": "COMPONENT",
+                      "layoutMode": "VERTICAL",
+                      "itemSpacing": 12,
+                      "paddingLeft": 24,
+                      "paddingRight": 24,
+                      "paddingTop": 24,
+                      "paddingBottom": 24,
+                      "cornerRadius": 8,
+                      "primaryAxisAlignItems": "CENTER",
+                      "counterAxisAlignItems": "CENTER",
+                      "fills": [
+                        {
+                          "blendMode": "NORMAL",
+                          "type": "SOLID",
+                          "color": {
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
+                            "a": 1.0
+                          }
+                        }
+                      ],
+                      "strokes": [
+                        {
+                          "blendMode": "NORMAL",
+                          "type": "SOLID",
+                          "color": {
+                            "r": 0.953,
+                            "g": 0.957,
+                            "b": 0.965,
+                            "a": 1.0
+                          }
+                        }
+                      ],
+                      "absoluteBoundingBox": {
+                        "x": 24.0,
+                        "y": 480.0,
+                        "width": 280.0,
+                        "height": 360.0
+                      },
+                      "children": [
+                        {
+                          "id": "1:20",
+                          "name": "Label",
+                          "type": "TEXT",
+                          "characters": "PricingCard",
+                          "style": {
+                            "fontFamily": "Inter",
+                            "fontWeight": 600,
+                            "fontSize": 24,
+                            "lineHeightPx": 32,
+                            "letterSpacing": 0,
+                            "textAlignHorizontal": "CENTER"
+                          },
+                          "fills": [
+                            {
+                              "blendMode": "NORMAL",
+                              "type": "SOLID",
+                              "color": {
+                                "r": 0.067,
+                                "g": 0.075,
+                                "b": 0.09,
+                                "a": 1.0
+                              }
+                            }
+                          ],
+                          "absoluteBoundingBox": {
+                            "x": 40.0,
+                            "y": 496.0,
+                            "width": 248.0,
+                            "height": 24
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id": "1:21",
+                      "name": "StatCard",
+                      "type": "COMPONENT",
+                      "layoutMode": "VERTICAL",
+                      "itemSpacing": 12,
+                      "paddingLeft": 24,
+                      "paddingRight": 24,
+                      "paddingTop": 24,
+                      "paddingBottom": 24,
+                      "cornerRadius": 8,
+                      "primaryAxisAlignItems": "CENTER",
+                      "counterAxisAlignItems": "CENTER",
+                      "fills": [
+                        {
+                          "blendMode": "NORMAL",
+                          "type": "SOLID",
+                          "color": {
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
+                            "a": 1.0
+                          }
+                        }
+                      ],
+                      "strokes": [
+                        {
+                          "blendMode": "NORMAL",
+                          "type": "SOLID",
+                          "color": {
+                            "r": 0.953,
+                            "g": 0.957,
+                            "b": 0.965,
+                            "a": 1.0
+                          }
+                        }
+                      ],
+                      "absoluteBoundingBox": {
+                        "x": 336.0,
+                        "y": 480.0,
+                        "width": 280.0,
+                        "height": 360.0
+                      },
+                      "children": [
+                        {
+                          "id": "1:22",
+                          "name": "Label",
+                          "type": "TEXT",
+                          "characters": "StatCard",
+                          "style": {
+                            "fontFamily": "Inter",
+                            "fontWeight": 600,
+                            "fontSize": 24,
+                            "lineHeightPx": 32,
+                            "letterSpacing": 0,
+                            "textAlignHorizontal": "CENTER"
+                          },
+                          "fills": [
+                            {
+                              "blendMode": "NORMAL",
+                              "type": "SOLID",
+                              "color": {
+                                "r": 0.067,
+                                "g": 0.075,
+                                "b": 0.09,
+                                "a": 1.0
+                              }
+                            }
+                          ],
+                          "absoluteBoundingBox": {
+                            "x": 352.0,
+                            "y": 496.0,
+                            "width": 248.0,
+                            "height": 24
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "1:23",
+                  "name": "Inputs",
+                  "type": "FRAME",
+                  "layoutMode": "HORIZONTAL",
+                  "itemSpacing": 32,
+                  "paddingLeft": 24,
+                  "paddingTop": 24,
+                  "paddingRight": 24,
+                  "paddingBottom": 24,
+                  "cornerRadius": 0,
+                  "fills": [
+                    {
+                      "blendMode": "NORMAL",
+                      "type": "SOLID",
+                      "color": {
+                        "r": 0.953,
+                        "g": 0.957,
+                        "b": 0.965,
+                        "a": 1.0
+                      }
+                    }
+                  ],
+                  "absoluteBoundingBox": {
+                    "x": 0,
+                    "y": 960.0,
+                    "width": 900,
+                    "height": 420
+                  },
+                  "children": [
+                    {
+                      "id": "1:24",
+                      "name": "TextField",
+                      "type": "COMPONENT",
+                      "layoutMode": "HORIZONTAL",
+                      "itemSpacing": 8,
+                      "paddingLeft": 16,
+                      "paddingRight": 16,
+                      "paddingTop": 12,
+                      "paddingBottom": 12,
+                      "cornerRadius": 8,
+                      "primaryAxisAlignItems": "CENTER",
+                      "counterAxisAlignItems": "CENTER",
+                      "fills": [
+                        {
+                          "blendMode": "NORMAL",
+                          "type": "SOLID",
+                          "color": {
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
+                            "a": 1.0
+                          }
+                        }
+                      ],
+                      "strokes": [
+                        {
+                          "blendMode": "NORMAL",
+                          "type": "SOLID",
+                          "color": {
+                            "r": 0.953,
+                            "g": 0.957,
+                            "b": 0.965,
+                            "a": 1.0
+                          }
+                        }
+                      ],
+                      "absoluteBoundingBox": {
+                        "x": 24.0,
+                        "y": 960.0,
+                        "width": 160.0,
+                        "height": 56.0
+                      },
+                      "children": [
+                        {
+                          "id": "1:25",
+                          "name": "Label",
+                          "type": "TEXT",
+                          "characters": "TextField",
+                          "style": {
+                            "fontFamily": "Inter",
+                            "fontWeight": 600,
+                            "fontSize": 16,
+                            "lineHeightPx": 24,
+                            "letterSpacing": 0,
+                            "textAlignHorizontal": "CENTER"
+                          },
+                          "fills": [
+                            {
+                              "blendMode": "NORMAL",
+                              "type": "SOLID",
+                              "color": {
+                                "r": 0.067,
+                                "g": 0.075,
+                                "b": 0.09,
+                                "a": 1.0
+                              }
+                            }
+                          ],
+                          "absoluteBoundingBox": {
+                            "x": 40.0,
+                            "y": 976.0,
+                            "width": 128.0,
+                            "height": 24
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id": "1:26",
+                      "name": "Select",
+                      "type": "COMPONENT",
+                      "layoutMode": "HORIZONTAL",
+                      "itemSpacing": 8,
+                      "paddingLeft": 16,
+                      "paddingRight": 16,
+                      "paddingTop": 12,
+                      "paddingBottom": 12,
+                      "cornerRadius": 8,
+                      "primaryAxisAlignItems": "CENTER",
+                      "counterAxisAlignItems": "CENTER",
+                      "fills": [
+                        {
+                          "blendMode": "NORMAL",
+                          "type": "SOLID",
+                          "color": {
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
+                            "a": 1.0
+                          }
+                        }
+                      ],
+                      "strokes": [
+                        {
+                          "blendMode": "NORMAL",
+                          "type": "SOLID",
+                          "color": {
+                            "r": 0.953,
+                            "g": 0.957,
+                            "b": 0.965,
+                            "a": 1.0
+                          }
+                        }
+                      ],
+                      "absoluteBoundingBox": {
+                        "x": 216.0,
+                        "y": 960.0,
+                        "width": 160.0,
+                        "height": 56.0
+                      },
+                      "children": [
+                        {
+                          "id": "1:27",
+                          "name": "Label",
+                          "type": "TEXT",
+                          "characters": "Select",
+                          "style": {
+                            "fontFamily": "Inter",
+                            "fontWeight": 600,
+                            "fontSize": 16,
+                            "lineHeightPx": 24,
+                            "letterSpacing": 0,
+                            "textAlignHorizontal": "CENTER"
+                          },
+                          "fills": [
+                            {
+                              "blendMode": "NORMAL",
+                              "type": "SOLID",
+                              "color": {
+                                "r": 0.067,
+                                "g": 0.075,
+                                "b": 0.09,
+                                "a": 1.0
+                              }
+                            }
+                          ],
+                          "absoluteBoundingBox": {
+                            "x": 232.0,
+                            "y": 976.0,
+                            "width": 128.0,
+                            "height": 24
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "components": {
+          "1:12": {
+            "key": "comp112",
+            "name": "Primary",
+            "description": "Primary component in Buttons",
+            "containing_frame": {
+              "name": "Buttons",
+              "nodeId": "1:11"
+            }
+          },
+          "1:14": {
+            "key": "comp114",
+            "name": "Secondary",
+            "description": "Secondary component in Buttons",
+            "containing_frame": {
+              "name": "Buttons",
+              "nodeId": "1:11"
+            }
+          },
+          "1:16": {
+            "key": "comp116",
+            "name": "Ghost",
+            "description": "Ghost component in Buttons",
+            "containing_frame": {
+              "name": "Buttons",
+              "nodeId": "1:11"
+            }
+          },
+          "1:19": {
+            "key": "comp119",
+            "name": "PricingCard",
+            "description": "PricingCard component in Cards",
+            "containing_frame": {
+              "name": "Cards",
+              "nodeId": "1:18"
+            }
+          },
+          "1:21": {
+            "key": "comp121",
+            "name": "StatCard",
+            "description": "StatCard component in Cards",
+            "containing_frame": {
+              "name": "Cards",
+              "nodeId": "1:18"
+            }
+          },
+          "1:24": {
+            "key": "comp124",
+            "name": "TextField",
+            "description": "TextField component in Inputs",
+            "containing_frame": {
+              "name": "Inputs",
+              "nodeId": "1:23"
+            }
+          },
+          "1:26": {
+            "key": "comp126",
+            "name": "Select",
+            "description": "Select component in Inputs",
+            "containing_frame": {
+              "name": "Inputs",
+              "nodeId": "1:23"
+            }
+          }
+        },
+        "componentSets": {},
+        "schemaVersion": 0,
+        "styles": {
+          "1:1": {
+            "key": "style0002",
+            "name": "Primary/500",
+            "styleType": "FILL",
+            "description": "Primary/500 color token"
+          },
+          "1:2": {
+            "key": "style0003",
+            "name": "Primary/600",
+            "styleType": "FILL",
+            "description": "Primary/600 color token"
+          },
+          "1:3": {
+            "key": "style0004",
+            "name": "Neutral/900",
+            "styleType": "FILL",
+            "description": "Neutral/900 color token"
+          },
+          "1:4": {
+            "key": "style0005",
+            "name": "Neutral/500",
+            "styleType": "FILL",
+            "description": "Neutral/500 color token"
+          },
+          "1:5": {
+            "key": "style0006",
+            "name": "Neutral/0",
+            "styleType": "FILL",
+            "description": "Neutral/0 color token"
+          },
+          "1:6": {
+            "key": "style0007",
+            "name": "Surface/100",
+            "styleType": "FILL",
+            "description": "Surface/100 color token"
+          },
+          "1:7": {
+            "key": "style0008",
+            "name": "Heading/LG",
+            "styleType": "TEXT",
+            "description": "Inter Bold 24/32"
+          },
+          "1:8": {
+            "key": "style0009",
+            "name": "Heading/MD",
+            "styleType": "TEXT",
+            "description": "Inter SemiBold 18/28"
+          },
+          "1:9": {
+            "key": "style0010",
+            "name": "Body/MD",
+            "styleType": "TEXT",
+            "description": "Inter Regular 14/20"
+          },
+          "1:10": {
+            "key": "style0011",
+            "name": "Label/SM",
+            "styleType": "TEXT",
+            "description": "Inter Medium 12/16"
+          }
+        },
+        "name": "Acme Design System",
+        "lastModified": "2026-04-12T10:02:00Z",
+        "thumbnailUrl": "/static/OhbVrpoiVgRV5IfLBcbfno/thumb.png",
+        "version": "2",
+        "role": "owner",
+        "editorType": "figma",
+        "linkAccess": "view"
+      },
+      "real_output": {
+        "document": {
+          "id": "0:0",
+          "name": "Document",
+          "type": "DOCUMENT",
+          "children": [
+            {
+              "id": "0:1",
+              "name": "Page 1",
+              "type": "CANVAS",
+              "children": []
+            }
+          ]
+        },
+        "components": {},
+        "componentSets": {},
+        "styles": {},
+        "schemaVersion": 0,
+        "name": "Acme Design System",
+        "lastModified": "2026-04-12T09:15:00Z",
+        "thumbnailUrl": "",
+        "version": "1",
+        "role": "owner",
+        "editorType": "figma",
+        "linkAccess": "view"
+      }
+    },
+    {
+      "id": "list-comments",
+      "title": "List comments on a file",
+      "method": "GET",
+      "capability": "List comments",
+      "seed_excerpt": {
+        "comments": [
+          {
+            "id": "1",
+            "message": "Primary button fill should use Primary/500 (#1D4ED8) per the token sheet.",
+            "user": "maya.designer"
+          },
+          {
+            "id": "2",
+            "message": "Card padding is 24 on all sides, 12 gap between rows. Radius 8.",
+            "user": "devon.pm"
+          }
+        ]
+      },
+      "ui": {
+        "type": "list",
+        "title": "Figma \u203a Acme Design System \u203a Comments",
+        "rows": [
+          {
+            "icon": "\ud83d\udcac",
+            "title": "Primary button fill should use Primary/500 (#1D4ED8) per the token sheet.",
+            "sub": "maya.designer \u00b7 #1",
+            "tags": []
+          },
+          {
+            "icon": "\ud83d\udcac",
+            "title": "Card padding is 24 on all sides, 12 gap between rows. Radius 8.",
+            "sub": "devon.pm \u00b7 #2",
+            "tags": []
+          }
+        ]
+      },
+      "agent": {
+        "cli": "figma-cli comments list OhbVrpoiVgRV5IfLBcbfno",
+        "mcp": {
+          "tool": "figma_list_comments",
+          "args": {
+            "key": "OhbVrpoiVgRV5IfLBcbfno"
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "GET /v1/files/{key}/comments",
+        "mcp": "figma-mcp \u203a figma_list_comments",
+        "cli": "curl -H 'X-Figma-Token: <PAT>' https://api.figma.com/v1/files/{key}/comments",
+        "doc": "https://www.figma.com/developers/api#comments-endpoints"
+      },
+      "clone_output": {
+        "comments": [
+          {
+            "id": "1",
+            "file_key": "OhbVrpoiVgRV5IfLBcbfno",
+            "parent_id": "",
+            "user": {
+              "id": "U1",
+              "handle": "maya.designer",
+              "email": "maya@acme.example"
+            },
+            "created_at": "2026-04-12T09:15:00Z",
+            "resolved_at": null,
+            "message": "Primary button fill should use Primary/500 (#1D4ED8) per the token sheet.",
+            "client_meta": {
+              "node_id": "1:12"
+            },
+            "order_id": "1"
+          },
+          {
+            "id": "2",
+            "file_key": "OhbVrpoiVgRV5IfLBcbfno",
+            "parent_id": "",
+            "user": {
+              "id": "U2",
+              "handle": "devon.pm",
+              "email": "devon@acme.example"
+            },
+            "created_at": "2026-04-12T10:02:00Z",
+            "resolved_at": null,
+            "message": "Card padding is 24 on all sides, 12 gap between rows. Radius 8.",
+            "client_meta": {
+              "node_id": "1:19"
+            },
+            "order_id": "2"
+          }
+        ]
+      },
+      "real_output": {
+        "comments": [
+          {
+            "id": "1",
+            "file_key": "OhbVrpoiVgRV5IfLBcbfno",
+            "parent_id": "",
+            "user": {
+              "id": "U1",
+              "handle": "maya.designer",
+              "img_url": "",
+              "email": "maya@acme.example"
+            },
+            "created_at": "2026-04-12T09:15:00Z",
+            "resolved_at": null,
+            "message": "Primary button fill should use Primary/500 (#1D4ED8) per the token sheet.",
+            "client_meta": {
+              "node_id": "1:12"
+            },
+            "order_id": "1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "search-nodes",
+      "title": "Search the node tree",
+      "method": "GET",
+      "capability": "Search nodes by name/text (derived over GET file)",
+      "seed_excerpt": {
+        "query": "card",
+        "matches": [
+          {
+            "id": "1:18",
+            "name": "Cards"
+          },
+          {
+            "id": "1:19",
+            "name": "PricingCard"
+          },
+          {
+            "id": "1:20",
+            "name": "Label"
+          },
+          {
+            "id": "1:21",
+            "name": "StatCard"
+          }
+        ]
+      },
+      "ui": {
+        "type": "list",
+        "title": "Figma \u203a search 'card'",
+        "rows": [
+          {
+            "icon": "\u25a2",
+            "title": "Cards",
+            "sub": "FRAME \u00b7 1:18",
+            "tags": []
+          },
+          {
+            "icon": "\u25a2",
+            "title": "PricingCard",
+            "sub": "COMPONENT \u00b7 1:19",
+            "tags": []
+          },
+          {
+            "icon": "\u25a2",
+            "title": "Label",
+            "sub": "TEXT \u00b7 1:20",
+            "tags": []
+          },
+          {
+            "icon": "\u25a2",
+            "title": "StatCard",
+            "sub": "COMPONENT \u00b7 1:21",
+            "tags": []
+          },
+          {
+            "icon": "\u25a2",
+            "title": "Label",
+            "sub": "TEXT \u00b7 1:22",
+            "tags": []
+          }
+        ]
+      },
+      "agent": {
+        "cli": "figma-cli nodes search OhbVrpoiVgRV5IfLBcbfno card",
+        "mcp": {
+          "tool": "figma_search_nodes",
+          "args": {
+            "key": "OhbVrpoiVgRV5IfLBcbfno",
+            "query": "card"
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "GET /v1/files/{key}/nodes?ids=1:19,1:21",
+        "mcp": "figma-mcp \u203a figma_search_nodes",
+        "cli": "curl -H 'X-Figma-Token: <PAT>' 'https://api.figma.com/v1/files/{key}/nodes?ids=1:19'",
+        "doc": "https://www.figma.com/developers/api#get-file-nodes-endpoint"
+      },
+      "clone_output": [
+        {
+          "id": "1:18",
+          "type": "FRAME",
+          "name": "Cards",
+          "characters": null
+        },
+        {
+          "id": "1:19",
+          "type": "COMPONENT",
+          "name": "PricingCard",
+          "characters": null
+        },
+        {
+          "id": "1:20",
+          "type": "TEXT",
+          "name": "Label",
+          "characters": "PricingCard"
+        },
+        {
+          "id": "1:21",
+          "type": "COMPONENT",
+          "name": "StatCard",
+          "characters": null
+        },
+        {
+          "id": "1:22",
+          "type": "TEXT",
+          "name": "Label",
+          "characters": "StatCard"
+        }
+      ],
+      "real_output": [
+        {
+          "id": "1:18",
+          "type": "FRAME",
+          "name": "Cards",
+          "characters": null
+        }
+      ]
+    },
+    {
+      "id": "post-comment",
+      "title": "Post a comment",
+      "method": "POST",
+      "capability": "Comment write \u2192 read round-trip",
+      "seed_excerpt": {
+        "comments_before": 2
+      },
+      "ui": {
+        "type": "timeline",
+        "title": "Figma \u203a Acme Design System (comments)",
+        "before": [
+          {
+            "id": "1",
+            "text": "Primary button fill should use Primary/500 (#1D4ED8) per the token sheet.",
+            "tags": []
+          },
+          {
+            "id": "2",
+            "text": "Card padding is 24 on all sides, 12 gap between rows. Radius 8.",
+            "tags": []
+          }
+        ],
+        "after": [
+          {
+            "id": "1",
+            "text": "Primary button fill should use Primary/500 (#1D4ED8) per the token sheet.",
+            "tags": []
+          },
+          {
+            "id": "2",
+            "text": "Card padding is 24 on all sides, 12 gap between rows. Radius 8.",
+            "tags": []
+          },
+          {
+            "id": "1782929872869",
+            "text": "Ship blocker: align Primary/500 fill with the token sheet.",
+            "tags": []
+          }
+        ],
+        "new_id": "1782929872869"
+      },
+      "agent": {
+        "cli": "figma-cli comments post OhbVrpoiVgRV5IfLBcbfno \"Ship blocker: align Primary/500 fill with the token sheet.\" --node-id 1:12",
+        "mcp": {
+          "tool": "figma_post_comment",
+          "args": {
+            "key": "OhbVrpoiVgRV5IfLBcbfno",
+            "message": "Ship blocker: align Primary/500 fill with the token sheet.",
+            "node_id": "1:12"
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "POST /v1/files/{key}/comments",
+        "mcp": "figma-mcp \u203a figma_post_comment",
+        "cli": "curl -X POST -H 'X-Figma-Token: <PAT>' -d '{\"message\":\"...\"}' https://api.figma.com/v1/files/{key}/comments",
+        "doc": "https://www.figma.com/developers/api#post-comments-endpoint"
+      },
+      "clone_output": {
+        "id": "1782929872869",
+        "file_key": "OhbVrpoiVgRV5IfLBcbfno",
+        "parent_id": "",
+        "user": {
+          "id": "U_AGENT",
+          "handle": "agent",
+          "img_url": "",
+          "email": ""
+        },
+        "created_at": "2026-07-01T18:17:52Z",
+        "resolved_at": null,
+        "message": "Ship blocker: align Primary/500 fill with the token sheet.",
+        "client_meta": {
+          "node_id": "1:12"
+        },
+        "order_id": "3"
+      },
+      "real_output": {
+        "id": "1782929872869",
+        "file_key": "OhbVrpoiVgRV5IfLBcbfno",
+        "parent_id": "",
+        "user": {
+          "id": "U_AGENT",
+          "handle": "agent",
+          "img_url": "",
+          "email": ""
+        },
+        "created_at": "2026-07-01T18:17:52Z",
+        "resolved_at": null,
+        "message": "Ship blocker: align Primary/500 fill with the token sheet.",
+        "client_meta": {
+          "node_id": "1:12"
+        },
+        "order_id": "3"
+      },
+      "change": {
+        "before": [
+          {
+            "id": "1",
+            "text": "Primary button fill should use Primary/500 (#1D4ED8) per the token sheet.",
+            "tags": []
+          },
+          {
+            "id": "2",
+            "text": "Card padding is 24 on all sides, 12 gap between rows. Radius 8.",
+            "tags": []
+          }
+        ],
+        "after": [
+          {
+            "id": "1",
+            "text": "Primary button fill should use Primary/500 (#1D4ED8) per the token sheet.",
+            "tags": []
+          },
+          {
+            "id": "2",
+            "text": "Card padding is 24 on all sides, 12 gap between rows. Radius 8.",
+            "tags": []
+          },
+          {
+            "id": "1782929872869",
+            "text": "Ship blocker: align Primary/500 fill with the token sheet.",
+            "tags": []
+          }
+        ],
+        "new_id": "1782929872869"
+      }
+    }
+  ]
+}

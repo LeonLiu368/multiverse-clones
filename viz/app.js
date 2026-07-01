@@ -143,19 +143,24 @@ function parityCheck(real, clone) {
 
 // ---------- change reflection (POST) ----------
 function changeBlock(d) {
-  const c = d.change || {};
+  const c = d.change || { before: d.ui?.before, after: d.ui?.after, new_id: d.ui?.new_id };
   const before = c.before || [], after = c.after || [], newId = c.new_id;
-  const rows = (arr, hiId) => arr.map(x => {
+  const rows = (arr, hiId) => (arr.length ? arr : []).map(x => {
     const isNew = hiId != null && (x.id === hiId);
     const tags = (x.tags || []).map(t => `<span class="tg">${esc(t)}</span>`).join('');
-    return `<div class="tl-item ${isNew ? 'new' : ''}">${esc(x.text ?? x.title ?? JSON.stringify(x))}${tags}${isNew ? '<span class="tl-new-badge">NEW ✓ written & read back</span>' : ''}</div>`;
+    return `<div class="tl-item ${isNew ? 'new' : ''}">${esc(x.text ?? x.title ?? JSON.stringify(x))}${tags}${isNew ? '<span class="tl-new-badge">NEW ✓ written &amp; read back</span>' : ''}</div>`;
   }).join('') || '<div class="tl-item" style="color:var(--dim2)">(empty)</div>';
+  const cmp = parityCheck(d.real_output, d.clone_output);
   return `<div class="cmp">
-      <div class="side"><div class="label">Before (${before.length})</div><div class="mock"><div class="mock-body">${rows(before, null)}</div></div></div>
-      <div class="side"><div class="label">After the agent's POST (${after.length})</div><div class="mock"><div class="mock-body">${rows(after, newId)}</div></div></div>
+      <div class="side"><div class="label">Before the write (${before.length})</div><div class="mock"><div class="mock-body">${rows(before, null)}</div></div></div>
+      <div class="side"><div class="label">After the agent's POST (${after.length}) — new row highlighted</div><div class="mock"><div class="mock-body">${rows(after, newId)}</div></div></div>
     </div>
-    <div class="label" style="margin-top:12px">Clone response to the write</div>${jsonBlock(d.clone_output)}
-    <div class="parity-check" style="margin-top:8px"><span class="pc match">✓ real response shape</span> ${jsonBlock ? '' : ''}<span class="pc" style="color:var(--dim)">${esc(JSON.stringify(d.real_output))}</span></div>`;
+    <div class="label" style="margin-top:14px">The clone's response to the write · vs the real API's shape</div>
+    ${cmp.summaryHtml}<div class="parity-check">${cmp.chips}</div>
+    <div class="cmp">
+      <div class="side real"><h5></h5>${jsonBlock(d.real_output)}</div>
+      <div class="side clone"><h5></h5>${jsonBlock(d.clone_output)}</div>
+    </div>`;
 }
 
 // ---------- UI mock renderers ----------

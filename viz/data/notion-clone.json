@@ -1,0 +1,1456 @@
+{
+  "clone": "notion-clone",
+  "product": "Notion",
+  "real_service": {
+    "name": "Notion API 2022-06-28",
+    "reference": "https://developers.notion.com/reference",
+    "api_base": "{gateway}/v1"
+  },
+  "parity": {
+    "verdict": "HIGH",
+    "note": "2022-06-28 list envelope, dashed-UUID ids, {object:error,...} errors, real query-database filter/sort grammar."
+  },
+  "seed_file": "notion_corpus.db",
+  "surfaces": {
+    "cli": "notion-cli",
+    "mcp": "notion-mcp"
+  },
+  "demos": [
+    {
+      "id": "retrieve-page",
+      "title": "Retrieve a page",
+      "method": "GET",
+      "capability": "Retrieve page (properties envelope)",
+      "seed_excerpt": {
+        "id": "4d125e7f-a59c-4c98-926c-bc8f38884479",
+        "title": "Engineering Handbook",
+        "parent": {
+          "type": "workspace",
+          "workspace": true
+        }
+      },
+      "ui": {
+        "type": "doc",
+        "title": "Notion \u203a Page",
+        "doc_title": "Engineering Handbook",
+        "blocks": [
+          {
+            "type": "h",
+            "text": "Engineering Handbook"
+          },
+          {
+            "type": "",
+            "text": "House rules: every PR gets a review; deploys are gated on green CI."
+          },
+          {
+            "type": "li",
+            "text": "Use the Tasks DB for all work."
+          },
+          {
+            "type": "li",
+            "text": "Rotate creds quarterly."
+          }
+        ]
+      },
+      "agent": {
+        "cli": "notion-cli pages retrieve 4d125e7f-a59c-4c98-926c-bc8f38884479",
+        "mcp": {
+          "tool": "notion_retrieve_page",
+          "args": {
+            "page_id": "4d125e7f-a59c-4c98-926c-bc8f38884479"
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "GET /v1/pages/{id}",
+        "mcp": "notion-mcp \u203a notion_retrieve_page",
+        "cli": "curl -H 'Authorization: Bearer ...' -H 'Notion-Version: 2022-06-28'",
+        "doc": "https://developers.notion.com/reference/retrieve-a-page"
+      },
+      "clone_output": {
+        "object": "page",
+        "id": "4d125e7f-a59c-4c98-926c-bc8f38884479",
+        "created_time": "2026-06-01T09:00:00.000Z",
+        "last_edited_time": "2026-06-01T09:00:00.000Z",
+        "created_by": {
+          "object": "user",
+          "id": "e3e70682-c209-4cac-a29f-6fbed82c07cd"
+        },
+        "last_edited_by": {
+          "object": "user",
+          "id": "e3e70682-c209-4cac-a29f-6fbed82c07cd"
+        },
+        "cover": null,
+        "icon": null,
+        "parent": {
+          "type": "workspace",
+          "workspace": true
+        },
+        "archived": false,
+        "in_trash": false,
+        "properties": {
+          "title": {
+            "id": "title",
+            "type": "title",
+            "title": [
+              {
+                "type": "text",
+                "text": {
+                  "content": "Engineering Handbook",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "Engineering Handbook",
+                "href": null
+              }
+            ]
+          }
+        },
+        "url": "https://notion.so/4d125e7fa59c4c98926cbc8f38884479"
+      },
+      "real_output": {
+        "object": "page",
+        "id": "4d125e7f-a59c-4c98-926c-bc8f38884479",
+        "created_time": "2026-06-01T09:00:00.000Z",
+        "last_edited_time": "2026-06-01T09:00:00.000Z",
+        "created_by": {
+          "object": "user",
+          "id": "e3e70682-c209-4cac-a29f-6fbed82c07cd"
+        },
+        "last_edited_by": {
+          "object": "user",
+          "id": "e3e70682-c209-4cac-a29f-6fbed82c07cd"
+        },
+        "cover": null,
+        "icon": null,
+        "parent": {
+          "type": "workspace",
+          "workspace": true
+        },
+        "archived": false,
+        "in_trash": false,
+        "properties": {
+          "title": {
+            "id": "title",
+            "type": "title",
+            "title": [
+              {
+                "type": "text",
+                "text": {
+                  "content": "Engineering Handbook",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "Engineering Handbook",
+                "href": null
+              }
+            ]
+          }
+        },
+        "url": "https://www.notion.so/4d125e7fa59c4c98926cbc8f38884479"
+      }
+    },
+    {
+      "id": "get-block-children",
+      "title": "Get block children",
+      "method": "GET",
+      "capability": "Retrieve block children (list envelope)",
+      "seed_excerpt": {
+        "block_id": "4d125e7f-a59c-4c98-926c-bc8f38884479",
+        "children": [
+          {
+            "type": "heading_1",
+            "text": "Engineering Handbook"
+          },
+          {
+            "type": "paragraph",
+            "text": "House rules: every PR gets a review; deploys are gated on green CI."
+          },
+          {
+            "type": "bulleted_list_item",
+            "text": "Use the Tasks DB for all work."
+          },
+          {
+            "type": "bulleted_list_item",
+            "text": "Rotate creds quarterly."
+          }
+        ]
+      },
+      "ui": {
+        "type": "doc",
+        "title": "Notion \u203a Page blocks",
+        "doc_title": "Engineering Handbook",
+        "blocks": [
+          {
+            "type": "h",
+            "text": "Engineering Handbook"
+          },
+          {
+            "type": "",
+            "text": "House rules: every PR gets a review; deploys are gated on green CI."
+          },
+          {
+            "type": "li",
+            "text": "Use the Tasks DB for all work."
+          },
+          {
+            "type": "li",
+            "text": "Rotate creds quarterly."
+          }
+        ]
+      },
+      "agent": {
+        "cli": "notion-cli blocks children 4d125e7f-a59c-4c98-926c-bc8f38884479",
+        "mcp": {
+          "tool": "notion_get_block_children",
+          "args": {
+            "block_id": "4d125e7f-a59c-4c98-926c-bc8f38884479"
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "GET /v1/blocks/{id}/children",
+        "mcp": "notion-mcp \u203a notion_get_block_children",
+        "doc": "https://developers.notion.com/reference/get-block-children"
+      },
+      "clone_output": {
+        "object": "list",
+        "results": [
+          {
+            "object": "block",
+            "id": "0fa07a3f-2e29-4065-afa2-31e959acdd98",
+            "parent": {
+              "type": "page_id",
+              "page_id": "4d125e7f-a59c-4c98-926c-bc8f38884479"
+            },
+            "created_time": "2026-06-01T09:00:00.000Z",
+            "last_edited_time": "2026-06-01T09:00:00.000Z",
+            "created_by": {
+              "object": "user",
+              "id": "e3e70682-c209-4cac-a29f-6fbed82c07cd"
+            },
+            "last_edited_by": {
+              "object": "user",
+              "id": "e3e70682-c209-4cac-a29f-6fbed82c07cd"
+            },
+            "has_children": false,
+            "archived": false,
+            "type": "heading_1",
+            "heading_1": {
+              "rich_text": [
+                {
+                  "type": "text",
+                  "text": {
+                    "content": "Engineering Handbook",
+                    "link": null
+                  },
+                  "annotations": {
+                    "bold": false,
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false,
+                    "code": false,
+                    "color": "default"
+                  },
+                  "plain_text": "Engineering Handbook",
+                  "href": null
+                }
+              ]
+            }
+          },
+          {
+            "object": "block",
+            "id": "98b33c6e-0a14-490a-b795-e98680ee526e",
+            "parent": {
+              "type": "page_id",
+              "page_id": "4d125e7f-a59c-4c98-926c-bc8f38884479"
+            },
+            "created_time": "2026-06-01T09:00:00.000Z",
+            "last_edited_time": "2026-06-01T09:00:00.000Z",
+            "created_by": {
+              "object": "user",
+              "id": "e3e70682-c209-4cac-a29f-6fbed82c07cd"
+            },
+            "last_edited_by": {
+              "object": "user",
+              "id": "e3e70682-c209-4cac-a29f-6fbed82c07cd"
+            },
+            "has_children": false,
+            "archived": false,
+            "type": "paragraph",
+            "paragraph": {
+              "rich_text": [
+                {
+                  "type": "text",
+                  "text": {
+                    "content": "House rules: every PR gets a review; deploys are gated on green CI.",
+                    "link": null
+                  },
+                  "annotations": {
+                    "bold": false,
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false,
+                    "code": false,
+                    "color": "default"
+                  },
+                  "plain_text": "House rules: every PR gets a review; deploys are gated on green CI.",
+                  "href": null
+                }
+              ]
+            }
+          },
+          {
+            "object": "block",
+            "id": "642aad48-fcfc-4a81-b306-d70019d5f970",
+            "parent": {
+              "type": "page_id",
+              "page_id": "4d125e7f-a59c-4c98-926c-bc8f38884479"
+            },
+            "created_time": "2026-06-01T09:00:00.000Z",
+            "last_edited_time": "2026-06-01T09:00:00.000Z",
+            "created_by": {
+              "object": "user",
+              "id": "e3e70682-c209-4cac-a29f-6fbed82c07cd"
+            },
+            "last_edited_by": {
+              "object": "user",
+              "id": "e3e70682-c209-4cac-a29f-6fbed82c07cd"
+            },
+            "has_children": false,
+            "archived": false,
+            "type": "bulleted_list_item",
+            "bulleted_list_item": {
+              "rich_text": [
+                {
+                  "type": "text",
+                  "text": {
+                    "content": "Use the Tasks DB for all work.",
+                    "link": null
+                  },
+                  "annotations": {
+                    "bold": false,
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false,
+                    "code": false,
+                    "color": "default"
+                  },
+                  "plain_text": "Use the Tasks DB for all work.",
+                  "href": null
+                }
+              ]
+            }
+          },
+          {
+            "object": "block",
+            "id": "e786ab37-5bca-47be-8298-17c53308fb2e",
+            "parent": {
+              "type": "page_id",
+              "page_id": "4d125e7f-a59c-4c98-926c-bc8f38884479"
+            },
+            "created_time": "2026-06-01T09:00:00.000Z",
+            "last_edited_time": "2026-06-01T09:00:00.000Z",
+            "created_by": {
+              "object": "user",
+              "id": "e3e70682-c209-4cac-a29f-6fbed82c07cd"
+            },
+            "last_edited_by": {
+              "object": "user",
+              "id": "e3e70682-c209-4cac-a29f-6fbed82c07cd"
+            },
+            "has_children": false,
+            "archived": false,
+            "type": "bulleted_list_item",
+            "bulleted_list_item": {
+              "rich_text": [
+                {
+                  "type": "text",
+                  "text": {
+                    "content": "Rotate creds quarterly.",
+                    "link": null
+                  },
+                  "annotations": {
+                    "bold": false,
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false,
+                    "code": false,
+                    "color": "default"
+                  },
+                  "plain_text": "Rotate creds quarterly.",
+                  "href": null
+                }
+              ]
+            }
+          }
+        ],
+        "next_cursor": null,
+        "has_more": false,
+        "type": "block",
+        "block": {}
+      },
+      "real_output": {
+        "object": "list",
+        "results": [
+          {
+            "object": "block",
+            "id": "0fa07a3f-2e29-4065-afa2-31e959acdd98",
+            "parent": {
+              "type": "page_id",
+              "page_id": "4d125e7f-a59c-4c98-926c-bc8f38884479"
+            },
+            "created_time": "2026-06-01T09:00:00.000Z",
+            "last_edited_time": "2026-06-01T09:00:00.000Z",
+            "created_by": {
+              "object": "user",
+              "id": "e3e70682-c209-4cac-a29f-6fbed82c07cd"
+            },
+            "last_edited_by": {
+              "object": "user",
+              "id": "e3e70682-c209-4cac-a29f-6fbed82c07cd"
+            },
+            "has_children": false,
+            "archived": false,
+            "type": "heading_1",
+            "heading_1": {
+              "rich_text": [
+                {
+                  "type": "text",
+                  "text": {
+                    "content": "Engineering Handbook",
+                    "link": null
+                  },
+                  "annotations": {
+                    "bold": false,
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false,
+                    "code": false,
+                    "color": "default"
+                  },
+                  "plain_text": "Engineering Handbook",
+                  "href": null
+                }
+              ],
+              "is_toggleable": false,
+              "color": "default"
+            }
+          }
+        ],
+        "next_cursor": null,
+        "has_more": false,
+        "type": "block",
+        "block": {}
+      }
+    },
+    {
+      "id": "query-database",
+      "title": "Query a database (filter + sort)",
+      "method": "GET",
+      "capability": "Database query (filter + sort grammar)",
+      "seed_excerpt": {
+        "database_id": "23a7711a-8133-4876-b7eb-dcd9e87a1613",
+        "title": "Tasks",
+        "filter": {
+          "property": "Status",
+          "status": {
+            "equals": "In progress"
+          }
+        },
+        "sorts": [
+          {
+            "property": "Priority",
+            "direction": "ascending"
+          }
+        ],
+        "properties": [
+          "Name",
+          "Status",
+          "Priority",
+          "Estimate",
+          "Sprint",
+          "Assignee",
+          "Tags",
+          "Due",
+          "Done"
+        ]
+      },
+      "ui": {
+        "type": "table",
+        "title": "Notion \u203a Tasks",
+        "columns": [
+          "Name",
+          "Status",
+          "Priority",
+          "Estimate",
+          "Sprint",
+          "Assignee",
+          "Tags",
+          "Due",
+          "Done"
+        ],
+        "rows": [
+          {
+            "Name": "Fix flaky checkout test",
+            "Status": "In progress",
+            "Priority": "High",
+            "Estimate": 2,
+            "Sprint": "Sprint 24",
+            "Assignee": "e3e70682-c209-4cac-a29f-6fbed82c07cd",
+            "Tags": "frontend, bug",
+            "Due": "2026-07-03",
+            "Done": false
+          },
+          {
+            "Name": "Redesign empty states",
+            "Status": "In progress",
+            "Priority": "Medium",
+            "Estimate": 5,
+            "Sprint": "Sprint 24",
+            "Assignee": "eb1167b3-67a9-4378-bc65-c1e582e2e662",
+            "Tags": "frontend, design",
+            "Due": "2026-07-08",
+            "Done": false
+          },
+          {
+            "Name": "Fix login redirect loop",
+            "Status": "In progress",
+            "Priority": "Urgent",
+            "Estimate": 3,
+            "Sprint": "Sprint 24",
+            "Assignee": "e3e70682-c209-4cac-a29f-6fbed82c07cd",
+            "Tags": "frontend, bug",
+            "Due": "2026-07-02",
+            "Done": false
+          },
+          {
+            "Name": "Rotate prod database creds",
+            "Status": "In progress",
+            "Priority": "Urgent",
+            "Estimate": 2,
+            "Sprint": "Sprint 24",
+            "Assignee": "f7c1bd87-4da5-4709-9471-3d60c8a70639",
+            "Tags": "infra",
+            "Due": "2026-07-01",
+            "Done": false
+          }
+        ]
+      },
+      "agent": {
+        "cli": "notion-cli databases query 23a7711a-8133-4876-b7eb-dcd9e87a1613 --filter '{\"property\": \"Status\", \"status\": {\"equals\": \"In progress\"}}' --sort Priority",
+        "mcp": {
+          "tool": "notion_query_database",
+          "args": {
+            "database_id": "23a7711a-8133-4876-b7eb-dcd9e87a1613",
+            "filter": {
+              "property": "Status",
+              "status": {
+                "equals": "In progress"
+              }
+            },
+            "sorts": [
+              {
+                "property": "Priority",
+                "direction": "ascending"
+              }
+            ]
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "POST /v1/databases/{id}/query",
+        "mcp": "notion-mcp \u203a notion_query_database",
+        "doc": "https://developers.notion.com/reference/post-database-query"
+      },
+      "clone_output": {
+        "object": "list",
+        "results": [
+          {
+            "object": "page",
+            "id": "a25b59fd-92e8-4269-912e-cbc40b9475b1",
+            "created_time": "2026-06-01T09:00:00.000Z",
+            "last_edited_time": "2026-06-01T09:00:00.000Z",
+            "created_by": {
+              "object": "user",
+              "id": "e3e70682-c209-4cac-a29f-6fbed82c07cd"
+            },
+            "last_edited_by": {
+              "object": "user",
+              "id": "e3e70682-c209-4cac-a29f-6fbed82c07cd"
+            },
+            "cover": null,
+            "icon": null,
+            "parent": {
+              "type": "database_id",
+              "database_id": "23a7711a-8133-4876-b7eb-dcd9e87a1613"
+            },
+            "archived": false,
+            "in_trash": false,
+            "properties": {
+              "Name": {
+                "id": "title",
+                "type": "title",
+                "title": [
+                  {
+                    "type": "text",
+                    "text": {
+                      "content": "Fix flaky checkout test",
+                      "link": null
+                    },
+                    "annotations": {
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "code": false,
+                      "color": "default"
+                    },
+                    "plain_text": "Fix flaky checkout test",
+                    "href": null
+                  }
+                ]
+              },
+              "Status": {
+                "id": "stat",
+                "type": "status",
+                "status": {
+                  "name": "In progress",
+                  "color": "blue"
+                }
+              },
+              "Priority": {
+                "id": "prio",
+                "type": "select",
+                "select": {
+                  "name": "High",
+                  "color": "orange"
+                }
+              },
+              "Estimate": {
+                "id": "est",
+                "type": "number",
+                "number": 2
+              },
+              "Sprint": {
+                "id": "spr",
+                "type": "rich_text",
+                "rich_text": [
+                  {
+                    "type": "text",
+                    "text": {
+                      "content": "Sprint 24",
+                      "link": null
+                    },
+                    "annotations": {
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "code": false,
+                      "color": "default"
+                    },
+                    "plain_text": "Sprint 24",
+                    "href": null
+                  }
+                ]
+              },
+              "Assignee": {
+                "id": "asgn",
+                "type": "people",
+                "people": [
+                  {
+                    "object": "user",
+                    "id": "e3e70682-c209-4cac-a29f-6fbed82c07cd"
+                  }
+                ]
+              },
+              "Tags": {
+                "id": "tags",
+                "type": "multi_select",
+                "multi_select": [
+                  {
+                    "name": "frontend",
+                    "color": "default"
+                  },
+                  {
+                    "name": "bug",
+                    "color": "default"
+                  }
+                ]
+              },
+              "Due": {
+                "id": "due",
+                "type": "date",
+                "date": {
+                  "start": "2026-07-03",
+                  "end": null
+                }
+              },
+              "Done": {
+                "id": "done",
+                "type": "checkbox",
+                "checkbox": false
+              }
+            },
+            "url": "https://notion.so/a25b59fd92e84269912ecbc40b9475b1"
+          },
+          {
+            "object": "page",
+            "id": "5306f3f5-1516-4570-9b7c-709acb175a5a",
+            "created_time": "2026-06-01T09:00:00.000Z",
+            "last_edited_time": "2026-06-01T09:00:00.000Z",
+            "created_by": {
+              "object": "user",
+              "id": "eb1167b3-67a9-4378-bc65-c1e582e2e662"
+            },
+            "last_edited_by": {
+              "object": "user",
+              "id": "eb1167b3-67a9-4378-bc65-c1e582e2e662"
+            },
+            "cover": null,
+            "icon": null,
+            "parent": {
+              "type": "database_id",
+              "database_id": "23a7711a-8133-4876-b7eb-dcd9e87a1613"
+            },
+            "archived": false,
+            "in_trash": false,
+            "properties": {
+              "Name": {
+                "id": "title",
+                "type": "title",
+                "title": [
+                  {
+                    "type": "text",
+                    "text": {
+                      "content": "Redesign empty states",
+                      "link": null
+                    },
+                    "annotations": {
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "code": false,
+                      "color": "default"
+                    },
+                    "plain_text": "Redesign empty states",
+                    "href": null
+                  }
+                ]
+              },
+              "Status": {
+                "id": "stat",
+                "type": "status",
+                "status": {
+                  "name": "In progress",
+                  "color": "blue"
+                }
+              },
+              "Priority": {
+                "id": "prio",
+                "type": "select",
+                "select": {
+                  "name": "Medium",
+                  "color": "yellow"
+                }
+              },
+              "Estimate": {
+                "id": "est",
+                "type": "number",
+                "number": 5
+              },
+              "Sprint": {
+                "id": "spr",
+                "type": "rich_text",
+                "rich_text": [
+                  {
+                    "type": "text",
+                    "text": {
+                      "content": "Sprint 24",
+                      "link": null
+                    },
+                    "annotations": {
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "code": false,
+                      "color": "default"
+                    },
+                    "plain_text": "Sprint 24",
+                    "href": null
+                  }
+                ]
+              },
+              "Assignee": {
+                "id": "asgn",
+                "type": "people",
+                "people": [
+                  {
+                    "object": "user",
+                    "id": "eb1167b3-67a9-4378-bc65-c1e582e2e662"
+                  }
+                ]
+              },
+              "Tags": {
+                "id": "tags",
+                "type": "multi_select",
+                "multi_select": [
+                  {
+                    "name": "frontend",
+                    "color": "default"
+                  },
+                  {
+                    "name": "design",
+                    "color": "default"
+                  }
+                ]
+              },
+              "Due": {
+                "id": "due",
+                "type": "date",
+                "date": {
+                  "start": "2026-07-08",
+                  "end": null
+                }
+              },
+              "Done": {
+                "id": "done",
+                "type": "checkbox",
+                "checkbox": false
+              }
+            },
+            "url": "https://notion.so/5306f3f5151645709b7c709acb175a5a"
+          },
+          {
+            "object": "page",
+            "id": "d3fbf47a-7e5b-4e7f-9ca5-499d004ae545",
+            "created_time": "2026-06-01T09:00:00.000Z",
+            "last_edited_time": "2026-06-01T09:00:00.000Z",
+            "created_by": {
+              "object": "user",
+              "id": "e3e70682-c209-4cac-a29f-6fbed82c07cd"
+            },
+            "last_edited_by": {
+              "object": "user",
+              "id": "e3e70682-c209-4cac-a29f-6fbed82c07cd"
+            },
+            "cover": null,
+            "icon": null,
+            "parent": {
+              "type": "database_id",
+              "database_id": "23a7711a-8133-4876-b7eb-dcd9e87a1613"
+            },
+            "archived": false,
+            "in_trash": false,
+            "properties": {
+              "Name": {
+                "id": "title",
+                "type": "title",
+                "title": [
+                  {
+                    "type": "text",
+                    "text": {
+                      "content": "Fix login redirect loop",
+                      "link": null
+                    },
+                    "annotations": {
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "code": false,
+                      "color": "default"
+                    },
+                    "plain_text": "Fix login redirect loop",
+                    "href": null
+                  }
+                ]
+              },
+              "Status": {
+                "id": "stat",
+                "type": "status",
+                "status": {
+                  "name": "In progress",
+                  "color": "blue"
+                }
+              },
+              "Priority": {
+                "id": "prio",
+                "type": "select",
+                "select": {
+                  "name": "Urgent",
+                  "color": "red"
+                }
+              },
+              "Estimate": {
+                "id": "est",
+                "type": "number",
+                "number": 3
+              },
+              "Sprint": {
+                "id": "spr",
+                "type": "rich_text",
+                "rich_text": [
+                  {
+                    "type": "text",
+                    "text": {
+                      "content": "Sprint 24",
+                      "link": null
+                    },
+                    "annotations": {
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "code": false,
+                      "color": "default"
+                    },
+                    "plain_text": "Sprint 24",
+                    "href": null
+                  }
+                ]
+              },
+              "Assignee": {
+                "id": "asgn",
+                "type": "people",
+                "people": [
+                  {
+                    "object": "user",
+                    "id": "e3e70682-c209-4cac-a29f-6fbed82c07cd"
+                  }
+                ]
+              },
+              "Tags": {
+                "id": "tags",
+                "type": "multi_select",
+                "multi_select": [
+                  {
+                    "name": "frontend",
+                    "color": "default"
+                  },
+                  {
+                    "name": "bug",
+                    "color": "default"
+                  }
+                ]
+              },
+              "Due": {
+                "id": "due",
+                "type": "date",
+                "date": {
+                  "start": "2026-07-02",
+                  "end": null
+                }
+              },
+              "Done": {
+                "id": "done",
+                "type": "checkbox",
+                "checkbox": false
+              }
+            },
+            "url": "https://notion.so/d3fbf47a7e5b4e7f9ca5499d004ae545"
+          },
+          {
+            "object": "page",
+            "id": "1775336d-71ea-4d05-89a3-e80e966e1277",
+            "created_time": "2026-06-01T09:00:00.000Z",
+            "last_edited_time": "2026-06-01T09:00:00.000Z",
+            "created_by": {
+              "object": "user",
+              "id": "f7c1bd87-4da5-4709-9471-3d60c8a70639"
+            },
+            "last_edited_by": {
+              "object": "user",
+              "id": "f7c1bd87-4da5-4709-9471-3d60c8a70639"
+            },
+            "cover": null,
+            "icon": null,
+            "parent": {
+              "type": "database_id",
+              "database_id": "23a7711a-8133-4876-b7eb-dcd9e87a1613"
+            },
+            "archived": false,
+            "in_trash": false,
+            "properties": {
+              "Name": {
+                "id": "title",
+                "type": "title",
+                "title": [
+                  {
+                    "type": "text",
+                    "text": {
+                      "content": "Rotate prod database creds",
+                      "link": null
+                    },
+                    "annotations": {
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "code": false,
+                      "color": "default"
+                    },
+                    "plain_text": "Rotate prod database creds",
+                    "href": null
+                  }
+                ]
+              },
+              "Status": {
+                "id": "stat",
+                "type": "status",
+                "status": {
+                  "name": "In progress",
+                  "color": "blue"
+                }
+              },
+              "Priority": {
+                "id": "prio",
+                "type": "select",
+                "select": {
+                  "name": "Urgent",
+                  "color": "red"
+                }
+              },
+              "Estimate": {
+                "id": "est",
+                "type": "number",
+                "number": 2
+              },
+              "Sprint": {
+                "id": "spr",
+                "type": "rich_text",
+                "rich_text": [
+                  {
+                    "type": "text",
+                    "text": {
+                      "content": "Sprint 24",
+                      "link": null
+                    },
+                    "annotations": {
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "code": false,
+                      "color": "default"
+                    },
+                    "plain_text": "Sprint 24",
+                    "href": null
+                  }
+                ]
+              },
+              "Assignee": {
+                "id": "asgn",
+                "type": "people",
+                "people": [
+                  {
+                    "object": "user",
+                    "id": "f7c1bd87-4da5-4709-9471-3d60c8a70639"
+                  }
+                ]
+              },
+              "Tags": {
+                "id": "tags",
+                "type": "multi_select",
+                "multi_select": [
+                  {
+                    "name": "infra",
+                    "color": "default"
+                  }
+                ]
+              },
+              "Due": {
+                "id": "due",
+                "type": "date",
+                "date": {
+                  "start": "2026-07-01",
+                  "end": null
+                }
+              },
+              "Done": {
+                "id": "done",
+                "type": "checkbox",
+                "checkbox": false
+              }
+            },
+            "url": "https://notion.so/1775336d71ea4d0589a3e80e966e1277"
+          }
+        ],
+        "next_cursor": null,
+        "has_more": false,
+        "type": "page_or_database",
+        "page_or_database": {}
+      },
+      "real_output": {
+        "object": "list",
+        "results": [
+          {
+            "object": "page",
+            "id": "a25b59fd-92e8-4269-912e-cbc40b9475b1",
+            "created_time": "",
+            "last_edited_time": "",
+            "created_by": {
+              "object": "user",
+              "id": "e3e70682-c209-4cac-a29f-6fbed82c07cd"
+            },
+            "last_edited_by": {
+              "object": "user",
+              "id": "e3e70682-c209-4cac-a29f-6fbed82c07cd"
+            },
+            "cover": null,
+            "icon": null,
+            "parent": {
+              "type": "database_id",
+              "database_id": "23a7711a-8133-4876-b7eb-dcd9e87a1613"
+            },
+            "archived": false,
+            "in_trash": false,
+            "properties": {
+              "Name": {
+                "id": "title",
+                "type": "title",
+                "title": [
+                  {
+                    "type": "text",
+                    "text": {
+                      "content": "Fix login redirect loop",
+                      "link": null
+                    },
+                    "annotations": {
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "code": false,
+                      "color": "default"
+                    },
+                    "plain_text": "Fix login redirect loop",
+                    "href": null
+                  }
+                ]
+              },
+              "Status": {
+                "id": "stat",
+                "type": "status",
+                "status": {
+                  "id": "s2",
+                  "name": "In progress",
+                  "color": "blue"
+                }
+              }
+            },
+            "url": "https://www.notion.so/..."
+          }
+        ],
+        "next_cursor": null,
+        "has_more": false,
+        "type": "page_or_database",
+        "page_or_database": {}
+      }
+    },
+    {
+      "id": "append-block-children",
+      "title": "Append block children",
+      "method": "POST",
+      "capability": "Append blocks (write\u2192read round-trip)",
+      "seed_excerpt": {
+        "block_id": "4d125e7f-a59c-4c98-926c-bc8f38884479",
+        "children_before": 4
+      },
+      "ui": {
+        "type": "timeline",
+        "title": "Notion \u203a Page blocks (append)",
+        "before": [
+          {
+            "id": "0fa07a3f-2e29-4065-afa2-31e959acdd98",
+            "text": "Engineering Handbook",
+            "tags": [
+              "heading_1"
+            ]
+          },
+          {
+            "id": "98b33c6e-0a14-490a-b795-e98680ee526e",
+            "text": "House rules: every PR gets a review; deploys are gated on green CI.",
+            "tags": [
+              "paragraph"
+            ]
+          },
+          {
+            "id": "642aad48-fcfc-4a81-b306-d70019d5f970",
+            "text": "Use the Tasks DB for all work.",
+            "tags": [
+              "bulleted_list_item"
+            ]
+          },
+          {
+            "id": "e786ab37-5bca-47be-8298-17c53308fb2e",
+            "text": "Rotate creds quarterly.",
+            "tags": [
+              "bulleted_list_item"
+            ]
+          }
+        ],
+        "after": [
+          {
+            "id": "0fa07a3f-2e29-4065-afa2-31e959acdd98",
+            "text": "Engineering Handbook",
+            "tags": [
+              "heading_1"
+            ]
+          },
+          {
+            "id": "98b33c6e-0a14-490a-b795-e98680ee526e",
+            "text": "House rules: every PR gets a review; deploys are gated on green CI.",
+            "tags": [
+              "paragraph"
+            ]
+          },
+          {
+            "id": "642aad48-fcfc-4a81-b306-d70019d5f970",
+            "text": "Use the Tasks DB for all work.",
+            "tags": [
+              "bulleted_list_item"
+            ]
+          },
+          {
+            "id": "e786ab37-5bca-47be-8298-17c53308fb2e",
+            "text": "Rotate creds quarterly.",
+            "tags": [
+              "bulleted_list_item"
+            ]
+          },
+          {
+            "id": "86c3a192-5930-4d62-a590-615c5d3f4446",
+            "text": "Add architecture diagram to the handbook",
+            "tags": [
+              "to_do"
+            ]
+          }
+        ],
+        "new_id": "86c3a192-5930-4d62-a590-615c5d3f4446"
+      },
+      "agent": {
+        "cli": "notion-cli blocks append 4d125e7f-a59c-4c98-926c-bc8f38884479 --todo \"Add architecture diagram to the handbook\"",
+        "mcp": {
+          "tool": "notion_append_block_children",
+          "args": {
+            "block_id": "4d125e7f-a59c-4c98-926c-bc8f38884479",
+            "children": [
+              {
+                "type": "to_do",
+                "to_do": {
+                  "rich_text": [
+                    {
+                      "type": "text",
+                      "text": {
+                        "content": "Add architecture diagram to the handbook"
+                      }
+                    }
+                  ],
+                  "checked": false
+                }
+              }
+            ]
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "PATCH /v1/blocks/{id}/children",
+        "mcp": "notion-mcp \u203a notion_append_block_children",
+        "doc": "https://developers.notion.com/reference/patch-block-children"
+      },
+      "clone_output": {
+        "object": "list",
+        "results": [
+          {
+            "object": "block",
+            "id": "86c3a192-5930-4d62-a590-615c5d3f4446",
+            "parent": {
+              "type": "page_id",
+              "page_id": "4d125e7f-a59c-4c98-926c-bc8f38884479"
+            },
+            "created_time": "2026-07-01T18:18:04.000Z",
+            "last_edited_time": "2026-07-01T18:18:04.000Z",
+            "created_by": {
+              "object": "user",
+              "id": "e3e70682-c209-4cac-a29f-6fbed82c07cd"
+            },
+            "last_edited_by": {
+              "object": "user",
+              "id": "e3e70682-c209-4cac-a29f-6fbed82c07cd"
+            },
+            "has_children": false,
+            "archived": false,
+            "type": "to_do",
+            "to_do": {
+              "rich_text": [
+                {
+                  "type": "text",
+                  "text": {
+                    "content": "Add architecture diagram to the handbook",
+                    "link": null
+                  },
+                  "annotations": {
+                    "bold": false,
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false,
+                    "code": false,
+                    "color": "default"
+                  },
+                  "plain_text": "Add architecture diagram to the handbook",
+                  "href": null
+                }
+              ],
+              "checked": false
+            }
+          }
+        ],
+        "next_cursor": null,
+        "has_more": false,
+        "type": "block",
+        "block": {}
+      },
+      "real_output": {
+        "object": "list",
+        "results": [
+          {
+            "object": "block",
+            "id": "86c3a192-5930-4d62-a590-615c5d3f4446",
+            "parent": {
+              "type": "page_id",
+              "page_id": "4d125e7f-a59c-4c98-926c-bc8f38884479"
+            },
+            "created_time": "",
+            "last_edited_time": "",
+            "created_by": {
+              "object": "user",
+              "id": "e3e70682-c209-4cac-a29f-6fbed82c07cd"
+            },
+            "last_edited_by": {
+              "object": "user",
+              "id": "e3e70682-c209-4cac-a29f-6fbed82c07cd"
+            },
+            "has_children": false,
+            "archived": false,
+            "type": "to_do",
+            "to_do": {
+              "rich_text": [
+                {
+                  "type": "text",
+                  "text": {
+                    "content": "Add architecture diagram to the handbook",
+                    "link": null
+                  },
+                  "annotations": {
+                    "bold": false,
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false,
+                    "code": false,
+                    "color": "default"
+                  },
+                  "plain_text": "Add architecture diagram to the handbook",
+                  "href": null
+                }
+              ],
+              "checked": false,
+              "color": "default"
+            }
+          }
+        ],
+        "next_cursor": null,
+        "has_more": false,
+        "type": "block",
+        "block": {}
+      },
+      "change": {
+        "before": [
+          {
+            "id": "0fa07a3f-2e29-4065-afa2-31e959acdd98",
+            "text": "Engineering Handbook",
+            "tags": [
+              "heading_1"
+            ]
+          },
+          {
+            "id": "98b33c6e-0a14-490a-b795-e98680ee526e",
+            "text": "House rules: every PR gets a review; deploys are gated on green CI.",
+            "tags": [
+              "paragraph"
+            ]
+          },
+          {
+            "id": "642aad48-fcfc-4a81-b306-d70019d5f970",
+            "text": "Use the Tasks DB for all work.",
+            "tags": [
+              "bulleted_list_item"
+            ]
+          },
+          {
+            "id": "e786ab37-5bca-47be-8298-17c53308fb2e",
+            "text": "Rotate creds quarterly.",
+            "tags": [
+              "bulleted_list_item"
+            ]
+          }
+        ],
+        "after": [
+          {
+            "id": "0fa07a3f-2e29-4065-afa2-31e959acdd98",
+            "text": "Engineering Handbook",
+            "tags": [
+              "heading_1"
+            ]
+          },
+          {
+            "id": "98b33c6e-0a14-490a-b795-e98680ee526e",
+            "text": "House rules: every PR gets a review; deploys are gated on green CI.",
+            "tags": [
+              "paragraph"
+            ]
+          },
+          {
+            "id": "642aad48-fcfc-4a81-b306-d70019d5f970",
+            "text": "Use the Tasks DB for all work.",
+            "tags": [
+              "bulleted_list_item"
+            ]
+          },
+          {
+            "id": "e786ab37-5bca-47be-8298-17c53308fb2e",
+            "text": "Rotate creds quarterly.",
+            "tags": [
+              "bulleted_list_item"
+            ]
+          },
+          {
+            "id": "86c3a192-5930-4d62-a590-615c5d3f4446",
+            "text": "Add architecture diagram to the handbook",
+            "tags": [
+              "to_do"
+            ]
+          }
+        ],
+        "new_id": "86c3a192-5930-4d62-a590-615c5d3f4446"
+      }
+    }
+  ]
+}

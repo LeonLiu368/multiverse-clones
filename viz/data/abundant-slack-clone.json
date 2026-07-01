@@ -1,0 +1,457 @@
+{
+  "clone": "abundant-slack-clone",
+  "product": "Slack",
+  "real_service": {
+    "name": "Slack Web API",
+    "reference": "https://api.slack.com/web",
+    "api_base": "{gateway}/api"
+  },
+  "parity": {
+    "verdict": "HIGH",
+    "note": "{ok:...} envelope always HTTP 200, C/U/T ids, ts strings, search-operator grammar (in:/from:/before:/after:), korotovsky MCP tool names."
+  },
+  "seed_file": "clones/abundant-slack-clone/tests/conftest.py (Store import path)",
+  "surfaces": {
+    "cli": "slack",
+    "mcp": "slack-mcp"
+  },
+  "demos": [
+    {
+      "id": "list-channels",
+      "title": "List channels",
+      "method": "GET",
+      "capability": "conversations.list",
+      "seed_excerpt": {
+        "channels": [
+          {
+            "id": "C0000000001",
+            "name": "general"
+          },
+          {
+            "id": "C0000000002",
+            "name": "incidents"
+          }
+        ]
+      },
+      "ui": {
+        "type": "list",
+        "title": "Slack \u203a Channels",
+        "rows": [
+          {
+            "icon": "#",
+            "title": "general",
+            "sub": "C0000000001",
+            "tags": [
+              3
+            ]
+          },
+          {
+            "icon": "#",
+            "title": "incidents",
+            "sub": "C0000000002",
+            "tags": [
+              3
+            ]
+          }
+        ]
+      },
+      "agent": {
+        "cli": "slack channels",
+        "mcp": {
+          "tool": "channels_list",
+          "args": {}
+        }
+      },
+      "real_mapping": {
+        "api": "GET /api/conversations.list",
+        "mcp": "slack-mcp \u203a channels_list",
+        "doc": "https://api.slack.com/methods/conversations.list"
+      },
+      "clone_output": {
+        "ok": true,
+        "channels": [
+          {
+            "id": "C0000000001",
+            "name": "general",
+            "name_normalized": "general",
+            "is_channel": true,
+            "is_group": false,
+            "is_im": false,
+            "is_private": false,
+            "is_archived": false,
+            "is_general": true,
+            "created": 0,
+            "creator": "U0000000A01",
+            "num_members": 3,
+            "topic": {
+              "value": "company-wide",
+              "creator": "",
+              "last_set": 0
+            },
+            "purpose": {
+              "value": "announcements",
+              "creator": "",
+              "last_set": 0
+            }
+          },
+          {
+            "id": "C0000000002",
+            "name": "incidents",
+            "name_normalized": "incidents",
+            "is_channel": true,
+            "is_group": false,
+            "is_im": false,
+            "is_private": false,
+            "is_archived": false,
+            "is_general": false,
+            "created": 0,
+            "creator": "U0000000C03",
+            "num_members": 3,
+            "topic": {
+              "value": "live incident coordination",
+              "creator": "",
+              "last_set": 0
+            },
+            "purpose": {
+              "value": "incident response",
+              "creator": "",
+              "last_set": 0
+            }
+          }
+        ],
+        "response_metadata": {
+          "next_cursor": ""
+        }
+      },
+      "real_output": {
+        "ok": true,
+        "channels": [
+          {
+            "id": "C0000000001",
+            "name": "general",
+            "name_normalized": "general",
+            "is_channel": true,
+            "is_group": false,
+            "is_im": false,
+            "is_private": false,
+            "is_archived": false,
+            "is_general": true,
+            "created": 1700000000,
+            "creator": "U0000000A01",
+            "num_members": 3,
+            "topic": {
+              "value": "company-wide",
+              "creator": "",
+              "last_set": 0
+            },
+            "purpose": {
+              "value": "announcements",
+              "creator": "",
+              "last_set": 0
+            }
+          }
+        ],
+        "response_metadata": {
+          "next_cursor": ""
+        }
+      }
+    },
+    {
+      "id": "channel-history",
+      "title": "Read a channel's history",
+      "method": "GET",
+      "capability": "conversations.history",
+      "seed_excerpt": {
+        "channel": "C0000000002",
+        "messages": [
+          {
+            "user": "U0000000C03",
+            "ts": "1700000200.000000",
+            "text": "INC-482: payments API 500s ..."
+          }
+        ]
+      },
+      "ui": {
+        "type": "chat",
+        "title": "Slack \u203a #incidents",
+        "messages": [
+          {
+            "user": "U0000000C03",
+            "ts": "1700000200.000000",
+            "text": "INC-482: payments API 500s, root cause looks like a lock_conflict on the orders table"
+          }
+        ]
+      },
+      "agent": {
+        "cli": "slack history incidents --limit 50",
+        "mcp": {
+          "tool": "conversations_history",
+          "args": {
+            "channel_id": "C0000000002",
+            "limit": 50
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "GET /api/conversations.history",
+        "mcp": "slack-mcp \u203a conversations_history",
+        "doc": "https://api.slack.com/methods/conversations.history"
+      },
+      "clone_output": {
+        "ok": true,
+        "messages": [
+          {
+            "type": "message",
+            "user": "U0000000C03",
+            "text": "INC-482: payments API 500s, root cause looks like a lock_conflict on the orders table",
+            "ts": "1700000200.000000",
+            "reply_count": 3
+          }
+        ],
+        "has_more": false,
+        "response_metadata": {
+          "next_cursor": ""
+        }
+      },
+      "real_output": {
+        "ok": true,
+        "messages": [
+          {
+            "type": "message",
+            "user": "U0000000C03",
+            "text": "INC-482: payments API 500s, root cause looks like a lock_conflict on the orders table",
+            "ts": "1700000200.000000",
+            "reply_count": 3
+          }
+        ],
+        "has_more": false,
+        "response_metadata": {
+          "next_cursor": ""
+        }
+      }
+    },
+    {
+      "id": "search-messages",
+      "title": "Search messages (operator query)",
+      "method": "GET",
+      "capability": "search.messages",
+      "seed_excerpt": {
+        "query": "in:general lock_conflict",
+        "expect": [
+          {
+            "channel": "C0000000001",
+            "text": "... lock_conflict spike on the payments DB"
+          }
+        ]
+      },
+      "ui": {
+        "type": "chat",
+        "title": "Slack \u203a Search: in:general lock_conflict",
+        "messages": [
+          {
+            "user": "U0000000C03",
+            "ts": "1700000120.000000",
+            "text": "heads up \u2014 seeing a lock_conflict spike on the payments DB"
+          }
+        ]
+      },
+      "agent": {
+        "cli": "slack search \"in:general lock_conflict\"",
+        "mcp": {
+          "tool": "conversations_search_messages",
+          "args": {
+            "search_query": "lock_conflict",
+            "filter_in_channel": "general"
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "GET /api/search.messages",
+        "mcp": "slack-mcp \u203a conversations_search_messages",
+        "doc": "https://api.slack.com/methods/search.messages"
+      },
+      "clone_output": {
+        "ok": true,
+        "query": "in:general lock_conflict",
+        "messages": {
+          "total": 1,
+          "matches": [
+            {
+              "type": "message",
+              "user": "U0000000C03",
+              "text": "heads up \u2014 seeing a lock_conflict spike on the payments DB",
+              "ts": "1700000120.000000",
+              "channel": {
+                "id": "C0000000001"
+              }
+            }
+          ],
+          "paging": {
+            "count": 1,
+            "total": 1,
+            "page": 1,
+            "pages": 1
+          },
+          "pagination": {
+            "total_count": 1,
+            "page": 1,
+            "per_page": 100,
+            "page_count": 1,
+            "first": 1,
+            "last": 1
+          }
+        },
+        "files": {
+          "total": 0,
+          "matches": [],
+          "paging": {
+            "count": 0,
+            "total": 0,
+            "page": 1,
+            "pages": 0
+          },
+          "pagination": {
+            "total_count": 0,
+            "page": 1,
+            "per_page": 100,
+            "page_count": 0,
+            "first": 0,
+            "last": 0
+          }
+        }
+      },
+      "real_output": {
+        "ok": true,
+        "query": "in:general lock_conflict",
+        "messages": {
+          "total": 1,
+          "matches": [
+            {
+              "type": "message",
+              "user": "U0000000C03",
+              "text": "heads up \u2014 seeing a lock_conflict spike on the payments DB",
+              "ts": "1700000120.000000",
+              "channel": {
+                "id": "C0000000001"
+              }
+            }
+          ],
+          "paging": {
+            "count": 1,
+            "total": 1,
+            "page": 1,
+            "pages": 1
+          },
+          "pagination": {
+            "total_count": 1,
+            "page": 1,
+            "per_page": 100,
+            "page_count": 1,
+            "first": 1,
+            "last": 1
+          }
+        },
+        "files": {
+          "total": 0,
+          "matches": [],
+          "paging": {
+            "count": 0,
+            "total": 0,
+            "page": 1,
+            "pages": 0
+          },
+          "pagination": {
+            "total_count": 0,
+            "page": 1,
+            "per_page": 100,
+            "page_count": 0,
+            "first": 0,
+            "last": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "post-message",
+      "title": "Post a message",
+      "method": "POST",
+      "capability": "chat.postMessage (write\u2192read round-trip)",
+      "seed_excerpt": {
+        "channel": "C0000000002",
+        "messages_before": 1
+      },
+      "ui": {
+        "type": "chat",
+        "title": "Slack \u203a #incidents (after post)",
+        "messages": [
+          {
+            "user": "U0BOTACME0",
+            "ts": "1782929877.688306",
+            "text": "postmortem doc drafted for INC-482, review by EOD"
+          },
+          {
+            "user": "U0000000C03",
+            "ts": "1700000200.000000",
+            "text": "INC-482: payments API 500s, root cause looks like a lock_conflict on the orders table"
+          }
+        ]
+      },
+      "agent": {
+        "cli": "slack post incidents \"postmortem doc drafted for INC-482, review by EOD\"",
+        "mcp": {
+          "tool": "conversations_add_message",
+          "args": {
+            "channel_id": "C0000000002",
+            "payload": "postmortem doc drafted for INC-482, review by EOD"
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "POST /api/chat.postMessage",
+        "mcp": "slack-mcp \u203a conversations_add_message",
+        "doc": "https://api.slack.com/methods/chat.postMessage"
+      },
+      "clone_output": {
+        "ok": true,
+        "channel": "C0000000002",
+        "ts": "1782929877.688306",
+        "message": {
+          "type": "message",
+          "user": "U0BOTACME0",
+          "text": "postmortem doc drafted for INC-482, review by EOD",
+          "ts": "1782929877.688306"
+        }
+      },
+      "real_output": {
+        "ok": true,
+        "channel": "C0000000002",
+        "ts": "1782929877.688306",
+        "message": {
+          "type": "message",
+          "user": "U0BOTACME0",
+          "text": "postmortem doc drafted for INC-482, review by EOD",
+          "ts": "1782929877.688306"
+        }
+      },
+      "change": {
+        "before": [
+          {
+            "id": "1700000200.000000",
+            "text": "INC-482: payments API 500s, root cause looks like a lock_conflict on the orders table"
+          }
+        ],
+        "after": [
+          {
+            "id": "1782929877.688306",
+            "text": "postmortem doc drafted for INC-482, review by EOD"
+          },
+          {
+            "id": "1700000200.000000",
+            "text": "INC-482: payments API 500s, root cause looks like a lock_conflict on the orders table"
+          }
+        ],
+        "new_id": "1782929877.688306"
+      }
+    }
+  ]
+}

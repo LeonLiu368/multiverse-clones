@@ -1,0 +1,931 @@
+{
+  "clone": "google-workspace-clone",
+  "product": "Google Workspace",
+  "real_service": {
+    "name": "Google Workspace (Drive v3 / Docs v1 / Gmail v1 / Calendar v3)",
+    "reference": "https://developers.google.com/workspace",
+    "api_base": "{gateway}"
+  },
+  "parity": {
+    "verdict": "HIGH after reliability pass",
+    "note": "drive#fileList/drive#file/calendar#event kinds, Drive q-grammar, Gmail is:/after:/before: filters enforced (has: \u2192 400), {error:{code,message}} body."
+  },
+  "seed_file": "oddish/tasks/gws-event-room/environment/data/gws/fixture.json",
+  "surfaces": {
+    "cli": "gws-cli",
+    "mcp": "gws-mcp"
+  },
+  "_seed_counts": {
+    "drive": 115,
+    "documents": 103,
+    "calendar": 1735,
+    "gmail": 2000
+  },
+  "demos": [
+    {
+      "id": "drive-list",
+      "title": "List Drive files (q-grammar)",
+      "method": "GET",
+      "capability": "Drive files.list \u2014 q search",
+      "seed_excerpt": {
+        "drive": [
+          {
+            "id": "FILE_d30dc68685aa73656feb0904",
+            "name": "05-180 Notes",
+            "mimeType": "application/pdf"
+          },
+          {
+            "id": "FILE_b934cee831e42886762d2dd3",
+            "name": "15-122 Notes",
+            "mimeType": "application/pdf"
+          },
+          {
+            "id": "FILE_926321fe9f1fce89d75821aa",
+            "name": "15-150 Notes",
+            "mimeType": "application/pdf"
+          }
+        ]
+      },
+      "ui": {
+        "type": "table",
+        "title": "Drive \u203a My Drive",
+        "columns": [
+          "name",
+          "mimeType",
+          "id"
+        ],
+        "rows": [
+          {
+            "name": "05-180 Notes",
+            "mimeType": "application/pdf",
+            "id": "FILE_d30dc68685aa73656feb0904"
+          },
+          {
+            "name": "15-122 Notes",
+            "mimeType": "application/pdf",
+            "id": "FILE_b934cee831e42886762d2dd3"
+          },
+          {
+            "name": "15-150 Notes",
+            "mimeType": "application/pdf",
+            "id": "FILE_926321fe9f1fce89d75821aa"
+          },
+          {
+            "name": "21-241 Notes",
+            "mimeType": "application/pdf",
+            "id": "FILE_0bea8d87b737d709509dbadc"
+          },
+          {
+            "name": "21-266 Notes",
+            "mimeType": "application/pdf",
+            "id": "FILE_c48c040b039680590c41e975"
+          },
+          {
+            "name": "88-120 Lecture Notes",
+            "mimeType": "application/pdf",
+            "id": "FILE_b0ff6dd15e3bac60e416a7a4"
+          },
+          {
+            "name": "88-120 Textbook Notes",
+            "mimeType": "application/pdf",
+            "id": "FILE_b7576760d49abff23540ae6d"
+          }
+        ]
+      },
+      "agent": {
+        "cli": "gws-cli drive ls -q \"name contains 'notes'\"",
+        "mcp": {
+          "tool": "gws_list_files",
+          "args": {
+            "q": "name contains 'notes'"
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "GET /drive/v3/files?q=name+contains+'notes'",
+        "mcp": "gws-mcp \u203a gws_list_files",
+        "cli": "curl -H 'Authorization: Bearer \u2026' '.../drive/v3/files?q=\u2026'",
+        "doc": "https://developers.google.com/drive/api/reference/rest/v3/files/list"
+      },
+      "clone_output": {
+        "kind": "drive#fileList",
+        "incompleteSearch": false,
+        "files": [
+          {
+            "kind": "drive#file",
+            "id": "FILE_d30dc68685aa73656feb0904",
+            "name": "05-180 Notes",
+            "mimeType": "application/pdf",
+            "parents": [
+              "FOLDER_14dbaa1f21eb78d85127ccef"
+            ],
+            "createdTime": "",
+            "modifiedTime": "",
+            "owners": [],
+            "trashed": false,
+            "size": "14364"
+          },
+          {
+            "kind": "drive#file",
+            "id": "FILE_b934cee831e42886762d2dd3",
+            "name": "15-122 Notes",
+            "mimeType": "application/pdf",
+            "parents": [
+              "FOLDER_3d2124ba89a470d40ae3fb2d"
+            ],
+            "createdTime": "",
+            "modifiedTime": "",
+            "owners": [],
+            "trashed": false,
+            "size": "9243290"
+          },
+          {
+            "kind": "drive#file",
+            "id": "FILE_926321fe9f1fce89d75821aa",
+            "name": "15-150 Notes",
+            "mimeType": "application/pdf",
+            "parents": [
+              "FOLDER_88cbd971167a494d0f759265"
+            ],
+            "createdTime": "",
+            "modifiedTime": "",
+            "owners": [],
+            "trashed": false,
+            "size": "18143946"
+          },
+          {
+            "kind": "drive#file",
+            "id": "FILE_0bea8d87b737d709509dbadc",
+            "name": "21-241 Notes",
+            "mimeType": "application/pdf",
+            "parents": [
+              "FOLDER_f14dad1aefb72ba8c703408a"
+            ],
+            "createdTime": "",
+            "modifiedTime": "",
+            "owners": [],
+            "trashed": false,
+            "size": "6385018"
+          },
+          {
+            "kind": "drive#file",
+            "id": "FILE_c48c040b039680590c41e975",
+            "name": "21-266 Notes",
+            "mimeType": "application/pdf",
+            "parents": [
+              "FOLDER_403b0cca70c2c704e2bf278b"
+            ],
+            "createdTime": "",
+            "modifiedTime": "",
+            "owners": [],
+            "trashed": false,
+            "size": "25828395"
+          },
+          {
+            "kind": "drive#file",
+            "id": "FILE_b0ff6dd15e3bac60e416a7a4",
+            "name": "88-120 Lecture Notes",
+            "mimeType": "application/pdf",
+            "parents": [
+              "FOLDER_935a26319bc9c51e6d40f4b8"
+            ],
+            "createdTime": "",
+            "modifiedTime": "",
+            "owners": [],
+            "trashed": false,
+            "size": "3758814"
+          },
+          {
+            "kind": "drive#file",
+            "id": "FILE_b7576760d49abff23540ae6d",
+            "name": "88-120 Textbook Notes",
+            "mimeType": "application/pdf",
+            "parents": [
+              "FOLDER_935a26319bc9c51e6d40f4b8"
+            ],
+            "createdTime": "",
+            "modifiedTime": "",
+            "owners": [],
+            "trashed": false,
+            "size": "1745727"
+          }
+        ]
+      },
+      "real_output": {
+        "kind": "drive#fileList",
+        "incompleteSearch": false,
+        "files": [
+          {
+            "kind": "drive#file",
+            "id": "FILE_d30dc68685aa73656feb0904",
+            "name": "05-180 Notes",
+            "mimeType": "application/pdf"
+          }
+        ]
+      }
+    },
+    {
+      "id": "docs-get",
+      "title": "Get a Google Doc (structural body)",
+      "method": "GET",
+      "capability": "Docs documents.get \u2014 body tree",
+      "seed_excerpt": {
+        "documents": [
+          {
+            "documentId": "FILE_b934cee831e42886762d2dd3",
+            "title": "15-122 Notes",
+            "revisionId": "1"
+          }
+        ]
+      },
+      "ui": {
+        "type": "doc",
+        "title": "Docs",
+        "doc_title": "15-122 Notes",
+        "blocks": [
+          {
+            "type": "",
+            "text": "Lec. 1:\nCOSyntax:\n\u00b7\nExecution:runcoinfile.CorOfile. Cthen\u00b7 laout\n\u00b7 Def.:Acontractisanannotationthatischeckeduponexecution.\n->Contractsarecheckedwhenthe-dflagisused.\nTypesofContracts:\n\u00b7\nPreconditions://&requires[precondition]=>Checkstheinputstoensurethatit'ssafe.\n\u00b7\nPostcondition:11Densures(postcondition];=>Checksthatthefunctionworkscorrectly.\n->UseIresulttocheckthereturnvalue.\n->*Becarefulwithparameterschanging.Storeyourvariablesseparately.\n*Wecan'tassumesomething\n\u00b7\nLoopInvariant://&loop-invariant(invariant] aboutafunction,\nonlythatwhen\n->LoopGuard:checkedn+1timesandbeforetheloopguard. Falsewhentheloopends. wecallitthepostconditionholdstrue.\n->LoopInvariants:checkedn+1times.Truewhentheloopends,checkedbeforeloopguardandbeforenextiteration.\n-\nOninit,Iloopvarisinitialized,2. invariantischecked,3.guardischecked\nKeyIdeas:\n\u00b7 Weusepoint-to-reasoningtoproveastatementaboutcode.\n\u00b7 Writecontractsbeforeimplementation.Cusethemasourframework\n\u00b7Itisdangeroustouseoperationalreasoningratherthanpoint-to-reasoningCexceptfortermination)\n\u00b7\nProvingvalidityofaloopinvariant(condition]:Checkthataconditionistrueinitially,continuestobetrue,ends,andexits\nINIT:->Usecodebeforetheloopandpreconditions. INITPRESTERMEXIT\n\u00b7ToshowCTS):[condition]initially\nA...., B...., G....\nPRES:->Usecodewithintheloop,loopguard,andunprimed/previouslyprovenloopinvariantsinanestedloop\n\u00b7TS:if[condition],then(conditionafteriteration]e.\ng. ifDor=X Y,thenbler'=x\nXCaseX:\nD.... ,line# *OnlyuseassertionswhenyouE,... math haveproventhem.\nyCasey:-\nTERM:(provetheloopends)-\n>Canuseoperationalreasoning 1131412x2\"Onanarbitraryiteration,qgetsstrictlysmaller/largerbut 11/13131414121212neverlarger/smallerthanConwhichtheloopguardisfalse.\n\"\nodd#ofXS\nEXIT:->useloopinvarrants,negationofloopguard,andcodeaftertheloop even#ofys\n\u00b7\nProvingfunctioncallsafety:provethattheargumentspassedindon'ttripanypreconditions,\n\u00b7\nProvingfunctioncorrectness:provethatpostconditionsaretruegiventhatthepreconditionsholdtrue"
+          },
+          {
+            "type": "",
+            "text": "Lec. 1Questions:\nHowdoyouwriteaprecondition,\npostcondition,loopinvariant,orassertion?\nWhenistheloopinvariantchecked?\nHowdoweprovethatinputs&outputsare\"safe\"whentheprogramdoesn'tcrash?\nWhatarethestepstoprovingthataloopinvariantworks?\nWeek2:\nIntegers:\n\u00b7 Numbersystems:decimal,binary,hexadecimalCoxddd) \u00b7\nBinarytoHex:\n->Allnumbersarestoredinbinaryas32bitintegersinCO. 1011110001000000\u2193 \u2193 \u2193 \u2193\n\u00b7 Binaryoperations\nOxB240\n-Addition.\nossibilityofoverflow:Oll0\nDroptheoverflowbits,i.e.nmod2\"\n*Makesuretoaccountforoverflow!\n-ModularArithmetic:samelawsastraditionalarithmetic\n:*Writinganegativenumber-x:\nTwo'sComplement\n:1221] HPopaddedonesp-X,\npisapowerof22x\n- DivisionandMod: OR:Takethepositiveversion,flipbits,addI\n->Forx%y,y!=0and!(x==intmin()&dy==-1)arepreconditionssince- x=-X+1\n-\n>IntdivisionROUNDSTOWARDSO.\n- Bitwise:\n&land)-(Cor)-\n>1(xor)+-(not)\n-\nShifts:\n-Left:x<<k0101(1=1010,0101(3=\n1000//requiresO<=k&&k<32\n(x.2\")\n->Right:x>)k010K)1=0010,1010x1=101,101073:IIII\n*signextension\nArrays:\nThememorymodel:\nFrames:\nmain\nSYN quare(+))\n...1Framesgetdeallocatedwhenthefunction\ncallsreturn/terminate\npow\nExit"
+          },
+          {
+            "type": "",
+            "text": "\u00b7\nArrays: length>0\n->ex.:intl]A=alloc-arrayCint,\nlength);\n->Returnsamemoryaddress(tothefirstelement)\n->InitiallypopulatedwithdefaultvaluesCO.\n\"\"\n,False)\n-\n>A[idx]toaccess,OL=idx(length->Memorywithnopointersisautomaticallygarbagecollected.\nint[]B=A int[]C=alloc-\narray(int,2)\n\u2460\nAI11III CVariable Arrayinery 2=\nalloc-array(int,1)\n-BM \u1d90\n-ThereisNO: Cabationi)lengthproperty/function-however,weCANuse(lengthinCOcontracts\u00b7 //&requiresn==\\ length(A)\nii)Copyarrayfunction\n\u00b7ForLoops:\nI. 3.\nfor[inti=Ofi<n;i++) Exampleofaproof:\n2. 11&loop-invariant[]TS:ifOS i,thenOK:'\nE... 3 A. 01;\nB. i<nn<int-max(\nOninitialization C. ifint-\nmax()\nI. iisinitialized D.i'it2.TheLIischecked F. I '10;won'toverflow\n3.TheLGischecked\n\u00b7\nSearchinginanarray:-\n>RightIcorrect\n->ArraySegment:A[lo,hiiflo=hi->XA[lohi)=\n&FreiflothiandA[Io]xWeusespecificationfunctionslikethis\nXCA[10+1,hi)iflothiandA[Io]EX tofixcontractexploits.\n-\n>Whenreturningfrominsidealoop,wedon'tneedto Wecanalwayspointtothebodyofa\nshowpreservation. specificationfunction.\n\u00b7 TestCases:assert(func(x)=y)=Built-infunction\n>Runswithout-d-Notacontract->Abortsexecutioniffalse"
+          },
+          {
+            "type": "",
+            "text": "\u00b7\nAnalyzingAlgorithmicComplexity\nCostFunction:TCn):an+b\n\"numberofsteps\"\nftO(g)if7noENandCER,c0s.t. n]no,f(n)c*g(n)-\nAnyalgorithmf(n)doesbelongtoslowercomplexitysets,\ne.\ng.O(n)[OCn2),butwewouldlikefightdefinitions,sowewriteO(n)\n- OCI),OClogn),OCn),OCnlogn),OCn2),O(24)\n-\nBinarySearchfrom[10,hi):OClogn)1. FindmidCh2.CheckAlmid],compare,throwaway(eitherbs(10,mid)orbs(mide,hi)3.RepeatwhileIodhi\n-\nSortingAlgorithms:\ni)SelectionSort-0Cn2)\nii)MergeSort-OCnlogn)\niii)Quicksort-\nBestOCnlogn),WorstOCnY\n-\nSortingStability:consideratablesortedbytime,andnowwe\nwishtosortbyscore.\n->Astablealgorithmkeepstherelativeorder.\nPointers:\n\u00b7 Pointer:int*p=allocCint)->Default:NULL memory\nint**W=alloc(int)F Nunh\n#A\u00b7 Dereference: #P *#p:Tworks,butp=7doesn't.\n*prequiresp!=NULL i\n.e.int**int\nRulesofthumbforPointers:\n1)allowcreatesoneboxalways2)alloc(type)returnsatype3)X=somevaluecopiesitintothelocalvariablebox(leftside)always\n4)IfXistype#,then#Xistype."
+          },
+          {
+            "type": "",
+            "text": "Structs:\nstructimage-headerAliases:typedefstructimage-headerin;\npixel-+[]data; Wecanthenrefertoimage-headerasin\nintwidth; in*cannowreplacestructimage-header*\nintheight;\n3;\nUsepointerstoinstantiatestructs.\nmain:structimage-header*I=alloc(structimage-header)\nAssignment: Eptr-fieldCrequiresptrNULL)\nI-width=5;-\n\u2193->data=alloc-\narray(pixel-+,50);\nLibraries:\n\u00b7\nLibrarieshaveaninterface,implementation,&documentation\ntype-defstructs-heade*SSa-t-\nTheclientshouldn'thavetouse*tocreateastruct.\nSsa-+client Obj=newSSAC);\nClient-Viewvs.ImplementationView: Theclientshouldn'tbeabletosea\nhowfunctionsareimplemented,e.g.arepresentationinvariant\nA/A E-\nRepresentationinvariantsshoulddonullcheckswithif\nnotcontracts\nContracts:\n\u00b7A!=NULL\u00b7 A-length==Vength(A-data)\nWorklists,Stacks,Queues:\n\u00b7 Aworklistisadatastructurethatallowsforstorage&retrievalofdata.\n\u00b7Stacks:LIFO\nSa *Contractshavepuritychecks,\npreventingsomethinglike\n\u00b7Queues:FIFO 1)&ensuresstring-\nequal(popCS),x);\nsa"
+          },
+          {
+            "type": "",
+            "text": "\u00b7\nPriorityQueue:\"mostinteresting\"\nThewl-tinterface:WI-add,retrieve,new,empty\n\u00b7LinkedList:\ntype-\ndefstructlist-nodelist;\nstructlist-noded\nintdatai data edata->data-de\nlist*next;\nSi\nlist*L=allocClist)-> Wewillhavethelastimportant\"noda\n~\nDetectingCycles:slowfastpointer\n-\nInsertion:end - data=x -\nDeletion:\nend->next=allow listOC1)atbeginning,OCn)atand\nend:end--next\nOC)atbeginning&end\nAmoritizedanalysis:\n\u00b7\nDef.Theamoritizedcostofanincrementisnottheactualcostbutrathertheamountthat\nisenoughtocoverasequenceofoperations.\n-\nConsideradatastructurethatperformsasequenceofoperations.\nTheactualcost=sumofkoperations'cost\nTheamoritizedcost=actualcost/K,i.e.costofoperation:/K\nHowToi\n1.Createa\"token\"thatrepresentsaunitofcost\n2.Findhowmanytokensto\"charge\"peroperations cheap.Def:Tokeninvariant:\n->1)Findthecostofasmallsetofoperations\nexpering#oftokensthataresaved\n2)Flagthemostexpensivesofar cheapperelementatsomepoint.\ncheap3)Dividetotalcostateachmostexpensivebytheoperation# Preservation:\n4. Rounduptogetthecandidateamoritizedcost savedbefore+amoritizedcost-\nactualcost:savedafter\n-\nConsideranunboundedarrayAt\nwithasize&limit.\nD\u00b7\nAddinganelementwhenlimitrux(x2)Analysis:AllocationtakesOCn)forlengthn.\nThenthenextnoperationstakeOCD.\nReport."
+          },
+          {
+            "type": "",
+            "text": "Steps:1. Ourtokenisanarraywrite.\nOp#I Ourcandidatecostis3tokens.\n2 Whenwritinganelementtoavacantarraycosts1.\n3\u00b7Theremainingtokensaresavedatthebeginning&end\n\u2467\n7costaC /\nHashing: key\n\u00b7\nWecanuseanarrayasadictionarywherekey::andvalue=arr(i) - \"b\"c\"unsortedarsortedair linkedlist\nlookupO(n)OClogn)OCn)\ninsertO(n)O(n)O(1)\nO(1)amt.\n-\nImplementationofaDict: \u00b7\u00b7 Wehasthekeyandstorethevalueatar[hash](oftenasabucket)\n->Collisionsareunavoidablebutcanbereduced. - 111\nAttempts:LinkedListateachindex(separatechaining)#0-0LinearProbing:findthenextfreecell\n\u00b7\nEnWorstBest\nLookup:O(n)Octevendistributionofvaluesefactor\nInsertion:OCn)OC1)ideally,wewanttominimizethisvalue\nsoweattempttomakemestant.\n->ThustheideaistoresizethetabletokeepNmLC\u00b7\nThenlookupbecomesOCY/m)->OC1)\nandinsertionbecomesO(1)amoritized\n->Howcanwedothisbyadjustingourhashes?\n->RNG+\"pseudo-RNG\":sameresultforagivenkey\nkeyANGuniform m,tablena\n-\nThenlookuphasOCI)average\nResult:HashTable!!\nOCK)averageforlookup\nOC1)average&amortizedforinsert"
+          },
+          {
+            "type": "",
+            "text": "*GenericDataStructures: string,int,\nbool,etc.\n\u2193\n-\nRequirethattheclientprovidesatypedef2\n\u2191\nwhatwerefertogenerically\nHashTableLibrary:\n->Thelibraryneedstoknowthekeyandvalueofanentry,andbeable\ntodetermineifitisauniquekeyornot.\n~\nItprovidesbasicfunctions(constructors,getters,setters)\nhdict-newdict-lookuphdict-insert\n->Theclientneedstosupplyfunctionsthatassistthelibraryinfindingthisinformation.\nWepromisetospecifythetypeoftheentries&keys:\ntypedef-* entrytypedefkey\n-\nWepromise\ntowritefunctions:get-keyCentye)\nhash-key(key(c)\nkey- isEqual(keyK1,keyk2)\n->Repres. Invariants:-\nAcyclicchains-#ofentries=sizefield\n-Nodeplicatekeys-\nEachentry'skeyisstoredintherightplace.\n-\nNoNULLentries\nCompilation:ccOclient.cOhdictClass.cOmain.OClient Class MainPromisesDefinition"
+          }
+        ]
+      },
+      "agent": {
+        "cli": "gws-cli docs get FILE_b934cee831e42886762d2dd3",
+        "mcp": {
+          "tool": "gws_get_document",
+          "args": {
+            "document_id": "FILE_b934cee831e42886762d2dd3"
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "GET /v1/documents/{documentId}",
+        "mcp": "gws-mcp \u203a gws_get_document",
+        "cli": "curl -H 'Authorization: Bearer \u2026' '.../v1/documents/{id}'",
+        "doc": "https://developers.google.com/docs/api/reference/rest/v1/documents/get"
+      },
+      "clone_output": {
+        "documentId": "FILE_b934cee831e42886762d2dd3",
+        "title": "15-122 Notes",
+        "revisionId": "1",
+        "body": {
+          "content": [
+            {
+              "sectionBreak": {}
+            },
+            {
+              "paragraph": {
+                "paragraphStyle": {
+                  "namedStyleType": "NORMAL_TEXT"
+                },
+                "elements": [
+                  {
+                    "textRun": {
+                      "content": "Lec. 1:\nCOSyntax:\n\u00b7\nExecution:runcoinfile.CorOfile. Cthen\u00b7 laout\n\u00b7 Def.:Acontractisanannotationthatischeckeduponexecution.\n->Contractsarecheckedwhenthe-dflagisused.\nTypesofContracts:\n\u00b7\nPreconditions://&requires[precondition]=>Checkstheinputstoensurethatit'ssafe.\n\u00b7\nPostcondition:11Densures(postcondition];=>Checksthatthefunctionworkscorrectly.\n->UseIresulttocheckthereturnvalue.\n->*Becarefulwithparameterschanging.Storeyourvariablesseparately.\n*Wecan'tassumesomething\n\u00b7\nLoopInvariant://&loop-invariant(invariant] aboutafunction,\nonlythatwhen\n->LoopGuard:checkedn+1timesandbeforetheloopguard. Falsewhentheloopends. wecallitthepostconditionholdstrue.\n->LoopInvariants:checkedn+1times.Truewhentheloopends,checkedbeforeloopguardandbeforenextiteration.\n-\nOninit,Iloopvarisinitialized,2. invariantischecked,3.guardischecked\nKeyIdeas:\n\u00b7 Weusepoint-to-reasoningtoproveastatementaboutcode.\n\u00b7 Writecontractsbeforeimplementation.Cusethemasourframework\n\u00b7Itisdangeroustouseoperationalreasoningratherthanpoint-to-reasoningCexceptfortermination)\n\u00b7\nProvingvalidityofaloopinvariant(condition]:Checkthataconditionistrueinitially,continuestobetrue,ends,andexits\nINIT:->Usecodebeforetheloopandpreconditions. INITPRESTERMEXIT\n\u00b7ToshowCTS):[condition]initially\nA...., B...., G....\nPRES:->Usecodewithintheloop,loopguard,andunprimed/previouslyprovenloopinvariantsinanestedloop\n\u00b7TS:if[condition],then(conditionafteriteration]e.\ng. ifDor=X Y,thenbler'=x\nXCaseX:\nD.... ,line# *OnlyuseassertionswhenyouE,... math haveproventhem.\nyCasey:-\nTERM:(provetheloopends)-\n>Canuseoperationalreasoning 1131412x2\"Onanarbitraryiteration,qgetsstrictlysmaller/largerbut 11/13131414121212neverlarger/smallerthanConwhichtheloopguardisfalse.\n\"\nodd#ofXS\nEXIT:->useloopinvarrants,negationofloopguard,andcodeaftertheloop even#ofys\n\u00b7\nProvingfunctioncallsafety:provethattheargumentspassedindon'ttripanypreconditions,\n\u00b7\nProvingfunctioncorrectness:provethatpostconditionsaretruegiventhatthepreconditionsholdtrue\n",
+                      "textStyle": {}
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "paragraph": {
+                "paragraphStyle": {
+                  "namedStyleType": "NORMAL_TEXT"
+                },
+                "elements": [
+                  {
+                    "textRun": {
+                      "content": "Lec. 1Questions:\nHowdoyouwriteaprecondition,\npostcondition,loopinvariant,orassertion?\nWhenistheloopinvariantchecked?\nHowdoweprovethatinputs&outputsare\"safe\"whentheprogramdoesn'tcrash?\nWhatarethestepstoprovingthataloopinvariantworks?\nWeek2:\nIntegers:\n\u00b7 Numbersystems:decimal,binary,hexadecimalCoxddd) \u00b7\nBinarytoHex:\n->Allnumbersarestoredinbinaryas32bitintegersinCO. 1011110001000000\u2193 \u2193 \u2193 \u2193\n\u00b7 Binaryoperations\nOxB240\n-Addition.\nossibilityofoverflow:Oll0\nDroptheoverflowbits,i.e.nmod2\"\n*Makesuretoaccountforoverflow!\n-ModularArithmetic:samelawsastraditionalarithmetic\n:*Writinganegativenumber-x:\nTwo'sComplement\n:1221] HPopaddedonesp-X,\npisapowerof22x\n- DivisionandMod: OR:Takethepositiveversion,flipbits,addI\n->Forx%y,y!=0and!(x==intmin()&dy==-1)arepreconditionssince- x=-X+1\n-\n>IntdivisionROUNDSTOWARDSO.\n- Bitwise:\n&land)-(Cor)-\n>1(xor)+-(not)\n-\nShifts:\n-Left:x<<k0101(1=1010,0101(3=\n1000//requiresO<=k&&k<32\n(x.2\")\n->Right:x>)k010K)1=0010,1010x1=101,101073:IIII\n*signextension\nArrays:\nThememorymodel:\nFrames:\nmain\nSYN quare(+))\n...1Framesgetdeallocatedwhenthefunction\ncallsreturn/terminate\npow\nExit\n",
+                      "textStyle": {}
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "paragraph": {
+                "paragraphStyle": {
+                  "namedStyleType": "NORMAL_TEXT"
+                },
+                "elements": [
+                  {
+                    "textRun": {
+                      "content": "\u00b7\nArrays: length>0\n->ex.:intl]A=alloc-arrayCint,\nlength);\n->Returnsamemoryaddress(tothefirstelement)\n->InitiallypopulatedwithdefaultvaluesCO.\n\"\"\n,False)\n-\n>A[idx]toaccess,OL=idx(length->Memorywithnopointersisautomaticallygarbagecollected.\nint[]B=A int[]C=alloc-\narray(int,2)\n\u2460\nAI11III CVariable Arrayinery 2=\nalloc-array(int,1)\n-BM \u1d90\n-ThereisNO: Cabationi)lengthproperty/function-however,weCANuse(lengthinCOcontracts\u00b7 //&requiresn==\\ length(A)\nii)Copyarrayfunction\n\u00b7ForLoops:\nI. 3.\nfor[inti=Ofi<n;i++) Exampleofaproof:\n2. 11&loop-invariant[]TS:ifOS i,thenOK:'\nE... 3 A. 01;\nB. i<nn<int-max(\nOninitialization C. ifint-\nmax()\nI. iisinitialized D.i'it2.TheLIischecked F. I '10;won'toverflow\n3.TheLGischecked\n\u00b7\nSearchinginanarray:-\n>RightIcorrect\n->ArraySegment:A[lo,hiiflo=hi->XA[lohi)=\n&FreiflothiandA[Io]xWeusespecificationfunctionslikethis\nXCA[10+1,hi)iflothiandA[Io]EX tofixcontractexploits.\n-\n>Whenreturningfrominsidealoop,wedon'tneedto Wecanalwayspointtothebodyofa\nshowpreservation. specificationfunction.\n\u00b7 TestCases:assert(func(x)=y)=Built-infunction\n>Runswithout-d-Notacontract->Abortsexecutioniffalse\n",
+                      "textStyle": {}
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "paragraph": {
+                "paragraphStyle": {
+                  "namedStyleType": "NORMAL_TEXT"
+                },
+                "elements": [
+                  {
+                    "textRun": {
+                      "content": "\u00b7\nAnalyzingAlgorithmicComplexity\nCostFunction:TCn):an+b\n\"numberofsteps\"\nftO(g)if7noENandCER,c0s.t. n]no,f(n)c*g(n)-\nAnyalgorithmf(n)doesbelongtoslowercomplexitysets,\ne.\ng.O(n)[OCn2),butwewouldlikefightdefinitions,sowewriteO(n)\n- OCI),OClogn),OCn),OCnlogn),OCn2),O(24)\n-\nBinarySearchfrom[10,hi):OClogn)1. FindmidCh2.CheckAlmid],compare,throwaway(eitherbs(10,mid)orbs(mide,hi)3.RepeatwhileIodhi\n-\nSortingAlgorithms:\ni)SelectionSort-0Cn2)\nii)MergeSort-OCnlogn)\niii)Quicksort-\nBestOCnlogn),WorstOCnY\n-\nSortingStability:consideratablesortedbytime,andnowwe\nwishtosortbyscore.\n->Astablealgorithmkeepstherelativeorder.\nPointers:\n\u00b7 Pointer:int*p=allocCint)->Default:NULL memory\nint**W=alloc(int)F Nunh\n#A\u00b7 Dereference: #P *#p:Tworks,butp=7doesn't.\n*prequiresp!=NULL i\n.e.int**int\nRulesofthumbforPointers:\n1)allowcreatesoneboxalways2)alloc(type)returnsatype3)X=somevaluecopiesitintothelocalvariablebox(leftside)always\n4)IfXistype#,then#Xistype.\n",
+                      "textStyle": {}
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "paragraph": {
+                "paragraphStyle": {
+                  "namedStyleType": "NORMAL_TEXT"
+                },
+                "elements": [
+                  {
+                    "textRun": {
+                      "content": "Structs:\nstructimage-headerAliases:typedefstructimage-headerin;\npixel-+[]data; Wecanthenrefertoimage-headerasin\nintwidth; in*cannowreplacestructimage-header*\nintheight;\n3;\nUsepointerstoinstantiatestructs.\nmain:structimage-header*I=alloc(structimage-header)\nAssignment: Eptr-fieldCrequiresptrNULL)\nI-width=5;-\n\u2193->data=alloc-\narray(pixel-+,50);\nLibraries:\n\u00b7\nLibrarieshaveaninterface,implementation,&documentation\ntype-defstructs-heade*SSa-t-\nTheclientshouldn'thavetouse*tocreateastruct.\nSsa-+client Obj=newSSAC);\nClient-Viewvs.ImplementationView: Theclientshouldn'tbeabletosea\nhowfunctionsareimplemented,e.g.arepresentationinvariant\nA/A E-\nRepresentationinvariantsshoulddonullcheckswithif\nnotcontracts\nContracts:\n\u00b7A!=NULL\u00b7 A-length==Vength(A-data)\nWorklists,Stacks,Queues:\n\u00b7 Aworklistisadatastructurethatallowsforstorage&retrievalofdata.\n\u00b7Stacks:LIFO\nSa *Contractshavepuritychecks,\npreventingsomethinglike\n\u00b7Queues:FIFO 1)&ensuresstring-\nequal(popCS),x);\nsa\n",
+                      "textStyle": {}
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "paragraph": {
+                "paragraphStyle": {
+                  "namedStyleType": "NORMAL_TEXT"
+                },
+                "elements": [
+                  {
+                    "textRun": {
+                      "content": "\u00b7\nPriorityQueue:\"mostinteresting\"\nThewl-tinterface:WI-add,retrieve,new,empty\n\u00b7LinkedList:\ntype-\ndefstructlist-nodelist;\nstructlist-noded\nintdatai data edata->data-de\nlist*next;\nSi\nlist*L=allocClist)-> Wewillhavethelastimportant\"noda\n~\nDetectingCycles:slowfastpointer\n-\nInsertion:end - data=x -\nDeletion:\nend->next=allow listOC1)atbeginning,OCn)atand\nend:end--next\nOC)atbeginning&end\nAmoritizedanalysis:\n\u00b7\nDef.Theamoritizedcostofanincrementisnottheactualcostbutrathertheamountthat\nisenoughtocoverasequenceofoperations.\n-\nConsideradatastructurethatperformsasequenceofoperations.\nTheactualcost=sumofkoperations'cost\nTheamoritizedcost=actualcost/K,i.e.costofoperation:/K\nHowToi\n1.Createa\"token\"thatrepresentsaunitofcost\n2.Findhowmanytokensto\"charge\"peroperations cheap.Def:Tokeninvariant:\n->1)Findthecostofasmallsetofoperations\nexpering#oftokensthataresaved\n2)Flagthemostexpensivesofar cheapperelementatsomepoint.\ncheap3)Dividetotalcostateachmostexpensivebytheoperation# Preservation:\n4. Rounduptogetthecandidateamoritizedcost savedbefore+amoritizedcost-\nactualcost:savedafter\n-\nConsideranunboundedarrayAt\nwithasize&limit.\nD\u00b7\nAddinganelementwhenlimitrux(x2)Analysis:AllocationtakesOCn)forlengthn.\nThenthenextnoperationstakeOCD.\nReport.\n",
+                      "textStyle": {}
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "paragraph": {
+                "paragraphStyle": {
+                  "namedStyleType": "NORMAL_TEXT"
+                },
+                "elements": [
+                  {
+                    "textRun": {
+                      "content": "Steps:1. Ourtokenisanarraywrite.\nOp#I Ourcandidatecostis3tokens.\n2 Whenwritinganelementtoavacantarraycosts1.\n3\u00b7Theremainingtokensaresavedatthebeginning&end\n\u2467\n7costaC /\nHashing: key\n\u00b7\nWecanuseanarrayasadictionarywherekey::andvalue=arr(i) - \"b\"c\"unsortedarsortedair linkedlist\nlookupO(n)OClogn)OCn)\ninsertO(n)O(n)O(1)\nO(1)amt.\n-\nImplementationofaDict: \u00b7\u00b7 Wehasthekeyandstorethevalueatar[hash](oftenasabucket)\n->Collisionsareunavoidablebutcanbereduced. - 111\nAttempts:LinkedListateachindex(separatechaining)#0-0LinearProbing:findthenextfreecell\n\u00b7\nEnWorstBest\nLookup:O(n)Octevendistributionofvaluesefactor\nInsertion:OCn)OC1)ideally,wewanttominimizethisvalue\nsoweattempttomakemestant.\n->ThustheideaistoresizethetabletokeepNmLC\u00b7\nThenlookupbecomesOCY/m)->OC1)\nandinsertionbecomesO(1)amoritized\n->Howcanwedothisbyadjustingourhashes?\n->RNG+\"pseudo-RNG\":sameresultforagivenkey\nkeyANGuniform m,tablena\n-\nThenlookuphasOCI)average\nResult:HashTable!!\nOCK)averageforlookup\nOC1)average&amortizedforinsert\n",
+                      "textStyle": {}
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "paragraph": {
+                "paragraphStyle": {
+                  "namedStyleType": "NORMAL_TEXT"
+                },
+                "elements": [
+                  {
+                    "textRun": {
+                      "content": "*GenericDataStructures: string,int,\nbool,etc.\n\u2193\n-\nRequirethattheclientprovidesatypedef2\n\u2191\nwhatwerefertogenerically\nHashTableLibrary:\n->Thelibraryneedstoknowthekeyandvalueofanentry,andbeable\ntodetermineifitisauniquekeyornot.\n~\nItprovidesbasicfunctions(constructors,getters,setters)\nhdict-newdict-lookuphdict-insert\n->Theclientneedstosupplyfunctionsthatassistthelibraryinfindingthisinformation.\nWepromisetospecifythetypeoftheentries&keys:\ntypedef-* entrytypedefkey\n-\nWepromise\ntowritefunctions:get-keyCentye)\nhash-key(key(c)\nkey- isEqual(keyK1,keyk2)\n->Repres. Invariants:-\nAcyclicchains-#ofentries=sizefield\n-Nodeplicatekeys-\nEachentry'skeyisstoredintherightplace.\n-\nNoNULLentries\nCompilation:ccOclient.cOhdictClass.cOmain.OClient Class MainPromisesDefinition\n",
+                      "textStyle": {}
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "paragraph": {
+                "paragraphStyle": {
+                  "namedStyleType": "NORMAL_TEXT"
+                },
+                "elements": [
+                  {
+                    "textRun": {
+                      "content": "21Feature:\u00b7 NewPointertype:void*a.k.a.\ngenericpointer\n-\n>WesimplycastanexistingpointerasaCroid#).&\neX.. int#p=allocCint);Ap:7: ECast: void*q;9:(void*g):\nAtagstoresthe\nCustback:int*=Cint#) q: originaltype.\n->Wecannotdereferenceavoid*like*&->Wecannotallowavoidlikealloc(void)\nI->Wecannotcastavoid* toatypeotherthantheoriginallike(string#)q\n*Newcontract-\nonlyfunction:\\hastagCtype#,g)\n&mustbeatype*pointer\nCint#)Castingtoaspecificpointerrequiresthataiscorrectlytyped\nCroid#)Castingtoavoidtypeensuresthatthereturnedpointeriscorrectlytyped\nex..Considerconstructingagenerichashdictionary.Then,wewritetypedefvoid*key;and\ntypedefvoid*entry;fortheimplementation.\nInoddition,wewritetheclientinterfacetoaccountforthisfact. e.\ng.\nkeyget-\nkeyCentre) intkey-hash(keyk)\n/1&requirese!=NULL; Exercise:writethecontracts\n1)&requiresChastay(structitem*,e); [int#p=(in+*) k;\n1/@ensures/result!:NULL; intprice:#pi//&ensures/hastag(int#,result); returnhash[price);\nLcasting&int p=((structitem#(e)->price;\nint*pp=allocCint);App=\np:\nreturn(key)pp;\nnotewhy\nV thisworks\nBrieftrack: RefiningourMemoryModel:\nOXFFFFFFFFFFFFFFFF\n\u00b7\nThecomputerhase\"block\"ofmemory. Stack LocalMemory\nI\nKeyTakeaway:wecangrabtheaddressofafunction\nHeap AllocatedMemory->Wedothisbyusing&,e.\ng.&key-hash\n\u2193\nsonowwecanusetypedefinaNEWway: DATA Read-Only\ne.g.\ntypedefintalias(intangl,stringarg2):\nTEXT Read-Only\nThisallowsustorefertoanyfunction0x0000000000000000LESTRICTEDwiththesomereturntype&parametersasalias.\nVI\n",
+                      "textStyle": {}
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "paragraph": {
+                "paragraphStyle": {
+                  "namedStyleType": "NORMAL_TEXT"
+                },
+                "elements": [
+                  {
+                    "textRun": {
+                      "content": "N\n\u2193\nThen,wecanwritealias*fur-pointer=&foo;forintfooCinti,strings)\nAndwecancallthefunctionwithintres=(Afn-pointer)(12,\"hi\");\nNow,wecanletourstructsstorethenecessaryfunctions.\nstructmytray&intsizesint[Jarrsmystery-fn#Fj\n-andwhencalling,wewritesomethinglike\nmyArray*new-array(intsize,int]arr,mystery-fn#F)5... 3<X=\nnew-array267,unsortedAr,&sort):\nNow,writevoiddoRandomStuffCmyArray*obj)E\n(*(objF)();\n3\nBinarySearchTrees: Node:\nhasdatanode*left\nnode*rightroot -\n>NULL-\nterminated\n&\nlookupOClogn)/ insertOClogn)I\nleaves find-minOClogn)\nInvariant:(isNULL)OR\n(is-tree(left)ANDis-treeCright)ANDdata!=NULL)\n-\n>Otherissues:cycles, onlyoneparentClientInterface:\nkeyget_keyCentrye)\n1/&requiresnotNULL\nintkey-compare(key11\u00b7\nKeyK2)\nImplementation\nentrylookup(tree*,keyk) boolis-ordered:eithertrack10orhi-\n->Pre. is- bst orwritetwofunctionsgt-tree,Ittree->Post:eitherNULLresultorcompara(k,loasult)==0\nNULL:returnNULL tree*insert:\n->CheckLeftif < ->ifrootisNULL,createtheroot\n->Returnif == usingthecurrententryandreturn\n->CheckRightif > ->Elseweuseinsert()toplaceaccordingly\n",
+                      "textStyle": {}
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "paragraph": {
+                "paragraphStyle": {
+                  "namedStyleType": "NORMAL_TEXT"
+                },
+                "elements": [
+                  {
+                    "textRun": {
+                      "content": "AVLTrees:\n->OurgoalistominimizetheheightofaBST,whichwedefineasthenumberofnodesinthelongestpath\nfromtheroottoaleaf. height(empty):0\n->AfreeisbalancedifhEOClogn) height((tree])=1+max(treeeleft,tree+right)\nwherehdescribeshowtheheightgrows\n\u22a5BalanceInvariant:\ndoi)(Height(left)-\nHeightCright)/11odii)Orderedcorrectly\nHowdowedothis?\n\u00b7 WhenweinsertanodeintoanAVLtree,wecheckforany\nviolations.Then,wefindandfixthelowestviolation.\nExamine: -Leftrotationat10\n\u1d8c\n\u1d90\u1d91 &\n\u1d91Rotations:\nLeftRotation\n:SRightRotationissimilar\n#\u22a5\nLeftRotationbyX\nRightRot. LeftBot.\nDoubleRotation\n:AbyX'schild 0Thisisnecessaryiff\nwhenxistallerondirectionUR,>\nDobyx\n,A*butX'schildistalleronR/L.\nImplementation:Wekeeplookup ()thesameasaBST.\nOurinsertfunctionnowneedstorebalance.\n-\nInaddition,weredefinethestructsothateachmodestoresitsownheight.\n- Therepresentationinvariant:checksfororder(BST)andheightCis-balancedANDcorrectstoredheight)\n",
+                      "textStyle": {}
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "paragraph": {
+                "paragraphStyle": {
+                  "namedStyleType": "NORMAL_TEXT"
+                },
+                "elements": [
+                  {
+                    "textRun": {
+                      "content": "Dressorls/RestofCompilert/Linker-estableCombinesfiles)\n1.FileInclusion\n#include<file. h)Systemlibrary\n\"/lik/myClass.h\"Elocallibrary*2.MacroDefinitions\n->Namingaconstant:\n#defineINT_\nMIN0x80000000=>actslikeafind-replace\nINT-MAX(INT-MIN-1)\n3.\nConditionalCompilation\n#ifdefWORD(theoppositeisifndef)-somecode... -\n>compilediff. WORDisdefined\n#else\n-- othercodee.\n#endif\n4.MacroFunctionDefinitions\n#defineMULT(x,y)((x)*(y)\n5.LackofContractss ...\n-soweemulateitwithREQUIRES(cond)\nENSURES(cond)Thanks,Anne!\nASSERT(cond)\nCO C terminatesifnull\nalloc(type)malloc(sizeof(type))orxmallocCusexmalloc(lengthsizeof)forarrays\nCo goc-Wall-Wextra-Wshadow-Werror-std=\n199-pedantic-g-DDEBUGfilet.cfile2....\n-\n>Alwaysinitializememoryproperlyandfree(var)todeallocatememory.Wewanttoavoidleaks!\n*stillcontainsthesameaddress,butcan->Usevalgrindiftherearepotentialmemoryissues. nowpointtootherthings\nC'sMemoryModel\nRecap:We'veLost:contracts,safety,\ngarbagecollection,\nmemoryinitialization\nWe'veGained:preprocessor,whimsicalexecution,\nexplicitmemorymanagement,separatecompilation\nCreatingaS-elementintarray:int*A=malloc(sizeofCint)#5);\nuseXmalloctobesafer\n",
+                      "textStyle": {}
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "paragraph": {
+                "paragraphStyle": {
+                  "namedStyleType": "NORMAL_TEXT"
+                },
+                "elements": [
+                  {
+                    "textRun": {
+                      "content": "-\n>*AreturnsA[O]AlOXBBY,OXRBOOXBBPOXBO\n->Addressoftheithelement:A+i,Bewaremetic!!ACo]A[1]A[2]A[3]A 24]\nI\nI *A*CA+1)*(A+2)*(A+3)A CA+4)\nso*(A+i)=A[i]\u00b7 Togetinitialvalues,use\ncallo S,\nsizeofinti,sothenentriesdefaultoe\u2191 \u2191\nelement\n->thisalsohasitsalternativexcalloc\n\u00b7 Ifweallocatememory,wemustfreeitafterwards.\nLengthisnotkepttrackofanywhere!!(thoughfreestillworks\nTheKeyDifferencesforarrays:\n\u00b7\nPointers \u00b7\nSpecialtype\nC\nI\nCO\n\u00b7 (x)malloc \u00b7\nalloc-array\u00b7\nMustbefreed \u00b7\nGarbagecollected\n\u00b7\nLengthunavailable\u00b7\nLengthavailable\nUndefinedBehavior:!!\u00b7\nOutofBoundAccess:tryingtogetA[S]-\n>Usevalgrindtocatchtheseerros\nA[100]e:\nAc-\n1]m??\nA[1000000]-\n>segfault\n\u00b7Asageneralrule,everysafetyviolationinCOisundefinedbehaviorinC\n-\nex.out-of-bound-\n/or%byO,orINT-\nMIN/-1\ndereferencingNULL-shiftingbymorethesizeofanint\n\u00b7\nAnythingslightlyweird\n\u00b7\nReadinguninitializedbehavior\n\u00b7\nUsingfreedmemory. Doublefreeing\n-\n>Resultofundefinedbehavior:securityvulnerabilities,softwarebugs\n->\nWhydoesChaveundefinedbehaviors?\n\u00b7\nAliasing:int*B=A+2;BC1]:33;works,\nbutfree(B)doesn'tworkb.c. itwasn'treturnedby(xlmallocor(x)callos.\n\u00b7\nInC,wecancastanypointertoanotherpointerwithouttriggeringanerror.\nchar*C=(chart)A\n-\n>Notethatthiscanbeverydangerous!!\n",
+                      "textStyle": {}
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "paragraph": {
+                "paragraphStyle": {
+                  "namedStyleType": "NORMAL_TEXT"
+                },
+                "elements": [
+                  {
+                    "textRun": {
+                      "content": "A acharactersoccupy1bitwhile\nintooccupy4.\nC C+11 C+8 C+12 C+16\n\u00b7 void*inCreferstotheaddressofthefirstelementofanyarray.\n\u00b7\nCOarraysliveontheheap. Carrayscanliveonthestack\n-\n>ArrayLiterals:intF():51,3,4,13\n\u00b7 Stock-\nAllocatedStructsaren'tpointers,soweusedotnotationlikemyobj.\nprop\n\u00b7 Wedon'tneedtofreestack-\nallocatedmemory!\n\u00b7Icangettheaddressofanything.\n&NOTET\nintLreturn*j\n3\n\u00b7Thereisnotypestring,onlychar *\n-\n>TheendofastringisterminatedwiththeNULcharacter\n->Soa3-charstringisonarraywith6elementsbutoflength-Canlive\n\u00b7IntheDATAsegment:char#s1:\"hello\";\necopiesstring\n\u00b7 Intheheap:char#s2=xmalloc(strlen(s1)+1)<stropy(s2,sI);S220]:'Y'sfree(s2);\n\u00b7 Onthestack:charst]:\"hi\"j,chars4l]:E's','I':10.3:\n\u00b7 UndefinedBehavioronNumbers:\n-\nInC,thecompilerdefinesthesizeofanint.\n->WecanuseINT- MINandINT-MAX\n- Wait...Cprogramsdon'tnecessarilyusetwo'scomplement\n->Thoughwecanforceittousinggcc'sflag-furapu-\nOtherintegertypes:\n-long:64bits\n-\nshort:16bits\n-char:8bits\n",
+                      "textStyle": {}
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "paragraph": {
+                "paragraphStyle": {
+                  "namedStyleType": "NORMAL_TEXT"
+                },
+                "elements": [
+                  {
+                    "textRun": {
+                      "content": "-\nunsigned:wecanrepresenttwiceas\nmanynumberssincewearen'tusingthesignbit\n- Size-f:representsthesizeofapointer,whichwegetusingsizeof\u2191\n-\nIntegerCasting.\nLikeso\nintx=3;longy=Clong)Xi\n->Literalnumbersalwayshavetypeint,sothecompilerimplicitycasts.\nlongX=3isthesameas\n\u22a5Sobecareful,e.\ng.\nlongx=140; long x=Clong)-\n>Ifthevaluecanberepresentedinthenewtype,\nnothingchanges.\n->Otherwise,\n\u00b7Ifthenewtypeissigned,[implementationdefined]8\n\u00b7Ifthenewtypeisunsigned. ABCDEF\n-\n>Ifsmallerofthesametype,leastsignificantbitsareretained. F->Otherwise,thebitsaresign-extended. FINISHchart-\nFixedIntegers:int8-t, int16_\n+, vint32-t,vint64-+,etc.\n- Enumtype:ex.enumseasonWINTER,SPRING,SUMMER.FALL\nthisassignsintegerstoallofthesevalues\nenumseasontoday=WINTER;\nif(today==SUMMER)\ndie()j\n3\nelseif(today==WINTER)S\nrelax();\n3\n-\nNew(Feature:Switch(var)3\ncase(1:\n[something]\nbreaki:\ndefault:\nyay();\n",
+                      "textStyle": {}
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "paragraph": {
+                "paragraphStyle": {
+                  "namedStyleType": "NORMAL_TEXT"
+                },
+                "elements": [
+                  {
+                    "textRun": {
+                      "content": "COExecution:\n->Recall:thecompilertranslatesasourceprogramintomachinecodeCanexecutable)\nCOfile-> Compiler->Intermediate-\n> InterpreterRepresentationCUM)0000171088\u1d90000/Behindnin(Bytecode(\nmiranslator->cfile->go\n-\nCOVM:\nBytecodeconsistsofinstructions:\n-\nAninstructionstartswithanopcode,andpossiblyendswithan\noperandCe.\ng.\n10OSmightadd5toastack)\nexample: 0x10bipush(b>S+Six:w3]T \u2191 \u2191 T\nopcodenameaonicoperandeffectonstack\nCadds32-bitint(\n0x60:addS,x:w32,\ny:w32-S,x+y:w3]\n- Wemaintainaprogramcounterthattrackswhereweareintheprogram\n- Functions:intmidCintlo,inthi)3 #mid]02-\nnumberofarguments\n3- 03-\nnumberoflocalvariables\nGraphs \u00b7\nWewillconsider\nigedgede\n->undirectedgraphsedge\nDoes\n->noself-edges\n-\n>Ifwehavevvertices,wehavebetweenOandedges.\n-\n>AvertexhasOCmin(viel)neighbors\nRepresentingEdges:\nAdj.Matrix Adj. List\n\u219323\nF\n",
+                      "textStyle": {}
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "paragraph": {
+                "paragraphStyle": {
+                  "namedStyleType": "NORMAL_TEXT"
+                },
+                "elements": [
+                  {
+                    "textRun": {
+                      "content": "OCI)has-edge O(min(vie))has-edge\nOCDadd-edge OC1)add-edgeOCv)get-all-neighborsOC1)get-all-neighbors\nSpaceComplexity:OCv2 SpaceComplexity:O(v+e)-\n>O(max(v,e)\n-\n>Forsparsegraphs,wecanjustreplaceawithv.\nGraphSearch: R-\n\u00b7\nDFS:- --OCV2)foradj. matrix\nE\nI &\nOCV+E)foradj. list.\nBESR-\n/ I\n/-\nSicanningTrees:\u00b7\nDef:Acycleisapathfromavertextoitself.\n->Asimplecyclehasatleastoneedgeandnorepeatedcycles. &\u00b7 Indeed,aconnectedgraphwithnosimplecyclesisafree\n-\n>Wecanrecursivelydefineatreeusinggraphdefinitionsinotherways,e.\ng.~Atreeis:\n- 2treesconnectedbyanedge\n\u00b7\nAtreeconnectedtoavertexbyanedge\n-\nAconnectedgraphwithvverticesandv-ledges\nAconnectedgraphwithexactlyonepathbetweenanytwovertices\n\u00b7 Aforestisabunchoftreeswhereeachconnectedcomponentisatree.\nItstill:-hasnosimplecycles O00-\n>hasatmostonepathbetweenvertices000%\n->Vverticeswithatmostr-ledges0008\u00b7Aspanningtreeisafreesuperimposedonagraphthat\nprovidesapathfromeveryvertextoanother.\n\u1d96-i.e.\nwefindasubgraphwiththesameconnectivities\n\u00b7\nAlgorithmsforBuildingSpanningTrees:\n",
+                      "textStyle": {}
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "paragraph": {
+                "paragraphStyle": {
+                  "namedStyleType": "NORMAL_TEXT"
+                },
+                "elements": [
+                  {
+                    "textRun": {
+                      "content": ":\n)Edge-centric:startwithisolatedvertices&addedgesaslongasthere'snocycle\n-\n>i.\nc.foredge(n,v),areandvalreadyconnected?\n->TC:O(ve)=O(v)forconstructionande.\nrfordfsforeachedge\nii)Vertex-centric:startwithonevertexdaddverticesaslongastheyhaven'tbeenaddedalreadyinthetree\n->i.e. foredge(u,v),isvalreadyconnected?Otherwiseweaddtheedga.\n->TC:OCute):sameasdfs/bfs C\n-\n>Foradisconnectedgraph,wejustkeeppickingunmarkedverticesandconstructinga\ntreeuntilwegetaspanningforest.\n\u00b7\nMinimumspanningtreesminimizetheweightsofedges.\n\u00b7\nKruskal'salgorithm:edge-centric,addlowestweightedgesfirst\n->Sowesorttheedgesfirst\n--\n>TC:O(ve)=OCeloga)forsorting,OCva)forconstruction&edgechecks,OCv)fordfs\n\u00b7Prim'sAlgorithm:useapriorityqueueforedges tocheckifuandware\n->TC:OCuteloge)vforconstruction,elogeforsort connected\n&Canwemakedeterminingconnectionsfaster?\nYes- find\nUnionFind:Definearelation- connected\n\u00b7\nReflexivity:n-u U\n-\n\u00b7\nSymmetry.KW,wasa w\n\u00b7\nTransitivity:UW1weX=>UX n ( wiX\nTocheckifnodesareconnected,wesimplycheckiftheirrepresentativesarethesame.\nI\nSomodifyouralgorithm. 00\n1Startwithisolatedvertices. 00 02.Initializeaunionfindarraysoeachvertexisrepresentedbyitself135l3.Iteratethroughouredges:ifuandwdon'thavethesamerepresentatives,\ni. addtheedge\nii.\npicktherepresentative(favoringoldrepresentatives)\u2462Howdowechackrepresentatives?IterateuntilthecandidaterepresentativerepresentsitselfaRepresentative\nWart...+sstillOCv)forcheckingifuandwareconnected(OCIfoaddtheedge)\nwesheimprovets\n-\n",
+                      "textStyle": {}
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "paragraph": {
+                "paragraphStyle": {
+                  "namedStyleType": "NORMAL_TEXT"
+                },
+                "elements": [
+                  {
+                    "textRun": {
+                      "content": "KeyInsight:trytokeepourchains\"balanced\"inheight. -Q:Whatdoesthismean?\nAKeeptheheightatOClogv),i.e.keepthemergedtreeshallow\n&:Howdowedothis?\nA:We'llmakeshorterchainslonger.\n1.\nHeighttrack, ex. Farnamdoesn'tneedtoknowhisboss,butheshouldknow\nhowmanypeopleareinhischainofcommand. FieO\n:)achildcontainsinfoonitsparent-Boss\nii)arootcontainsinfoonits\nheight.- 15potenegativesowe are\n2.Fortworepresentatives,1)Iftheheightsarethesame,createonedgebetweenroofsarbitrarily,\nincreasingtheheightby1.\nii)Elsecreateanedgefromthesmallertree'sroottothelargerone.\nKeepstheheightthesame.\n\u00b7 #\nNow,connectionlookupsarelogy!SoKruskal'sbecomesOCV+eloga)\nPriorityQueue:\n\u00b7 We'llhavetheclientpassinacomparefunction\nlikeboolhas-higher-priorityCelemel,eleme2)\n\u00b7\nWe'llimplementusingheaps.\nHeap:OClogn)OClogn)O(k)addremovepeek\n-\nDef. Heap:abalancedbinaryfreethathasfulllevelsexcept\nrhighestoyme\ns\nthebottommostlevel\nInvariants:\n1.Shapeinvariant:fulllevelsexceptforthelast\n2.Orderinginvariant:\npriority(child)[priority(parent)\nTypesofHeaps:\n-\nAbove\n-\nMin-heap:smallervalues=higherpriority-\nMax-heap:largervalues=\nhigherpriority\n",
+                      "textStyle": {}
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "paragraph": {
+                "paragraphStyle": {
+                  "namedStyleType": "NORMAL_TEXT"
+                },
+                "elements": [
+                  {
+                    "textRun": {
+                      "content": "-Insertion:\n1. Addtheelementsothattheshapeinvariantis\nmaintained,Cinthebottomleftmostposition)\n2.Then,tosatisfytheorderinvariantweswapthatelement\nupwardsuntilwefixtheorderofwereachtheroot.\n\u00b7 Removal(similar)\n:1. Removetheroot\n2.Takethebottomrightmostelement \u2460\n3.Nowweswaprecursivelywith\u2460\u2461thechildwiththehigherpriority. \u22a5\n\u00b7\nRepresentingHeaps\u2191\nNode:i\nALeftChild:I:\n4S\n\u2460RightChild:2i+\nParent:i/2next\nWewilluseanarray:I 2 4 8...\n-\nIffull,weresize\nHeap-safecheck:\n1H-limit&&H-limit=intmax()/2\nisexpected-\nlengthCarr,limit)\n14=H-next&&H-next=H-limit\nHeprior!:NULL\nShape-Check:uh.... idk\nit'sacontiguousarrayuh-huhunhuh\nOrdering-Check:\npriority(left&right)priorityparethe\n",
+                      "textStyle": {}
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "namedStyles": {},
+        "inlineObjects": {}
+      },
+      "real_output": {
+        "documentId": "FILE_b934cee831e42886762d2dd3",
+        "title": "15-122 Notes",
+        "revisionId": "1",
+        "body": {
+          "content": [
+            {
+              "startIndex": 1,
+              "endIndex": 1958,
+              "paragraph": {
+                "elements": [
+                  {
+                    "startIndex": 1,
+                    "endIndex": 2,
+                    "textRun": {
+                      "content": "Lec. 1:\nCOSyntax:\n\u00b7\nExecution:runcoinfile.CorOfile. Cthen\u00b7 laout\n\u00b7 Def.:Acontractisanannotationthatischeckeduponexecution.\n->Contractsarecheckedwhenthe-dflagisused.\nTypesofContracts:\n\u00b7\nPreconditions://&requires[precondition]=>Checkstheinputstoensurethatit'ssafe.\n\u00b7\nPostcondition:11Densures(postcondition];=>Checksthatthefunctionworkscorrectly.\n->UseIresulttocheckthereturnvalue.\n->*Becarefulwithparameterschanging.Storeyourvariablesseparately.\n*Wecan'tassumesomething\n\u00b7\nLoopInvariant://&loop-invariant(invariant] aboutafunction,\nonlythatwhen\n->LoopGuard:checkedn+1timesandbeforetheloopguard. Falsewhentheloopends. wecallitthepostconditionholdstrue.\n->LoopInvariants:checkedn+1times.Truewhentheloopends,checkedbeforeloopguardandbeforenextiteration.\n-\nOninit,Iloopvarisinitialized,2. invariantischecked,3.guardischecked\nKeyIdeas:\n\u00b7 Weusepoint-to-reasoningtoproveastatementaboutcode.\n\u00b7 Writecontractsbeforeimplementation.Cusethemasourframework\n\u00b7Itisdangeroustouseoperationalreasoningratherthanpoint-to-reasoningCexceptfortermination)\n\u00b7\nProvingvalidityofaloopinvariant(condition]:Checkthataconditionistrueinitially,continuestobetrue,ends,andexits\nINIT:->Usecodebeforetheloopandpreconditions. INITPRESTERMEXIT\n\u00b7ToshowCTS):[condition]initially\nA...., B...., G....\nPRES:->Usecodewithintheloop,loopguard,andunprimed/previouslyprovenloopinvariantsinanestedloop\n\u00b7TS:if[condition],then(conditionafteriteration]e.\ng. ifDor=X Y,thenbler'=x\nXCaseX:\nD.... ,line# *OnlyuseassertionswhenyouE,... math haveproventhem.\nyCasey:-\nTERM:(provetheloopends)-\n>Canuseoperationalreasoning 1131412x2\"Onanarbitraryiteration,qgetsstrictlysmaller/largerbut 11/13131414121212neverlarger/smallerthanConwhichtheloopguardisfalse.\n\"\nodd#ofXS\nEXIT:->useloopinvarrants,negationofloopguard,andcodeaftertheloop even#ofys\n\u00b7\nProvingfunctioncallsafety:provethattheargumentspassedindon'ttripanypreconditions,\n\u00b7\nProvingfunctioncorrectness:provethatpostconditionsaretruegiventhatthepreconditionsholdtrue\n",
+                      "textStyle": {}
+                    }
+                  }
+                ],
+                "paragraphStyle": {
+                  "namedStyleType": "NORMAL_TEXT"
+                }
+              }
+            }
+          ]
+        },
+        "namedStyles": {},
+        "inlineObjects": {}
+      }
+    },
+    {
+      "id": "gmail-search",
+      "title": "Search Gmail (is:unread)",
+      "method": "GET",
+      "capability": "Gmail messages.list \u2014 is:/after:/before: filters",
+      "seed_excerpt": {
+        "gmail": [
+          {
+            "id": "mid-1782488254391f2e1fccab527@e.salliemae.com",
+            "subject": "Now Open: 2026\u20132027 School Year Applications",
+            "labelIds": [
+              "Inbox",
+              "Category Promotions",
+              "Unread"
+            ]
+          },
+          {
+            "id": "0101019f04f490bb-323ddea5-2ce6-4489-990e-86df27c32452-000000@us-west-2.amazonses.com",
+            "subject": "Recommended rental in San Francisco at $3,743+ /mo and 6 other\r\n updates",
+            "labelIds": [
+              "Inbox",
+              "Category Updates",
+              "Unread"
+            ]
+          },
+          {
+            "id": "1782486544578.d16c25ff-bbc9-4e25-ae7d-7c8cc4b82e73@bf53x.hubspotemail.net",
+            "subject": "Refer and Earn \ud83d\udcaa",
+            "labelIds": [
+              "Spam",
+              "Category Promotions",
+              "Unread"
+            ]
+          }
+        ]
+      },
+      "ui": {
+        "type": "list",
+        "title": "Gmail \u203a Unread",
+        "rows": [
+          {
+            "icon": "\u2709",
+            "title": "Now Open: 2026\u20132027 School Year Applications",
+            "sub": "Sallie Mae <SallieMae@e.salliemae.com>",
+            "tags": [
+              "unread"
+            ]
+          },
+          {
+            "icon": "\u2709",
+            "title": "Recommended rental in San Francisco at $3,743+ /mo and 6 other\r\n updates",
+            "sub": "Redfin <listings@redfin.com>",
+            "tags": [
+              "unread"
+            ]
+          },
+          {
+            "icon": "\u2709",
+            "title": "Refer and Earn \ud83d\udcaa",
+            "sub": "Crunch Gym <clubnews@crunch.com>",
+            "tags": [
+              "unread"
+            ]
+          },
+          {
+            "icon": "\u2709",
+            "title": "Hold On... You Should See This Coupon \ud83e\udd11",
+            "sub": "SHEIN <shein@news.edmmarket.shein.com>",
+            "tags": [
+              "unread"
+            ]
+          },
+          {
+            "icon": "\u2709",
+            "title": "AtCoder Regular Contest 223 Announcement",
+            "sub": "AtCoder System Mail <noreply@atcoder.jp>",
+            "tags": [
+              "unread"
+            ]
+          },
+          {
+            "icon": "\u2709",
+            "title": "The Real Python Podcast \u2013 Episode #300: Maintaining Your Python Developer Instincts While Using LLM Tools",
+            "sub": "Real Python <info@realpython.com>",
+            "tags": [
+              "unread"
+            ]
+          },
+          {
+            "icon": "\u2709",
+            "title": "New rooms matching your search",
+            "sub": "\"SpareRoom\" <team@spareroom.com>",
+            "tags": [
+              "unread"
+            ]
+          },
+          {
+            "icon": "\u2709",
+            "title": "Recommended rental in San Francisco at $3,861+ /mo and 8 other\r\n updates",
+            "sub": "Redfin <listings@redfin.com>",
+            "tags": [
+              "unread"
+            ]
+          }
+        ]
+      },
+      "agent": {
+        "cli": "gws-cli gmail search \"is:unread\"",
+        "mcp": {
+          "tool": "gws_search_messages",
+          "args": {
+            "q": "is:unread"
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "GET /gmail/v1/users/me/messages?q=is:unread",
+        "mcp": "gws-mcp \u203a gws_search_messages",
+        "cli": "curl -H 'Authorization: Bearer \u2026' '.../gmail/v1/users/me/messages?q=is:unread'",
+        "doc": "https://developers.google.com/gmail/api/reference/rest/v1/users.messages/list"
+      },
+      "clone_output": {
+        "messages": [
+          {
+            "id": "mid-1782488254391f2e1fccab527@e.salliemae.com",
+            "threadId": "1869074431417308743"
+          },
+          {
+            "id": "0101019f04f490bb-323ddea5-2ce6-4489-990e-86df27c32452-000000@us-west-2.amazonses.com",
+            "threadId": "1869081021146030781"
+          },
+          {
+            "id": "1782486544578.d16c25ff-bbc9-4e25-ae7d-7c8cc4b82e73@bf53x.hubspotemail.net",
+            "threadId": "1869072643616622142"
+          },
+          {
+            "id": "99153bb7daea89116e862000abec1cd687d890d59ffe762467addbbb2c9fa48a@news.edmmarket.shein.com",
+            "threadId": "1869072163187989909"
+          },
+          {
+            "id": "0100019f0459b23d-2ac11b64-65b2-4bcf-a5a4-8b99dcf0ac2f-000000@email.amazonses.com",
+            "threadId": "1869070378966932154"
+          },
+          {
+            "id": "20260626142829.d3bf49cf3fc421fc@cio78101.realpython.com",
+            "threadId": "1869070058727741128"
+          },
+          {
+            "id": "20260626142737.67B1B21D95C1@job-queue-prod-us-use4-qrq4.production.gcp.spareroom.net",
+            "threadId": "1869070029086563391"
+          },
+          {
+            "id": "0101019f0451b2b2-14ce745b-a10b-4038-9d51-3985c71566a4-000000@us-west-2.amazonses.com",
+            "threadId": "1869069828862639425"
+          }
+        ],
+        "resultSizeEstimate": 8
+      },
+      "real_output": {
+        "messages": [
+          {
+            "id": "mid-1782488254391f2e1fccab527@e.salliemae.com",
+            "threadId": "1869074431417308743"
+          }
+        ],
+        "resultSizeEstimate": 8
+      }
+    },
+    {
+      "id": "calendar-create",
+      "title": "Create a Calendar event",
+      "method": "POST",
+      "capability": "Calendar events.insert \u2014 write\u2192read round-trip",
+      "seed_excerpt": {
+        "calendar_before": 1
+      },
+      "ui": {
+        "type": "timeline",
+        "title": "Calendar \u203a primary",
+        "before": [
+          {
+            "id": "08rqsul7i2onfn2vfp81apf3f1@google.com",
+            "title": "GHC 6007",
+            "tags": [
+              "2018-08-27T14:00:00"
+            ]
+          }
+        ],
+        "after": [
+          {
+            "id": "08rqsul7i2onfn2vfp81apf3f1@google.com",
+            "title": "GHC 6007",
+            "tags": [
+              "2018-08-27T14:00:00"
+            ]
+          },
+          {
+            "id": "gwsviz0evt0designreview01",
+            "title": "Design review sync",
+            "tags": [
+              "2018-08-27T15:00:00Z"
+            ]
+          }
+        ],
+        "new_id": "gwsviz0evt0designreview01"
+      },
+      "agent": {
+        "cli": "gws-cli calendar create -s \"Design review sync\" --start 2018-08-27T15:00:00Z --end 2018-08-27T16:00:00Z --location \"Room 4\"",
+        "mcp": {
+          "tool": "gws_create_event",
+          "args": {
+            "summary": "Design review sync",
+            "start": "2018-08-27T15:00:00Z",
+            "end": "2018-08-27T16:00:00Z",
+            "location": "Room 4"
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "POST /calendar/v3/calendars/{calendarId}/events",
+        "mcp": "gws-mcp \u203a gws_create_event",
+        "cli": "curl -X POST -H 'Authorization: Bearer \u2026' '.../calendar/v3/calendars/primary/events'",
+        "doc": "https://developers.google.com/calendar/api/v3/reference/events/insert"
+      },
+      "clone_output": {
+        "kind": "calendar#event",
+        "id": "gwsviz0evt0designreview01",
+        "status": "confirmed",
+        "summary": "Design review sync",
+        "description": "Parity demo \u2014 write\u2192read round-trip.",
+        "location": "Room 4",
+        "start": {
+          "dateTime": "2018-08-27T15:00:00Z"
+        },
+        "end": {
+          "dateTime": "2018-08-27T16:00:00Z"
+        },
+        "attendees": [],
+        "organizer": {},
+        "created": "2026-07-01T18:20:28.901370Z",
+        "updated": "2026-07-01T18:20:28.901370Z"
+      },
+      "real_output": {
+        "kind": "calendar#event",
+        "id": "gwsviz0evt0designreview01",
+        "status": "confirmed",
+        "summary": "Design review sync",
+        "location": "Room 4",
+        "start": {
+          "dateTime": "2018-08-27T15:00:00Z"
+        },
+        "end": {
+          "dateTime": "2018-08-27T16:00:00Z"
+        },
+        "created": "2026-07-01T18:20:28.901370Z",
+        "updated": "2026-07-01T18:20:28.901370Z",
+        "organizer": {
+          "email": "me@example.com",
+          "self": true
+        }
+      },
+      "change": {
+        "before": [
+          {
+            "id": "08rqsul7i2onfn2vfp81apf3f1@google.com",
+            "title": "GHC 6007",
+            "tags": [
+              "2018-08-27T14:00:00"
+            ]
+          }
+        ],
+        "after": [
+          {
+            "id": "08rqsul7i2onfn2vfp81apf3f1@google.com",
+            "title": "GHC 6007",
+            "tags": [
+              "2018-08-27T14:00:00"
+            ]
+          },
+          {
+            "id": "gwsviz0evt0designreview01",
+            "title": "Design review sync",
+            "tags": [
+              "2018-08-27T15:00:00Z"
+            ]
+          }
+        ],
+        "new_id": "gwsviz0evt0designreview01"
+      }
+    }
+  ]
+}

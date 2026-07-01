@@ -1,0 +1,612 @@
+{
+  "clone": "sentry-clone",
+  "product": "Sentry",
+  "real_service": {
+    "name": "Sentry Web API v0",
+    "reference": "https://docs.sentry.io/api/",
+    "api_base": "{gateway}/api/0"
+  },
+  "parity": {
+    "verdict": "HIGH after reliability pass",
+    "note": "is:unresolved default + real is:/level:/assigned: query grammar, shortId PAYMENTS-501, {detail} errors."
+  },
+  "seed_file": "examples/data/sentry-clone/state.json",
+  "surfaces": {
+    "cli": "sentry",
+    "mcp": "sentry-mcp"
+  },
+  "demos": [
+    {
+      "id": "list-issues",
+      "title": "List unresolved issues",
+      "method": "GET",
+      "capability": "Issue search (is:/level:/assigned: query grammar)",
+      "seed_excerpt": {
+        "issues": [
+          {
+            "shortId": "PAYMENTS-501",
+            "level": "error",
+            "status": "unresolved",
+            "count": 37,
+            "title": "RuntimeError: unsafe retry for validation conflict"
+          },
+          {
+            "shortId": "PAYMENTS-487",
+            "level": "error",
+            "status": "resolved",
+            "count": 4,
+            "title": "ValueError: expired replay token"
+          }
+        ]
+      },
+      "ui": {
+        "type": "table",
+        "title": "Sentry \u203a payments-api \u203a Issues (is:unresolved)",
+        "columns": [
+          "level",
+          "shortId",
+          "title",
+          "count",
+          "userCount",
+          "lastSeen"
+        ],
+        "rows": [
+          {
+            "level": "error",
+            "shortId": "PAYMENTS-501",
+            "title": "RuntimeError: unsafe retry for validation conflict",
+            "count": 37,
+            "userCount": 12,
+            "lastSeen": "2026-06-07T11:59:00Z"
+          }
+        ]
+      },
+      "agent": {
+        "cli": "sentry issues list --project payments-api --query is:unresolved --sort freq",
+        "mcp": {
+          "tool": "list_issues",
+          "args": {
+            "project": "payments-api",
+            "query": "is:unresolved",
+            "sort": "freq"
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "GET /api/0/projects/{org}/{project}/issues/?query=is:unresolved&sort=freq",
+        "mcp": "sentry-mcp \u203a list_issues",
+        "cli": "curl -H 'Authorization: Bearer <token>'",
+        "doc": "https://docs.sentry.io/api/events/list-a-projects-issues/"
+      },
+      "clone_output": [
+        {
+          "id": "1001",
+          "shortId": "PAYMENTS-501",
+          "project_slug": "payments-api",
+          "title": "RuntimeError: unsafe retry for validation conflict",
+          "culprit": "payments.retry_policy in should_retry_event",
+          "level": "error",
+          "status": "unresolved",
+          "substatus": "new",
+          "priority": "high",
+          "type": "error",
+          "firstSeen": "2026-06-07T11:54:00Z",
+          "lastSeen": "2026-06-07T11:59:00Z",
+          "count": 37,
+          "userCount": 12,
+          "environment": "production",
+          "tags": {
+            "service": "payments",
+            "route": "/webhooks",
+            "status_code": "409",
+            "error_type": "validation_conflict",
+            "release": "payments-api@2026.06.07.1",
+            "environment": "production"
+          },
+          "assignedTo": null,
+          "owner": {
+            "type": "team",
+            "slug": "payments"
+          },
+          "suspectCommits": [
+            {
+              "id": "abc1234",
+              "repository": "acme/payments-api",
+              "message": "Tighten webhook retry handling",
+              "author": "dev@example.local",
+              "files": [
+                "payments/retry_policy.py"
+              ]
+            }
+          ],
+          "latestEventId": "evt-1001-latest",
+          "metadata": {
+            "title": "RuntimeError: unsafe retry for validation conflict"
+          },
+          "logger": "payments.retry_policy in should_retry_event",
+          "permalink": "/organizations/payments-api/issues/1001/",
+          "stats": {
+            "period": "24h",
+            "count": 37,
+            "userCount": 12
+          }
+        }
+      ],
+      "real_output": [
+        {
+          "id": "1001",
+          "shortId": "PAYMENTS-501",
+          "title": "RuntimeError: unsafe retry for validation conflict",
+          "culprit": "payments.retry_policy in should_retry_event",
+          "level": "error",
+          "status": "unresolved",
+          "substatus": "new",
+          "isUnhandled": true,
+          "count": "37",
+          "userCount": 12,
+          "firstSeen": "2026-06-07T11:54:00Z",
+          "lastSeen": "2026-06-07T11:59:00Z",
+          "permalink": "https://sentry.io/organizations/acme/issues/1001/",
+          "project": {
+            "id": "1",
+            "slug": "payments-api",
+            "name": "Payments API"
+          },
+          "metadata": {
+            "type": "RuntimeError",
+            "value": "RuntimeError: unsafe retry for validation conflict"
+          },
+          "assignedTo": null
+        }
+      ]
+    },
+    {
+      "id": "get-issue",
+      "title": "Get an issue",
+      "method": "GET",
+      "capability": "Issue detail (shortId, status, culprit, counts)",
+      "seed_excerpt": {
+        "issue": {
+          "id": "1001",
+          "shortId": "PAYMENTS-501",
+          "status": "unresolved",
+          "level": "error",
+          "culprit": "payments.retry_policy in should_retry_event"
+        }
+      },
+      "ui": {
+        "type": "list",
+        "title": "Sentry \u203a PAYMENTS-501",
+        "rows": [
+          {
+            "icon": "\ud83d\udd34",
+            "title": "RuntimeError: unsafe retry for validation conflict",
+            "sub": "payments.retry_policy in should_retry_event",
+            "tags": [
+              "error",
+              "unresolved"
+            ]
+          },
+          {
+            "icon": "#",
+            "title": "shortId",
+            "sub": "PAYMENTS-501",
+            "tags": []
+          },
+          {
+            "icon": "\u2211",
+            "title": "events / users",
+            "sub": "37 events \u00b7 12 users",
+            "tags": [
+              "high"
+            ]
+          },
+          {
+            "icon": "\u23f1",
+            "title": "lastSeen",
+            "sub": "2026-06-07T11:59:00Z",
+            "tags": []
+          }
+        ]
+      },
+      "agent": {
+        "cli": "sentry issues get PAYMENTS-501",
+        "mcp": {
+          "tool": "get_issue",
+          "args": {
+            "issue": "PAYMENTS-501"
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "GET /api/0/issues/{issue_id}/",
+        "mcp": "sentry-mcp \u203a get_issue",
+        "cli": "curl -H 'Authorization: Bearer <token>'",
+        "doc": "https://docs.sentry.io/api/events/retrieve-an-issue/"
+      },
+      "clone_output": {
+        "id": "1001",
+        "shortId": "PAYMENTS-501",
+        "project_slug": "payments-api",
+        "title": "RuntimeError: unsafe retry for validation conflict",
+        "culprit": "payments.retry_policy in should_retry_event",
+        "level": "error",
+        "status": "unresolved",
+        "substatus": "new",
+        "priority": "high",
+        "type": "error",
+        "firstSeen": "2026-06-07T11:54:00Z",
+        "lastSeen": "2026-06-07T11:59:00Z",
+        "count": 37,
+        "userCount": 12,
+        "environment": "production",
+        "tags": {
+          "service": "payments",
+          "route": "/webhooks",
+          "status_code": "409",
+          "error_type": "validation_conflict",
+          "release": "payments-api@2026.06.07.1",
+          "environment": "production"
+        },
+        "assignedTo": null,
+        "owner": {
+          "type": "team",
+          "slug": "payments"
+        },
+        "suspectCommits": [
+          {
+            "id": "abc1234",
+            "repository": "acme/payments-api",
+            "message": "Tighten webhook retry handling",
+            "author": "dev@example.local",
+            "files": [
+              "payments/retry_policy.py"
+            ]
+          }
+        ],
+        "latestEventId": "evt-1001-latest",
+        "metadata": {
+          "title": "RuntimeError: unsafe retry for validation conflict"
+        },
+        "logger": "payments.retry_policy in should_retry_event",
+        "permalink": "/organizations/payments-api/issues/1001/",
+        "stats": {
+          "period": "24h",
+          "count": 37,
+          "userCount": 12
+        }
+      },
+      "real_output": {
+        "id": "1001",
+        "shortId": "PAYMENTS-501",
+        "title": "RuntimeError: unsafe retry for validation conflict",
+        "culprit": "payments.retry_policy in should_retry_event",
+        "level": "error",
+        "status": "unresolved",
+        "substatus": "new",
+        "isPublic": false,
+        "isUnhandled": true,
+        "count": "37",
+        "userCount": 12,
+        "firstSeen": "2026-06-07T11:54:00Z",
+        "lastSeen": "2026-06-07T11:59:00Z",
+        "permalink": "https://sentry.io/organizations/acme/issues/1001/",
+        "metadata": {
+          "type": "RuntimeError",
+          "value": "RuntimeError: unsafe retry for validation conflict"
+        },
+        "assignedTo": null
+      }
+    },
+    {
+      "id": "latest-event",
+      "title": "Get the latest event",
+      "method": "GET",
+      "capability": "Latest event (exception + stack frames)",
+      "seed_excerpt": {
+        "event": {
+          "id": "evt-1001-latest",
+          "issue_id": "1001",
+          "message": "RuntimeError: unsafe retry for validation conflict",
+          "exception": {
+            "type": "RuntimeError",
+            "value": "unsafe retry for validation conflict",
+            "mechanism": {
+              "handled": false
+            }
+          }
+        }
+      },
+      "ui": {
+        "type": "table",
+        "title": "Sentry \u203a PAYMENTS-501 \u203a Latest event stacktrace",
+        "columns": [
+          "level",
+          "function",
+          "filename",
+          "lineno",
+          "context_line"
+        ],
+        "rows": [
+          {
+            "level": "error",
+            "function": "should_retry_event",
+            "filename": "payments/retry_policy.py",
+            "lineno": 42,
+            "context_line": "return status in RETRYABLE_STATUSES"
+          },
+          {
+            "level": "error",
+            "function": "schedule_retry",
+            "filename": "payments/worker.py",
+            "lineno": 88,
+            "context_line": "policy = retry_plan(event)"
+          }
+        ]
+      },
+      "agent": {
+        "cli": "sentry issues latest-event PAYMENTS-501",
+        "mcp": {
+          "tool": "get_latest_event",
+          "args": {
+            "issue": "PAYMENTS-501"
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "GET /api/0/issues/{issue_id}/events/latest/",
+        "mcp": "sentry-mcp \u203a get_latest_event",
+        "cli": "curl -H 'Authorization: Bearer <token>'",
+        "doc": "https://docs.sentry.io/api/events/retrieve-the-latest-event-for-an-issue/"
+      },
+      "clone_output": {
+        "id": "evt-1001-latest",
+        "issue_id": "1001",
+        "project_slug": "payments-api",
+        "timestamp": "2026-06-07T11:59:15Z",
+        "message": "RuntimeError: unsafe retry for validation conflict",
+        "exception": {
+          "type": "RuntimeError",
+          "value": "unsafe retry for validation conflict",
+          "mechanism": {
+            "handled": false
+          }
+        },
+        "stacktrace": {
+          "frames": [
+            {
+              "filename": "payments/retry_policy.py",
+              "function": "should_retry_event",
+              "lineno": 42,
+              "context_line": "return status in RETRYABLE_STATUSES",
+              "in_app": true
+            },
+            {
+              "filename": "payments/worker.py",
+              "function": "schedule_retry",
+              "lineno": 88,
+              "context_line": "policy = retry_plan(event)",
+              "in_app": true
+            }
+          ]
+        },
+        "breadcrumbs": [
+          {
+            "timestamp": "2026-06-07T11:59:10Z",
+            "category": "gateway.response",
+            "level": "info",
+            "message": "provider returned 409 validation_conflict"
+          },
+          {
+            "timestamp": "2026-06-07T11:59:12Z",
+            "category": "retry.scheduler",
+            "level": "warning",
+            "message": "retry scheduled for non-lock conflict"
+          }
+        ],
+        "contexts": {
+          "runtime": {
+            "name": "CPython",
+            "version": "3.11"
+          },
+          "trace": {
+            "trace_id": "tr-501",
+            "span_id": "sp-1"
+          }
+        },
+        "user": {
+          "id": "cust-123",
+          "email": "redacted@example.local"
+        },
+        "tags": {
+          "release": "payments-api@2026.06.07.1",
+          "environment": "production",
+          "error_type": "validation_conflict",
+          "status_code": "409"
+        },
+        "eventID": "evt-1001-latest",
+        "dateCreated": "2026-06-07T11:59:15Z"
+      },
+      "real_output": {
+        "id": "evt-1001-latest",
+        "eventID": "evt-1001-latest",
+        "groupID": "1001",
+        "projectID": "1",
+        "message": "RuntimeError: unsafe retry for validation conflict",
+        "title": "RuntimeError: unsafe retry for validation conflict",
+        "platform": "python",
+        "dateCreated": "2026-06-07T11:59:15Z",
+        "tags": [
+          {
+            "key": "release",
+            "value": "payments-api@2026.06.07.1"
+          },
+          {
+            "key": "environment",
+            "value": "production"
+          },
+          {
+            "key": "error_type",
+            "value": "validation_conflict"
+          },
+          {
+            "key": "status_code",
+            "value": "409"
+          }
+        ],
+        "entries": [
+          {
+            "type": "exception",
+            "data": {
+              "type": "RuntimeError",
+              "value": "unsafe retry for validation conflict",
+              "mechanism": {
+                "handled": false
+              }
+            }
+          }
+        ],
+        "user": {
+          "id": "cust-123",
+          "email": "redacted@example.local"
+        }
+      }
+    },
+    {
+      "id": "resolve-issue",
+      "title": "Resolve an issue",
+      "method": "POST",
+      "capability": "Issue status write\u2192read round-trip",
+      "seed_excerpt": {
+        "issue": {
+          "shortId": "PAYMENTS-501",
+          "status_before": "unresolved"
+        }
+      },
+      "ui": {
+        "type": "timeline",
+        "title": "Sentry \u203a PAYMENTS-501 (status)",
+        "before": [
+          {
+            "id": "1001",
+            "title": "PAYMENTS-501",
+            "tags": [
+              "unresolved",
+              "new"
+            ]
+          }
+        ],
+        "after": [
+          {
+            "id": "1001",
+            "title": "PAYMENTS-501",
+            "tags": [
+              "resolved",
+              "new"
+            ]
+          }
+        ],
+        "new_id": "1001"
+      },
+      "agent": {
+        "cli": "sentry issues resolve PAYMENTS-501",
+        "mcp": {
+          "tool": "resolve_issue",
+          "args": {
+            "issue": "PAYMENTS-501"
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "PUT /api/0/issues/{issue_id}/",
+        "mcp": "sentry-mcp \u203a resolve_issue",
+        "cli": "curl -X PUT -d '{\"status\":\"resolved\"}'",
+        "doc": "https://docs.sentry.io/api/events/update-an-issue/"
+      },
+      "clone_output": {
+        "id": "1001",
+        "shortId": "PAYMENTS-501",
+        "project_slug": "payments-api",
+        "title": "RuntimeError: unsafe retry for validation conflict",
+        "culprit": "payments.retry_policy in should_retry_event",
+        "level": "error",
+        "status": "resolved",
+        "substatus": "new",
+        "priority": "high",
+        "type": "error",
+        "firstSeen": "2026-06-07T11:54:00Z",
+        "lastSeen": "2026-06-07T11:59:00Z",
+        "count": 37,
+        "userCount": 12,
+        "environment": "production",
+        "tags": {
+          "service": "payments",
+          "route": "/webhooks",
+          "status_code": "409",
+          "error_type": "validation_conflict",
+          "release": "payments-api@2026.06.07.1",
+          "environment": "production"
+        },
+        "assignedTo": null,
+        "owner": {
+          "type": "team",
+          "slug": "payments"
+        },
+        "suspectCommits": [
+          {
+            "id": "abc1234",
+            "repository": "acme/payments-api",
+            "message": "Tighten webhook retry handling",
+            "author": "dev@example.local",
+            "files": [
+              "payments/retry_policy.py"
+            ]
+          }
+        ],
+        "latestEventId": "evt-1001-latest",
+        "metadata": {
+          "title": "RuntimeError: unsafe retry for validation conflict"
+        },
+        "logger": "payments.retry_policy in should_retry_event",
+        "permalink": "/organizations/payments-api/issues/1001/",
+        "stats": {
+          "period": "24h",
+          "count": 37,
+          "userCount": 12
+        }
+      },
+      "real_output": {
+        "id": "1001",
+        "shortId": "PAYMENTS-501",
+        "status": "resolved",
+        "substatus": "new",
+        "statusDetails": {},
+        "isPublic": false,
+        "assignedTo": null
+      },
+      "change": {
+        "before": [
+          {
+            "id": "1001",
+            "title": "PAYMENTS-501",
+            "tags": [
+              "unresolved",
+              "new"
+            ]
+          }
+        ],
+        "after": [
+          {
+            "id": "1001",
+            "title": "PAYMENTS-501",
+            "tags": [
+              "resolved",
+              "new"
+            ]
+          }
+        ],
+        "new_id": "1001"
+      }
+    }
+  ]
+}

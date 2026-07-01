@@ -1,0 +1,620 @@
+{
+  "clone": "abundant-logfire-clone",
+  "product": "Logfire",
+  "real_service": {
+    "name": "Pydantic Logfire Query API",
+    "reference": "https://logfire.pydantic.dev/docs/reference/query-api/",
+    "api_base": "{gateway}/v2/query"
+  },
+  "parity": {
+    "verdict": "HIGH after reliability pass",
+    "note": "read-only SQL over `records` returns the real {schema,data} envelope; min/max time-window scoping and column types match the Query API."
+  },
+  "seed_file": "corpus/records.json.gz",
+  "surfaces": {
+    "cli": "logfire",
+    "mcp": "logfire-mcp"
+  },
+  "demos": [
+    {
+      "id": "schema",
+      "title": "Records table schema",
+      "method": "GET",
+      "capability": "records schema (columns + types)",
+      "seed_excerpt": {
+        "fields_sample": [
+          {
+            "name": "start_timestamp",
+            "data_type": "TIMESTAMP"
+          },
+          {
+            "name": "end_timestamp",
+            "data_type": "TIMESTAMP"
+          },
+          {
+            "name": "duration",
+            "data_type": "DOUBLE"
+          },
+          {
+            "name": "trace_id",
+            "data_type": "VARCHAR"
+          }
+        ],
+        "field_count": 22
+      },
+      "ui": {
+        "type": "table",
+        "title": "Logfire \u203a records schema",
+        "columns": [
+          "name",
+          "data_type"
+        ],
+        "rows": [
+          {
+            "name": "start_timestamp",
+            "data_type": "TIMESTAMP"
+          },
+          {
+            "name": "end_timestamp",
+            "data_type": "TIMESTAMP"
+          },
+          {
+            "name": "duration",
+            "data_type": "DOUBLE"
+          },
+          {
+            "name": "trace_id",
+            "data_type": "VARCHAR"
+          },
+          {
+            "name": "span_id",
+            "data_type": "VARCHAR"
+          },
+          {
+            "name": "parent_span_id",
+            "data_type": "VARCHAR"
+          },
+          {
+            "name": "kind",
+            "data_type": "VARCHAR"
+          },
+          {
+            "name": "level",
+            "data_type": "BIGINT"
+          },
+          {
+            "name": "span_name",
+            "data_type": "VARCHAR"
+          },
+          {
+            "name": "message",
+            "data_type": "VARCHAR"
+          },
+          {
+            "name": "is_exception",
+            "data_type": "BOOLEAN"
+          },
+          {
+            "name": "exception_type",
+            "data_type": "VARCHAR"
+          },
+          {
+            "name": "exception_message",
+            "data_type": "VARCHAR"
+          },
+          {
+            "name": "exception_stacktrace",
+            "data_type": "VARCHAR"
+          },
+          {
+            "name": "attributes",
+            "data_type": "STRUCT(\"fastapi.arguments.end_timestamp\" TIMESTAMP, \"fastapi.arguments.errors\" JSON[], \"fastapi.arguments.start_timestamp\" TIMESTAMP, \"fastapi.arguments.values\" STRUCT(auth VARCHAR, task_id VARCHAR, include_trials BOOLEAN, trial_id VARCHAR, prefix JSON, \"recursive\" BOOLEAN, \"limit\" BIGINT, \"cursor\" JSON, presign BOOLEAN, payload STRUCT(tag_id VARCHAR, \"scope\" VARCHAR, target_id VARCHAR, \"mode\" VARCHAR, task_id JSON), \"offset\" BIGINT), \"fastapi.endpoint_function.end_timestamp\" TIMESTAMP, \"fastapi.endpoint_function.start_timestamp\" TIMESTAMP, \"fastapi.route.name\" VARCHAR, \"fastapi.route.operation_id\" JSON, \"http.flavor\" VARCHAR, \"http.host\" VARCHAR, \"http.method\" VARCHAR, \"http.route\" VARCHAR, \"http.scheme\" VARCHAR, \"http.server_name\" VARCHAR, \"http.status_code\" BIGINT, \"http.target\" VARCHAR, \"http.url\" VARCHAR, \"http.user_agent\" VARCHAR, \"logfire.scrubbed\" STRUCT(path VARCHAR[], matched_substring VARCHAR)[], \"net.host.port\" BIGINT, \"net.peer.ip\" VARCHAR, \"net.peer.port\" JSON, \"code.filepath\" VARCHAR, \"code.function\" VARCHAR, \"code.lineno\" BIGINT, \"logfire.msg_template\" VARCHAR, \"db.name\" VARCHAR, \"db.statement\" VARCHAR, \"db.system\" VARCHAR, \"db.user\" VARCHAR, \"net.peer.name\" VARCHAR, \"net.transport\" VARCHAR, \"logfire.exception.fingerprint\" VARCHAR, harbor_variant_id VARCHAR, modal_function_call_id VARCHAR, queue_key VARCHAR, component VARCHAR, \"method\" VARCHAR, \"http.client.name\" VARCHAR, \"operation.name\" VARCHAR, \"resource.name\" VARCHAR, \"http.response_content_length_uncompressed\" BIGINT, \"http.response_time\" BIGINT)"
+          },
+          {
+            "name": "service_name",
+            "data_type": "VARCHAR"
+          },
+          {
+            "name": "deployment_environment",
+            "data_type": "VARCHAR"
+          },
+          {
+            "name": "http_response_status_code",
+            "data_type": "BIGINT"
+          },
+          {
+            "name": "url_path",
+            "data_type": "VARCHAR"
+          },
+          {
+            "name": "url_query",
+            "data_type": "VARCHAR"
+          },
+          {
+            "name": "http_route",
+            "data_type": "VARCHAR"
+          },
+          {
+            "name": "http_method",
+            "data_type": "VARCHAR"
+          }
+        ]
+      },
+      "agent": {
+        "cli": "logfire schema",
+        "mcp": {
+          "tool": "get_logfire_records_schema",
+          "args": {}
+        }
+      },
+      "real_mapping": {
+        "api": "POST /v2/query",
+        "mcp": "logfire-mcp \u203a get_logfire_records_schema",
+        "cli": "logfire (query the records table schema)",
+        "doc": "https://logfire.pydantic.dev/docs/reference/query-api/"
+      },
+      "clone_output": {
+        "schema": {
+          "fields": [
+            {
+              "name": "start_timestamp",
+              "data_type": "TIMESTAMP"
+            },
+            {
+              "name": "end_timestamp",
+              "data_type": "TIMESTAMP"
+            },
+            {
+              "name": "duration",
+              "data_type": "DOUBLE"
+            },
+            {
+              "name": "trace_id",
+              "data_type": "VARCHAR"
+            },
+            {
+              "name": "span_id",
+              "data_type": "VARCHAR"
+            },
+            {
+              "name": "parent_span_id",
+              "data_type": "VARCHAR"
+            },
+            {
+              "name": "kind",
+              "data_type": "VARCHAR"
+            },
+            {
+              "name": "level",
+              "data_type": "BIGINT"
+            },
+            {
+              "name": "span_name",
+              "data_type": "VARCHAR"
+            },
+            {
+              "name": "message",
+              "data_type": "VARCHAR"
+            },
+            {
+              "name": "is_exception",
+              "data_type": "BOOLEAN"
+            },
+            {
+              "name": "exception_type",
+              "data_type": "VARCHAR"
+            },
+            {
+              "name": "exception_message",
+              "data_type": "VARCHAR"
+            },
+            {
+              "name": "exception_stacktrace",
+              "data_type": "VARCHAR"
+            },
+            {
+              "name": "attributes",
+              "data_type": "STRUCT(\"fastapi.arguments.end_timestamp\" TIMESTAMP, \"fastapi.arguments.errors\" JSON[], \"fastapi.arguments.start_timestamp\" TIMESTAMP, \"fastapi.arguments.values\" STRUCT(auth VARCHAR, task_id VARCHAR, include_trials BOOLEAN, trial_id VARCHAR, prefix JSON, \"recursive\" BOOLEAN, \"limit\" BIGINT, \"cursor\" JSON, presign BOOLEAN, payload STRUCT(tag_id VARCHAR, \"scope\" VARCHAR, target_id VARCHAR, \"mode\" VARCHAR, task_id JSON), \"offset\" BIGINT), \"fastapi.endpoint_function.end_timestamp\" TIMESTAMP, \"fastapi.endpoint_function.start_timestamp\" TIMESTAMP, \"fastapi.route.name\" VARCHAR, \"fastapi.route.operation_id\" JSON, \"http.flavor\" VARCHAR, \"http.host\" VARCHAR, \"http.method\" VARCHAR, \"http.route\" VARCHAR, \"http.scheme\" VARCHAR, \"http.server_name\" VARCHAR, \"http.status_code\" BIGINT, \"http.target\" VARCHAR, \"http.url\" VARCHAR, \"http.user_agent\" VARCHAR, \"logfire.scrubbed\" STRUCT(path VARCHAR[], matched_substring VARCHAR)[], \"net.host.port\" BIGINT, \"net.peer.ip\" VARCHAR, \"net.peer.port\" JSON, \"code.filepath\" VARCHAR, \"code.function\" VARCHAR, \"code.lineno\" BIGINT, \"logfire.msg_template\" VARCHAR, \"db.name\" VARCHAR, \"db.statement\" VARCHAR, \"db.system\" VARCHAR, \"db.user\" VARCHAR, \"net.peer.name\" VARCHAR, \"net.transport\" VARCHAR, \"logfire.exception.fingerprint\" VARCHAR, harbor_variant_id VARCHAR, modal_function_call_id VARCHAR, queue_key VARCHAR, component VARCHAR, \"method\" VARCHAR, \"http.client.name\" VARCHAR, \"operation.name\" VARCHAR, \"resource.name\" VARCHAR, \"http.response_content_length_uncompressed\" BIGINT, \"http.response_time\" BIGINT)"
+            },
+            {
+              "name": "service_name",
+              "data_type": "VARCHAR"
+            },
+            {
+              "name": "deployment_environment",
+              "data_type": "VARCHAR"
+            },
+            {
+              "name": "http_response_status_code",
+              "data_type": "BIGINT"
+            },
+            {
+              "name": "url_path",
+              "data_type": "VARCHAR"
+            },
+            {
+              "name": "url_query",
+              "data_type": "VARCHAR"
+            },
+            {
+              "name": "http_route",
+              "data_type": "VARCHAR"
+            },
+            {
+              "name": "http_method",
+              "data_type": "VARCHAR"
+            }
+          ]
+        },
+        "data": []
+      },
+      "real_output": {
+        "schema": {
+          "fields": [
+            {
+              "name": "start_timestamp",
+              "data_type": "TIMESTAMP"
+            },
+            {
+              "name": "trace_id",
+              "data_type": "VARCHAR"
+            },
+            {
+              "name": "span_id",
+              "data_type": "VARCHAR"
+            },
+            {
+              "name": "span_name",
+              "data_type": "VARCHAR"
+            },
+            {
+              "name": "message",
+              "data_type": "VARCHAR"
+            },
+            {
+              "name": "is_exception",
+              "data_type": "BOOLEAN"
+            },
+            {
+              "name": "exception_type",
+              "data_type": "VARCHAR"
+            },
+            {
+              "name": "service_name",
+              "data_type": "VARCHAR"
+            },
+            {
+              "name": "http_response_status_code",
+              "data_type": "BIGINT"
+            }
+          ]
+        },
+        "data": []
+      }
+    },
+    {
+      "id": "query-exceptions",
+      "title": "Recent exceptions",
+      "method": "GET",
+      "capability": "SQL over records \u2192 exception rows",
+      "seed_excerpt": {
+        "records": [
+          {
+            "start_timestamp": "2026-06-25 00:33:59.200057",
+            "exception_type": "sqlalchemy.exc.InvalidRequestError",
+            "exception_message": "One or more mappers failed to initialize - can't proceed with initialization of other mappers. Triggering mapper: 'Mapper[OrganizationModel(organizations)]'. Original exception was: Could not determine join condition between parent/child tables on relationship OrganizationModel.api_keys - there are no foreign keys linking these tables.  Ensure that referencing columns are associated with a ForeignKey or ForeignKeyConstraint, or specify a 'primaryjoin' expression.",
+            "service_name": "oddish-backend",
+            "http_response_status_code": 500
+          },
+          {
+            "start_timestamp": "2026-06-25 00:33:58.955315",
+            "exception_type": "sqlalchemy.exc.InvalidRequestError",
+            "exception_message": "One or more mappers failed to initialize - can't proceed with initialization of other mappers. Triggering mapper: 'Mapper[OrganizationModel(organizations)]'. Original exception was: Could not determine join condition between parent/child tables on relationship OrganizationModel.api_keys - there are no foreign keys linking these tables.  Ensure that referencing columns are associated with a ForeignKey or ForeignKeyConstraint, or specify a 'primaryjoin' expression.",
+            "service_name": "oddish-backend",
+            "http_response_status_code": 500
+          }
+        ]
+      },
+      "ui": {
+        "type": "table",
+        "title": "Logfire \u203a recent exceptions",
+        "columns": [
+          "start_timestamp",
+          "exception_type",
+          "exception_message",
+          "service_name",
+          "http_response_status_code"
+        ],
+        "rows": [
+          {
+            "start_timestamp": "2026-06-25 00:33:59.200057",
+            "exception_type": "sqlalchemy.exc.InvalidRequestError",
+            "exception_message": "One or more mappers failed to initialize - can't proceed with initialization of other mappers. Triggering mapper: 'Mapper[OrganizationModel(organizations)]'. Original exception was: Could not determine join condition between parent/child tables on relationship OrganizationModel.api_keys - there are no foreign keys linking these tables.  Ensure that referencing columns are associated with a ForeignKey or ForeignKeyConstraint, or specify a 'primaryjoin' expression.",
+            "service_name": "oddish-backend",
+            "http_response_status_code": 500
+          },
+          {
+            "start_timestamp": "2026-06-25 00:33:58.955315",
+            "exception_type": "sqlalchemy.exc.InvalidRequestError",
+            "exception_message": "One or more mappers failed to initialize - can't proceed with initialization of other mappers. Triggering mapper: 'Mapper[OrganizationModel(organizations)]'. Original exception was: Could not determine join condition between parent/child tables on relationship OrganizationModel.api_keys - there are no foreign keys linking these tables.  Ensure that referencing columns are associated with a ForeignKey or ForeignKeyConstraint, or specify a 'primaryjoin' expression.",
+            "service_name": "oddish-backend",
+            "http_response_status_code": 500
+          },
+          {
+            "start_timestamp": "2026-06-25 00:33:58.827370",
+            "exception_type": "sqlalchemy.exc.InvalidRequestError",
+            "exception_message": "One or more mappers failed to initialize - can't proceed with initialization of other mappers. Triggering mapper: 'Mapper[OrganizationModel(organizations)]'. Original exception was: Could not determine join condition between parent/child tables on relationship OrganizationModel.api_keys - there are no foreign keys linking these tables.  Ensure that referencing columns are associated with a ForeignKey or ForeignKeyConstraint, or specify a 'primaryjoin' expression.",
+            "service_name": "oddish-backend",
+            "http_response_status_code": 500
+          },
+          {
+            "start_timestamp": "2026-06-25 00:33:58.797571",
+            "exception_type": "sqlalchemy.exc.InvalidRequestError",
+            "exception_message": "One or more mappers failed to initialize - can't proceed with initialization of other mappers. Triggering mapper: 'Mapper[OrganizationModel(organizations)]'. Original exception was: Could not determine join condition between parent/child tables on relationship OrganizationModel.api_keys - there are no foreign keys linking these tables.  Ensure that referencing columns are associated with a ForeignKey or ForeignKeyConstraint, or specify a 'primaryjoin' expression.",
+            "service_name": "oddish-backend",
+            "http_response_status_code": 500
+          },
+          {
+            "start_timestamp": "2026-06-25 00:33:58.736421",
+            "exception_type": "sqlalchemy.exc.InvalidRequestError",
+            "exception_message": "One or more mappers failed to initialize - can't proceed with initialization of other mappers. Triggering mapper: 'Mapper[OrganizationModel(organizations)]'. Original exception was: Could not determine join condition between parent/child tables on relationship OrganizationModel.api_keys - there are no foreign keys linking these tables.  Ensure that referencing columns are associated with a ForeignKey or ForeignKeyConstraint, or specify a 'primaryjoin' expression.",
+            "service_name": "oddish-backend",
+            "http_response_status_code": 500
+          }
+        ]
+      },
+      "agent": {
+        "cli": "logfire exceptions --limit 5",
+        "mcp": {
+          "tool": "find_exceptions_in_file",
+          "args": {
+            "limit": 5
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "POST /v2/query",
+        "mcp": "logfire-mcp \u203a find_exceptions_in_file",
+        "cli": "logfire query \"SELECT ... FROM records WHERE exception_type IS NOT NULL\"",
+        "doc": "https://logfire.pydantic.dev/docs/reference/query-api/"
+      },
+      "clone_output": {
+        "schema": {
+          "fields": [
+            {
+              "name": "start_timestamp",
+              "data_type": "TIMESTAMP"
+            },
+            {
+              "name": "exception_type",
+              "data_type": "VARCHAR"
+            },
+            {
+              "name": "exception_message",
+              "data_type": "VARCHAR"
+            },
+            {
+              "name": "service_name",
+              "data_type": "VARCHAR"
+            },
+            {
+              "name": "http_response_status_code",
+              "data_type": "BIGINT"
+            }
+          ]
+        },
+        "data": [
+          {
+            "start_timestamp": "2026-06-25 00:33:59.200057",
+            "exception_type": "sqlalchemy.exc.InvalidRequestError",
+            "exception_message": "One or more mappers failed to initialize - can't proceed with initialization of other mappers. Triggering mapper: 'Mapper[OrganizationModel(organizations)]'. Original exception was: Could not determine join condition between parent/child tables on relationship OrganizationModel.api_keys - there are no foreign keys linking these tables.  Ensure that referencing columns are associated with a ForeignKey or ForeignKeyConstraint, or specify a 'primaryjoin' expression.",
+            "service_name": "oddish-backend",
+            "http_response_status_code": 500
+          },
+          {
+            "start_timestamp": "2026-06-25 00:33:58.955315",
+            "exception_type": "sqlalchemy.exc.InvalidRequestError",
+            "exception_message": "One or more mappers failed to initialize - can't proceed with initialization of other mappers. Triggering mapper: 'Mapper[OrganizationModel(organizations)]'. Original exception was: Could not determine join condition between parent/child tables on relationship OrganizationModel.api_keys - there are no foreign keys linking these tables.  Ensure that referencing columns are associated with a ForeignKey or ForeignKeyConstraint, or specify a 'primaryjoin' expression.",
+            "service_name": "oddish-backend",
+            "http_response_status_code": 500
+          },
+          {
+            "start_timestamp": "2026-06-25 00:33:58.827370",
+            "exception_type": "sqlalchemy.exc.InvalidRequestError",
+            "exception_message": "One or more mappers failed to initialize - can't proceed with initialization of other mappers. Triggering mapper: 'Mapper[OrganizationModel(organizations)]'. Original exception was: Could not determine join condition between parent/child tables on relationship OrganizationModel.api_keys - there are no foreign keys linking these tables.  Ensure that referencing columns are associated with a ForeignKey or ForeignKeyConstraint, or specify a 'primaryjoin' expression.",
+            "service_name": "oddish-backend",
+            "http_response_status_code": 500
+          },
+          {
+            "start_timestamp": "2026-06-25 00:33:58.797571",
+            "exception_type": "sqlalchemy.exc.InvalidRequestError",
+            "exception_message": "One or more mappers failed to initialize - can't proceed with initialization of other mappers. Triggering mapper: 'Mapper[OrganizationModel(organizations)]'. Original exception was: Could not determine join condition between parent/child tables on relationship OrganizationModel.api_keys - there are no foreign keys linking these tables.  Ensure that referencing columns are associated with a ForeignKey or ForeignKeyConstraint, or specify a 'primaryjoin' expression.",
+            "service_name": "oddish-backend",
+            "http_response_status_code": 500
+          },
+          {
+            "start_timestamp": "2026-06-25 00:33:58.736421",
+            "exception_type": "sqlalchemy.exc.InvalidRequestError",
+            "exception_message": "One or more mappers failed to initialize - can't proceed with initialization of other mappers. Triggering mapper: 'Mapper[OrganizationModel(organizations)]'. Original exception was: Could not determine join condition between parent/child tables on relationship OrganizationModel.api_keys - there are no foreign keys linking these tables.  Ensure that referencing columns are associated with a ForeignKey or ForeignKeyConstraint, or specify a 'primaryjoin' expression.",
+            "service_name": "oddish-backend",
+            "http_response_status_code": 500
+          }
+        ]
+      },
+      "real_output": {
+        "schema": {
+          "fields": [
+            {
+              "name": "start_timestamp",
+              "data_type": "TIMESTAMP"
+            },
+            {
+              "name": "exception_type",
+              "data_type": "VARCHAR"
+            },
+            {
+              "name": "exception_message",
+              "data_type": "VARCHAR"
+            },
+            {
+              "name": "service_name",
+              "data_type": "VARCHAR"
+            },
+            {
+              "name": "http_response_status_code",
+              "data_type": "BIGINT"
+            }
+          ]
+        },
+        "data": [
+          {
+            "start_timestamp": "2026-06-25 00:33:59.200057",
+            "exception_type": "sqlalchemy.exc.InvalidRequestError",
+            "exception_message": "One or more mappers failed to initialize ...",
+            "service_name": "api",
+            "http_response_status_code": 500
+          }
+        ]
+      }
+    },
+    {
+      "id": "arbitrary-sql",
+      "title": "Aggregate: requests by HTTP status",
+      "method": "GET",
+      "capability": "arbitrary SQL (GROUP BY aggregate)",
+      "seed_excerpt": {
+        "records": [
+          {
+            "http_response_status_code": 500,
+            "count": 2186
+          },
+          {
+            "http_response_status_code": null,
+            "count": 735
+          },
+          {
+            "http_response_status_code": 404,
+            "count": 367
+          }
+        ]
+      },
+      "ui": {
+        "type": "table",
+        "title": "Logfire \u203a count by http_response_status_code",
+        "columns": [
+          "http_response_status_code",
+          "count"
+        ],
+        "rows": [
+          {
+            "http_response_status_code": 500,
+            "count": 2186
+          },
+          {
+            "http_response_status_code": null,
+            "count": 735
+          },
+          {
+            "http_response_status_code": 404,
+            "count": 367
+          },
+          {
+            "http_response_status_code": 401,
+            "count": 2
+          },
+          {
+            "http_response_status_code": 200,
+            "count": 1
+          },
+          {
+            "http_response_status_code": 405,
+            "count": 1
+          }
+        ]
+      },
+      "agent": {
+        "cli": "logfire query \"SELECT http_response_status_code, count(*) AS count FROM records GROUP BY 1 ORDER BY count DESC\"",
+        "mcp": {
+          "tool": "arbitrary_query",
+          "args": {
+            "sql": "SELECT http_response_status_code, count(*) AS count FROM records GROUP BY http_response_status_code ORDER BY count DESC"
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "POST /v2/query",
+        "mcp": "logfire-mcp \u203a arbitrary_query",
+        "cli": "logfire query \"SELECT ... GROUP BY http_response_status_code\"",
+        "doc": "https://logfire.pydantic.dev/docs/reference/query-api/"
+      },
+      "clone_output": {
+        "schema": {
+          "fields": [
+            {
+              "name": "http_response_status_code",
+              "data_type": "BIGINT"
+            },
+            {
+              "name": "count",
+              "data_type": "BIGINT"
+            }
+          ]
+        },
+        "data": [
+          {
+            "http_response_status_code": 500,
+            "count": 2186
+          },
+          {
+            "http_response_status_code": null,
+            "count": 735
+          },
+          {
+            "http_response_status_code": 404,
+            "count": 367
+          },
+          {
+            "http_response_status_code": 401,
+            "count": 2
+          },
+          {
+            "http_response_status_code": 200,
+            "count": 1
+          },
+          {
+            "http_response_status_code": 405,
+            "count": 1
+          }
+        ]
+      },
+      "real_output": {
+        "schema": {
+          "fields": [
+            {
+              "name": "http_response_status_code",
+              "data_type": "BIGINT"
+            },
+            {
+              "name": "count",
+              "data_type": "BIGINT"
+            }
+          ]
+        },
+        "data": [
+          {
+            "http_response_status_code": 500,
+            "count": 2186
+          },
+          {
+            "http_response_status_code": null,
+            "count": 735
+          },
+          {
+            "http_response_status_code": 404,
+            "count": 367
+          }
+        ]
+      }
+    }
+  ]
+}
