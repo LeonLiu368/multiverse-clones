@@ -591,8 +591,21 @@ _MERGE_ACTION = {"merge": "Merged", "rebase": "Rebased and merged",
 
 @pr.command("merge")
 def pr_merge(number: int, repo_: str = repo_opt(),
-             method: str = typer.Option("merge", "--method", help="merge|rebase|rebase-merge|squash")):
+             merge: bool = typer.Option(False, "--merge", "-m", help="Merge commit"),
+             squash: bool = typer.Option(False, "--squash", "-s", help="Squash and merge"),
+             rebase: bool = typer.Option(False, "--rebase", "-r", help="Rebase and merge"),
+             method: str = typer.Option(None, "--method", help="merge|rebase|rebase-merge|squash")):
     owner, r = split_repo(repo_)
+    # Real gh uses boolean flags (--merge/--squash/--rebase); prefer those when given.
+    # --method is kept for back-compat. Default (nothing given) is "merge".
+    if squash:
+        method = "squash"
+    elif rebase:
+        method = "rebase"
+    elif merge:
+        method = "merge"
+    elif method is None:
+        method = "merge"
     c = client()
     title = c.get_pr(owner, r, number).get("title", "")
     c.merge_pr(owner, r, number, method=method)
@@ -658,10 +671,27 @@ def label_create(repo_: str = repo_opt(), name: str = typer.Option(..., "--name"
 
 
 @label.command("delete")
-def label_delete(label_id: int, repo_: str = repo_opt()):
+def label_delete(label: str, repo_: str = repo_opt()):
+    """Delete a label by NAME (like real gh) or by numeric Forgejo id (back-compat)."""
     owner, r = split_repo(repo_)
     c = client()
-    name = next((lb["name"] for lb in c.list_labels(owner, r) if lb["id"] == label_id), str(label_id))
+    labels = c.list_labels(owner, r)
+    label_id = None
+    name = label
+    # Resolve by name first (real gh behavior).
+    for lb in labels:
+        if lb.get("name") == label:
+            label_id = lb["id"]
+            name = lb["name"]
+            break
+    # Fall back to numeric id lookup for back-compat.
+    if label_id is None and label.isdigit():
+        lid = int(label)
+        label_id = lid
+        name = next((lb["name"] for lb in labels if lb["id"] == lid), str(lid))
+    if label_id is None:
+        err.print(f"[red]![/red] no label found with name \"{label}\" in {owner}/{r}")
+        raise typer.Exit(1)
     c.delete_label(owner, r, label_id)
     console.print(f"[green]✓[/green] Label \"{name}\" deleted from {owner}/{r}")
 

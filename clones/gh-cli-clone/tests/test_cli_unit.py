@@ -62,6 +62,30 @@ def test_pr_merge_method(fake_client):
     fake_client.merge_pr.assert_called_with("o", "r", 4, method="rebase")
 
 
+def test_pr_merge_squash_flag(fake_client):
+    # Real gh uses boolean flags; --squash must invoke the squash path.
+    res = runner.invoke(m.app, ["pr", "merge", "4", "-R", "o/r", "--squash"])
+    assert res.exit_code == 0
+    fake_client.merge_pr.assert_called_with("o", "r", 4, method="squash")
+
+
+def test_pr_merge_rebase_and_merge_flags(fake_client):
+    res = runner.invoke(m.app, ["pr", "merge", "4", "-R", "o/r", "--rebase"])
+    assert res.exit_code == 0
+    fake_client.merge_pr.assert_called_with("o", "r", 4, method="rebase")
+    fake_client.reset_mock()
+    res = runner.invoke(m.app, ["pr", "merge", "4", "-R", "o/r", "-m"])
+    assert res.exit_code == 0
+    fake_client.merge_pr.assert_called_with("o", "r", 4, method="merge")
+
+
+def test_pr_merge_default_is_merge(fake_client):
+    # No flag/method given -> default "merge" (unchanged behavior).
+    res = runner.invoke(m.app, ["pr", "merge", "4", "-R", "o/r"])
+    assert res.exit_code == 0
+    fake_client.merge_pr.assert_called_with("o", "r", 4, method="merge")
+
+
 def test_pr_review_requires_a_mode(fake_client):
     res = runner.invoke(m.app, ["pr", "review", "1", "-R", "o/r"])
     assert res.exit_code == 2  # must pick approve/request-changes/comment
@@ -80,6 +104,25 @@ def test_label_create(fake_client):
     assert res.exit_code == 0
     _, kw = fake_client.create_label.call_args
     assert kw["name"] == "bug" and kw["color"] == "#d73a4a"
+
+
+def test_label_delete_by_name(fake_client):
+    # Real gh deletes a label by NAME; resolve name -> id via the labels list.
+    fake_client.list_labels.return_value = [
+        {"id": 5, "name": "bug"}, {"id": 6, "name": "docs"},
+    ]
+    res = runner.invoke(m.app, ["label", "delete", "bug", "-R", "o/r"])
+    assert res.exit_code == 0
+    fake_client.delete_label.assert_called_with("o", "r", 5)
+    assert "bug" in res.stdout
+
+
+def test_label_delete_by_numeric_id(fake_client):
+    # Numeric id still accepted (back-compat).
+    fake_client.list_labels.return_value = [{"id": 5, "name": "bug"}]
+    res = runner.invoke(m.app, ["label", "delete", "5", "-R", "o/r"])
+    assert res.exit_code == 0
+    fake_client.delete_label.assert_called_with("o", "r", 5)
 
 
 def test_issue_react(fake_client):
