@@ -14,7 +14,7 @@ name: publish-images
 # publish under distinct `-mv` package names this repo OWNS (figma-service-mv, …), coexisting with the
 # canonical images — never overwriting. notion/grafana/logfire keep plain names (this repo owns them).
 #
-# Scope: the 8 standalone clones. jira + slack are separate (publish-jira-slack.yml).
+# Scope: the 9 standalone clones. jira + slack are separate (publish-jira-slack.yml).
 
 # Dispatch-only: publish deliberately, clone-by-clone, via the `only:` input.
 on:
@@ -45,6 +45,16 @@ jobs:
             agent_file: docker/Dockerfile.agent
             agent_image: notion-agent
             corpus_prep: ""
+            platforms: linux/amd64,linux/arm64
+          - clone: discord-clone
+            service: discord-service
+            context: clones/discord-clone
+            base_file: docker/Dockerfile
+            empty_file: docker/Dockerfile.empty
+            prodv1_file: docker/Dockerfile.prod-v1
+            agent_file: docker/Dockerfile.agent
+            agent_image: discord-agent
+            corpus_prep: ""        # discord_corpus.db committed (authored-in-repo, plain names)
             platforms: linux/amd64,linux/arm64
           - clone: figma-clone
             service: figma-service-mv
