@@ -22,7 +22,7 @@ def _load_sample(app_id: str):
 
 def test_fileseed_clones_registered_active():
     apps = {a["id"]: a for a in client.get("/api/apps").json()}
-    for cid in ("figma", "gauge", "sentry", "github", "logfire", "gworkspace", "notion", "aws"):
+    for cid in ("figma", "gauge", "sentry", "github", "logfire", "gworkspace", "notion", "aws", "discord"):
         assert apps[cid]["status"] == "active" and apps[cid]["ui_module"] == cid
 
 
@@ -168,3 +168,19 @@ def test_aws_parses_services():
     assert v["services"]["s3"][0]["name"] and "objects" in v["services"]["s3"][0]
     assert v["services"]["lambda"][0]["function_name"]
     assert v["services"]["iam"]["users"]
+
+
+def test_discord_parses_guild_channels_messages():
+    v = _load_sample("discord")
+    assert v["stats"]["guilds"] == 1 and v["stats"]["channels"] == 5 and v["stats"]["messages"] == 20
+    assert v["guilds"][0]["name"] == "Acme Engineering"
+    names = [c["name"] for c in v["channels"]]
+    assert names == ["announcements", "general", "engineering", "incidents", "deploys"]  # by position
+    inc = next(c for c in v["channels"] if c["name"] == "incidents")
+    msgs = v["messages_by_channel"][inc["id"]]
+    pin = next(m for m in msgs if m["pinned"])
+    assert pin["author"]["username"] == "lena" and "PRICING_CACHE_TTL" in pin["content"]
+    rx = pin["reactions"][0]
+    assert rx["emoji"] == "✅" and rx["count"] == 2 and set(rx["users"]) == {"mira", "sam"}
+    bots = [u for u in v["users"] if u["bot"]]
+    assert len(bots) == 2  # clone-bot + watchdog

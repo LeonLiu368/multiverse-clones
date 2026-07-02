@@ -10,6 +10,7 @@ import { LogfireApp } from "./apps/logfire/LogfireApp";
 import { GworkspaceApp } from "./apps/gworkspace/GworkspaceApp";
 import { NotionApp } from "./apps/notion/NotionApp";
 import { AwsApp } from "./apps/aws/AwsApp";
+import { DiscordApp } from "./apps/discord/DiscordApp";
 import { GenericApp } from "./apps/GenericApp";
 import { BrandIcon } from "./apps/icons";
 
@@ -25,6 +26,7 @@ const APP_META: Record<string, { glyph: string; color: string; blurb: string }> 
   gworkspace: { glyph: "W", color: "#1a73e8", blurb: "Drive / Docs / Calendar / Gmail (gws fixture or gws.db)" },
   notion: { glyph: "N", color: "#000000", blurb: "Databases & pages (Notion fixture or notion.db)" },
   aws: { glyph: "A", color: "#232f3e", blurb: "S3 / SQS / DynamoDB / Lambda / IAM (aws-clone state.json)" },
+  discord: { glyph: "D", color: "#5865f2", blurb: "Guild / channels / chat (Discord fixture or discord.db)" },
   echo: { glyph: "E", color: "#1264a3", blurb: "Demo adapter (extension-point proof)" },
 };
 
@@ -100,6 +102,8 @@ export default function App() {
           <NotionApp appId={open.id} />
         ) : open.ui_module === "aws" ? (
           <AwsApp appId={open.id} />
+        ) : open.ui_module === "discord" ? (
+          <DiscordApp appId={open.id} />
         ) : (
           <GenericApp appId={open.id} />
         )}

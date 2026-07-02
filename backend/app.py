@@ -17,6 +17,7 @@ from pydantic import BaseModel
 
 from adapters.aws import AwsAdapter
 from adapters.base import CloneAdapter
+from adapters.discord import DiscordAdapter
 from adapters.echo import EchoAdapter
 from adapters.figma import FigmaAdapter
 from adapters.gauge import GaugeAdapter
@@ -32,7 +33,7 @@ from adapters.slack import SlackAdapter
 ADAPTERS: dict[str, CloneAdapter] = {a.id: a for a in [
     SlackAdapter(), JiraAdapter(), FigmaAdapter(), GaugeAdapter(), SentryAdapter(),
     GithubAdapter(), LogfireAdapter(), GworkspaceAdapter(), NotionAdapter(), AwsAdapter(),
-    EchoAdapter(),
+    DiscordAdapter(), EchoAdapter(),
 ]}
 
 app = FastAPI(title="seed-dashboard")

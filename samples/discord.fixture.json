@@ -1,0 +1,463 @@
+{
+ "bot_user_id": "900000000000000001",
+ "users": [
+  {
+   "id": "900000000000000001",
+   "username": "clone-bot",
+   "global_name": "Clone Bot",
+   "discriminator": "0",
+   "bot": true,
+   "avatar": null
+  },
+  {
+   "id": "1102383887155331073",
+   "username": "mira",
+   "global_name": "Mira Chen",
+   "discriminator": "0",
+   "bot": false,
+   "avatar": null
+  },
+  {
+   "id": "1102383887155331074",
+   "username": "dev",
+   "global_name": "Dev Okoro",
+   "discriminator": "0",
+   "bot": false,
+   "avatar": null
+  },
+  {
+   "id": "1102383887155331075",
+   "username": "lena",
+   "global_name": "Lena Fischer",
+   "discriminator": "0",
+   "bot": false,
+   "avatar": null
+  },
+  {
+   "id": "1102383887155331076",
+   "username": "sam",
+   "global_name": "Sam Rivera",
+   "discriminator": "0",
+   "bot": false,
+   "avatar": null
+  },
+  {
+   "id": "1102383887155331077",
+   "username": "priya",
+   "global_name": "Priya Nair",
+   "discriminator": "0",
+   "bot": false,
+   "avatar": null
+  },
+  {
+   "id": "1102383887155331078",
+   "username": "watchdog",
+   "global_name": "Watchdog",
+   "discriminator": "0",
+   "bot": true,
+   "avatar": null
+  }
+ ],
+ "guilds": [
+  {
+   "id": "1102383887155331079",
+   "name": "Acme Engineering",
+   "owner_id": "1102383887155331073",
+   "description": "Acme's engineering server",
+   "icon": null
+  }
+ ],
+ "channels": [
+  {
+   "id": "1102383887155331080",
+   "type": 0,
+   "guild_id": "1102383887155331079",
+   "name": "announcements",
+   "topic": "Company-wide announcements",
+   "position": 0,
+   "parent_id": null
+  },
+  {
+   "id": "1102383887155331081",
+   "type": 0,
+   "guild_id": "1102383887155331079",
+   "name": "general",
+   "topic": "Team chatter",
+   "position": 1,
+   "parent_id": null
+  },
+  {
+   "id": "1102383887155331082",
+   "type": 0,
+   "guild_id": "1102383887155331079",
+   "name": "engineering",
+   "topic": "Eng discussion",
+   "position": 2,
+   "parent_id": null
+  },
+  {
+   "id": "1102383887155331083",
+   "type": 0,
+   "guild_id": "1102383887155331079",
+   "name": "incidents",
+   "topic": "Production incidents and postmortems",
+   "position": 3,
+   "parent_id": null
+  },
+  {
+   "id": "1102383887155331084",
+   "type": 0,
+   "guild_id": "1102383887155331079",
+   "name": "deploys",
+   "topic": "Deploy notifications",
+   "position": 4,
+   "parent_id": null
+  }
+ ],
+ "members": [
+  {
+   "guild_id": "1102383887155331079",
+   "user_id": "900000000000000001",
+   "nick": null,
+   "roles": [],
+   "joined_at": "2023-04-30T00:00:00+00:00"
+  },
+  {
+   "guild_id": "1102383887155331079",
+   "user_id": "1102383887155331073",
+   "nick": null,
+   "roles": [],
+   "joined_at": "2023-04-30T00:00:00+00:00"
+  },
+  {
+   "guild_id": "1102383887155331079",
+   "user_id": "1102383887155331074",
+   "nick": null,
+   "roles": [],
+   "joined_at": "2023-04-30T00:00:00+00:00"
+  },
+  {
+   "guild_id": "1102383887155331079",
+   "user_id": "1102383887155331075",
+   "nick": null,
+   "roles": [],
+   "joined_at": "2023-04-30T00:00:00+00:00"
+  },
+  {
+   "guild_id": "1102383887155331079",
+   "user_id": "1102383887155331076",
+   "nick": null,
+   "roles": [],
+   "joined_at": "2023-04-30T00:00:00+00:00"
+  },
+  {
+   "guild_id": "1102383887155331079",
+   "user_id": "1102383887155331077",
+   "nick": null,
+   "roles": [],
+   "joined_at": "2023-04-30T00:00:00+00:00"
+  },
+  {
+   "guild_id": "1102383887155331079",
+   "user_id": "1102383887155331078",
+   "nick": null,
+   "roles": [],
+   "joined_at": "2023-04-30T00:00:00+00:00"
+  }
+ ],
+ "messages": [
+  {
+   "id": "1102383887155331085",
+   "channel_id": "1102383887155331081",
+   "guild_id": "1102383887155331079",
+   "author_id": "1102383887155331074",
+   "content": "morning all, coffee machine is fixed ☕",
+   "timestamp": "2023-05-01T00:00:00+00:00",
+   "edited_timestamp": null,
+   "type": 0,
+   "pinned": false,
+   "mentions": [],
+   "mention_everyone": false,
+   "reactions": []
+  },
+  {
+   "id": "1102383887155331086",
+   "channel_id": "1102383887155331081",
+   "guild_id": "1102383887155331079",
+   "author_id": "1102383887155331077",
+   "content": "anyone else seeing slow CI today?",
+   "timestamp": "2023-05-01T00:00:00+00:00",
+   "edited_timestamp": null,
+   "type": 0,
+   "pinned": false,
+   "mentions": [],
+   "mention_everyone": false,
+   "reactions": []
+  },
+  {
+   "id": "1102383887155331087",
+   "channel_id": "1102383887155331081",
+   "guild_id": "1102383887155331079",
+   "author_id": "1102383887155331076",
+   "content": "yeah the runners are backed up, looking into it",
+   "timestamp": "2023-05-01T00:00:00+00:00",
+   "edited_timestamp": null,
+   "type": 0,
+   "pinned": false,
+   "mentions": [],
+   "mention_everyone": false,
+   "reactions": []
+  },
+  {
+   "id": "1102383887155331088",
+   "channel_id": "1102383887155331081",
+   "guild_id": "1102383887155331079",
+   "author_id": "1102383887155331075",
+   "content": "lunch at 12:30?",
+   "timestamp": "2023-05-01T00:00:00+00:00",
+   "edited_timestamp": null,
+   "type": 0,
+   "pinned": false,
+   "mentions": [],
+   "mention_everyone": false,
+   "reactions": []
+  },
+  {
+   "id": "1102383887155331089",
+   "channel_id": "1102383887155331081",
+   "guild_id": "1102383887155331079",
+   "author_id": "1102383887155331073",
+   "content": "welcome to the server, Priya! 🎉",
+   "timestamp": "2023-05-01T00:00:00+00:00",
+   "edited_timestamp": null,
+   "type": 0,
+   "pinned": false,
+   "mentions": [
+    "1102383887155331077"
+   ],
+   "mention_everyone": false,
+   "reactions": []
+  },
+  {
+   "id": "1102383887155331090",
+   "channel_id": "1102383887155331082",
+   "guild_id": "1102383887155331079",
+   "author_id": "1102383887155331074",
+   "content": "pushing the new rate-limiter branch for review",
+   "timestamp": "2023-05-01T00:00:00+00:00",
+   "edited_timestamp": null,
+   "type": 0,
+   "pinned": false,
+   "mentions": [],
+   "mention_everyone": false,
+   "reactions": []
+  },
+  {
+   "id": "1102383887155331091",
+   "channel_id": "1102383887155331082",
+   "guild_id": "1102383887155331079",
+   "author_id": "1102383887155331075",
+   "content": "what limit are we going with?",
+   "timestamp": "2023-05-01T00:00:00+00:00",
+   "edited_timestamp": null,
+   "type": 0,
+   "pinned": false,
+   "mentions": [],
+   "mention_everyone": false,
+   "reactions": []
+  },
+  {
+   "id": "1102383887155331092",
+   "channel_id": "1102383887155331082",
+   "guild_id": "1102383887155331079",
+   "author_id": "1102383887155331074",
+   "content": "per the load test we settled on 120 requests/min per API key, burst of 20",
+   "timestamp": "2023-05-01T00:00:00+00:00",
+   "edited_timestamp": null,
+   "type": 0,
+   "pinned": false,
+   "mentions": [],
+   "mention_everyone": false,
+   "reactions": []
+  },
+  {
+   "id": "1102383887155331093",
+   "channel_id": "1102383887155331082",
+   "guild_id": "1102383887155331079",
+   "author_id": "1102383887155331075",
+   "content": "cool, I'll wire that into the gateway config",
+   "timestamp": "2023-05-01T00:00:00+00:00",
+   "edited_timestamp": null,
+   "type": 0,
+   "pinned": false,
+   "mentions": [],
+   "mention_everyone": false,
+   "reactions": []
+  },
+  {
+   "id": "1102383887155331094",
+   "channel_id": "1102383887155331082",
+   "guild_id": "1102383887155331079",
+   "author_id": "1102383887155331076",
+   "content": "don't forget the retry-after header should be seconds not ms",
+   "timestamp": "2023-05-01T00:00:00+00:00",
+   "edited_timestamp": null,
+   "type": 0,
+   "pinned": false,
+   "mentions": [],
+   "mention_everyone": false,
+   "reactions": []
+  },
+  {
+   "id": "1102383887155331095",
+   "channel_id": "1102383887155331083",
+   "guild_id": "1102383887155331079",
+   "author_id": "1102383887155331078",
+   "content": "🚨 ALERT: checkout-service p99 latency > 3s for 10m (SEV-2)",
+   "timestamp": "2023-05-01T00:00:00+00:00",
+   "edited_timestamp": null,
+   "type": 0,
+   "pinned": false,
+   "mentions": [],
+   "mention_everyone": false,
+   "reactions": []
+  },
+  {
+   "id": "1102383887155331096",
+   "channel_id": "1102383887155331083",
+   "guild_id": "1102383887155331079",
+   "author_id": "1102383887155331073",
+   "content": "on it. pulling the traces now",
+   "timestamp": "2023-05-01T00:00:00+00:00",
+   "edited_timestamp": null,
+   "type": 0,
+   "pinned": false,
+   "mentions": [],
+   "mention_everyone": false,
+   "reactions": []
+  },
+  {
+   "id": "1102383887155331097",
+   "channel_id": "1102383887155331083",
+   "guild_id": "1102383887155331079",
+   "author_id": "1102383887155331076",
+   "content": "looks like the new pricing cache is cold-missing on every request",
+   "timestamp": "2023-05-01T00:00:00+00:00",
+   "edited_timestamp": null,
+   "type": 0,
+   "pinned": false,
+   "mentions": [],
+   "mention_everyone": false,
+   "reactions": []
+  },
+  {
+   "id": "1102383887155331098",
+   "channel_id": "1102383887155331083",
+   "guild_id": "1102383887155331079",
+   "author_id": "1102383887155331073",
+   "content": "root cause: PRICING_CACHE_TTL was set to 0 in the last deploy, so nothing caches",
+   "timestamp": "2023-05-01T00:00:00+00:00",
+   "edited_timestamp": null,
+   "type": 0,
+   "pinned": false,
+   "mentions": [],
+   "mention_everyone": false,
+   "reactions": []
+  },
+  {
+   "id": "1102383887155331099",
+   "channel_id": "1102383887155331083",
+   "guild_id": "1102383887155331079",
+   "author_id": "1102383887155331075",
+   "content": "DECISION: set PRICING_CACHE_TTL back to 300 seconds and redeploy checkout-service. This is the agreed remediation for incident INC-4471.",
+   "timestamp": "2023-05-01T00:00:00+00:00",
+   "edited_timestamp": null,
+   "type": 0,
+   "pinned": true,
+   "mentions": [],
+   "mention_everyone": false,
+   "reactions": [
+    {
+     "emoji": "✅",
+     "user_id": "1102383887155331073"
+    },
+    {
+     "emoji": "✅",
+     "user_id": "1102383887155331076"
+    }
+   ]
+  },
+  {
+   "id": "1102383887155331100",
+   "channel_id": "1102383887155331083",
+   "guild_id": "1102383887155331079",
+   "author_id": "1102383887155331073",
+   "content": "agreed, rolling it now",
+   "timestamp": "2023-05-01T00:00:00+00:00",
+   "edited_timestamp": null,
+   "type": 0,
+   "pinned": false,
+   "mentions": [
+    "1102383887155331075"
+   ],
+   "mention_everyone": false,
+   "reactions": []
+  },
+  {
+   "id": "1102383887155331101",
+   "channel_id": "1102383887155331083",
+   "guild_id": "1102383887155331079",
+   "author_id": "1102383887155331076",
+   "content": "confirmed: after TTL=300 the p99 is back under 400ms. closing INC-4471.",
+   "timestamp": "2023-05-01T00:00:00+00:00",
+   "edited_timestamp": null,
+   "type": 0,
+   "pinned": false,
+   "mentions": [],
+   "mention_everyone": false,
+   "reactions": []
+  },
+  {
+   "id": "1102383887155331102",
+   "channel_id": "1102383887155331084",
+   "guild_id": "1102383887155331079",
+   "author_id": "1102383887155331078",
+   "content": "deploy: checkout-service v2.31.0 → prod ✅",
+   "timestamp": "2023-05-01T00:00:00+00:00",
+   "edited_timestamp": null,
+   "type": 0,
+   "pinned": false,
+   "mentions": [],
+   "mention_everyone": false,
+   "reactions": []
+  },
+  {
+   "id": "1102383887155331103",
+   "channel_id": "1102383887155331084",
+   "guild_id": "1102383887155331079",
+   "author_id": "1102383887155331078",
+   "content": "deploy: checkout-service v2.31.1 (hotfix TTL) → prod ✅",
+   "timestamp": "2023-05-01T00:00:00+00:00",
+   "edited_timestamp": null,
+   "type": 0,
+   "pinned": false,
+   "mentions": [],
+   "mention_everyone": false,
+   "reactions": []
+  },
+  {
+   "id": "1102383887155331104",
+   "channel_id": "1102383887155331080",
+   "guild_id": "1102383887155331079",
+   "author_id": "1102383887155331073",
+   "content": "Welcome to Acme Engineering. Incident decisions are recorded in #incidents.",
+   "timestamp": "2023-05-01T00:00:00+00:00",
+   "edited_timestamp": null,
+   "type": 0,
+   "pinned": true,
+   "mentions": [],
+   "mention_everyone": false,
+   "reactions": []
+  }
+ ]
+}

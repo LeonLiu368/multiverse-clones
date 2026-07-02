@@ -47,24 +47,93 @@ type LogfireView = {
   stats: { records: number; traces: number; services: number; errors: number; exceptions: number };
 };
 
-const LEVELS = ["trace", "debug", "info", "warn", "error", "fatal"];
-const lvlClass = (l: string) => `lf-lvl-${l}`;
+const CAP = 300; // rows rendered before we truncate (the :testing corpus has 4.5k traces)
 
 function fmtDur(ms: number) {
   if (ms >= 1000) return `${(ms / 1000).toFixed(2)}s`;
   if (ms >= 1) return `${ms.toFixed(ms < 10 ? 1 : 0)}ms`;
-  return `${(ms * 1000).toFixed(0)}µs`;
+  if (ms > 0) return `${(ms * 1000).toFixed(0)}µs`;
+  return "";
 }
-function fmtTime(ts?: string) {
+function fmtClock(ts?: string) {
   if (!ts) return "";
   const d = new Date(ts.replace(" ", "T"));
-  return isNaN(+d) ? ts : d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+  if (isNaN(+d)) return ts.slice(11, 23);
+  const p = (n: number, w = 2) => String(n).padStart(w, "0");
+  return `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}.${p(d.getMilliseconds(), 3)}`;
+}
+
+// Logfire-style level glyph: dot for trace/debug/info, triangle for warn, ringed dot for error+.
+function LevelIcon({ level }: { level: string }) {
+  if (level === "warn") return <span className="lfx-ic lfx-ic-warn" title="warn" />;
+  if (level === "error" || level === "fatal")
+    return <span className={`lfx-ic lfx-ic-${level}`} title={level} />;
+  return <span className={`lfx-ic lfx-ic-dot lfx-${level}`} title={level} />;
+}
+
+function SpanRow({
+  s,
+  trace,
+  isRoot,
+  expanded,
+  onToggle,
+  selected,
+  onSelect,
+}: {
+  s: Span;
+  trace: Trace;
+  isRoot: boolean;
+  expanded: boolean;
+  onToggle: () => void;
+  selected: boolean;
+  onSelect: () => void;
+}) {
+  const total = trace.duration_ms || 1;
+  const left = Math.min(((s.offset_ms ?? 0) / total) * 100, 97);
+  const width = Math.max((s.duration_ms / total) * 100, 2);
+  const canExpand = isRoot && trace.span_count > 1;
+  return (
+    <div
+      className={`lfx-row ${selected ? "sel" : ""} ${isRoot ? "root" : "child"}`}
+      onClick={onSelect}
+    >
+      <span
+        className={`lfx-chev ${canExpand ? "" : "hidden"} ${expanded ? "open" : ""}`}
+        onClick={(e) => {
+          e.stopPropagation();
+          if (canExpand) onToggle();
+        }}
+      >
+        ▸
+      </span>
+      <span className="lfx-ts">{fmtClock(s.start_timestamp)}</span>
+      <LevelIcon level={s.level_name} />
+      <span className="lfx-msg" style={{ paddingLeft: (s.depth ?? 0) * 14 }}>
+        {(s.depth ?? 0) > 0 && <span className="lfx-guide" />}
+        {s.is_exception && <span className="lfx-exc">⚠</span>}
+        {s.message || s.name}
+      </span>
+      {s.http_status_code != null && (
+        <span
+          className={`lfx-http ${
+            s.http_status_code >= 500 ? "s5" : s.http_status_code >= 400 ? "s4" : "s2"
+          }`}
+        >
+          {s.http_status_code}
+        </span>
+      )}
+      <span className="lfx-svc">{s.service_name}</span>
+      <span className="lfx-track">
+        <span className={`lfx-bar lfx-${s.level_name}`} style={{ left: `${left}%`, width: `${width}%` }} />
+      </span>
+      <span className="lfx-dur">{fmtDur(s.duration_ms)}</span>
+    </div>
+  );
 }
 
 export function LogfireApp({ appId }: { appId: string }) {
   const [v, setV] = useState<LogfireView | null>(null);
-  const [mode, setMode] = useState<"traces" | "records">("traces");
-  const [selTrace, setSelTrace] = useState<string>("");
+  const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [selSpan, setSelSpan] = useState<string>("");
   const [minLevel, setMinLevel] = useState<number>(0);
   const [service, setService] = useState<string>("");
@@ -73,10 +142,8 @@ export function LogfireApp({ appId }: { appId: string }) {
   async function load() {
     const data: LogfireView = await api.view(appId);
     setV(data);
-    const t = data.traces[0];
-    setMode("traces");
-    setSelTrace(t?.trace_id ?? "");
-    setSelSpan(t?.spans[0]?.span_id ?? "");
+    setExpanded(new Set(data.traces[0] ? [data.traces[0].trace_id] : []));
+    setSelSpan(data.traces[0]?.spans[0]?.span_id ?? "");
   }
 
   const matches = (s: Span) =>
@@ -91,292 +158,227 @@ export function LogfireApp({ appId }: { appId: string }) {
     () => (v ? v.traces.filter((t) => t.spans.some(matches)) : []),
     [v, minLevel, service, q]
   );
-  const records = useMemo(() => (v ? v.records.filter(matches) : []), [v, minLevel, service, q]);
 
-  const trace = v?.traces.find((t) => t.trace_id === selTrace) ?? null;
-  const span =
-    trace?.spans.find((s) => s.span_id === selSpan) ??
-    v?.records.find((s) => s.span_id === selSpan) ??
-    null;
+  const span = useMemo(() => {
+    if (!v) return null;
+    for (const t of v.traces) for (const s of t.spans) if (s.span_id === selSpan) return s;
+    return null;
+  }, [v, selSpan]);
+  const selTrace = span ? v?.traces.find((t) => t.trace_id === span.trace_id) : null;
 
-  function openSpan(s: Span) {
-    setSelTrace(s.trace_id);
-    setSelSpan(s.span_id);
+  function toggle(tid: string) {
+    setExpanded((prev) => {
+      const next = new Set(prev);
+      next.has(tid) ? next.delete(tid) : next.add(tid);
+      return next;
+    });
+  }
+
+  // Build the visible row list (roots + expanded children), capped.
+  const rows: { s: Span; trace: Trace; isRoot: boolean }[] = [];
+  for (const t of traces) {
+    if (rows.length >= CAP) break;
+    rows.push({ s: t.spans[0], trace: t, isRoot: true });
+    if (expanded.has(t.trace_id))
+      for (const s of t.spans.slice(1)) {
+        if (rows.length >= CAP) break;
+        rows.push({ s, trace: t, isRoot: false });
+      }
   }
 
   return (
     <div className="logfire">
       <SeedFileBar
         appId={appId}
-        accept=".json,application/json"
+        accept=".json,application/json,.gz"
         onLoaded={load}
         allowPull
-        pullHint="ghcr.io/abundant-ai/logfire-gateway:<incident>"
+        pullHint="ghcr.io/abundant-ai/logfire-service:prod-v1"
       />
       {!v ? (
         <div className="empty-state">
           Load a Logfire <b>records.json</b> to explore traces, spans and exceptions.
         </div>
       ) : (
-        <div className="lf-body">
-          {/* ---------- left: live feed (traces / records) ---------- */}
-          <aside className="lf-left">
-            <div className="lf-toolbar">
-              <div className="lf-seg">
-                <button className={mode === "traces" ? "on" : ""} onClick={() => setMode("traces")}>
-                  Traces
-                </button>
-                <button className={mode === "records" ? "on" : ""} onClick={() => setMode("records")}>
-                  Records
-                </button>
+        <div className="lfx-body">
+          <div className="lfx-main">
+            <div className="lfx-toolbar">
+              <span className="lfx-live">
+                <span className="lfx-live-dot" /> Live
+              </span>
+              <div className="lfx-query">
+                <span className="lfx-where">WHERE</span>
+                <input
+                  placeholder="message ~ 'timeout' — filter spans…"
+                  value={q}
+                  onChange={(e) => setQ(e.target.value)}
+                  spellCheck={false}
+                />
               </div>
-              <input
-                className="lf-search"
-                placeholder="Search spans…"
-                value={q}
-                onChange={(e) => setQ(e.target.value)}
-              />
-              <div className="lf-filters">
-                <select value={minLevel} onChange={(e) => setMinLevel(Number(e.target.value))}>
-                  <option value={0}>all levels</option>
-                  <option value={9}>info+</option>
-                  <option value={13}>warn+</option>
-                  <option value={17}>error+</option>
-                </select>
-                <select value={service} onChange={(e) => setService(e.target.value)}>
-                  <option value="">all services</option>
-                  {v.services.map((s) => (
-                    <option key={s} value={s}>
-                      {s}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <select value={minLevel} onChange={(e) => setMinLevel(Number(e.target.value))}>
+                <option value={0}>all levels</option>
+                <option value={9}>info+</option>
+                <option value={13}>warn+</option>
+                <option value={17}>error+</option>
+              </select>
+              <select value={service} onChange={(e) => setService(e.target.value)}>
+                <option value="">all services</option>
+                {v.services.map((s) => (
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
+                ))}
+              </select>
             </div>
 
-            <div className="lf-feed">
-              {mode === "traces"
-                ? traces.map((t) => (
-                    <div
-                      key={t.trace_id}
-                      className={`lf-trace-row ${t.trace_id === selTrace ? "sel" : ""}`}
-                      onClick={() => {
-                        setSelTrace(t.trace_id);
-                        setSelSpan(t.spans[0]?.span_id ?? "");
-                      }}
-                    >
-                      <span className={`lf-dot ${lvlClass(t.level_name)}`} />
-                      <div className="lf-trace-main">
-                        <div className="lf-trace-name">{t.root_name}</div>
-                        <div className="lf-trace-sub">
-                          <span className="lf-svc">{t.service_name}</span>
-                          <span className="lf-spans">{t.span_count} spans</span>
-                          {t.error_count > 0 && <span className="lf-errc">{t.error_count} error</span>}
-                        </div>
-                      </div>
-                      <span className="lf-dur">{fmtDur(t.duration_ms)}</span>
-                    </div>
-                  ))
-                : records.map((s) => (
-                    <div
-                      key={s.span_id}
-                      className={`lf-rec-row ${s.span_id === selSpan ? "sel" : ""}`}
-                      onClick={() => openSpan(s)}
-                    >
-                      <span className={`lf-pill ${lvlClass(s.level_name)}`}>{s.level_name}</span>
-                      <div className="lf-rec-main">
-                        <div className="lf-rec-name">
-                          {s.is_exception && <span className="lf-exc-ic">⚠</span>}
-                          {s.name}
-                        </div>
-                        <div className="lf-rec-sub">
-                          <span className="lf-svc">{s.service_name}</span>
-                          <span>{fmtTime(s.start_timestamp)}</span>
-                        </div>
-                      </div>
-                      <span className="lf-dur">{fmtDur(s.duration_ms)}</span>
-                    </div>
-                  ))}
-              {(mode === "traces" ? traces : records).length === 0 && (
-                <div className="hint" style={{ padding: 16 }}>
-                  No spans match the filter.
+            <div className="lfx-list">
+              <div className="lfx-head">
+                <span className="lfx-chev hidden">▸</span>
+                <span className="lfx-ts">Time</span>
+                <span style={{ width: 12 }} />
+                <span className="lfx-msg">Message</span>
+                <span className="lfx-svc">Service</span>
+                <span className="lfx-track" />
+                <span className="lfx-dur">Duration</span>
+              </div>
+              {rows.map(({ s, trace, isRoot }) => (
+                <SpanRow
+                  key={s.span_id}
+                  s={s}
+                  trace={trace}
+                  isRoot={isRoot}
+                  expanded={expanded.has(trace.trace_id)}
+                  onToggle={() => toggle(trace.trace_id)}
+                  selected={s.span_id === selSpan}
+                  onSelect={() => setSelSpan(s.span_id)}
+                />
+              ))}
+              {rows.length >= CAP && (
+                <div className="lfx-truncated">
+                  showing first {CAP} rows of {traces.length} traces — narrow the filter to see more
                 </div>
               )}
+              {!rows.length && <div className="hint" style={{ padding: 16 }}>No spans match.</div>}
             </div>
-          </aside>
+          </div>
 
-          {/* ---------- center: trace waterfall ---------- */}
-          <main className="lf-center">
-            {trace ? (
-              <>
-                <div className="lf-trace-head">
-                  <h2>{trace.root_name}</h2>
-                  <div className="lf-trace-meta">
-                    <code className="lf-tid">trace {trace.trace_id}</code>
-                    <span>{fmtDur(trace.duration_ms)}</span>
-                    <span>{trace.span_count} spans</span>
-                    {trace.error_count > 0 && (
-                      <span className="lf-errc">{trace.error_count} error</span>
-                    )}
-                  </div>
-                </div>
-                <div className="lf-waterfall">
-                  <div className="lf-waxis">
-                    <div className="lf-wlabel lf-waxis-label">Span</div>
-                    <div className="lf-wtrack">
-                      {[0, 0.25, 0.5, 0.75, 1].map((f, i) => (
-                        <span className="lf-tick" key={i} style={{ left: `${f * 100}%` }}>
-                          {fmtDur((trace.duration_ms || 0) * f)}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  {trace.spans.map((s) => {
-                    const max = trace.duration_ms || 1;
-                    const left = Math.min(((s.offset_ms ?? 0) / max) * 100, 99);
-                    const width = Math.max((s.duration_ms / max) * 100, 0.8);
-                    const labelRight = left > 62; // put the duration before the bar when it's far right
+          {span && (
+            <aside className="lfx-detail">
+              <div className="lfx-d-top">
+                <LevelIcon level={span.level_name} />
+                <span className="lfx-d-name">{span.name}</span>
+              </div>
+              <div className="lfx-d-sub">
+                <span className="lfx-svc">{span.service_name}</span>
+                <span className="lfx-d-time">{fmtClock(span.start_timestamp)}</span>
+                <span className="lfx-d-dur">{fmtDur(span.duration_ms)}</span>
+              </div>
+
+              {selTrace && selTrace.span_count > 1 && (
+                <div className="lfx-mini">
+                  {selTrace.spans.map((s) => {
+                    const total = selTrace.duration_ms || 1;
                     return (
                       <div
                         key={s.span_id}
-                        className={`lf-wrow ${s.span_id === selSpan ? "sel" : ""}`}
+                        className={`lfx-mini-row ${s.span_id === selSpan ? "sel" : ""}`}
                         onClick={() => setSelSpan(s.span_id)}
+                        title={`${s.name} · ${fmtDur(s.duration_ms)}`}
                       >
-                        <div className="lf-wlabel" style={{ paddingLeft: 10 + (s.depth ?? 0) * 14 }}>
-                          <span className={`lf-dot ${lvlClass(s.level_name)}`} />
-                          {s.is_exception && <span className="lf-exc-ic">⚠</span>}
-                          <span className="lf-wname">{s.name}</span>
-                          <span className="lf-wsvc">{s.service_name}</span>
-                        </div>
-                        <div className="lf-wtrack">
-                          <div
-                            className={`lf-wbar ${lvlClass(s.level_name)} ${s.is_exception ? "exc" : ""}`}
-                            style={{ left: `${left}%`, width: `${width}%` }}
-                            title={`${s.name} · ${fmtDur(s.duration_ms)}`}
-                          />
+                        <span className="lfx-mini-name" style={{ paddingLeft: (s.depth ?? 0) * 10 }}>
+                          {s.name}
+                        </span>
+                        <span className="lfx-mini-track">
                           <span
-                            className={`lf-wdur ${labelRight ? "before" : ""}`}
-                            style={labelRight ? { right: `${100 - left + 1}%` } : { left: `${Math.min(left + width + 1, 90)}%` }}
-                          >
-                            {fmtDur(s.duration_ms)}
-                          </span>
-                        </div>
+                            className={`lfx-bar lfx-${s.level_name}`}
+                            style={{
+                              left: `${Math.min(((s.offset_ms ?? 0) / total) * 100, 96)}%`,
+                              width: `${Math.max((s.duration_ms / total) * 100, 2.5)}%`,
+                            }}
+                          />
+                        </span>
                       </div>
                     );
                   })}
                 </div>
-              </>
-            ) : (
-              <div className="hint" style={{ padding: 24 }}>
-                Select a trace to see its waterfall.
-              </div>
-            )}
-          </main>
+              )}
 
-          {/* ---------- right: span detail ---------- */}
-          <aside className="lf-right">
-            {span ? (
-              <div className="lf-detail">
-                <div className="lf-d-head">
-                  <span className={`lf-pill ${lvlClass(span.level_name)}`}>{span.level_name}</span>
-                  <span className="lf-d-name">{span.name}</span>
-                </div>
-                <div className="lf-d-svc">{span.service_name}</div>
-
-                {span.exception_type && (
-                  <div className="lf-exc">
-                    <div className="lf-exc-h">
-                      {span.exception_type}: {span.exception_message}
-                    </div>
-                    {span.exception_stacktrace && (
-                      <pre className="lf-stack">{span.exception_stacktrace}</pre>
-                    )}
+              {span.exception_type && (
+                <div className="lfx-excbox">
+                  <div className="lfx-excbox-h">
+                    {span.exception_type}: {span.exception_message}
                   </div>
-                )}
-
-                <div className="lf-d-grid">
-                  <span>duration</span>
-                  <b>{fmtDur(span.duration_ms)}</b>
-                  <span>start</span>
-                  <b>{span.start_timestamp ?? "—"}</b>
-                  {span.kind && (
-                    <>
-                      <span>kind</span>
-                      <b>{span.kind}</b>
-                    </>
-                  )}
-                  {span.otel_status_code && (
-                    <>
-                      <span>status</span>
-                      <b>{span.otel_status_code}</b>
-                    </>
+                  {span.exception_stacktrace && (
+                    <pre className="lfx-stack">{span.exception_stacktrace}</pre>
                   )}
                 </div>
+              )}
 
-                {(span.http_method || span.http_status_code) && (
-                  <>
-                    <div className="lf-d-label">HTTP</div>
-                    <div className="lf-d-grid">
-                      <span>method</span>
-                      <b>{span.http_method ?? "—"}</b>
-                      <span>route</span>
-                      <b>{span.http_route ?? "—"}</b>
-                      <span>status</span>
-                      <b
-                        className={
+              {(span.http_method || span.http_status_code != null) && (
+                <>
+                  <div className="lfx-d-label">HTTP</div>
+                  <div className="lfx-kv">
+                    <span>method</span><b>{span.http_method ?? "—"}</b>
+                    <span>route</span><b>{span.http_route ?? "—"}</b>
+                    <span>status</span>
+                    <b>
+                      <span
+                        className={`lfx-http ${
                           (span.http_status_code ?? 0) >= 500
-                            ? "lf-http-5xx"
+                            ? "s5"
                             : (span.http_status_code ?? 0) >= 400
-                            ? "lf-http-4xx"
-                            : "lf-http-2xx"
-                        }
+                            ? "s4"
+                            : "s2"
+                        }`}
                       >
                         {span.http_status_code ?? "—"}
-                      </b>
-                      {span.http_url && (
-                        <>
-                          <span>url</span>
-                          <b className="lf-d-url">{span.http_url}</b>
-                        </>
-                      )}
-                    </div>
-                  </>
-                )}
+                      </span>
+                    </b>
+                    {span.http_url && (
+                      <>
+                        <span>url</span><b className="lfx-mono">{span.http_url}</b>
+                      </>
+                    )}
+                  </div>
+                </>
+              )}
 
-                <div className="lf-d-label">IDs</div>
-                <div className="lf-d-grid lf-d-mono">
-                  <span>trace</span>
-                  <b>{span.trace_id}</b>
-                  <span>span</span>
-                  <b>{span.span_id}</b>
-                  {span.parent_span_id && (
-                    <>
-                      <span>parent</span>
-                      <b>{span.parent_span_id}</b>
-                    </>
-                  )}
-                </div>
-
-                {span.attributes.length > 0 && (
+              <div className="lfx-d-label">Span</div>
+              <div className="lfx-kv lfx-kv-mono">
+                <span>trace</span><b>{span.trace_id}</b>
+                <span>span</span><b>{span.span_id}</b>
+                {span.parent_span_id && (
                   <>
-                    <div className="lf-d-label">Attributes</div>
-                    <div className="lf-attrs">
-                      {span.attributes.map((a) => (
-                        <div className="lf-attr" key={a.key}>
-                          <span className="lf-attr-k">{a.key}</span>
-                          <span className="lf-attr-v">{String(a.value)}</span>
-                        </div>
-                      ))}
-                    </div>
+                    <span>parent</span><b>{span.parent_span_id}</b>
+                  </>
+                )}
+                {span.kind && (
+                  <>
+                    <span>kind</span><b>{span.kind}</b>
+                  </>
+                )}
+                {span.otel_status_code && (
+                  <>
+                    <span>otel</span><b>{span.otel_status_code}</b>
                   </>
                 )}
               </div>
-            ) : (
-              <div className="hint" style={{ padding: 24 }}>
-                Select a span.
-              </div>
-            )}
-          </aside>
+
+              {span.attributes.length > 0 && (
+                <>
+                  <div className="lfx-d-label">Attributes</div>
+                  <div className="lfx-attrs">
+                    {span.attributes.map((a) => (
+                      <div className="lfx-attr" key={a.key}>
+                        <span className="lfx-attr-k">{a.key}</span>
+                        <span className="lfx-attr-v">{String(a.value)}</span>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+            </aside>
+          )}
         </div>
       )}
     </div>
