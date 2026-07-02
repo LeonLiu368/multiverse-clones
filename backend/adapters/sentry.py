@@ -32,7 +32,10 @@ class SentryAdapter(FileSeedAdapter):
     # multiverse sentry-clone bakes the corpus into `sentry-clone-service:prod-v1` at
     # /srv/sentry-clone/corpus-state.json (Dockerfile.prod-v1, ENV SENTRY_CLONE_CORPUS_FILE).
     image_substrings = ("sentry-clone-service", "sentry-service", "sentry-clone")
-    image_state_paths = ("/srv/sentry-clone/corpus-state.json", "/srv/sentry/state.json",
+    # prod-v1 bakes /srv/sentry-clone/corpus-state.json; the empty image mounts
+    # /data/sentry-clone/state.json; the runtime mutable copy is /var/lib/sentry-clone/state.json.
+    image_state_paths = ("/srv/sentry-clone/corpus-state.json", "/data/sentry-clone/state.json",
+                         "/var/lib/sentry-clone/state.json", "/srv/sentry/state.json",
                          "/data/sentry/state.json")
 
     def _norm_event(self, e: dict) -> dict:

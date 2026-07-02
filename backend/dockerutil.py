@@ -11,10 +11,12 @@ import tempfile
 # scratch) uses /...; we probe both.
 DB_PATHS = ("/opt/slack.prebuilt.db", "/slack.prebuilt.db")
 
-# The clone images are published linux/amd64-only. On an arm64 host (Apple Silicon), docker defaults
-# to the host arch and pull/create fail with "no matching manifest for linux/arm64". We only ever
-# copy a file out (never run the container), so forcing amd64 is safe and correct everywhere.
-PLATFORM = "linux/amd64"
+# Clone images are published for varying platforms: most are linux/amd64-only (so a plain pull on an
+# arm64 host fails with "no matching manifest for linux/arm64"), but some tags (e.g.
+# logfire-service:testing) are arm64-only (so forcing amd64 fails with "no matching manifest for
+# linux/amd64"). We only ever copy a file out (never run the container), so ANY available platform
+# works — pull whichever manifest exists, and let `docker create` use whatever got pulled locally.
+_PLATFORMS = ("linux/amd64", "linux/arm64")
 
 
 def _run(args: list[str], **kw) -> subprocess.CompletedProcess:
@@ -47,22 +49,37 @@ def image_exists(ref: str) -> bool:
 
 
 def pull_image(ref: str) -> None:
+    """Pull `ref` trying each known platform (then the host default), succeeding on whichever
+    manifest exists — clone tags are variously amd64-only or arm64-only, and we only extract files."""
     if not have_docker():
         raise RuntimeError("docker not available")
-    cp = _run(["docker", "pull", "--platform", PLATFORM, ref])
-    if cp.returncode != 0:
-        raise RuntimeError(f"docker pull {ref} failed:\n{cp.stderr.strip()}")
+    errs = []
+    for plat in (*_PLATFORMS, None):
+        args = ["docker", "pull", ref] if plat is None else ["docker", "pull", "--platform", plat, ref]
+        cp = _run(args)
+        if cp.returncode == 0:
+            return
+        tail = (cp.stderr.strip().splitlines() or [""])[-1]
+        errs.append(f"  [{plat or 'host'}] {tail}")
+    raise RuntimeError(f"docker pull {ref} failed for all platforms:\n" + "\n".join(errs))
+
+
+def _create(ref: str) -> str:
+    """Create (not run) a container from a locally-present image, without forcing a platform — use
+    whatever manifest pull_image landed. Returns the container id."""
+    if not image_exists(ref):
+        pull_image(ref)
+    cid = _run(["docker", "create", ref]).stdout.strip()
+    if not cid:
+        raise RuntimeError(f"could not create container from {ref}")
+    return cid
 
 
 def extract_file(ref: str, src_path: str, dest_path: str) -> str:
     """Copy a single file at `src_path` out of image `ref` to dest_path (no container run)."""
     if not have_docker():
         raise RuntimeError("docker not available")
-    if not image_exists(ref):
-        pull_image(ref)
-    cid = _run(["docker", "create", "--platform", PLATFORM, ref]).stdout.strip()
-    if not cid:
-        raise RuntimeError(f"could not create container from {ref}")
+    cid = _create(ref)
     try:
         cp = _run(["docker", "cp", f"{cid}:{src_path}", dest_path])
         if cp.returncode != 0:
@@ -76,11 +93,7 @@ def extract_db(ref: str, dest_path: str) -> str:
     """Copy the baked prebuilt SQLite DB out of image `ref` to dest_path. Probes known DB paths."""
     if not have_docker():
         raise RuntimeError("docker not available")
-    if not image_exists(ref):
-        pull_image(ref)
-    cid = _run(["docker", "create", "--platform", PLATFORM, ref]).stdout.strip()
-    if not cid:
-        raise RuntimeError(f"could not create container from {ref}")
+    cid = _create(ref)
     try:
         last_err = ""
         with tempfile.TemporaryDirectory() as tmp:
@@ -109,11 +122,9 @@ OVERLAY_PATHS = ("/data/slack-overlay",)
 def extract_overlay(ref: str, dest_dir: str) -> str | None:
     """Copy a baked overlay export dir out of image `ref` into dest_dir. Returns the path to the
     extracted overlay dir, or None if the image bakes no overlay."""
-    if not have_docker():
+    if not have_docker() or not image_exists(ref):
         return None
-    if not image_exists(ref):
-        return None
-    cid = _run(["docker", "create", "--platform", PLATFORM, ref]).stdout.strip()
+    cid = _run(["docker", "create", ref]).stdout.strip()
     if not cid:
         return None
     try:

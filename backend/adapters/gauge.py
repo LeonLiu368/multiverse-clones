@@ -19,7 +19,11 @@ class GaugeAdapter(FileSeedAdapter):
     # shape (logs.queries / metrics.queries / datasources / dashboards) is unchanged. Older gauge-*
     # names/paths are kept for back-compat.
     image_substrings = ("grafana-service", "grafana-clone", "gauge-gateway", "gauge-service", "gauge-seed")
-    image_state_paths = ("/srv/grafana/state.json", "/data/gauge/state.json", "/var/lib/gauge/state.json")
+    # prod-v1 bakes /srv/grafana/state.json; the empty image mounts /data/grafana/state.json; the
+    # runtime mutable copy is /var/lib/grafana/state.json. Older gauge-* paths kept for back-compat.
+    image_state_paths = ("/srv/grafana/state.json", "/data/grafana/state.json",
+                         "/var/lib/grafana/state.json", "/data/gauge/state.json",
+                         "/var/lib/gauge/state.json")
 
     def _norm_lines(self, val: Any) -> list[dict]:
         """A LogQL query value -> a flat list of {ts, labels, line}. The seed varies: the sample

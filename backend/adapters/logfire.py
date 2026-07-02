@@ -20,6 +20,9 @@ _CORE = {
     "start_timestamp", "end_timestamp", "duration", "is_exception", "exception_type",
     "exception_message", "exception_stacktrace", "http_method", "http_route", "http_status_code",
     "http_url", "kind", "otel_status_code",
+    # multiverse corpus uses these column names; treated as core so they don't double as attributes
+    "http_response_status_code", "url_path", "url_query", "attributes", "deployment_environment",
+    "level_name",  # some corpora precompute this; we derive it, so don't surface it as an attribute
 }
 
 
@@ -65,10 +68,20 @@ class LogfireAdapter(FileSeedAdapter):
         else:
             end = _epoch(r.get("end_timestamp"))
             dur_s = (end - start) if (start is not None and end is not None) else 0.0
-        attrs = sorted(
-            (k, r[k]) for k in r
-            if k not in _CORE and r[k] not in (None, "", [], {}) and not k.startswith("_")
-        )
+        # extra top-level columns + the explicit `attributes` JSON column (multiverse corpus) both
+        # surface in the detail panel's Attributes table.
+        extra = {k: r[k] for k in r if k not in _CORE and not k.startswith("_")}
+        if isinstance(r.get("attributes"), dict):
+            for k, v in r["attributes"].items():
+                extra.setdefault(k, v)
+        attrs = sorted((k, v) for k, v in extra.items() if v not in (None, "", [], {}))
+        # http columns vary by corpus: multiverse uses http_response_status_code + url_path/url_query
+        status = r.get("http_status_code")
+        if status is None:
+            status = r.get("http_response_status_code")
+        url = r.get("http_url") or r.get("url_path")
+        if url and r.get("url_query"):
+            url = f"{url}?{r['url_query']}"
         return {
             "trace_id": r.get("trace_id") or "",
             "span_id": r.get("span_id") or "",
@@ -87,8 +100,8 @@ class LogfireAdapter(FileSeedAdapter):
             "exception_stacktrace": r.get("exception_stacktrace"),
             "http_method": r.get("http_method"),
             "http_route": r.get("http_route"),
-            "http_status_code": r.get("http_status_code"),
-            "http_url": r.get("http_url"),
+            "http_status_code": status,
+            "http_url": url,
             "kind": r.get("kind"),
             "otel_status_code": r.get("otel_status_code"),
             "attributes": [{"key": k, "value": v} for k, v in attrs],
