@@ -40,22 +40,43 @@ def _rank(cand: Dict[str, Any], arch: A.Archetype, report: Dict[str, Any], probe
     return round(s, 2)
 
 
+_MAX_REPO_KB = int(os.environ.get("SPOINK_MAX_REPO_KB", "800000"))   # skip >~800MB repos (not viable SUTs)
+_repo_too_big: set = set()
+
+
+def _repo_size_kb(repo: str, token: str) -> int:
+    """Repo size in KB via the GitHub API (0 on failure)."""
+    import httpx
+    try:
+        r = httpx.get(f"https://api.github.com/repos/{repo}", timeout=15,
+                      headers={"Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json"})
+        return int(r.json().get("size", 0)) if r.status_code == 200 else 0
+    except Exception:
+        return 0
+
+
 def _ensure_bundle(repo: str, token: str, snaps_root: Path, done: set) -> bool:
     """Mirror-clone a repo ONCE into a shared snapshots dir (git.bundle only — no full snapshot).
-    Reused across every candidate from that repo: the big throughput win, since a feed is usually
-    dominated by one repo."""
+    Reused across every candidate from that repo (the big throughput win). SKIPS pathologically large
+    repos (e.g. data/model monorepos) — they're not viable SUTs and clone-choke the whole farm."""
     import subprocess
     if repo in done:
         return True
+    if repo in _repo_too_big:
+        return False
+    sz = _repo_size_kb(repo, token)
+    if sz and sz > _MAX_REPO_KB:
+        _repo_too_big.add(repo)
+        return False                                     # too big -> skip capture (candidate ranks low)
     d = snaps_root / repo.replace("/", "__"); d.mkdir(parents=True, exist_ok=True)
     src = f"https://{token + '@' if token else ''}github.com/{repo}.git"
     mir = d / "_mirror.git"
     if not (d / "git.bundle").exists():
         if subprocess.run(["git", "clone", "--quiet", "--mirror", src, str(mir)],
-                          capture_output=True, text=True).returncode != 0:
+                          capture_output=True, text=True, timeout=300).returncode != 0:
             return False
         subprocess.run(["git", "-C", str(mir), "bundle", "create", str((d / "git.bundle").resolve()), "--all"],
-                       capture_output=True, text=True)
+                       capture_output=True, text=True, timeout=300)
     done.add(repo)
     return (d / "git.bundle").exists()
 
