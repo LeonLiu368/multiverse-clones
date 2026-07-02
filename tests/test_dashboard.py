@@ -111,6 +111,16 @@ def test_task_creator_flow(tmp_path, monkeypatch):
     assert c.get("/api/candidates").json()["candidates"] == []
 
 
+def test_tasks_clear(tmp_path, monkeypatch):
+    """DELETE /api/tasks wipes the registry (and the on-disk task dirs)."""
+    c = _client(tmp_path, monkeypatch)
+    from spoink.dashboard import server as S
+    S.tasks_reg.add({"id": "t1", "image": "spoink/x", "name": "x", "task_dir": str(tmp_path / "z")})
+    assert len(c.get("/api/tasks").json()["tasks"]) == 1
+    assert c.delete("/api/tasks").json()["cleared"] == 1
+    assert c.get("/api/tasks").json() == {"tasks": []}
+
+
 def test_feeds_endpoint(tmp_path, monkeypatch):
     """All discovery feeds are exposed with their credential presence."""
     monkeypatch.setenv("GITHUB_TOKEN", "ghp_test")

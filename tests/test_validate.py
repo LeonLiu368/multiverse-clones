@@ -66,6 +66,15 @@ def test_contract_lint_flags_missing_pieces(tmp_path):
     assert "custom_docker_compose" in joined and "linux/amd64" in joined and "reward.txt" in joined
 
 
+def test_promote_compose_guards_without_docker(tmp_path):
+    """compose-promote short-circuits without touching docker for unrunnable tasks."""
+    from spoink.pipeline import promote as P
+    t = tmp_path / "t"; (t / "environment").mkdir(parents=True)
+    assert P.promote_compose(str(t))["status"] == "errored"                 # no compose
+    (t / "environment" / "docker-compose.yaml").write_text("services:\n  slack:\n    image: x:TODO-bake\n")
+    assert P.promote_compose(str(t))["status"] == "skipped"                 # placeholder image
+
+
 def test_promote_guards_without_docker(tmp_path):
     """promote() short-circuits cleanly (no docker) for non-runnable tasks."""
     from spoink.pipeline import promote as P

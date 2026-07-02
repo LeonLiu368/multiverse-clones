@@ -12,6 +12,7 @@ which is honest signal about which candidates yield runnable tasks.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import shlex
 import subprocess
@@ -40,8 +41,67 @@ echo "SPOINK_RESULT nop_exit=$NOP oracle_exit=$ORACLE"
 """
 
 
+def _dc(project: str, compose: Path, *args: str, cwd: str, timeout: int = 1800):
+    return subprocess.run(["docker", "compose", "-p", project, "-f", str(compose), *args],
+                          cwd=cwd, capture_output=True, text=True, timeout=timeout)
+
+
+def promote_compose(task_dir: str, *, timeout: int = 2400) -> Dict[str, Any]:
+    """FULL-compose nop/oracle: build the per-repo SUT env + boot the evidence sidecars healthy,
+    run the verifier with no change (nop -> expect 0), apply the oracle, run it again (oracle ->
+    expect 1). Requires the sidecar gateway images to be real (published), not placeholders."""
+    root = Path(task_dir)
+    env = root / "environment"
+    compose = next((env / f for f in ("docker-compose.yaml", "docker-compose.yml") if (env / f).exists()), None)
+    if not compose:
+        return {"status": "errored", "detail": "no docker-compose in environment/"}
+    if "TODO" in compose.read_text():
+        return {"status": "skipped", "detail": "sidecar images not published (placeholder tags) — publish first"}
+    proj = "spoinkp" + hashlib.sha1(str(root).encode()).hexdigest()[:10]
+    ecwd = str(env)
+
+    def dc(*a, t=timeout):
+        return _dc(proj, compose, *a, cwd=ecwd, timeout=t)
+
+    def reward():
+        r = dc("exec", "-T", "main", "cat", "/logs/verifier/reward.txt", t=60)
+        return (r.stdout or "").strip()
+
+    try:
+        b = dc("build")
+        if b.returncode != 0:
+            return {"status": "errored", "mode": "compose", "detail": "compose build failed",
+                    "log": (b.stderr or b.stdout)[-1200:]}
+        u = dc("up", "-d", "--wait", "--wait-timeout", "180")
+        if u.returncode != 0:
+            return {"status": "errored", "mode": "compose", "detail": "sidecars didn't come up healthy",
+                    "log": (u.stderr or u.stdout)[-1200:]}
+        dc("cp", str(root / "tests"), "main:/htests", t=120)
+        dc("cp", str(root / "solution"), "main:/hsol", t=120)
+        dc("exec", "-T", "main", "mkdir", "-p", "/logs/verifier", t=60)
+        dc("exec", "-T", "main", "bash", "/htests/test.sh", t=900)
+        nop = reward()
+        dc("exec", "-T", "main", "bash", "/hsol/solve.sh", t=900)
+        dc("exec", "-T", "main", "bash", "/htests/test.sh", t=900)
+        oracle = reward()
+        proven = nop in ("0", "") and oracle == "1"
+        return {"status": "proven" if proven else "failed", "mode": "compose",
+                "proven": proven, "nop_reward": nop or "0", "oracle_reward": oracle or "?",
+                "detail": f"nop reward={nop or '0'} (want 0); oracle reward={oracle or '?'} (want 1)"}
+    except subprocess.TimeoutExpired:
+        return {"status": "errored", "mode": "compose", "detail": f"timed out after {timeout}s"}
+    finally:
+        dc("down", "-v", "--remove-orphans", t=180)
+
+
 def promote(task_dir: str, *, python_image: str = "python:3.11-slim", timeout: int = 1800) -> Dict[str, Any]:
     root = Path(task_dir)
+    # prefer the FULL compose gate when the sidecar images are real (published)
+    env = root / "environment"
+    compose = next((env / f for f in ("docker-compose.yaml", "docker-compose.yml") if (env / f).exists()), None)
+    if compose and "TODO" not in compose.read_text() and (root / "solution" / "solve.sh").exists():
+        return promote_compose(task_dir, timeout=max(timeout, 2400))
+    # else fall back to the single-container SUT code-contract proof
     man_p = root / ".promote.json"
     bundle = root / "environment" / "codebase.bundle"
     patch = root / "solution" / "fix.patch"

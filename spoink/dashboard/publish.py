@@ -93,5 +93,11 @@ class PublishedRegistry:
         self.items.insert(0, rec)
         self.path.write_text(json.dumps(self.items, indent=2))
 
+    def clear(self) -> int:
+        n = len(self.items)
+        self.items = []
+        self.path.write_text("[]")
+        return n
+
     def list(self) -> List[Dict[str, Any]]:
         return self.items

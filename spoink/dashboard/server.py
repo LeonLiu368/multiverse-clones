@@ -506,6 +506,19 @@ def tasks_list():
     return {"tasks": tasks_reg.list()}
 
 
+@app.delete("/api/tasks")
+def tasks_clear():
+    """Clear all generated tasks — the registry AND the on-disk task dirs under runs/_tasks/."""
+    n = tasks_reg.clear()
+    import shutil
+    shutil.rmtree(TASKS_DIR, ignore_errors=True)
+    # reset any candidate marked generated back to attached/new so it can be re-processed
+    for c in candidates.list():
+        if str(c.get("status", "")).startswith("generated"):
+            candidates.update(c["id"], status="attached" if c.get("snapshots") else "new")
+    return {"cleared": n}
+
+
 @app.post("/api/tasks/{cid}/promote")
 def task_promote(cid: str):
     """Empirical nop=0/oracle=1 in docker: prove the fix's tests fail on the SUT, pass after the

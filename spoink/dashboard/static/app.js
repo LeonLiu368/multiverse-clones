@@ -627,6 +627,11 @@ async function openTaskSource(t) {
 }
 $("#taskClose").onclick = () => ($("#taskModal").hidden = true);
 $("#refreshTasks").onclick = loadTasks;
+$("#clearTasks").onclick = async () => {
+  if (!confirm("Delete ALL generated tasks (registry + task dirs)? Candidates are kept.")) return;
+  try { const r = await api("/api/tasks", { method: "DELETE" }); toast(`cleared ${r.cleared} task(s)`); loadTasks(); loadCandidates(); }
+  catch (e) { toast(e.message, true); }
+};
 
 $("#refresh").onclick = loadRuns;
 loadSources().then(loadRuns).catch((e) => toast(e.message, true));
