@@ -135,10 +135,22 @@ def spec_from_candidate(cand: Dict[str, Any], attached: List[Dict[str, Any]],
         vkind = "module_check"                                   # code fix that shipped no tests
     verifier = VerifierSpec(kind=vkind, f2p=changed_tests)       # f2p doubles as the regression guard
 
+    # NEVER put the PR title in the agent-facing instruction — it usually DESCRIBES the fix (leakage).
+    # Give a fair, non-leaky target instead: the failing tests (SWE-style) when there's no evidence
+    # surface to carry a symptom; otherwise stay symptom-level and let the surfaces hide the clue.
+    has_surface = any(s.source in ("slack", "linear", "logfire") for s in surfaces)
+    if instruction:
+        instr = instruction
+    elif vkind == "pytest_pr" and changed_tests and not has_surface:
+        instr = arch.instruction + "\n\nMake these currently-failing tests pass without breaking others:\n  " \
+                + "\n  ".join(changed_tests)
+    else:
+        instr = arch.instruction + f"\n\n(incident in {repo} around {cand.get('t','')[:10]})\n"
+
     return TaskSpec(
         name=f"spoink-{arch.name}/{slug}", kind=arch.kind,
         incident_t=cand.get("t", DEFAULT_T),
-        instruction=instruction or (arch.instruction + f"\n\nIncident: {cand.get('title','')}\n"),
+        instruction=instr,
         surfaces=surfaces, verifier=verifier, anchor=anchor, changed_files=changed, fix_patch=patch,
         source_repo=repo, fixed_by_pr=f"#{res.get('pr')}" if res.get("pr") else "",
         oracle_steps=(f"# archetype: {arch.name} ({arch.grounds})\n"
