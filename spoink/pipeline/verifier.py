@@ -73,12 +73,21 @@ awk -v v="$VAL" -v t="$THRESHOLD" 'BEGIN{{exit !(v+0<=t+0)}}' && reward=1
 
 
 def _render_pytest(spec: TaskSpec) -> str:
-    root = spec.anchor.workdir + "/" + spec.anchor.backend_subdir if spec.anchor else "/app"
+    workdir = spec.anchor.workdir if spec.anchor else "/app"
+    root = workdir + "/" + spec.anchor.backend_subdir if spec.anchor else "/app"
     f2p = " ".join(spec.verifier.f2p)
     p2p = " ".join(spec.verifier.p2p)
     return _HEAD + f'''# F2P (fail on the bug, pass on the fix) + P2P (regression guard), run in the SUT venv.
+# The HIDDEN test lives here in tests/ (never in the agent's SUT — no leakage) and is INJECTED now,
+# so the agent had to fix the underlying bug from the symptom/surfaces, not by reading the test.
+HERE="$(cd "$(dirname "$0")" && pwd)"
+REPO="${{ODDISH_REPO:-{workdir}}}"
 ROOT="${{ODDISH_ROOT:-{root}}}"
 PY="$ROOT/.venv/bin/python"; [ -x "$PY" ] || PY=python3
+if [ -f "$HERE/hidden_test.patch" ]; then
+  git -C "$REPO" apply --whitespace=nowarn "$HERE/hidden_test.patch" 2>/dev/null \\
+    || ( cd "$REPO" && patch -p1 < "$HERE/hidden_test.patch" >/dev/null 2>&1 ) || true
+fi
 cd "$ROOT" 2>/dev/null || true
 F2P="{f2p}"
 P2P="{p2p}"

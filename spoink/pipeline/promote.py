@@ -134,34 +134,45 @@ def promote(task_dir: str, *, python_image: str = "python:3.13-slim", timeout: i
     env = ["-e", f"BASE={man.get('base_commit','')}", "-e", f"SUBDIR={man.get('backend_subdir','')}",
            "-e", f"F2P={f2p}", "-e", f"FIX_FILES={fix_files}", "-e", "BUNDLE=/work/codebase.bundle",
            "-e", "UV_CACHE_DIR=/root/.cache/uv", "-e", "PIP_CACHE_DIR=/root/.cache/pip"]
-    # persistent uv/pip caches shared across ALL promotes — same-repo candidates reuse the wheel
-    # downloads/builds instead of re-fetching every time (the big per-batch throughput win)
-    cache = Path.home() / ".cache" / "spoink-promote"
+    # cache keyed BY REPO: same-repo candidates share the warm wheel cache (throughput), while
+    # different repos are isolated so parallel promotes don't race on one cache (determinism).
+    repo_slug = re.sub(r"[^a-z0-9]+", "-", (man.get("source_repo") or "shared").lower()).strip("-")
+    cache = Path.home() / ".cache" / "spoink-promote" / repo_slug
     (cache / "uv").mkdir(parents=True, exist_ok=True); (cache / "pip").mkdir(parents=True, exist_ok=True)
-    # git is needed inside the container
     script = "apt-get update -qq >/dev/null 2>&1 && apt-get install -y -qq git >/dev/null 2>&1; " + RUNNER
-    # promote is a build/test step (not the agent) — it needs network to install git + deps
     cmd = ["docker", "run", "--rm",
            "-v", f"{bundle.resolve()}:/work/codebase.bundle:ro",
            "-v", f"{patch.resolve()}:/work/fix.patch:ro",
            "-v", f"{cache / 'uv'}:/root/.cache/uv", "-v", f"{cache / 'pip'}:/root/.cache/pip",
            *env, python_image, "bash", "-c", script]
-    try:
-        p = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
-    except subprocess.TimeoutExpired:
-        return {"status": "errored", "detail": f"timed out after {timeout}s"}
-    out = p.stdout + p.stderr
-    marker = next((ln for ln in out.splitlines() if ln.startswith("SPOINK_RESULT")), "")
-    if not marker:
-        return {"status": "errored", "detail": "no result marker (SUT likely failed to build)",
+
+    def _attempt() -> Dict[str, Any]:
+        try:
+            p = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+        except subprocess.TimeoutExpired:
+            return {"status": "errored", "detail": f"timed out after {timeout}s"}
+        out = p.stdout + p.stderr
+        marker = next((ln for ln in out.splitlines() if ln.startswith("SPOINK_RESULT")), "")
+        if not marker:
+            return {"status": "errored", "detail": "no result marker (SUT likely failed to build)", "log": out[-1200:]}
+        kv = dict(tok.split("=", 1) for tok in marker.split()[1:])
+        nop_exit, oracle_exit = kv.get("nop_exit", "?"), kv.get("oracle_exit", "?")
+        nop_fails, oracle_passes = nop_exit not in ("0", "?"), oracle_exit == "0"
+        proven = nop_fails and oracle_passes
+        return {"status": "proven" if proven else "failed", "proven": proven,
+                "nop_exit": nop_exit, "oracle_exit": oracle_exit,
+                "detail": (f"nop tests {'fail ✓' if nop_fails else 'PASS ✗ (bug not reproduced)'}; "
+                           f"oracle tests {'pass ✓' if oracle_passes else 'FAIL ✗ (fix did not resolve)'}"),
                 "log": out[-1200:]}
-    kv = dict(tok.split("=", 1) for tok in marker.split()[1:])
-    nop_exit, oracle_exit = kv.get("nop_exit", "?"), kv.get("oracle_exit", "?")
-    nop_fails = nop_exit not in ("0", "?")
-    oracle_passes = oracle_exit == "0"
-    proven = nop_fails and oracle_passes
-    return {"status": "proven" if proven else "failed",
-            "proven": proven, "nop_exit": nop_exit, "oracle_exit": oracle_exit,
-            "detail": (f"nop tests {'fail ✓' if nop_fails else 'PASS ✗ (bug not reproduced)'}; "
-                       f"oracle tests {'pass ✓' if oracle_passes else 'FAIL ✗ (fix did not resolve)'}"),
-            "log": out[-1200:]}
+
+    # retry once on a non-proven result — a build/network/flaky-test blip shouldn't sink a real task;
+    # a task that flips across attempts is FLAKY (not trustworthy) and is flagged as such.
+    r1 = _attempt()
+    if r1.get("proven"):
+        return r1
+    r2 = _attempt()
+    if r2.get("proven"):
+        r2["flaky"] = True
+        r2["detail"] = "PROVEN on retry (attempt 1 was non-proven) — FLAKY, not trustworthy: " + r2["detail"]
+        return r2
+    return r2 if r2.get("status") != "errored" else r1

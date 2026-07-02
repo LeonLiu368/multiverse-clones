@@ -585,14 +585,22 @@ function taskRow(t) {
     ? el("span", { className: "pill pill-rejected", textContent: "rejected" })
     : val.accepted ? el("span", { className: "pill pill-generated", textContent: "validated" }) : "";
   const prom = t.promote || {};
-  const promPill = prom.status
-    ? el("span", { className: "pill pill-" + (prom.status === "proven" ? "generated" : prom.status === "running" ? "capturing" : "rejected"),
-                   title: prom.detail || "", textContent: prom.status })
-    : "";
+  const nop = prom.nop_exit ?? prom.nop ?? prom.nop_reward;
+  const oracle = prom.oracle_exit ?? prom.oracle ?? prom.oracle_reward;
+  const pstatus = prom.flaky ? "flaky" : prom.status;
+  const pcls = pstatus === "proven" ? "generated" : (pstatus === "flaky" || pstatus === "running") ? "capturing" : "rejected";
+  const promPill = prom.status ? el("span", { className: "pill pill-" + pcls, title: prom.detail || "", textContent: pstatus }) : "";
+  const proof = (nop != null || oracle != null)
+    ? el("span", { className: "gate gate-" + (pstatus === "proven" ? "pass" : "fail"), title: "nop must fail, oracle must pass",
+                   textContent: `nop=${nop} · oracle=${oracle}` }) : "";
+  // variant: an evidence surface (chat/tickets/telemetry) => observability (hidden test); else code-fix
+  const obs = (t.surfaces || []).some((s) => ["slack", "linear", "logfire"].includes(s));
+  const variant = el("span", { className: "pill", title: obs ? "hidden test; diagnose from surfaces" : "failing test visible (SWE-style)",
+                               textContent: obs ? "observability" : "code-fix" });
   row.append(el("div", { className: "run-top" }, [
     el("span", { className: "run-name mono", textContent: t.name }),
-    el("span", { className: "pill", textContent: t.verifier }),
-    verdict, promPill,
+    variant, el("span", { className: "pill", textContent: t.verifier }),
+    verdict, promPill, proof,
     el("span", { className: "run-when muted sm", textContent: (t.surfaces || []).join(", ") }),
   ]));
   const gates = el("div", { className: "gate-row" }, (val.gates || []).map((g) =>

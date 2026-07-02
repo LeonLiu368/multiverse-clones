@@ -240,6 +240,14 @@ def generate_task(spec: TaskSpec, out_dir: str) -> Dict[str, str]:
     # oracle patch (the fix) — lives in solution/, NEVER given to the agent's container
     if spec.fix_patch:
         (root / "solution" / "fix.patch").write_text(spec.fix_patch)
+        # the HIDDEN test (test hunks only) — shipped in tests/ (mounted at GRADE time, not in the
+        # agent's SUT), so the failing test can be injected to grade an observability/hidden-test task
+        import re as _re2
+        chunks = _re2.split(r"(?=^diff --git )", spec.fix_patch, flags=_re2.M)
+        test_only = "".join(c for c in chunks
+                            if _re2.search(r"(^|/)tests?/|_test\.|test_.*\.py|\.test\.", c.split("\n", 1)[0]))
+        if test_only.strip():
+            (root / "tests" / "hidden_test.patch").write_text(test_only)
 
     # harness manifest for the docker nop/oracle promote gate (promote.py)
     import re as _re
@@ -251,6 +259,7 @@ def generate_task(spec: TaskSpec, out_dir: str) -> Dict[str, str]:
         "workdir": spec.anchor.workdir if spec.anchor else "/app",
         "verifier": spec.verifier.kind, "f2p": spec.verifier.f2p,
         "fix_files": fix_files, "test_cmd": spec.verifier.test_cmd, "has_patch": bool(spec.fix_patch),
+        "source_repo": spec.source_repo,
     }, indent=2))
 
     return {"task_dir": str(root), "manifest": str(Path(out_dir) / "manifest.yaml"),
