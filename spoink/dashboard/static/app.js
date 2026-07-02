@@ -522,12 +522,32 @@ function candRow(c) {
       const r = await api(`/api/candidates/${c.id}/generate`, { method: "POST" });
       if (r.status === "needs_publish") {          // evidence images not on GHCR yet
         const list = r.missing.map((m) => `${svcLabel(m.source)} → ${m.image}`).join("\n");
-        if (confirm(`These evidence images aren't published yet:\n\n${list}\n\nBake + push them to GHCR now? (Then Process → task again once they're done.)`)) {
-          for (const m of r.missing)
-            await api(`/api/runs/${m.run_id}/publish`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ image: m.image }) });
-          toast(`publishing ${r.missing.map((m) => svcLabel(m.source)).join(", ")} — watch Published, then Process → task again`);
+        if (!confirm(`These evidence images aren't published yet:\n\n${list}\n\nBake + push them to GHCR now? (needs Docker running + a GHCR login; can take a few minutes)`)) {
+          gen.disabled = false; return;
         }
-        gen.disabled = false; return;
+        const ids = r.missing.map((m) => m.run_id);
+        for (const m of r.missing)
+          await api(`/api/runs/${m.run_id}/publish`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ image: m.image }) });
+        gen.textContent = "Baking + pushing…";
+        // poll each run's publish outcome; auto-continue when all land, or surface the error
+        const poll = async () => {
+          const { runs } = await api("/api/runs");
+          let pending = 0, err = null;
+          for (const id of ids) {
+            const p = ((runs.find((x) => x.id === id) || {}).published) || {};
+            if (p.status === "error") err = `${id.slice(0, 8)}: ${p.error || "publish failed"}`;
+            else if (p.status !== "done") pending++;
+          }
+          if (err) { toast("Publish failed — " + err, true); gen.textContent = "Process → task"; gen.disabled = false; return; }
+          if (pending) { setTimeout(poll, 4000); return; }
+          toast("images published — generating task…");
+          const r2 = await api(`/api/candidates/${c.id}/generate`, { method: "POST" });
+          if (r2.task) { toast(`task generated: ${r2.task.name}`); loadCandidates(); }
+          else { gen.textContent = "Process → task"; gen.disabled = false; }
+        };
+        toast(`baking + pushing ${r.missing.map((m) => svcLabel(m.source)).join(", ")} to GHCR…`);
+        poll();
+        return;   // stay disabled while publishing
       }
       toast(`task generated: ${r.task.name}`); loadCandidates();
     } catch (e) { toast(e.message, true); gen.disabled = false; }
