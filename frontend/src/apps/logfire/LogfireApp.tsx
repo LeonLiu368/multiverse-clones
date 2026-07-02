@@ -221,17 +221,28 @@ export function LogfireApp({ appId }: { appId: string }) {
                   </div>
                 </div>
                 <div className="lf-waterfall">
+                  <div className="lf-waxis">
+                    <div className="lf-wlabel lf-waxis-label">Span</div>
+                    <div className="lf-wtrack">
+                      {[0, 0.25, 0.5, 0.75, 1].map((f, i) => (
+                        <span className="lf-tick" key={i} style={{ left: `${f * 100}%` }}>
+                          {fmtDur((trace.duration_ms || 0) * f)}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                   {trace.spans.map((s) => {
                     const max = trace.duration_ms || 1;
                     const left = Math.min(((s.offset_ms ?? 0) / max) * 100, 99);
-                    const width = Math.max((s.duration_ms / max) * 100, 0.6);
+                    const width = Math.max((s.duration_ms / max) * 100, 0.8);
+                    const labelRight = left > 62; // put the duration before the bar when it's far right
                     return (
                       <div
                         key={s.span_id}
                         className={`lf-wrow ${s.span_id === selSpan ? "sel" : ""}`}
                         onClick={() => setSelSpan(s.span_id)}
                       >
-                        <div className="lf-wlabel" style={{ paddingLeft: 8 + (s.depth ?? 0) * 16 }}>
+                        <div className="lf-wlabel" style={{ paddingLeft: 10 + (s.depth ?? 0) * 14 }}>
                           <span className={`lf-dot ${lvlClass(s.level_name)}`} />
                           {s.is_exception && <span className="lf-exc-ic">⚠</span>}
                           <span className="lf-wname">{s.name}</span>
@@ -243,7 +254,10 @@ export function LogfireApp({ appId }: { appId: string }) {
                             style={{ left: `${left}%`, width: `${width}%` }}
                             title={`${s.name} · ${fmtDur(s.duration_ms)}`}
                           />
-                          <span className="lf-wdur" style={{ left: `${Math.min(left + width + 1, 88)}%` }}>
+                          <span
+                            className={`lf-wdur ${labelRight ? "before" : ""}`}
+                            style={labelRight ? { right: `${100 - left + 1}%` } : { left: `${Math.min(left + width + 1, 90)}%` }}
+                          >
                             {fmtDur(s.duration_ms)}
                           </span>
                         </div>
