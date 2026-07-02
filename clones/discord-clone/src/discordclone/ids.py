@@ -90,6 +90,33 @@ def gen_snowflake() -> str:
     return _runtime.next()
 
 
+# A fixed base time (2020-01-01T00:00:00Z in ms) for synthesized ids that carry no
+# real creation time (generic datasets keyed only by a name/handle string).
+SYNTH_BASE_MS = 1577836800000
+
+
+def stable_snowflake(key: str, *, kind: str = "") -> str:
+    """A deterministic snowflake derived from a source key (e.g. an author handle or
+    channel name in a dataset that has no real snowflake).
+
+    The same ``(kind, key)`` always maps to the same snowflake, so re-importing the
+    same source is byte-identical (R1.6) and cross-references (a message's author →
+    the user row) resolve. The hash is folded into the low 22 bits (worker/process/
+    increment) over a spread of synthetic milliseconds above ``SYNTH_BASE_MS``, so
+    the value is a well-formed, monotone-decodable snowflake — never colliding with a
+    real Discord id range for the same string by accident.
+    """
+    import hashlib
+
+    h = int(hashlib.sha256(f"{kind}\x00{key}".encode()).hexdigest(), 16)
+    # Spread across ~ 2^31 ms (~24 days) above the base so distinct keys rarely share
+    # a ms; the low 22 bits carry the rest of the entropy.
+    ms = SYNTH_BASE_MS + (h % (1 << 31))
+    low = (h >> 31) & 0x3FFFFF  # 22 bits
+    rel = ms - DISCORD_EPOCH
+    return str((rel << 22) | low)
+
+
 def is_snowflake(value: str) -> bool:
     if not value:
         return False

@@ -16,6 +16,10 @@ discord channels get <chan> | messages <chan> [--limit --before --after --around
         | message <chan> <msg> | send <chan> -m "text" | pins <chan>
 discord reactions add <chan> <msg> <emoji> | list <chan> <msg> <emoji> [--limit --after]
 discord seed generate|load ...      # OFFLINE operator only — not an agent capability
+# Real-data corpus builder (operator only; no server admin — see docs/SEEDING.md):
+#   python -m discordclone.seed.build_corpus --from-data-package DIR --out discord_corpus.db
+#   python -m discordclone.seed.build_corpus --from-dataset FILE --map author=… content=… --out …
+#   python -m discordclone.seed.build_corpus --from-dce FILE [--anonymize] --out …
 ```
 
 ## `discord-mcp` (stdio MCP server)

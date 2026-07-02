@@ -55,6 +55,15 @@ def test_seed_generator_not_importable():
     assert r.returncode != 0 and "ModuleNotFoundError" in r.stderr
 
 
+def test_real_data_importer_not_importable():
+    # The no-admin real-data importer + corpus builder are OPERATOR-only (they live in
+    # discordclone.seed, stripped from the agent), so the agent can't build/regenerate
+    # a corpus from a source either.
+    for mod in ("discordclone.seed.importers", "discordclone.seed.build_corpus"):
+        r = _run("python3", "-c", f"import {mod}")
+        assert r.returncode != 0 and "ModuleNotFoundError" in r.stderr, mod
+
+
 def test_api_not_importable():
     r = _run("python3", "-c", "import discordclone.api")
     assert r.returncode != 0 and "ModuleNotFoundError" in r.stderr

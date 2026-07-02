@@ -55,12 +55,23 @@ tests:
   suite: tests/                           # every endpoint/CLI/MCP + parity + isolation
   runner: tests/test.sh                   # builds images, boots a gateway, runs pytest; writes reward.txt
   ci: .github/workflows/discord-service-image.yml
-  cold_boot: true                         # 75 tests green from a cold start (verified)
+  cold_boot: true                         # 85 unit tests green from a cold start (verified)
   nop_oracle_task: oddish/tasks/discord-incident-triage   # nop=0 / oracle=1 (verified local via REWARD_DIR)
+
+seeding_sources:                          # no-admin real-data importers (docs/SEEDING.md)
+  synthetic: seed.generator.generate      # deterministic fake guild (default corpus)
+  data_package: seed.importers.from_data_package   # Discord OFFICIAL Data Package (own account)
+  dataset: seed.importers.from_dataset             # generic public CSV/JSONL, --map columns
+  dce: seed.importers.from_dce                     # DiscordChatExporter JSON (user-token or bot)
+  anonymize: seed.importers.anonymize              # one-way user-PII scrub (default OFF)
+  cli: "python -m discordclone.seed.build_corpus"  # unified corpus builder
+  requires_server_admin: false            # none of the paths need Manage Server / a bot install
 
 operator_only:                            # deliberately NOT exposed to the agent (R2.g)
   - seed.generate
   - seed.load
+  - seed.importers            # from_data_package / from_dataset / from_dce / anonymize
+  - seed.build_corpus         # the real-data corpus builder CLI
   - _control.seed
   - _control.reset
 
