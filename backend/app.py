@@ -24,6 +24,7 @@ from adapters.gauge import GaugeAdapter
 from adapters.github import GithubAdapter
 from adapters.gworkspace import GworkspaceAdapter
 from adapters.jira import JiraAdapter
+from adapters.linear import LinearAdapter
 from adapters.logfire import LogfireAdapter
 from adapters.notion import NotionAdapter
 from adapters.sentry import SentryAdapter
@@ -31,7 +32,7 @@ from adapters.slack import SlackAdapter
 
 # --- registry: the one place clones are wired in -----------------------------
 ADAPTERS: dict[str, CloneAdapter] = {a.id: a for a in [
-    SlackAdapter(), JiraAdapter(), FigmaAdapter(), GaugeAdapter(), SentryAdapter(),
+    SlackAdapter(), JiraAdapter(), LinearAdapter(), FigmaAdapter(), GaugeAdapter(), SentryAdapter(),
     GithubAdapter(), LogfireAdapter(), GworkspaceAdapter(), NotionAdapter(), AwsAdapter(),
     DiscordAdapter(), EchoAdapter(),
 ]}

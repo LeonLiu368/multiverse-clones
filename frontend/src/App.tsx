@@ -11,6 +11,7 @@ import { GworkspaceApp } from "./apps/gworkspace/GworkspaceApp";
 import { NotionApp } from "./apps/notion/NotionApp";
 import { AwsApp } from "./apps/aws/AwsApp";
 import { DiscordApp } from "./apps/discord/DiscordApp";
+import { LinearApp } from "./apps/linear/LinearApp";
 import { GenericApp } from "./apps/GenericApp";
 import { BrandIcon } from "./apps/icons";
 
@@ -27,6 +28,7 @@ const APP_META: Record<string, { glyph: string; color: string; blurb: string }> 
   notion: { glyph: "N", color: "#000000", blurb: "Databases & pages (Notion fixture or notion.db)" },
   aws: { glyph: "A", color: "#232f3e", blurb: "S3 / SQS / DynamoDB / Lambda / IAM (aws-clone state.json)" },
   discord: { glyph: "D", color: "#5865f2", blurb: "Guild / channels / chat (Discord fixture or discord.db)" },
+  linear: { glyph: "L", color: "#5E6AD2", blurb: "Issues grouped by status (same ticketvector state.json)" },
   echo: { glyph: "E", color: "#1264a3", blurb: "Demo adapter (extension-point proof)" },
 };
 
@@ -104,6 +106,8 @@ export default function App() {
           <AwsApp appId={open.id} />
         ) : open.ui_module === "discord" ? (
           <DiscordApp appId={open.id} />
+        ) : open.ui_module === "linear" ? (
+          <LinearApp appId={open.id} />
         ) : (
           <GenericApp appId={open.id} />
         )}

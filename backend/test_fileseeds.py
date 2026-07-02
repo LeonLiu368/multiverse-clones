@@ -22,7 +22,7 @@ def _load_sample(app_id: str):
 
 def test_fileseed_clones_registered_active():
     apps = {a["id"]: a for a in client.get("/api/apps").json()}
-    for cid in ("figma", "gauge", "sentry", "github", "logfire", "gworkspace", "notion", "aws", "discord"):
+    for cid in ("figma", "gauge", "sentry", "github", "logfire", "gworkspace", "notion", "aws", "discord", "linear"):
         assert apps[cid]["status"] == "active" and apps[cid]["ui_module"] == cid
 
 
@@ -184,3 +184,16 @@ def test_discord_parses_guild_channels_messages():
     assert rx["emoji"] == "✅" and rx["count"] == 2 and set(rx["users"]) == {"mira", "sam"}
     bots = [u for u in v["users"] if u["bot"]]
     assert len(bots) == 2  # clone-bot + watchdog
+
+
+def test_linear_groups_issues_by_status_matching_real_graphql_shape():
+    """Mirrors abundant-jira-clone/linear/server.py's exact _build(state) mapping: priority
+    0-4 int scale, workflow-state category -> Linear type buckets, one team per project."""
+    v = _load_sample("linear")
+    assert v["team"]["key"] == "WEB" and v["stats"]["issues"] == 12
+    types = [g["type"] for g in v["groups"]]
+    assert types == sorted(types, key=["triage", "backlog", "unstarted", "started", "completed", "canceled"].index)
+    unstarted = next(g for g in v["groups"] if g["type"] == "unstarted")
+    issue = next(i for i in unstarted["issues"] if i["identifier"] == "WEB-3")
+    assert issue["priority"] == 4 and issue["priorityLabel"] == "Low"
+    assert issue["assignee"]["displayName"]

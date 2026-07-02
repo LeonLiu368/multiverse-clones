@@ -12,12 +12,13 @@ import logfire from "./logos/logfire.svg";
 import notion from "./logos/notion.svg";
 import aws from "./logos/aws.svg";
 import discord from "./logos/discord.svg";
+import linear from "./logos/linear.svg";
 import gdoc from "./logos/gdoc.svg";
 import gsheet from "./logos/gsheet.svg";
 import gslides from "./logos/gslides.svg";
 
 export const LOGO: Record<string, string> = {
-  slack, jira, figma, gauge, sentry, github, gworkspace, logfire, notion, aws, discord,
+  slack, jira, figma, gauge, sentry, github, gworkspace, logfire, notion, aws, discord, linear,
 };
 
 export function BrandIcon({ id, size = 40 }: { id: string; size?: number }) {

@@ -1,3 +1,8 @@
+/* Real product fonts (verified): Linear/Figma/Grafana/Notion ship Inter; Slack ships Lato. Both
+   are open (OFL) and hosted on Google Fonts, loaded here so those views render in the actual
+   typeface instead of an approximation. */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lato:wght@400;700;900&display=swap');
+
 :root {
   --aubergine: #3f0e40;
   --aubergine-hover: #350d36;
@@ -48,7 +53,7 @@ button { font-family: inherit; cursor: pointer; }
 .fatal { padding: 40px; color: #b00; }
 
 /* ---------------- slack ---------------- */
-.slack { display: flex; flex-direction: column; height: 100vh; }
+.slack { display: flex; flex-direction: column; height: 100vh; font-family: "Lato", var(--font-sans); }
 .slack-body { flex: 1; display: flex; min-height: 0; }
 
 /* seed/overlay bar */
@@ -284,7 +289,7 @@ button { font-family: inherit; cursor: pointer; }
 .ghost-btn.danger { color: #a3260b; }
 
 /* ---------------- figma (design file) ---------------- */
-.fig { display: flex; flex-direction: column; height: 100vh; }
+.fig { display: flex; flex-direction: column; height: 100vh; font-family: "Inter", var(--font-sans); }
 .fig-body { flex: 1; display: flex; min-height: 0; }
 .fig-left { width: 240px; background: #fff; border-right: 1px solid var(--border); overflow-y: auto; padding-bottom: 12px; }
 .fig-fileselect { width: calc(100% - 16px); margin: 8px; padding: 6px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; }
@@ -340,6 +345,7 @@ button { font-family: inherit; cursor: pointer; }
   --gf-text: #ccccdc; --gf-muted: #8e9097; --gf-blue: #6e9fff; --gf-link: #6e9fff;
   --gf-orange: #ff9830; --gf-green: #73bf69;
   display: flex; flex-direction: column; height: 100vh; background: var(--gf-bg); color: var(--gf-text);
+  font-family: "Inter", var(--font-sans);
 }
 .gauge .empty-state { color: var(--gf-muted); }
 .gauge .seedbar { background: var(--gf-panel); border-bottom: 1px solid var(--gf-border); }
@@ -428,7 +434,16 @@ button { font-family: inherit; cursor: pointer; }
 .se-ctx { display: block; font-family: var(--font-mono); font-size: 12px; background: #15121f; color: #d6cdef; padding: 7px 9px; border-radius: 6px; margin-top: 5px; white-space: pre-wrap; border: 1px solid var(--se-border); }
 
 /* ---------------- github (gh seed.sh) ---------------- */
-.ghv { display: flex; flex-direction: column; height: 100vh; }
+/* GitHub's own open-source (OFL) variable font; falls back to GitHub's real documented UI stack
+   if the CDN font fails to load, so the view stays authentic either way. */
+@font-face {
+  font-family: "Mona Sans";
+  src: url("https://cdn.jsdelivr.net/gh/github/mona-sans@main/fonts/webfonts/variable/MonaSansVF[wdth,opsz,wght].woff2") format("woff2");
+  font-weight: 200 900;
+  font-stretch: 75% 125%;
+  font-display: swap;
+}
+.ghv { display: flex; flex-direction: column; height: 100vh; font-family: "Mona Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
 .ghv-body { flex: 1; overflow-y: auto; }
 .ghv-toolbar { display: flex; gap: 8px; padding: 12px 18px; border-bottom: 1px solid var(--border); }
 .ghv-toolbar button { padding: 6px 14px; border: 1px solid var(--border); border-radius: 6px; background: #fff; font-size: 13px; }
@@ -663,7 +678,7 @@ button { font-family: inherit; cursor: pointer; }
   --nt-text: #37352f; --nt-muted: #9b9a97; --nt-border: #e9e9e7; --nt-hover: #f1f1ef;
   --nt-sidebar: #fbfbfa; --nt-sel: #ececeb;
   display: flex; flex-direction: column; height: 100vh; background: #fff; color: var(--nt-text);
-  font-family: ui-sans-serif, -apple-system, "Segoe UI", Helvetica, "Apple Color Emoji", sans-serif;
+  font-family: "Inter", ui-sans-serif, -apple-system, "Segoe UI", Helvetica, "Apple Color Emoji", sans-serif;
 }
 .notion .empty-state { color: var(--nt-muted); }
 .nt-body { flex: 1; display: flex; min-height: 0; }
@@ -829,3 +844,66 @@ button { font-family: inherit; cursor: pointer; }
 .dc-mem { display: flex; align-items: center; gap: 10px; padding: 4px 8px; border-radius: 5px; color: var(--dc-muted); }
 .dc-mem:hover { background: #35373c; color: var(--dc-text); }
 .dc-mem-name { font-size: 14.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ---------------- linear (issues grouped by status) — real Linear design language ----------------
+   Verified: Inter typeface throughout; brand color #5E6AD2 ("Magic Blue") reserved for the brand
+   mark, focus rings and primary actions only — the UI itself stays neutral gray/white. */
+.linear {
+  --ln-text: #23252a; --ln-muted: #8a8f98; --ln-border: #e8e8e9; --ln-hover: #f7f7f8;
+  --ln-sidebar: #fbfbfb; --ln-sel: #f4f4fb; --ln-accent: #5E6AD2;
+  display: flex; flex-direction: column; height: 100vh; background: #fff; color: var(--ln-text);
+  font-family: "Inter", var(--font-sans);
+}
+.linear .empty-state { color: var(--ln-muted); }
+.linear .seedbar button.primary { background: var(--ln-accent); border-color: var(--ln-accent); }
+.ln-body { flex: 1; display: flex; min-height: 0; }
+
+.ln-side { width: 230px; background: var(--ln-sidebar); border-right: 1px solid var(--ln-border); overflow-y: auto; padding: 10px 8px; flex-shrink: 0; }
+.ln-ws { font-size: 13px; font-weight: 600; padding: 6px 8px 10px; color: var(--ln-text); }
+.ln-nav { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 6px; font-size: 13.5px; color: var(--ln-muted); cursor: default; }
+.ln-nav.on { background: var(--ln-sel); color: var(--ln-accent); font-weight: 500; }
+.ln-nav-ic { font-size: 11px; }
+.ln-section { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; color: var(--ln-muted); padding: 16px 8px 6px; }
+.ln-team { display: flex; align-items: center; gap: 8px; padding: 4px 8px; font-size: 13.5px; }
+.ln-team-key { font-size: 10.5px; font-weight: 700; color: #fff; background: var(--ln-accent); border-radius: 4px; padding: 1px 5px; }
+.ln-member { display: flex; align-items: center; gap: 8px; padding: 4px 8px; border-radius: 6px; }
+.ln-member:hover { background: var(--ln-hover); }
+.ln-member-name { font-size: 13px; color: var(--ln-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.ln-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.ln-head { display: flex; align-items: center; gap: 8px; padding: 13px 20px; border-bottom: 1px solid var(--ln-border); }
+.ln-head-title { font-size: 14.5px; font-weight: 600; }
+.ln-head-count { font-size: 12.5px; color: var(--ln-muted); }
+.ln-scroll { flex: 1; overflow-y: auto; }
+.ln-group-head { display: flex; align-items: center; gap: 8px; padding: 10px 20px 6px; cursor: pointer; }
+.ln-caret { font-size: 10px; color: var(--ln-muted); transition: transform .1s; }
+.ln-caret.closed { transform: rotate(-90deg); }
+.ln-group-name { font-size: 13px; font-weight: 600; color: var(--ln-text); }
+.ln-group-count { font-size: 12px; color: var(--ln-muted); }
+.ln-row { display: flex; align-items: center; gap: 10px; padding: 7px 20px; cursor: pointer; border-bottom: 1px solid var(--ln-border); }
+.ln-row:hover { background: var(--ln-hover); }
+.ln-row.sel { background: var(--ln-sel); }
+.ln-id { font-size: 12.5px; color: var(--ln-muted); width: 56px; flex-shrink: 0; }
+.ln-title { flex: 1; min-width: 0; font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ln-label { font-size: 11px; color: var(--ln-text); background: var(--ln-hover); border: 1px solid var(--ln-border); border-radius: 4px; padding: 1px 7px; flex-shrink: 0; }
+.ln-updated { font-size: 12px; color: var(--ln-muted); width: 50px; text-align: right; flex-shrink: 0; }
+.ln-ava { border-radius: 50%; color: #fff; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.ln-ava-empty { background: var(--ln-hover); border: 1px dashed #c7c9cf; color: var(--ln-muted); font-weight: 400; }
+
+.ln-detail { width: 380px; flex-shrink: 0; background: #fff; border-left: 1px solid var(--ln-border); overflow-y: auto; padding: 18px 22px; }
+.ln-d-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.ln-close { background: none; border: none; color: var(--ln-muted); font-size: 13px; padding: 2px 6px; border-radius: 5px; }
+.ln-close:hover { background: var(--ln-hover); color: var(--ln-text); }
+.ln-d-title { font-size: 19px; font-weight: 600; margin: 0 0 12px; line-height: 1.35; }
+.ln-d-desc { font-size: 13.5px; line-height: 1.55; color: #4b4f57; white-space: pre-wrap; margin-bottom: 20px; }
+.ln-props { border-top: 1px solid var(--ln-border); padding-top: 10px; display: flex; flex-direction: column; gap: 2px; }
+.ln-prop-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; }
+.ln-prop-k { width: 78px; flex-shrink: 0; font-size: 12.5px; color: var(--ln-muted); }
+.ln-prop-v { display: flex; align-items: center; gap: 6px; font-size: 13px; min-width: 0; }
+.ln-prop-labels { flex-wrap: wrap; gap: 5px; }
+.ln-comments { border-top: 1px solid var(--ln-border); margin-top: 16px; padding-top: 14px; }
+.ln-comments-h { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; color: var(--ln-muted); margin-bottom: 10px; }
+.ln-comment { display: flex; gap: 9px; margin-bottom: 12px; }
+.ln-comment-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.ln-comment-a { font-size: 12.5px; font-weight: 600; }
+.ln-comment-t { font-size: 13px; color: #4b4f57; line-height: 1.5; white-space: pre-wrap; }
