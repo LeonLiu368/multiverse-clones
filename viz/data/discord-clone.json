@@ -1,0 +1,620 @@
+{
+  "clone": "discord-clone",
+  "product": "Discord",
+  "real_service": {
+    "name": "Discord REST API v10",
+    "reference": "https://discord.com/developers/docs/reference",
+    "api_base": "https://discord.com/api/v10"
+  },
+  "parity": {
+    "verdict": "HIGH (audited: meets clone-standard-v1, 0 P0)",
+    "note": "snowflake string ids, ISO-8601 timestamps, Bot-token auth, before/after/around pagination newest-first, real error codes (10003/10008/10004/50035), search results carry hit:true."
+  },
+  "capture_note": "captured via the clone's real FastAPI app (TestClient) on a temp copy of the committed baked corpus \u2014 the exact HTTP envelopes the gateway serves.",
+  "seed_file": "discord_corpus.db",
+  "surfaces": {
+    "cli": "discord",
+    "mcp": "discord-mcp"
+  },
+  "demos": [
+    {
+      "id": "list-channels",
+      "title": "List a guild's channels",
+      "method": "GET",
+      "capability": "Guild channels",
+      "seed_excerpt": {
+        "guilds": [
+          {
+            "id": "1102383887155331079",
+            "name": "Acme Engineering"
+          }
+        ],
+        "channels": [
+          {
+            "id": "1102383887155331080",
+            "name": "announcements",
+            "type": 0
+          },
+          {
+            "id": "1102383887155331081",
+            "name": "general",
+            "type": 0
+          },
+          {
+            "id": "1102383887155331082",
+            "name": "engineering",
+            "type": 0
+          }
+        ]
+      },
+      "ui": {
+        "type": "list",
+        "title": "Discord \u203a Acme Engineering",
+        "rows": [
+          {
+            "icon": "#",
+            "title": "announcements",
+            "sub": "1102383887155331080",
+            "tags": [
+              "Company-wide announcements"
+            ]
+          },
+          {
+            "icon": "#",
+            "title": "general",
+            "sub": "1102383887155331081",
+            "tags": [
+              "Team chatter"
+            ]
+          },
+          {
+            "icon": "#",
+            "title": "engineering",
+            "sub": "1102383887155331082",
+            "tags": [
+              "Eng discussion"
+            ]
+          },
+          {
+            "icon": "#",
+            "title": "incidents",
+            "sub": "1102383887155331083",
+            "tags": [
+              "Production incidents and postmortems"
+            ]
+          },
+          {
+            "icon": "#",
+            "title": "deploys",
+            "sub": "1102383887155331084",
+            "tags": [
+              "Deploy notifications"
+            ]
+          }
+        ]
+      },
+      "agent": {
+        "cli": "discord guilds channels 1102383887155331079",
+        "mcp": {
+          "tool": "discord_get_guild_channels",
+          "args": {
+            "guild_id": "1102383887155331079"
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "GET /guilds/{guild.id}/channels",
+        "mcp": "discord-mcp \u203a discord_get_guild_channels",
+        "doc": "https://discord.com/developers/docs/resources/guild#get-guild-channels"
+      },
+      "clone_output": [
+        {
+          "id": "1102383887155331080",
+          "type": 0,
+          "guild_id": "1102383887155331079",
+          "name": "announcements",
+          "topic": "Company-wide announcements",
+          "position": 0
+        },
+        {
+          "id": "1102383887155331081",
+          "type": 0,
+          "guild_id": "1102383887155331079",
+          "name": "general",
+          "topic": "Team chatter",
+          "position": 1
+        },
+        {
+          "id": "1102383887155331082",
+          "type": 0,
+          "guild_id": "1102383887155331079",
+          "name": "engineering",
+          "topic": "Eng discussion",
+          "position": 2
+        },
+        {
+          "id": "1102383887155331083",
+          "type": 0,
+          "guild_id": "1102383887155331079",
+          "name": "incidents",
+          "topic": "Production incidents and postmortems",
+          "position": 3
+        },
+        {
+          "id": "1102383887155331084",
+          "type": 0,
+          "guild_id": "1102383887155331079",
+          "name": "deploys",
+          "topic": "Deploy notifications",
+          "position": 4
+        }
+      ],
+      "real_output": [
+        {
+          "id": "1046156542114368061",
+          "type": 0,
+          "guild_id": "1046156542114368056",
+          "name": "incidents",
+          "topic": "live incident channel",
+          "position": 3,
+          "nsfw": false,
+          "rate_limit_per_user": 0,
+          "parent_id": null,
+          "permission_overwrites": []
+        }
+      ]
+    },
+    {
+      "id": "channel-history",
+      "title": "Read channel message history",
+      "method": "GET",
+      "capability": "Message history (before/after/around + limit, newest-first)",
+      "seed_excerpt": {
+        "messages": [
+          {
+            "id": "1102383887155331101",
+            "author": "sam",
+            "content": "confirmed: after TTL=300 the p99 is back under 400ms. closin"
+          },
+          {
+            "id": "1102383887155331100",
+            "author": "mira",
+            "content": "agreed, rolling it now"
+          },
+          {
+            "id": "1102383887155331099",
+            "author": "lena",
+            "content": "DECISION: set PRICING_CACHE_TTL back to 300 seconds and rede"
+          }
+        ]
+      },
+      "ui": {
+        "type": "chat",
+        "title": "Discord \u203a #incidents",
+        "messages": [
+          {
+            "user": "Watchdog",
+            "ts": "2023-05-01 00:00",
+            "text": "\ud83d\udea8 ALERT: checkout-service p99 latency > 3s for 10m (SEV-2)"
+          },
+          {
+            "user": "Mira Chen",
+            "ts": "2023-05-01 00:00",
+            "text": "on it. pulling the traces now"
+          },
+          {
+            "user": "Sam Rivera",
+            "ts": "2023-05-01 00:00",
+            "text": "looks like the new pricing cache is cold-missing on every request"
+          },
+          {
+            "user": "Mira Chen",
+            "ts": "2023-05-01 00:00",
+            "text": "root cause: PRICING_CACHE_TTL was set to 0 in the last deploy, so nothing caches"
+          },
+          {
+            "user": "Lena Fischer",
+            "ts": "2023-05-01 00:00",
+            "text": "DECISION: set PRICING_CACHE_TTL back to 300 seconds and redeploy checkout-service. This is the agreed remediation for incident INC-4471."
+          },
+          {
+            "user": "Mira Chen",
+            "ts": "2023-05-01 00:00",
+            "text": "agreed, rolling it now"
+          },
+          {
+            "user": "Sam Rivera",
+            "ts": "2023-05-01 00:00",
+            "text": "confirmed: after TTL=300 the p99 is back under 400ms. closing INC-4471."
+          }
+        ]
+      },
+      "agent": {
+        "cli": "discord channels messages 1102383887155331083 --limit 10",
+        "mcp": {
+          "tool": "discord_get_messages",
+          "args": {
+            "channel_id": "1102383887155331083",
+            "limit": 10
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "GET /channels/{channel.id}/messages?limit=10",
+        "mcp": "discord-mcp \u203a discord_get_messages",
+        "doc": "https://discord.com/developers/docs/resources/message#get-channel-messages"
+      },
+      "clone_output": [
+        {
+          "id": "1102383887155331101",
+          "type": 0,
+          "channel_id": "1102383887155331083",
+          "author": {
+            "id": "1102383887155331076",
+            "username": "sam",
+            "global_name": "Sam Rivera",
+            "discriminator": "0",
+            "avatar": null,
+            "bot": false
+          },
+          "content": "confirmed: after TTL=300 the p99 is back under 400ms. closing INC-4471.",
+          "timestamp": "2023-05-01T00:00:00+00:00",
+          "edited_timestamp": null,
+          "mentions": [],
+          "mention_everyone": false,
+          "mention_roles": [],
+          "attachments": [],
+          "embeds": [],
+          "reactions": [],
+          "pinned": false,
+          "tts": false
+        },
+        {
+          "id": "1102383887155331100",
+          "type": 0,
+          "channel_id": "1102383887155331083",
+          "author": {
+            "id": "1102383887155331073",
+            "username": "mira",
+            "global_name": "Mira Chen",
+            "discriminator": "0",
+            "avatar": null,
+            "bot": false
+          },
+          "content": "agreed, rolling it now",
+          "timestamp": "2023-05-01T00:00:00+00:00",
+          "edited_timestamp": null,
+          "mentions": [
+            {
+              "id": "1102383887155331075",
+              "username": "lena",
+              "global_name": "Lena Fischer",
+              "discriminator": "0",
+              "avatar": null,
+              "bot": false
+            }
+          ],
+          "mention_everyone": false,
+          "mention_roles": [],
+          "attachments": [],
+          "embeds": [],
+          "reactions": [],
+          "pinned": false,
+          "tts": false
+        },
+        {
+          "id": "1102383887155331099",
+          "type": 0,
+          "channel_id": "1102383887155331083",
+          "author": {
+            "id": "1102383887155331075",
+            "username": "lena",
+            "global_name": "Lena Fischer",
+            "discriminator": "0",
+            "avatar": null,
+            "bot": false
+          },
+          "content": "DECISION: set PRICING_CACHE_TTL back to 300 seconds and redeploy checkout-service. This is the agreed remediation for incident INC-4471.",
+          "timestamp": "2023-05-01T00:00:00+00:00",
+          "edited_timestamp": null,
+          "mentions": [],
+          "mention_everyone": false,
+          "mention_roles": [],
+          "attachments": [],
+          "embeds": [],
+          "reactions": [
+            {
+              "emoji": {
+                "id": null,
+                "name": "\u2705"
+              },
+              "count": 2,
+              "me": false
+            }
+          ],
+          "pinned": true,
+          "tts": false
+        }
+      ],
+      "real_output": [
+        {
+          "id": "1146245402942428712",
+          "channel_id": "1046156542114368061",
+          "author": {
+            "id": "80351110224678912",
+            "username": "sre.lena",
+            "global_name": "Lena",
+            "discriminator": "0",
+            "bot": false,
+            "avatar": null
+          },
+          "content": "confirmed: after TTL=300 the p99 is back under 400ms.",
+          "timestamp": "2026-06-07T12:04:11.000000+00:00",
+          "edited_timestamp": null,
+          "tts": false,
+          "mention_everyone": false,
+          "mentions": [],
+          "mention_roles": [],
+          "attachments": [],
+          "embeds": [],
+          "pinned": false,
+          "type": 0
+        }
+      ]
+    },
+    {
+      "id": "search-messages",
+      "title": "Search guild messages",
+      "method": "GET",
+      "capability": "messages/search param grammar (content/channel_id/author_id/has/pinned)",
+      "seed_excerpt": {
+        "needle": "root cause: PRICING_CACHE_TTL was set to 0 \u2026",
+        "channel": "#incidents"
+      },
+      "ui": {
+        "type": "chat",
+        "title": "Discord \u203a search: PRICING_CACHE_TTL",
+        "messages": [
+          {
+            "user": "Lena Fischer",
+            "ts": "2023-05-01 00:00",
+            "text": "DECISION: set PRICING_CACHE_TTL back to 300 seconds and redeploy checkout-service. This is the agreed remediation for incident INC-4471."
+          },
+          {
+            "user": "Mira Chen",
+            "ts": "2023-05-01 00:00",
+            "text": "root cause: PRICING_CACHE_TTL was set to 0 in the last deploy, so nothing caches"
+          }
+        ]
+      },
+      "agent": {
+        "cli": "discord guilds search 1102383887155331079 --content \"PRICING_CACHE_TTL\"",
+        "mcp": {
+          "tool": "discord_search_messages",
+          "args": {
+            "guild_id": "1102383887155331079",
+            "content": "PRICING_CACHE_TTL"
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "GET /guilds/{guild.id}/messages/search?content=",
+        "mcp": "discord-mcp \u203a discord_search_messages",
+        "doc": "https://discord.com/developers/docs/resources/guild"
+      },
+      "clone_output": {
+        "total_results": 2,
+        "messages": [
+          [
+            {
+              "id": "1102383887155331099",
+              "type": 0,
+              "channel_id": "1102383887155331083",
+              "author": {
+                "id": "1102383887155331075",
+                "username": "lena",
+                "global_name": "Lena Fischer",
+                "discriminator": "0",
+                "avatar": null,
+                "bot": false
+              },
+              "content": "DECISION: set PRICING_CACHE_TTL back to 300 seconds and redeploy checkout-service. This is the agreed remediation for incident INC-4471.",
+              "timestamp": "2023-05-01T00:00:00+00:00",
+              "edited_timestamp": null,
+              "mentions": [],
+              "mention_everyone": false,
+              "mention_roles": [],
+              "attachments": [],
+              "embeds": [],
+              "reactions": [
+                {
+                  "emoji": {
+                    "id": null,
+                    "name": "\u2705"
+                  },
+                  "count": 2,
+                  "me": false
+                }
+              ],
+              "pinned": true,
+              "tts": false,
+              "hit": true
+            }
+          ],
+          [
+            {
+              "id": "1102383887155331098",
+              "type": 0,
+              "channel_id": "1102383887155331083",
+              "author": {
+                "id": "1102383887155331073",
+                "username": "mira",
+                "global_name": "Mira Chen",
+                "discriminator": "0",
+                "avatar": null,
+                "bot": false
+              },
+              "content": "root cause: PRICING_CACHE_TTL was set to 0 in the last deploy, so nothing caches",
+              "timestamp": "2023-05-01T00:00:00+00:00",
+              "edited_timestamp": null,
+              "mentions": [],
+              "mention_everyone": false,
+              "mention_roles": [],
+              "attachments": [],
+              "embeds": [],
+              "reactions": [],
+              "pinned": false,
+              "tts": false,
+              "hit": true
+            }
+          ]
+        ]
+      },
+      "real_output": {
+        "total_results": 2,
+        "messages": [
+          [
+            {
+              "id": "1146245402942428708",
+              "channel_id": "1046156542114368061",
+              "author": {
+                "id": "80351110224678913",
+                "username": "oncall.raj",
+                "global_name": "Raj",
+                "discriminator": "0",
+                "bot": false,
+                "avatar": null
+              },
+              "content": "root cause: PRICING_CACHE_TTL was set to 0 in the last deploy",
+              "timestamp": "2026-06-07T11:41:03.000000+00:00",
+              "edited_timestamp": null,
+              "pinned": false,
+              "type": 0,
+              "hit": true
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "id": "send-message",
+      "title": "Send a message",
+      "method": "POST",
+      "capability": "Create message \u2014 write\u2192read round-trip (hydrated snowflake/timestamp/author)",
+      "seed_excerpt": {
+        "channel": "#deploys",
+        "messages_before": 2
+      },
+      "ui": {
+        "type": "chat",
+        "title": "Discord \u203a #deploys",
+        "messages": [
+          {
+            "user": "Watchdog",
+            "ts": "2023-05-01 00:00",
+            "text": "deploy: checkout-service v2.31.0 \u2192 prod \u2705"
+          },
+          {
+            "user": "Watchdog",
+            "ts": "2023-05-01 00:00",
+            "text": "deploy: checkout-service v2.31.1 (hotfix TTL) \u2192 prod \u2705"
+          },
+          {
+            "user": "Clone Bot",
+            "ts": "2026-07-02 21:49",
+            "text": "deploy: checkout-service v2.31.1 \u2192 prod \u2705 (TTL fix)"
+          }
+        ]
+      },
+      "agent": {
+        "cli": "discord channels send 1102383887155331084 \"deploy: checkout-service v2.31.1 \u2192 prod \u2705 (TTL fix)\"",
+        "mcp": {
+          "tool": "discord_send_message",
+          "args": {
+            "channel_id": "1102383887155331084",
+            "content": "deploy: checkout-service v2.31.1 \u2192 prod \u2705 (TTL fix)"
+          }
+        }
+      },
+      "real_mapping": {
+        "api": "POST /channels/{channel.id}/messages",
+        "mcp": "discord-mcp \u203a discord_send_message",
+        "doc": "https://discord.com/developers/docs/resources/message#create-message"
+      },
+      "clone_output": {
+        "id": "1522358516734623744",
+        "type": 0,
+        "channel_id": "1102383887155331084",
+        "author": {
+          "id": "900000000000000001",
+          "username": "clone-bot",
+          "global_name": "Clone Bot",
+          "discriminator": "0",
+          "avatar": null,
+          "bot": true
+        },
+        "content": "deploy: checkout-service v2.31.1 \u2192 prod \u2705 (TTL fix)",
+        "timestamp": "2026-07-02T21:49:14.443000+00:00",
+        "edited_timestamp": null,
+        "mentions": [],
+        "mention_everyone": false,
+        "mention_roles": [],
+        "attachments": [],
+        "embeds": [],
+        "reactions": [],
+        "pinned": false,
+        "tts": false
+      },
+      "real_output": {
+        "id": "1146245402942428999",
+        "channel_id": "1102383887155331084",
+        "author": {
+          "id": "900000000000000001",
+          "username": "clone-bot",
+          "global_name": "Clone Bot",
+          "discriminator": "0",
+          "bot": true,
+          "avatar": null
+        },
+        "content": "deploy: checkout-service v2.31.1 \u2192 prod \u2705 (TTL fix)",
+        "timestamp": "2026-06-07T12:30:00.000000+00:00",
+        "edited_timestamp": null,
+        "tts": false,
+        "mention_everyone": false,
+        "mentions": [],
+        "mention_roles": [],
+        "attachments": [],
+        "embeds": [],
+        "pinned": false,
+        "type": 0
+      },
+      "change": {
+        "before": [
+          {
+            "id": "1102383887155331102",
+            "text": "deploy: checkout-service v2.31.0 \u2192 prod \u2705"
+          },
+          {
+            "id": "1102383887155331103",
+            "text": "deploy: checkout-service v2.31.1 (hotfix TTL) \u2192 prod \u2705"
+          }
+        ],
+        "after": [
+          {
+            "id": "1102383887155331102",
+            "text": "deploy: checkout-service v2.31.0 \u2192 prod \u2705"
+          },
+          {
+            "id": "1102383887155331103",
+            "text": "deploy: checkout-service v2.31.1 (hotfix TTL) \u2192 prod \u2705"
+          },
+          {
+            "id": "1522358516734623744",
+            "text": "deploy: checkout-service v2.31.1 \u2192 prod \u2705 (TTL fix)"
+          }
+        ],
+        "new_id": "1522358516734623744"
+      }
+    }
+  ]
+}

@@ -6,6 +6,7 @@
     { "file": "sentry-clone.json", "product": "Sentry", "verdict": "HIGH", "accent": "#e1567c" },
     { "file": "abundant-logfire-clone.json", "product": "Logfire", "verdict": "HIGH", "accent": "#e520e5" },
     { "file": "abundant-slack-clone.json", "product": "Slack", "verdict": "HIGH", "accent": "#36c5f0" },
+    { "file": "discord-clone.json", "product": "Discord", "verdict": "HIGH", "accent": "#5865f2" },
     { "file": "gh-cli-clone.json", "product": "GitHub (gh)", "verdict": "HIGH", "accent": "#dfe4ea" },
     { "file": "abundant-jira-clone.json", "product": "Jira", "verdict": "LOW", "accent": "#2684ff" },
     { "file": "aws-clone.json", "product": "AWS", "verdict": "HIGH", "accent": "#ff9900" },

@@ -90,7 +90,7 @@ pre.code.wrap { white-space: pre-wrap; overflow-wrap: anywhere; overflow-x: visi
 .ui-row .tt { font-weight: 500; }
 .ui-row .ss { color: var(--dim2); font-size: 11px; font-family: var(--mono); }
 .ui-tags { margin-left: auto; display: flex; gap: 5px; }
-.ui-tag { font-size: 11px; padding: 1px 7px; border-radius: 10px; background: #202a3d; color: var(--dim); }
+.ui-tag { font-size: 11px; padding: 1px 7px; border-radius: 10px; background: #202a3d; color: var(--dim); max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* chart */
 .chart svg { width: 100%; height: 150px; display: block; }
 .chart .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 11px; padding: 8px 4px 2px; color: var(--dim); }
