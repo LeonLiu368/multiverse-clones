@@ -8,6 +8,8 @@ import { SentryApp } from "./apps/sentry/SentryApp";
 import { GithubApp } from "./apps/github/GithubApp";
 import { LogfireApp } from "./apps/logfire/LogfireApp";
 import { GworkspaceApp } from "./apps/gworkspace/GworkspaceApp";
+import { NotionApp } from "./apps/notion/NotionApp";
+import { AwsApp } from "./apps/aws/AwsApp";
 import { GenericApp } from "./apps/GenericApp";
 import { BrandIcon } from "./apps/icons";
 
@@ -21,6 +23,8 @@ const APP_META: Record<string, { glyph: string; color: string; blurb: string }> 
   github: { glyph: "G", color: "#24292f", blurb: "Repos/issues/PRs (gh seed.sh)" },
   logfire: { glyph: "🔥", color: "#e5202e", blurb: "Traces & spans (Logfire records.json)" },
   gworkspace: { glyph: "W", color: "#1a73e8", blurb: "Drive / Docs / Calendar / Gmail (gws fixture or gws.db)" },
+  notion: { glyph: "N", color: "#000000", blurb: "Databases & pages (Notion fixture or notion.db)" },
+  aws: { glyph: "A", color: "#232f3e", blurb: "S3 / SQS / DynamoDB / Lambda / IAM (aws-clone state.json)" },
   echo: { glyph: "E", color: "#1264a3", blurb: "Demo adapter (extension-point proof)" },
 };
 
@@ -92,6 +96,10 @@ export default function App() {
           <LogfireApp appId={open.id} />
         ) : open.ui_module === "gworkspace" ? (
           <GworkspaceApp appId={open.id} />
+        ) : open.ui_module === "notion" ? (
+          <NotionApp appId={open.id} />
+        ) : open.ui_module === "aws" ? (
+          <AwsApp appId={open.id} />
         ) : (
           <GenericApp appId={open.id} />
         )}

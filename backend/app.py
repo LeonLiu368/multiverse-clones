@@ -15,6 +15,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
 from pydantic import BaseModel
 
+from adapters.aws import AwsAdapter
 from adapters.base import CloneAdapter
 from adapters.echo import EchoAdapter
 from adapters.figma import FigmaAdapter
@@ -23,13 +24,15 @@ from adapters.github import GithubAdapter
 from adapters.gworkspace import GworkspaceAdapter
 from adapters.jira import JiraAdapter
 from adapters.logfire import LogfireAdapter
+from adapters.notion import NotionAdapter
 from adapters.sentry import SentryAdapter
 from adapters.slack import SlackAdapter
 
 # --- registry: the one place clones are wired in -----------------------------
 ADAPTERS: dict[str, CloneAdapter] = {a.id: a for a in [
     SlackAdapter(), JiraAdapter(), FigmaAdapter(), GaugeAdapter(), SentryAdapter(),
-    GithubAdapter(), LogfireAdapter(), GworkspaceAdapter(), EchoAdapter(),
+    GithubAdapter(), LogfireAdapter(), GworkspaceAdapter(), NotionAdapter(), AwsAdapter(),
+    EchoAdapter(),
 ]}
 
 app = FastAPI(title="seed-dashboard")

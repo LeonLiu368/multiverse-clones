@@ -1,0 +1,258 @@
+{
+  "meta": {
+    "account_id": "000000000000",
+    "region": "us-east-1",
+    "now": "2026-06-07T12:00:00Z"
+  },
+  "s3": {
+    "buckets": [
+      {
+        "name": "acme-payment-exports",
+        "objects": [
+          {
+            "key": "exports/2026-06-07/manifest.json",
+            "body_json": {
+              "batch_id": "pay-20260607",
+              "records": 128
+            },
+            "metadata": {
+              "owner": "payments"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "sqs": {
+    "queues": [
+      {
+        "name": "payment-webhook-retry",
+        "attributes": {
+          "VisibilityTimeout": "30",
+          "RedrivePolicy": "{\"deadLetterTargetArn\":\"arn:aws:sqs:us-east-1:000000000000:payment-webhook-dlq\",\"maxReceiveCount\":\"3\"}"
+        },
+        "messages": [
+          {
+            "id": "msg-001",
+            "body_json": {
+              "event_id": "evt_001",
+              "status_code": 409
+            },
+            "attributes": {
+              "error_type": "validation_conflict"
+            }
+          }
+        ]
+      },
+      {
+        "name": "payment-webhook-dlq",
+        "messages": []
+      }
+    ]
+  },
+  "sns": {
+    "topics": [
+      {
+        "name": "payment-events",
+        "subscriptions": [
+          {
+            "protocol": "sqs",
+            "endpoint_queue": "payment-webhook-retry",
+            "filter_policy": {
+              "event_type": [
+                "payment.webhook.failed"
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "dynamodb": {
+    "tables": [
+      {
+        "name": "payment-idempotency",
+        "key_schema": [
+          {
+            "AttributeName": "event_id",
+            "KeyType": "HASH"
+          }
+        ],
+        "attribute_definitions": [
+          {
+            "AttributeName": "event_id",
+            "AttributeType": "S"
+          }
+        ],
+        "billing_mode": "PAY_PER_REQUEST",
+        "items": [
+          {
+            "event_id": {
+              "S": "evt_001"
+            },
+            "state": {
+              "S": "scheduled"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "eventbridge": {
+    "rules": [
+      {
+        "name": "nightly-ledger-close",
+        "schedule": "cron(55 23 * * ? *)",
+        "targets": [
+          {
+            "id": "ledger-close-worker",
+            "arn": "arn:aws:lambda:us-east-1:000000000000:function:ledger-close"
+          }
+        ]
+      }
+    ]
+  },
+  "cloudwatch_logs": {
+    "groups": [
+      {
+        "name": "/aws/lambda/payment-webhook-worker",
+        "streams": [
+          {
+            "name": "2026/06/07/[$LATEST]abc",
+            "events": [
+              {
+                "timestamp": "2026-06-07T11:59:15Z",
+                "message": "RuntimeError unsafe retry for validation_conflict event=evt_001"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "ssm": {
+    "parameters": [
+      {
+        "name": "/payments/retry/max_attempts",
+        "type": "String",
+        "value": "3"
+      }
+    ]
+  },
+  "secretsmanager": {
+    "secrets": [
+      {
+        "name": "payments/provider/api-key",
+        "versions": [
+          {
+            "version_id": "v1",
+            "stages": [
+              "AWSPREVIOUS"
+            ]
+          },
+          {
+            "version_id": "v2",
+            "stages": [
+              "AWSCURRENT"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "iam": {
+    "roles": [
+      {
+        "name": "payment-worker-role",
+        "policies": [
+          {
+            "name": "payment-worker-policy",
+            "statements": [
+              {
+                "Effect": "Allow",
+                "Action": [
+                  "sqs:ReceiveMessage",
+                  "sqs:DeleteMessage"
+                ],
+                "Resource": "*"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "users": [
+      {
+        "name": "legacy-batch-uploader",
+        "policies": [
+          {
+            "name": "s3-read",
+            "statements": [
+              {"Effect": "Allow", "Action": ["s3:GetObject", "s3:ListBucket"], "Resource": "*"}
+            ]
+          }
+        ],
+        "access_keys": [{"status": "Active"}],
+        "credential_report": {
+          "user_creation_time": "2023-11-01T00:00:00+00:00",
+          "mfa_active": "false",
+          "access_key_1_active": "true",
+          "access_key_1_last_rotated": "2024-01-15T00:00:00+00:00",
+          "access_key_1_last_used_date": "2024-03-02T00:00:00+00:00",
+          "access_key_1_last_used_region": "us-east-1",
+          "access_key_1_last_used_service": "s3"
+        }
+      },
+      {
+        "name": "oncall-admin",
+        "password_enabled": true,
+        "mfa_enabled": true,
+        "credential_report": {
+          "user_creation_time": "2025-09-10T00:00:00+00:00",
+          "password_enabled": "true",
+          "mfa_active": "true"
+        }
+      }
+    ],
+    "access_denied_fixtures": [
+      {
+        "operation": "s3:GetObject",
+        "resource": "arn:aws:s3:::acme-payment-exports/private/*",
+        "message": "AccessDenied: role payment-worker-role cannot read private export prefix"
+      }
+    ]
+  },
+  "lambda": {
+    "functions": [
+      {
+        "function_name": "payment-webhook-worker",
+        "runtime": "python3.11",
+        "handler": "handler.main",
+        "role": "arn:aws:iam::000000000000:role/payment-worker-role",
+        "log_group": "/aws/lambda/payment-webhook-worker",
+        "event_source_mappings": [
+          {
+            "event_source_arn": "arn:aws:sqs:us-east-1:000000000000:payment-webhook-retry",
+            "batch_size": 10
+          }
+        ]
+      }
+    ]
+  },
+  "kinesis": {
+    "streams": [
+      {
+        "name": "payment-events-stream",
+        "shard_count": 2,
+        "retention_hours": 48,
+        "tags": {"team": "payments"},
+        "records": [
+          {"partition_key": "merchant-acme", "data_json": {"event": "capture", "amount_cents": 1299}},
+          {"partition_key": "merchant-acme", "data_json": {"event": "capture", "amount_cents": 4500}},
+          {"partition_key": "merchant-globex", "data_json": {"event": "refund", "amount_cents": 999}}
+        ]
+      }
+    ]
+  },
+  "mutation_log": []
+}

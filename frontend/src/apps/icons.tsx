@@ -9,12 +9,14 @@ import sentry from "./logos/sentry.svg";
 import github from "./logos/github.svg";
 import gworkspace from "./logos/gworkspace.svg";
 import logfire from "./logos/logfire.svg";
+import notion from "./logos/notion.svg";
+import aws from "./logos/aws.svg";
 import gdoc from "./logos/gdoc.svg";
 import gsheet from "./logos/gsheet.svg";
 import gslides from "./logos/gslides.svg";
 
 export const LOGO: Record<string, string> = {
-  slack, jira, figma, gauge, sentry, github, gworkspace, logfire,
+  slack, jira, figma, gauge, sentry, github, gworkspace, logfire, notion, aws,
 };
 
 export function BrandIcon({ id, size = 40 }: { id: string; size?: number }) {
