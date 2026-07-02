@@ -320,7 +320,9 @@ export function LogfireApp({ appId }: { appId: string }) {
                       <button className="lfx-d-close" onClick={() => setSelSpan("")}>✕</button>
                     </div>
                     <div className="lfx-d-top">
-                      <LevelIcon level={span.level_name} />
+                      <span className="lfx-d-top-ic">
+                        <LevelIcon level={span.level_name} />
+                      </span>
                       <span className="lfx-d-name">{span.name}</span>
                     </div>
                     <div className="lfx-d-sub">
