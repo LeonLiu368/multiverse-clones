@@ -158,16 +158,25 @@ def surface_leakage(overlays: List[str], resolution: Dict[str, Any],
     return Gate("surface_leakage", "pass", f"no answer tokens in served surfaces ({len(tokens)} checked)")
 
 
-def verifier_grounding(verifier_kind: str, f2p: List[str], has_tests: bool) -> Gate:
+def verifier_grounding(verifier_kind: str, f2p: List[str], has_tests: bool,
+                       grader_present: bool = False) -> Gate:
     if verifier_kind == "pytest_pr":
         if f2p:
             return Gate("verifier", "pass",
                         f"{len(f2p)} changed test file(s) target the fix; exact F2P/P2P derived at build")
         if has_tests:
             return Gate("verifier", "warn", "PR shipped tests but none were identified as F2P targets")
-        return Gate("verifier", "warn", "pytest_pr but no test files found — consider module_check")
+        return Gate("verifier", "fail",
+                    "pytest_pr but no test files and no F2P target — nothing to grade (oracle can't reach reward=1)")
     if verifier_kind == "module_check":
-        return Gate("verifier", "warn", "module_check needs a bespoke grader script (author it)")
+        # module_check needs a bespoke grader that prints reward=0/1. Without tests/grade.py the
+        # verifier calls a nonexistent script and EVERY grade (incl. the oracle) returns reward=0 —
+        # the task is unverifiable. This is a hard fail, not a warning.
+        if grader_present:
+            return Gate("verifier", "pass", "module_check with a bespoke grader (tests/grade.py) present")
+        return Gate("verifier", "fail",
+                    "module_check has no grader (tests/grade.py) — the fix can't be verified; author a grader "
+                    "or skip candidates whose PR shipped no test")
     return Gate("verifier", "warn", f"unrecognized verifier kind {verifier_kind!r}")
 
 
@@ -180,5 +189,7 @@ def validate_task(task_dir: str, *, bundle: str = "", resolution: Optional[Dict[
     rep.gates.append(contract_lint(task_dir))
     rep.gates.append(code_cut(bundle, resolution.get("head_sha", "")))
     rep.gates.append(surface_leakage(overlays or [], resolution, changed_files or [], title))
-    rep.gates.append(verifier_grounding(verifier_kind, f2p or [], bool(resolution.get("has_tests"))))
+    grader_present = (Path(task_dir) / "tests" / "grade.py").exists()
+    rep.gates.append(verifier_grounding(verifier_kind, f2p or [], bool(resolution.get("has_tests")),
+                                        grader_present=grader_present))
     return rep
