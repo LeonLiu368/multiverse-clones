@@ -20,8 +20,9 @@ async function boot() {
 }
 
 async function select(i, btn) {
-  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.nav button').forEach(b => { b.classList.remove('active'); b.removeAttribute('aria-current'); });
   btn.classList.add('active');
+  btn.setAttribute('aria-current', 'true');
   const c = INDEX.clones[i];
   if (!CACHE[c.file]) CACHE[c.file] = await (await fetch('data/' + c.file)).json();
   renderClone(CACHE[c.file], c);
@@ -49,7 +50,7 @@ function renderClone(m, c) {
 function renderDemo(d) {
   const card = el('div', 'demo');
   card.appendChild(el('div', 'demo-head',
-    `<span class="method ${d.method}">${d.method}</span><span class="t">${esc(d.title)}</span><span class="cap">${esc(d.capability || '')}</span>`));
+    `<span class="method ${d.method}">${d.method}</span><h2 class="t">${esc(d.title)}</h2><span class="cap">${esc(d.capability || '')}</span>`));
 
   const grid = el('div', 'grid');
   // Panel 1 — seed data + real-product UI render
@@ -68,7 +69,7 @@ function renderDemo(d) {
 
 function cell(title, n, html) {
   const cls = (n === 4) ? 'cell full' : 'cell';
-  return el('div', cls, `<h4><span class="n">${n}</span>${esc(title)}</h4>${html}`);
+  return el('div', cls, `<h3><span class="n" aria-hidden="true">${n}</span>${esc(title)}</h3>${html}`);
 }
 
 // ---------- code / json ----------
@@ -104,8 +105,8 @@ function compareBlock(real, clone) {
   const check = parityCheck(real, clone);
   return `${check.summaryHtml}<div class="parity-check">${check.chips}</div>
     <div class="cmp">
-      <div class="side real"><h5></h5>${jsonBlock(real)}</div>
-      <div class="side clone"><h5></h5>${jsonBlock(clone)}</div>
+      <div class="side real"><span class="side-tag">Real API</span>${jsonBlock(real)}</div>
+      <div class="side clone"><span class="side-tag">This clone</span>${jsonBlock(clone)}</div>
     </div>`;
 }
 // Parity = same response ENVELOPE (the set of field NAMES + their types), not literal values or
@@ -173,8 +174,8 @@ function changeBlock(d) {
     <div class="label" style="margin-top:14px">The clone's response to the write · vs the real API's shape</div>
     ${cmp.summaryHtml}<div class="parity-check">${cmp.chips}</div>
     <div class="cmp">
-      <div class="side real"><h5></h5>${jsonBlock(d.real_output)}</div>
-      <div class="side clone"><h5></h5>${jsonBlock(d.clone_output)}</div>
+      <div class="side real"><span class="side-tag">Real API</span>${jsonBlock(d.real_output)}</div>
+      <div class="side clone"><span class="side-tag">This clone</span>${jsonBlock(d.clone_output)}</div>
     </div>`;
 }
 
