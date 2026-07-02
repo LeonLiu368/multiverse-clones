@@ -242,12 +242,15 @@ def generate_task(spec: TaskSpec, out_dir: str) -> Dict[str, str]:
         (root / "solution" / "fix.patch").write_text(spec.fix_patch)
 
     # harness manifest for the docker nop/oracle promote gate (promote.py)
+    import re as _re
+    _is_test = lambda f: bool(_re.search(r"(^|/)tests?/|_test\.|test_.*\.py|\.test\.", f))
+    fix_files = [f for f in spec.changed_files if not _is_test(f)]   # the fix (non-test) files
     (root / ".promote.json").write_text(json.dumps({
         "base_commit": spec.anchor.commit if spec.anchor else "",
         "backend_subdir": spec.anchor.backend_subdir if spec.anchor else "",
         "workdir": spec.anchor.workdir if spec.anchor else "/app",
         "verifier": spec.verifier.kind, "f2p": spec.verifier.f2p,
-        "test_cmd": spec.verifier.test_cmd, "has_patch": bool(spec.fix_patch),
+        "fix_files": fix_files, "test_cmd": spec.verifier.test_cmd, "has_patch": bool(spec.fix_patch),
     }, indent=2))
 
     return {"task_dir": str(root), "manifest": str(Path(out_dir) / "manifest.yaml"),

@@ -22,22 +22,36 @@ from typing import Any, Dict, List
 RUNNER = r"""
 set -e
 cd /work
-git clone --quiet "$BUNDLE" repo 2>/dev/null || git clone --quiet --mirror "$BUNDLE" repo.git
-if [ -d repo.git ]; then git clone --quiet repo.git repo; fi
-cd repo && git checkout --quiet "$BASE" 2>/dev/null || true
-[ -n "$SUBDIR" ] && cd "$SUBDIR" || true
-pip -q install pytest 2>/dev/null || true          # the harness always needs a test runner
-# best-effort SUT deps
+git clone --quiet "$BUNDLE" repo 2>/dev/null || { git clone --quiet --mirror "$BUNDLE" repo.git && git clone --quiet repo.git repo; }
+REPO=/work/repo
+git -C "$REPO" checkout --quiet "$BASE" 2>/dev/null || true
+WORK="$REPO"; [ -n "$SUBDIR" ] && WORK="$REPO/$SUBDIR"
+cd "$WORK"
+# build the SUT INTO A VENV (uv), so tests run against its real deps — not system python
+PY=python3
 if [ -f uv.lock ] || grep -q '\[project\]' pyproject.toml 2>/dev/null; then
-  pip -q install uv 2>/dev/null && uv sync --quiet 2>/dev/null || pip -q install -e . 2>/dev/null || true
-elif [ -f requirements.txt ]; then pip -q install -r requirements.txt 2>/dev/null || true
-elif [ -f pyproject.toml ] || [ -f setup.py ]; then pip -q install -e . 2>/dev/null || true
+  pip -q install uv >/dev/null 2>&1 || true
+  # --all-extras/--all-groups pulls optional + dev deps (monorepos hide test deps like sqlalchemy there)
+  uv sync --all-extras --all-groups >/tmp/build 2>&1 || uv sync >/tmp/build 2>&1 || uv sync --no-dev >/tmp/build 2>&1 || true
+  [ -x "$WORK/.venv/bin/python" ] && PY="$WORK/.venv/bin/python"
+elif [ -f requirements.txt ]; then pip -q install -r requirements.txt >/tmp/build 2>&1 || true
+elif [ -f pyproject.toml ] || [ -f setup.py ]; then pip -q install -e . >/tmp/build 2>&1 || true
 fi
-run_tests() { python -m pytest $F2P -q -p no:cacheprovider >/tmp/out 2>&1; echo $?; }
-NOP=$(run_tests)                                  # expect NON-zero (fail on the bug)
-git apply --whitespace=nowarn /work/fix.patch 2>/dev/null || patch -p1 < /work/fix.patch 2>/dev/null || echo "PATCH_FAIL"
-ORACLE=$(run_tests)                               # expect zero (pass after the fix)
+"$PY" -m pip install -q pytest >/dev/null 2>&1 || true    # ensure a runner in the venv
+run_tests() { "$PY" -m pytest $F2P -q -p no:cacheprovider >/tmp/out 2>&1; echo $?; }
+# the PR often ADDS the failing test, so we can't run it at base directly. Instead:
+#  oracle = full patch (fix + new tests) applied -> tests PASS;
+#  nop    = same tree but the FIX files reverted to base -> the new tests FAIL (bug present).
+# patch is repo-relative -> apply from the repo root, not the build subdir.
+git -C "$REPO" apply --whitespace=nowarn /work/fix.patch 2>/tmp/patch || \
+  ( cd "$REPO" && patch -p1 < /work/fix.patch >/tmp/patch 2>&1 ) || echo "PATCH_FAIL"
+ORACLE=$(run_tests)                               # expect zero (pass with the fix)
+if [ -n "$FIX_FILES" ]; then git -C "$REPO" checkout "$BASE" -- $FIX_FILES 2>/tmp/revert || true; fi
+NOP=$(run_tests)                                  # expect NON-zero (fail once the fix is reverted)
 echo "SPOINK_RESULT nop_exit=$NOP oracle_exit=$ORACLE"
+echo "----- pytest (post-fix) tail -----"; tail -n 25 /tmp/out 2>/dev/null || true
+echo "----- build tail -----"; tail -n 8 /tmp/build 2>/dev/null || true
+echo "----- patch tail -----"; tail -n 5 /tmp/patch 2>/dev/null || true
 """
 
 
@@ -94,7 +108,7 @@ def promote_compose(task_dir: str, *, timeout: int = 2400) -> Dict[str, Any]:
         dc("down", "-v", "--remove-orphans", t=180)
 
 
-def promote(task_dir: str, *, python_image: str = "python:3.11-slim", timeout: int = 1800) -> Dict[str, Any]:
+def promote(task_dir: str, *, python_image: str = "python:3.13-slim", timeout: int = 1800) -> Dict[str, Any]:
     root = Path(task_dir)
     # prefer the FULL compose gate when the sidecar images are real (published)
     env = root / "environment"
@@ -116,8 +130,9 @@ def promote(task_dir: str, *, python_image: str = "python:3.11-slim", timeout: i
         return {"status": "errored", "detail": "no solution/fix.patch (no oracle to apply)"}
 
     f2p = " ".join(shlex.quote(t) for t in man["f2p"])
+    fix_files = " ".join(shlex.quote(f) for f in man.get("fix_files", []))
     env = ["-e", f"BASE={man.get('base_commit','')}", "-e", f"SUBDIR={man.get('backend_subdir','')}",
-           "-e", f"F2P={f2p}", "-e", "BUNDLE=/work/codebase.bundle"]
+           "-e", f"F2P={f2p}", "-e", f"FIX_FILES={fix_files}", "-e", "BUNDLE=/work/codebase.bundle"]
     # git is needed inside the container
     script = "apt-get update -qq >/dev/null 2>&1 && apt-get install -y -qq git >/dev/null 2>&1; " + RUNNER
     # promote is a build/test step (not the agent) — it needs network to install git + deps

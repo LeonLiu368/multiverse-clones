@@ -117,9 +117,12 @@ def spec_from_candidate(cand: Dict[str, Any], attached: List[Dict[str, Any]],
         full = Path(gh["overlay"]) / repo.replace("/", "__") / "git.bundle"
         # slice the SUT to the incident tip (fix EXCLUDED) + read the fix's changed files + the fix
         # PATCH (the oracle) from the full mirror — served bundle must not contain the answer (non-neg #2)
-        sliced, changed, patch = _prepare_sut(full, res["base_sha"], res.get("head_sha", ""))
-        changed_tests = [f for f in changed if re.search(r"(^|/)tests?/|_test\.|test_.*\.py|\.test\.", f)]
-        anchor = Anchor(bundle=str(sliced or full), commit=res["base_sha"])
+        sliced, changed, patch, subdir = _prepare_sut(full, res["base_sha"], res.get("head_sha", ""))
+        # test targets, made relative to the detected build root so pytest runs from there
+        pref = subdir + "/" if subdir else ""
+        changed_tests = [f[len(pref):] if f.startswith(pref) else f
+                         for f in changed if re.search(r"(^|/)tests?/|_test\.|test_.*\.py|\.test\.", f)]
+        anchor = Anchor(bundle=str(sliced or full), commit=res["base_sha"], backend_subdir=subdir)
 
     # the archetype gives this incident its task shape: instruction + verifier + kind (diversity)
     from . import archetypes as A
@@ -148,14 +151,14 @@ def _prepare_sut(full_bundle: Path, base_sha: str, head_sha: str):
     import subprocess
     import tempfile
     if not full_bundle.exists():
-        return None, [], ""
+        return None, [], "", ""
     tmp = tempfile.mkdtemp(prefix="spoink-sut-")
     changed: List[str] = []
-    patch = ""
+    patch, subdir = "", ""
     try:
         if subprocess.run(["git", "clone", "--quiet", "--mirror", str(full_bundle), tmp],
                           capture_output=True, text=True).returncode != 0:
-            return None, [], ""
+            return None, [], "", ""
         if head_sha:
             d = subprocess.run(["git", "-C", tmp, "diff", "--name-only", f"{base_sha}..{head_sha}"],
                                capture_output=True, text=True)
@@ -165,6 +168,14 @@ def _prepare_sut(full_bundle: Path, base_sha: str, head_sha: str):
                                capture_output=True, text=True)
             if p.returncode == 0:
                 patch = p.stdout
+        # detect the build root: the single top-level dir the fix touches that has a python manifest
+        tops = {f.split("/")[0] for f in changed if "/" in f}
+        if len(tops) == 1:
+            top = next(iter(tops))
+            ls = subprocess.run(["git", "-C", tmp, "ls-tree", "--name-only", f"{base_sha}", f"{top}/"],
+                                capture_output=True, text=True)
+            if any(m in ls.stdout for m in ("pyproject.toml", "uv.lock", "setup.py", "requirements.txt")):
+                subdir = top
         sliced = full_bundle.with_name("git.sliced.bundle")
         # a bare sha isn't a ref, and `git bundle` needs refs — point a branch at the incident tip,
         # then bundle history reachable from it (the fix commit is NOT included)
@@ -172,8 +183,8 @@ def _prepare_sut(full_bundle: Path, base_sha: str, head_sha: str):
                        capture_output=True, text=True)
         if subprocess.run(["git", "-C", tmp, "bundle", "create", str(sliced.resolve()), "incident-tip"],
                           capture_output=True, text=True).returncode == 0:
-            return sliced, changed, patch
-        return None, changed, patch
+            return sliced, changed, patch, subdir
+        return None, changed, patch, subdir
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 
