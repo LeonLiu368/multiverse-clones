@@ -68,11 +68,14 @@
       <section id="tab-tasks" class="tab">
         <p class="hint">Scan points in time for unresolved incidents, then snapshot &amp; process them into tasks.</p>
         <div class="disc-bar">
-          <select id="discFeed" class="tzsel" aria-label="feed"><option value="github_revert">GitHub revert/hotfix</option></select>
+          <label class="disc-lbl">Mine
+            <select id="discFeed" class="tzsel" aria-label="incident source and signal"><option value="github_revert">Revert / hotfix PR · fix (provable)</option></select>
+          </label>
           <input id="discOrg" value="abundant-ai" placeholder="org / owner" />
           <label class="disc-days">window <input id="discDays" type="number" value="120" /> d</label>
           <button id="discGo">Discover incidents</button>
         </div>
+        <p class="hint sm"><b>fix</b> — code task proven end-to-end (nop fails / oracle passes), no surfaces needed &nbsp;·&nbsp; <b>diagnose</b> — symptom-driven, graded by a hidden test, needs evidence surfaces attached at&nbsp;T.</p>
         <div class="grp-row"><h2 class="grp">Candidate queue</h2><button id="refreshCands" class="ghost sm">Refresh</button></div>
         <div id="candList" class="runs"></div>
         <p id="candEmpty" class="muted sm">No candidates yet — run Discover.</p>

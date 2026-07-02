@@ -380,6 +380,21 @@ FEED_ENV = {"github_revert": "GITHUB_TOKEN", "github_ci": "GITHUB_TOKEN",
             "logfire_anomaly": "LOGFIRE_READ_TOKEN",
             "slack_incident": "SLACK_USER_TOKEN", "linear_sev": "LINEAR_API_KEY"}
 
+# feed taxonomy (single source of truth for the UI). Every feed mines one SOURCE for one SIGNAL
+# and yields one task SHAPE:
+#   fix      — a code-fix task with an empirical nop/oracle proof (provable end-to-end, no surfaces).
+#   diagnose — a symptom-driven task graded by a HIDDEN test; needs evidence surfaces attached at T.
+# The old flat dropdown mixed source and signal on one axis; this makes both explicit so the picker
+# groups by source and shows what you actually get.
+FEED_META = {
+    "github_revert":   {"source": "github",  "signal": "Revert / hotfix PR",     "shape": "fix",      "provable": True},
+    "github_ci":       {"source": "github",  "signal": "CI failure → green",     "shape": "fix",      "provable": True},
+    "logfire_anomaly": {"source": "logfire", "signal": "Error / anomaly spike",  "shape": "diagnose", "provable": False},
+    "slack_incident":  {"source": "slack",   "signal": "Incident thread",        "shape": "diagnose", "provable": False},
+    "linear_sev":      {"source": "linear",  "signal": "SEV / incident ticket",  "shape": "diagnose", "provable": False},
+}
+SOURCE_LABEL = {"github": "GitHub", "logfire": "Logfire", "slack": "Slack", "linear": "Linear"}
+
 
 def discover(feed_name: str, token: str, **kw) -> List[Candidate]:
     fn = FEEDS.get(feed_name)

@@ -426,18 +426,36 @@ $("#refreshPub").onclick = loadPublished;
 // ---------------------------------------------------------------- task creator: candidate queue
 let DONE_RUNS = {};   // source -> [runs] for attach dropdowns
 
-const FEED_LABEL = { github_revert: "GitHub revert/hotfix", github_ci: "CI failure → fix", logfire_anomaly: "Logfire anomaly",
-                     slack_incident: "Slack incident thread", linear_sev: "Linear SEV ticket" };
+// Feeds are grouped by SOURCE (the system that holds the incident record); each option is the
+// SIGNAL mined there and is tagged with the task SHAPE it yields:
+//   fix      — a code-fix task proven end-to-end (nop fails / oracle passes); no surfaces needed.
+//   diagnose — a symptom-driven task graded by a hidden test; attach evidence surfaces at T.
+const SRC_ORDER = ["github", "logfire", "slack", "linear"];   // provable code sources first
 async function loadFeeds() {
   const sel = $("#discFeed"); if (sel.dataset.loaded) return;
   try {
     const { feeds } = await api("/api/feeds");
+    const bySrc = {};
+    for (const f of feeds) (bySrc[f.source] ||= []).push(f);
+    const srcs = Object.keys(bySrc).sort(
+      (a, b) => (SRC_ORDER.indexOf(a) + 1 || 99) - (SRC_ORDER.indexOf(b) + 1 || 99));
     sel.innerHTML = "";
-    for (const f of feeds) {
-      const o = el("option", { value: f.name, textContent: (FEED_LABEL[f.name] || f.name) + (f.has_key ? "" : " (no key)") });
-      if (!f.has_key) o.disabled = true;
-      sel.append(o);
+    for (const src of srcs) {
+      const g = el("optgroup", { label: bySrc[src][0].source_label });
+      for (const f of bySrc[src]) {
+        const tag = f.provable ? "· fix (provable)" : "· diagnose (needs surfaces)";
+        const o = el("option", { value: f.name,
+          textContent: `${f.signal}  ${tag}${f.has_key ? "" : " — no key"}` });
+        o.title = f.provable
+          ? "Yields a code-fix task proven end-to-end: nop fails, oracle passes. No surfaces required."
+          : "Yields a symptom-driven task graded by a hidden test — attach evidence surfaces at T.";
+        if (!f.has_key) o.disabled = true;
+        g.append(o);
+      }
+      sel.append(g);
     }
+    const firstOk = feeds.find((f) => f.has_key && f.provable) || feeds.find((f) => f.has_key);
+    if (firstOk) sel.value = firstOk.name;
     sel.dataset.loaded = "1";
   } catch { /* keep the static option */ }
 }

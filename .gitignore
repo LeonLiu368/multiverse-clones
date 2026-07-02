@@ -10,3 +10,7 @@ slack-export/
 # spoink dashboard capture artifacts (real company data)
 runs/
 .gstack/
+
+# spoink farm output + local preview config
+task-bank/
+.claude/

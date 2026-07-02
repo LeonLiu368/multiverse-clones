@@ -408,9 +408,13 @@ button.sm { padding: 5px 11px; font-size: 12px; }
 .pub-status.ok { color: var(--ok); } .pub-status.err { color: var(--err); } .pub-status.busy { color: var(--warn); }
 
 /* ---------------------------------------------------------- Task Creator: discovery + candidates */
-.disc-bar { display: flex; gap: 8px; align-items: center; margin: 4px 0 18px; flex-wrap: wrap; }
+.disc-bar { display: flex; gap: 8px; align-items: center; margin: 4px 0 10px; flex-wrap: wrap; }
 .disc-bar input, .disc-bar select { background: var(--panel2); }
 .disc-bar #discOrg { flex: 1; min-width: 160px; }
+.disc-lbl { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 12px; white-space: nowrap; }
+.disc-lbl select { min-width: 230px; }
+.hint.sm { font-size: 12px; margin: 0 0 18px; }
+.hint.sm b { color: var(--fg); font-weight: 600; }
 .disc-days { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 12px; white-space: nowrap; }
 .disc-days input { width: 64px; }
 .cand .cand-score { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; height: 20px;

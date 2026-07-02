@@ -347,7 +347,12 @@ def feeds_list():
     out = []
     for name in sorted(disc.FEEDS):
         env = disc.FEED_ENV.get(name, "GITHUB_TOKEN")
-        out.append({"name": name, "env": env, "has_key": bool(os.environ.get(env))})
+        meta = disc.FEED_META.get(name, {})
+        src = meta.get("source", "github")
+        out.append({"name": name, "env": env, "has_key": bool(os.environ.get(env)),
+                    "source": src, "source_label": disc.SOURCE_LABEL.get(src, src.title()),
+                    "signal": meta.get("signal", name), "shape": meta.get("shape", "fix"),
+                    "provable": meta.get("provable", False)})
     return {"feeds": out}
 
 
