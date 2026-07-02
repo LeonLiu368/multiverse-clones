@@ -1,0 +1,32 @@
+# The thin `discord-agent` image (R2.c) — tools ONLY, zero data, zero server source.
+#
+# An agent task's `main` container builds `FROM` this. It ships the `discord` CLI and
+# the `discord-mcp` MCP server (both thin HTTP clients over discordclone.client) but
+# NOT the API server (`api/`) or the seed system (`seed/`, incl. the synthetic
+# generator) — so the agent box carries no seedable data and no source an agent could
+# grep for (or regenerate) an answer (R2.k leak rule). A build-time smoke test asserts
+# the server/seed modules are absent and the clients still load.
+FROM python:3.12-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends curl jq \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /tmp/build
+COPY pyproject.toml README.md ./
+COPY src ./src
+RUN pip install --no-cache-dir ".[mcp]" && \
+    PKG="$(python -c 'import discordclone, os; print(os.path.dirname(discordclone.__file__))')" && \
+    rm -rf "$PKG/api" "$PKG/seed" && \
+    rm -rf /tmp/build && \
+    # smoke test: data-free agent (no server/seed source, generator not importable) + clients still load
+    test ! -e "$PKG/api" && test ! -e "$PKG/seed" && \
+    ! python -c "import discordclone.seed" 2>/dev/null && \
+    ! python -c "import discordclone.api"  2>/dev/null && \
+    discord --help >/dev/null && \
+    python -c "import discordclone.cli.main, discordclone.mcp.server, discordclone.client" && \
+    echo "thin discord-agent OK (no api/, no seed/ source; generator not importable)"
+
+ENV DISCORD_API_URL=http://discord:8080 \
+    DISCORD_BOT_TOKEN=discord-clone-token
+WORKDIR /app
+CMD ["sleep", "infinity"]

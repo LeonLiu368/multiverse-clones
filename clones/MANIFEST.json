@@ -35,6 +35,14 @@
       "strategy": "authored-in-tree",
       "note": "Handwritten T2 Notion clone authored directly in this monorepo (no upstream OSS); built to clone-standard-v1 via the clone-creation skill."
     },
+    "discord-clone": {
+      "repo": null,
+      "branch": "main",
+      "commit": null,
+      "strategy": "authored-in-tree",
+      "spec": "clone-spec.yaml",
+      "note": "Handwritten T2 Discord REST API v10 clone authored directly in this monorepo (no upstream OSS); snowflake ids, ISO timestamps, before/after/around message pagination, and a real messages/search param grammar. Built to clone-standard-v1 via the clone-creation skill."
+    },
     "grafana-clone": {
       "repo": "https://github.com/abundant-ai/grafana-clone",
       "branch": "main",

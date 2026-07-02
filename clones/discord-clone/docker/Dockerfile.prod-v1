@@ -1,0 +1,14 @@
+# discord-service:prod-v1 (R2.j) — the base service with a REAL corpus DB baked in.
+#
+# FROM the data-free base; bake a pre-built SQLite corpus to $DISCORD_DB. The
+# entrypoint serves an existing $DISCORD_DB as-is and skips seeding, so this image
+# needs NO fixture mount — it serves the full corpus out of the box (this is the
+# "GHCR image DB seeding" path). A task switches empty↔prod-v1 by the image tag
+# alone; on prod-v1 any per-task fixture mount is ignored because the baked DB
+# already exists. Build context must contain `discord_corpus.db`.
+ARG BASE=ghcr.io/abundant-ai/discord-service:latest
+FROM ${BASE}
+
+COPY discord_corpus.db /srv/discord.db
+ENV DISCORD_DB=/srv/discord.db
+# (entrypoint, port, etc. inherited from the base)

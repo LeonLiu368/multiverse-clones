@@ -1,0 +1,40 @@
+[project]
+name = "discordclone"
+version = "0.1.0"
+description = "A Discord-faithful service clone for Harbor/Oddish agent-eval environments"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "sqlalchemy>=2.0",
+    "typer>=0.12",
+    "httpx>=0.27",
+    "python-multipart>=0.0.9",
+]
+
+[project.optional-dependencies]
+# The MCP server is opt-in so the discord-service image stays lean; the agent
+# client installs `.[mcp]` to get the discord-mcp stdio server.
+mcp = [
+    "mcp>=1.0",
+]
+dev = [
+    "pytest>=8.0",
+    "mcp>=1.0",
+]
+
+[project.scripts]
+discord = "discordclone.cli.main:app"
+discord-mcp = "discordclone.mcp.server:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/discordclone"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

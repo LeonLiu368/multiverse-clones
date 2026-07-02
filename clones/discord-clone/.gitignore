@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+/discord.db
+# The prod corpus is a build input for discord-service:prod-v1 — keep it tracked
+# even though the repo-root .gitignore has a blanket `*.db`.
+!discord_corpus.db

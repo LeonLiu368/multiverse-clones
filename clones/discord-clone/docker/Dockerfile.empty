@@ -1,0 +1,9 @@
+# discord-service:empty (R2.b) — the data-free mount target.
+#
+# Identical to the base service image, retagged ":empty" for the canon's image trio.
+# It carries NO corpus; a task supplies a per-task guild by mounting a fixture.json
+# into the container (DISCORD_FIXTURE) or via the token-gated /_control/seed plane.
+# Switching a task empty↔prod-v1 is the image tag alone.
+ARG BASE=ghcr.io/abundant-ai/discord-service:latest
+FROM ${BASE}
+# (entrypoint, port, env all inherited from the base)

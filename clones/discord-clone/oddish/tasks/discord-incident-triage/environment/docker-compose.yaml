@@ -1,0 +1,39 @@
+# Two-container task: a thin agent (main) + the discord gateway sidecar (prod-v1).
+#   main    — the agent, built by Harbor FROM discord-agent (tools only; the codebase
+#             is added by this task's environment/Dockerfile). Reaches the gateway
+#             ONLY over HTTP at http://discord:8080.
+#   discord — the gateway sidecar. `build:`+`image:` DUAL (R1.5): compose builds the
+#             prod-v1 gateway (corpus baked in) from the clone's Dockerfile and tags
+#             the SAME pullable GHCR name, so a clean host needs no registry pull and
+#             no creds. Where the GHCR package IS published, the image is pulled as-is.
+# The corpus lives in the gateway only — never on the agent. No `networks:` block
+# (Harbor injects network_mode on main); service-name DNS still resolves `discord`.
+# No hard `platform:` pin — builds/runs native on the host arch (amd64 or arm64).
+services:
+  main:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${MAIN_IMAGE_NAME:-discord-incident-triage-main:local}
+    environment:
+      - DISCORD_API_URL=http://discord:8080
+      - DISCORD_BOT_TOKEN=discord-clone-token
+    depends_on:
+      discord:
+        condition: service_healthy
+
+  discord:
+    # build:+image: dual — builds the prod-v1 gateway locally and tags the pullable
+    # name (context is the clone root, three levels up from this environment/ dir).
+    build:
+      context: ../../../..
+      dockerfile: docker/Dockerfile.prod-v1.standalone
+    image: ghcr.io/abundant-ai/discord-service:prod-v1
+    expose:
+      - "8080"
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8080/health')\" || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s

@@ -1,0 +1,32 @@
+# discord-service:prod-v1, SELF-CONTAINED (no pre-built base tag needed).
+#
+# Identical result to Dockerfile.prod-v1 (base + baked corpus) but buildable in ONE
+# `docker build` / `docker compose build` pass from the clone root, with no dependency
+# on a previously-tagged `discord-service` base image. This is what lets a task's
+# `discord` gateway carry a `build:`+`image:` dual (R1.5): compose builds and tags the
+# pullable GHCR name locally, so a clean host needs neither a registry pull nor creds.
+#
+# Build context MUST be the clone root (contains src/, pyproject.toml, discord_corpus.db).
+FROM python:3.12-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends curl jq \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /opt/discordclone
+COPY pyproject.toml README.md ./
+COPY src ./src
+RUN pip install --no-cache-dir ".[mcp]"
+
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Bake the prod corpus DB so the gateway serves it mount-free (R2.j).
+COPY discord_corpus.db /srv/discord.db
+
+ENV DISCORD_DB=/srv/discord.db \
+    DISCORD_FIXTURE=/srv/fixture.json \
+    PORT=8080
+EXPOSE 8080
+
+# NB: do NOT set DISCORD_CONTROL_TOKEN here — leaving it unset keeps /_control/* disabled (404).
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

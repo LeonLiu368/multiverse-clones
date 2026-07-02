@@ -1,0 +1,72 @@
+clone: discord-clone
+service: Discord REST API v10
+standard_version: clone-standard-v1
+fidelity_tier: T2                         # handwritten SQLite gateway + a real messages/search param grammar
+backed_by: handwritten                    # no faithful self-hostable Discord OSS exists
+
+# The two runtime containers: agent (built by Harbor) + gateway (pulled/seeded).
+gateway:
+  registry: ghcr.io/abundant-ai
+  base:  discord-service                  # REST API + discord CLI/MCP tools, NO data (R2.a)
+  prod:  discord-service:prod-v1          # corpus DB baked into the image (R2.j)
+  empty: discord-service:empty            # no data, a mount target (R2.b)
+  port: 8080
+  arches: [linux/amd64, linux/arm64]      # multi-arch publish declared in CI (R2.k)
+  build_image_dual: true                  # task's `discord` gateway carries build:+image: (docker/Dockerfile.prod-v1.standalone), so compose tags the pullable prod-v1 name locally with no creds (R1.5)
+  build_dockerfile: docker/Dockerfile.prod-v1.standalone   # self-contained prod-v1 (base + corpus in one pass) used by the compose build:
+agent:
+  built_from: oddish/tasks/discord-incident-triage/environment/Dockerfile
+  base: python:3.12-slim                  # neutral base; only the thin clients, no api/ no seed/
+  data_free: true
+
+seeding:                                  # BOTH paths exist
+  baked_db:                               # GHCR image DB seeding (the headline path)
+    image: discord-service:prod-v1
+    corpus_copy: "COPY discord_corpus.db /srv/discord.db"
+    serves_mount_free: true               # boots & serves the corpus with NO fixture mount (verified)
+  mount:                                  # empty + per-task fixture
+    image: discord-service:empty
+    fixture_env: DISCORD_FIXTURE          # mounted into the GATEWAY only, never the agent
+    control_plane: /_control/seed         # token-gated alt path (DISCORD_CONTROL_TOKEN)
+
+run:
+  compose: oddish/tasks/discord-incident-triage/environment/docker-compose.yaml
+  service_name: discord                   # gateway name the agent reaches over HTTP
+  health_url: http://discord:8080/health
+  agent_service: main
+  env: [DISCORD_API_URL, DISCORD_BOT_TOKEN]   # documented env vars; nothing else needed to boot
+
+isolation:
+  agent_state_path: /srv/discord.db       # MUST NOT exist in the agent container (set as CLONE_STATE_PATH)
+  not_importable: [discordclone.seed, discordclone.api]  # seed/generator + api unreachable from the agent (R6.3/R2.k)
+  networks_exception: null                # no networks: block; Harbor injects network_mode
+
+surfaces:                                 # R3 — both thin clients of one HTTP API
+  http_api: src/discordclone/api          # the single source of truth
+  shared_client: src/discordclone/client.py
+  cli:  { name: discord, entry: "discordclone.cli.main:app", commands: 17 }   # 15 agent + 2 offline seed (operator)
+  mcp:  { name: discord-mcp, entry: "discordclone.mcp.server:main", tools: 15 }
+
+coverage_matrix: docs/COVERAGE.md         # R4
+assessment_grade_count: 6                 # R5 (need >=5)
+round_trip_task: oddish/tasks/discord-incident-triage   # write->read round-trip (R5.2)
+
+tests:
+  suite: tests/                           # every endpoint/CLI/MCP + parity + isolation
+  runner: tests/test.sh                   # builds images, boots a gateway, runs pytest; writes reward.txt
+  ci: .github/workflows/discord-service-image.yml
+  cold_boot: true                         # 75 tests green from a cold start (verified)
+  nop_oracle_task: oddish/tasks/discord-incident-triage   # nop=0 / oracle=1 (verified local via REWARD_DIR)
+
+operator_only:                            # deliberately NOT exposed to the agent (R2.g)
+  - seed.generate
+  - seed.load
+  - _control.seed
+  - _control.reset
+
+real_service:                            # R4.0 — named real API this clone is measured against
+  name: Discord REST API v10
+  api_base: https://discord.com/api/v10
+  reference: https://discord.com/developers/docs/reference
+  version: v10
+  snapshot_date: 2026-07-02

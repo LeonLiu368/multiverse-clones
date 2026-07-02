@@ -1,0 +1,111 @@
+{
+  "clone": "discord-clone",
+  "audited_at": "2026-07-02",
+  "standard_version": "clone-standard-v1",
+  "fidelity_tier": { "declared": "T2", "observed": "T2" },
+  "meets_standard": true,
+  "gating_passed": 6,
+  "gating_total": 6,
+  "requirements": {
+    "R1": {
+      "result": "pass",
+      "gating": true,
+      "evidence": "INDEPENDENTLY RE-RUN. Docker IS available here (Docker Desktop 4.55, engine linux/arm64). Built the image trio + agent locally, then booted the real two-container task pair via the compose + harbor-main-build override: discaudit-discord-1 reached healthy and discaudit-main-1 (agent) reached it by service name over HTTP. prod-v1 serves the corpus MOUNT-FREE (guild 'Acme Engineering' id 1102383887155331079; search content=PRICING_CACHE_TTL -> total_results=2). Ran nop (no agent action) -> reward.txt=0.0 ('PRICING_CACHE_TTL is 0, expected 300'); ran solution/solve.sh then verifier -> reward.txt=1.0 ('config fixed + remediation posted & read back'). No networks: block (R1.4). R1.5 dual is the caveat below.",
+      "sub": { "R1.1": "pass", "R1.2": "pass", "R1.3": "pass", "R1.4": "pass", "R1.5": "partial", "R1.6": "pass" }
+    },
+    "R2": {
+      "result": "pass",
+      "gating": true,
+      "evidence": "INDEPENDENTLY RE-RUN. Image trio builds: discord-service (base), :empty (booted with DISCORD_DB unset -> serves [] guilds, data-free), :prod-v1 (corpus baked, serves mount-free). Leak rule (R2.k) fully holds against the built agent image: (1) docker run agent grep -rs -e 300 -e PRICING_CACHE_TTL -e INC-4471 /opt /app /usr/local -> empty; (2) import discordclone.seed, import discordclone.api, import discordclone.seed.generator all raise ModuleNotFoundError; (3) find for */discordclone/{seed,api}* -> empty; no *.db on disk, /srv empty. World-building boundary (R2.g) confirmed: the agent CLI still lists a seed group but invoking it raises ModuleNotFoundError (inert in agent, functional only in gateway). Multi-arch: CI declares linux/amd64,linux/arm64 but the GHCR package is NOT published (manifest unknown) -> multi-arch scored n/a-unverified per the standard's local-build carve-out; NOT a fail.",
+      "sub": { "a": "pass", "b": "pass", "c": "pass", "d": "pass", "e": "pass", "f": "pass", "g": "pass", "j": "pass", "k": "pass" }
+    },
+    "R3": {
+      "result": "pass",
+      "gating": true,
+      "evidence": "INDEPENDENTLY RE-RUN. discord CLI (5 groups: guilds/channels/users/reactions + offline seed) = 15 agent capabilities; discord-mcp exposes exactly 15 tools (live await srv.list_tools() -> 15). Both are thin clients of the SAME DiscordClient (mcp/server.py: every @mcp.tool wraps _call(lambda c: c.<method>()), identical seam the CLI uses) over one FastAPI HTTP API -> cannot drift by construction (R3.2). Live parity spot-check inside the agent container: CLI 'guilds search ... --content PRICING_CACHE_TTL' and MCP discord_search_messages both returned total_results=3 against the same gateway. 35 parametrized parity tests pass.",
+      "sub": { "R3.1": "pass", "R3.2": "pass", "R3.3": "pass", "R3.4": "pass" }
+    },
+    "R4": {
+      "result": "pass",
+      "gating": true,
+      "evidence": "INDEPENDENTLY RE-RUN. docs/COVERAGE.md opens with the R4.0 Real service block (Discord REST API v10, api_base https://discord.com/api/v10, reference URL, version, snapshot_date) mirrored in clone-spec.yaml real_service. 15-capability matrix maps endpoint->CLI->MCP->envelope. Envelope fidelity verified LIVE against the gateway and cross-checked vs real Discord: 401 body {code:0,message:'401: Unauthorized'}; snowflake string ids; ISO-8601 +00:00 timestamps; message history newest-first via ?before/after/around&limit (ids strictly descending, NOT cursor-enveloped); error codes 10003 Unknown Channel / 10008 Unknown Message / 10004 Unknown Guild / 10013 Unknown User / 10007 Unknown Member / 50035 Invalid Form Body / 50006 empty message, all with correct HTTP status. message/channel/guild/member object shapes match.",
+      "sub": { "R4.0": "pass", "R4.1": "pass", "R4.2": "pass", "R4.3": "pass", "R4.4": "pass" }
+    },
+    "R5": {
+      "result": "pass",
+      "gating": true,
+      "evidence": "INDEPENDENTLY RE-RUN. 5 capabilities carry the assessment-grade star in the actual COVERAGE matrix rows: Search messages (real content/channel_id/author_id/mentions/has/pinned/before/after grammar; invalid has -> 50035 verified live), Message history (snowflake pagination), Send message (write->read round-trip, hydrated snowflake id+ISO timestamp+author+type:0 verified by post-then-GET), Add reaction (round-trip), List guild members (ascending-snowflake pagination). >=5 required -> PASS. Round-trip (R5.2) exercised end-to-end by discord-incident-triage (verified oracle=1). NOTE: clone-spec/COVERAGE claim '6' by counting a prose-only 'resolution chain' with no matrix row -> the 6th is inflated; 5 real starred rows still satisfy the gate.",
+      "sub": { "R5.1": "pass", "R5.2": "pass", "R5.3": "pass" }
+    },
+    "R6": {
+      "result": "pass",
+      "gating": true,
+      "evidence": "INDEPENDENTLY RE-RUN from a cold checkout in the project venv: pytest tests/test_api.py tests/test_cli_mcp_parity.py -> 75 passed, 1 skipped; pytest tests/test_isolation.py (DISCORD_AGENT_IMAGE=built agent) -> 5 passed. Total 80 green. Isolation suite asserts data-free-on-disk + seed/api not importable + no api/seed source + tools present, run against the actual built agent image. tests/test.sh honors REWARD_DIR and builds the agent image when docker is present. The '75 unit tests' headline = the core+parity suite (accurate).",
+      "sub": { "R6.1": "pass", "R6.2": "pass", "R6.3": "pass", "R6.4": "pass", "R6.5": "pass" }
+    },
+    "R7": {
+      "result": "pass",
+      "gating": true,
+      "evidence": "clone-spec.yaml at the clone root with real_service block; docs/COVERAGE.md with the R4.0 block; audit-report.md + this audit-verdict.json validate against _shared/audit-verdict.schema.json. Registered in clones/MANIFEST.json (key 'discord-clone' present) BUT its value is the bare string 'discord-clone' instead of the {repo,branch,commit} record every other clone uses (authored-in-tree, so repo/commit null is fine, but it should be an object) -> see P2 action item."
+    }
+  },
+  "coverage": {
+    "capabilities_total": 15,
+    "with_cli": 15,
+    "with_mcp": 15,
+    "parity_ok": 15,
+    "assessment_grade": 5,
+    "tested": 15
+  },
+  "tests": {
+    "passed": 80,
+    "total": 81,
+    "core_parity_passed": 75,
+    "isolation_passed": 5,
+    "skipped": 1,
+    "nop_reward": 0.0,
+    "oracle_reward": 1.0
+  },
+  "action_items": [
+    {
+      "requirement": "R1",
+      "gating": false,
+      "priority": "P1",
+      "summary": "Task compose is pull-only and NOT portable to a clean host. environment/docker-compose.yaml sets discord: image: ghcr.io/abundant-ai/discord-service:prod-v1 with NO build: block, and that GHCR package is unpublished (docker manifest inspect -> manifest unknown). On a clean host with no published image, docker compose up fails to resolve the gateway. clone-spec.yaml claims build_image_dual:true but the actual task compose contradicts it. On this arm64 host it also fails because both services pin platform: linux/amd64 while no amd64 image exists locally or remotely (I had to add an arm64 + pull_policy:never override to boot).",
+      "where": "clones/discord-clone/oddish/tasks/discord-incident-triage/environment/docker-compose.yaml (add build: to the discord service tagging the same image: name, per R1.5), and/or publish discord-service:prod-v1 multi-arch to GHCR public.",
+      "acceptance": "From a clean checkout with no local images and no registry creds, docker compose -f environment/docker-compose.yaml -f <harbor-main-build override> up --build reaches gateway healthy (either builds+tags the gateway locally, or pulls a public multi-arch GHCR image) with zero manual edits on both amd64 and arm64 hosts."
+    },
+    {
+      "requirement": "R2",
+      "gating": true,
+      "priority": "P1",
+      "summary": "Publish the gateway image trio multi-arch to a PUBLIC GHCR package so R2.k multi-arch and R1.5 pull path stop being locally-unverifiable. Currently ghcr.io/abundant-ai/discord-service:prod-v1 returns manifest unknown; CI declares linux/amd64,linux/arm64 but nothing is published, so multi-arch is scored n/a (not a fail here) and the task cannot pull. This is a gating blocker at publish time even though it does not fail the local audit.",
+      "where": "clones/discord-clone/.github/workflows/discord-service-image.yml + GHCR package visibility settings.",
+      "acceptance": "docker manifest inspect ghcr.io/abundant-ai/discord-service:prod-v1 (no creds) returns a manifest list with both linux/amd64 and linux/arm64, for :prod-v1 and :empty."
+    },
+    {
+      "requirement": "R5",
+      "gating": false,
+      "priority": "P2",
+      "summary": "assessment_grade count is inflated to 6. clone-spec.yaml (assessment_grade_count: 6), COVERAGE.md prose, and the builder self-verdict all claim 6, but only 5 capabilities carry the star in the COVERAGE matrix rows; the 6th ('Get member / channel resolution chain') is prose-only with no matrix row and no distinct endpoint. The gate (>=5) still passes on the 5 real rows, but the claim should match the matrix.",
+      "where": "clones/discord-clone/clone-spec.yaml (assessment_grade_count) and clones/discord-clone/docs/COVERAGE.md (either star a real 6th row, e.g. list-reactors, or state 5).",
+      "acceptance": "The starred matrix-row count equals the number stated in clone-spec.yaml and COVERAGE prose (5 or a genuinely-starred 6)."
+    },
+    {
+      "requirement": "R7",
+      "gating": false,
+      "priority": "P2",
+      "summary": "MANIFEST registration is malformed. clones/MANIFEST.json clones is an object mapping clone-name -> {repo,branch,commit}, but discord-clone's value is the bare string 'discord-clone' instead of a provenance object. clone-spec self-describes it as authored-in-tree (repo:null,commit:null,spec:clone-spec.yaml) — encode that as an object to match the other 10 entries.",
+      "where": "clones/MANIFEST.json -> clones['discord-clone'].",
+      "acceptance": "clones['discord-clone'] is a JSON object (e.g. {\"repo\": null, \"branch\": null, \"commit\": null, \"spec\": \"clones/discord-clone/clone-spec.yaml\"}), consistent with the other entries' shape."
+    },
+    {
+      "requirement": "R4",
+      "gating": false,
+      "priority": "P2",
+      "summary": "Minor real-Discord search parity gap: real GET /guilds/{id}/messages/search adds a \"hit\": true field to each matched message object inside the inner array; the clone omits it (message_dict has no hit). Envelope shape {total_results, messages:[[msg]]} is otherwise correct. Cosmetic; a verifier relying on hit would diverge.",
+      "where": "clones/discord-clone/src/discordclone/store.py (search_messages -> wrap the matched message with a hit: true marker, or a message_dict variant for search).",
+      "acceptance": "A search response's inner message objects carry \"hit\": true, matching Discord's search envelope."
+    }
+  ]
+}
