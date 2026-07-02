@@ -37,7 +37,39 @@ def render_verifier(spec: TaskSpec) -> Tuple[str, Dict[str, str]]:
         return _render_module(spec), extra
     if v.kind == "readback":
         return _render_readback(spec), {}
+    if v.kind == "build_check":
+        return _render_build_check(spec), {}
+    if v.kind == "metric":
+        return _render_metric(spec), {}
     raise ValueError(f"unknown verifier kind {v.kind!r}")
+
+
+def _render_build_check(spec: TaskSpec) -> str:
+    """Deployment archetype: reward = the project builds + its checks pass (the CI/E2E oracle)."""
+    root = spec.anchor.workdir + "/" + spec.anchor.backend_subdir if spec.anchor else "/app"
+    return _HEAD + f'''# deployment/build check — the pipeline must go green after the fix.
+ROOT="${{ODDISH_ROOT:-{root}}}"; cd "$ROOT" 2>/dev/null || true
+BUILD_CMD="${{BUILD_CMD:-$(command -v uv >/dev/null 2>&1 && echo 'uv sync' || echo 'pip -q install -e .')}}"
+CHECK_CMD="${{CHECK_CMD:-python -m pytest -q}}"
+$BUILD_CMD > /logs/verifier/build.log 2>&1 && $CHECK_CMD > /logs/verifier/check.log 2>&1
+rc=$?; reward=0; [ "$rc" = 0 ] && reward=1
+''' + _TAIL
+
+
+def _render_metric(spec: TaskSpec) -> str:
+    """Optimization archetype: reward = the target metric clears THRESHOLD AND regression tests pass."""
+    root = spec.anchor.workdir + "/" + spec.anchor.backend_subdir if spec.anchor else "/app"
+    p2p = " ".join(spec.verifier.f2p)
+    return _HEAD + f'''# optimization — improve the objective (BENCH_CMD, lower=better) past THRESHOLD,
+# keeping behavior correct. BENCH_CMD + THRESHOLD are set per task at build.
+ROOT="${{ODDISH_ROOT:-{root}}}"; cd "$ROOT" 2>/dev/null || true
+reward=0
+_bail() {{ echo "$reward" > /logs/verifier/reward.txt 2>/dev/null || true; echo "reward=$reward"; exit 0; }}
+[ -n "${{BENCH_CMD:-}}" ] && [ -n "${{THRESHOLD:-}}" ] || {{ echo "[verify] set BENCH_CMD + THRESHOLD"; _bail; }}
+python -m pytest -q {p2p} > /logs/verifier/regression.log 2>&1 || {{ echo "[verify] regression failed"; _bail; }}
+VAL="$(eval "$BENCH_CMD")"
+awk -v v="$VAL" -v t="$THRESHOLD" 'BEGIN{{exit !(v+0<=t+0)}}' && reward=1
+''' + _TAIL
 
 
 def _render_pytest(spec: TaskSpec) -> str:

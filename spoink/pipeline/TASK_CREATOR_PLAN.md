@@ -147,6 +147,28 @@ run at task BUILD (`derive_pr_verifier`); a determinism check; Slack/Linear feed
 - **Feed interface**: `@feed("name")` -> `List[Candidate]`; discovery is a live lightweight scan.
 - `validate_task` is the quality bar; `promote` is the empirical proof — both shown per task (Tasks tab).
 
+### Diversity + farming (PoC, IMPLEMENTED)
+Real SWE isn't one shape. `archetypes.py` routes each candidate to a task archetype with its own
+instruction + verifier, so one incident stream yields DIVERSE tasks:
+
+| Archetype | From feed | Verifier | Grounds |
+|---|---|---|---|
+| **code_fix** | github_revert (bugfix) | `pytest_pr` / `module_check` | correctness under buried context |
+| **deployment** | github_ci (red→green) | `build_check` (build + checks pass) | release engineering |
+| **optimization** | github_revert (perf/cost title) | `metric` (objective past threshold + regression) | optimization under a measured goal |
+| **incident_response** | logfire/slack/linear | `readback` (structured diagnosis + mitigate) | on-call + tool usage |
+
+`harness.py` — the reproducibility layer: probe a shipped `codebase.bundle` (build system, test-target
+existence, optional build) — the honest signal for which mined incidents are *runnable*.
+
+`farm.py` — the batch runner: `discover -> classify -> generate -> validate -> probe -> rank` over a
+feed, emitting a ranked **task-bank.json** grouped by archetype with an accept/reject reason per task.
+`python -m spoink.pipeline.farm --feed github_revert --org abundant-ai --limit 10 --out task-bank`.
+Verified live: farmed 11 real abundant PRs -> code_fix + optimization, ranked (has-own-verifier first).
+
+Still the bottleneck (honest): a *reliable* per-repo build/test env (the harness's `build=True` path is
+best-effort); full-compose promote; the model-trial headroom gate.
+
 ---
 
 ## Dashboard UX — three automation levels

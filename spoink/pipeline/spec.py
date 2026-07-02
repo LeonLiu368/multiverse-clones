@@ -121,18 +121,22 @@ def spec_from_candidate(cand: Dict[str, Any], attached: List[Dict[str, Any]],
         changed_tests = [f for f in changed if re.search(r"(^|/)tests?/|_test\.|test_.*\.py|\.test\.", f)]
         anchor = Anchor(bundle=str(sliced or full), commit=res["base_sha"])
 
-    if res.get("has_tests"):
-        verifier = VerifierSpec(kind="pytest_pr", f2p=changed_tests)  # exact F2P/P2P derived at build
-    else:
-        verifier = VerifierSpec(kind="module_check", grader_script="")
+    # the archetype gives this incident its task shape: instruction + verifier + kind (diversity)
+    from . import archetypes as A
+    arch = A.classify(cand)
+    vkind = arch.verifier_kind
+    if vkind == "pytest_pr" and not res.get("has_tests"):
+        vkind = "module_check"                                   # code fix that shipped no tests
+    verifier = VerifierSpec(kind=vkind, f2p=changed_tests)       # f2p doubles as the regression guard
 
     return TaskSpec(
-        name=f"spoink-incidents/{slug}", kind="observability",
+        name=f"spoink-{arch.name}/{slug}", kind=arch.kind,
         incident_t=cand.get("t", DEFAULT_T),
-        instruction=instruction or _default_instruction(cand),
+        instruction=instruction or (arch.instruction + f"\n\nIncident: {cand.get('title','')}\n"),
         surfaces=surfaces, verifier=verifier, anchor=anchor, changed_files=changed, fix_patch=patch,
         source_repo=repo, fixed_by_pr=f"#{res.get('pr')}" if res.get("pr") else "",
-        oracle_steps=(f"# resolution: {repo}#{res.get('pr')} "
+        oracle_steps=(f"# archetype: {arch.name} ({arch.grounds})\n"
+                      f"# resolution: {repo}#{res.get('pr')} "
                       f"base={res.get('base_sha','')[:12]} head={res.get('head_sha','')[:12]}\n"))
 
 
