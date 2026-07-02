@@ -132,13 +132,19 @@ def promote(task_dir: str, *, python_image: str = "python:3.13-slim", timeout: i
     f2p = " ".join(shlex.quote(t) for t in man["f2p"])
     fix_files = " ".join(shlex.quote(f) for f in man.get("fix_files", []))
     env = ["-e", f"BASE={man.get('base_commit','')}", "-e", f"SUBDIR={man.get('backend_subdir','')}",
-           "-e", f"F2P={f2p}", "-e", f"FIX_FILES={fix_files}", "-e", "BUNDLE=/work/codebase.bundle"]
+           "-e", f"F2P={f2p}", "-e", f"FIX_FILES={fix_files}", "-e", "BUNDLE=/work/codebase.bundle",
+           "-e", "UV_CACHE_DIR=/root/.cache/uv", "-e", "PIP_CACHE_DIR=/root/.cache/pip"]
+    # persistent uv/pip caches shared across ALL promotes — same-repo candidates reuse the wheel
+    # downloads/builds instead of re-fetching every time (the big per-batch throughput win)
+    cache = Path.home() / ".cache" / "spoink-promote"
+    (cache / "uv").mkdir(parents=True, exist_ok=True); (cache / "pip").mkdir(parents=True, exist_ok=True)
     # git is needed inside the container
     script = "apt-get update -qq >/dev/null 2>&1 && apt-get install -y -qq git >/dev/null 2>&1; " + RUNNER
     # promote is a build/test step (not the agent) — it needs network to install git + deps
     cmd = ["docker", "run", "--rm",
            "-v", f"{bundle.resolve()}:/work/codebase.bundle:ro",
            "-v", f"{patch.resolve()}:/work/fix.patch:ro",
+           "-v", f"{cache / 'uv'}:/root/.cache/uv", "-v", f"{cache / 'pip'}:/root/.cache/pip",
            *env, python_image, "bash", "-c", script]
     try:
         p = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)

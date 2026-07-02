@@ -117,26 +117,37 @@ def farm(feed: str, org: str, *, token: str, limit: int = 10, window_days: int =
             probe = harness.probe_sut(bundle, cd.get("resolution", {}).get("base_sha", ""),
                                       spec.verifier.f2p, build=build_probe)
 
-        # THROUGHPUT PROOF: actually prove the task (docker nop=0/oracle=1), capped to keep it tractable
-        promo = None
-        if (promote and report["accepted"] and spec.verifier.kind == "pytest_pr"
-                and Path(bundle).exists() and n_promoted < promote_cap):
-            from . import promote as P
-            n_promoted += 1
-            pr = P.promote(res["task_dir"], timeout=1500)
-            promo = {"status": pr.get("status"), "nop": pr.get("nop_exit"), "oracle": pr.get("oracle_exit"),
-                     "detail": pr.get("detail", "")[:120]}
-
         reasons = [g["name"] for g in report["gates"] if g["status"] == "fail"]
-        bank.append({
+        entry = {
             "id": cd["id"], "archetype": arch.name, "kind": arch.kind, "grounds": arch.grounds,
             "verifier": spec.verifier.kind, "title": cd.get("title", ""), "t": cd.get("t"),
             "task_dir": res["task_dir"], "accepted": report["accepted"],
             "reject_reasons": reasons, "has_own_verifier": bool(cd.get("resolution", {}).get("has_tests")),
             "probe": {k: probe.get(k) for k in ("ok", "build_system", "built")} if probe else None,
-            "promote": promo, "proven": bool(promo and promo.get("status") == "proven"),
-            "rank": _rank(cd, arch, report, probe) + (3 if promo and promo.get("status") == "proven" else 0),
-        })
+            "promote": None, "proven": False,
+            "rank": _rank(cd, arch, report, probe),
+            "_promotable": bool(report["accepted"] and spec.verifier.kind == "pytest_pr" and Path(bundle).exists()),
+        }
+        bank.append(entry)
+
+    # PROMOTE PASS — run the docker nop/oracle gate in PARALLEL over the top promotable tasks
+    if promote:
+        from concurrent.futures import ThreadPoolExecutor
+        from . import promote as P
+        todo = [e for e in sorted(bank, key=lambda b: -b["rank"]) if e["_promotable"]][:promote_cap]
+
+        def _promo(e):
+            pr = P.promote(e["task_dir"], timeout=1500)
+            return e, {"status": pr.get("status"), "nop": pr.get("nop_exit"),
+                       "oracle": pr.get("oracle_exit"), "detail": pr.get("detail", "")[:120]}
+        with ThreadPoolExecutor(max_workers=min(3, max(1, len(todo)))) as ex:
+            for e, promo in ex.map(_promo, todo):
+                e["promote"] = promo
+                e["proven"] = promo.get("status") == "proven"
+                if e["proven"]:
+                    e["rank"] += 3
+    for e in bank:
+        e.pop("_promotable", None)
 
     import shutil
     shutil.rmtree(snaps_root, ignore_errors=True)

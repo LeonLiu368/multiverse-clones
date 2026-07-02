@@ -122,6 +122,9 @@ def spec_from_candidate(cand: Dict[str, Any], attached: List[Dict[str, Any]],
         pref = subdir + "/" if subdir else ""
         changed_tests = [f[len(pref):] if f.startswith(pref) else f
                          for f in changed if re.search(r"(^|/)tests?/|_test\.|test_.*\.py|\.test\.", f)]
+        # narrow to the test FUNCTIONS the PR added — running the whole file drags in unrelated
+        # pre-existing tests that can fail in a minimal env and sink the oracle
+        changed_tests = _added_test_nodes(patch, changed_tests, subdir) or changed_tests
         anchor = Anchor(bundle=str(sliced or full), commit=res["base_sha"], backend_subdir=subdir)
 
     # the archetype gives this incident its task shape: instruction + verifier + kind (diversity)
@@ -141,6 +144,27 @@ def spec_from_candidate(cand: Dict[str, Any], attached: List[Dict[str, Any]],
         oracle_steps=(f"# archetype: {arch.name} ({arch.grounds})\n"
                       f"# resolution: {repo}#{res.get('pr')} "
                       f"base={res.get('base_sha','')[:12]} head={res.get('head_sha','')[:12]}\n"))
+
+
+def _added_test_nodes(patch: str, changed_tests: List[str], subdir: str) -> List[str]:
+    """From the fix patch, produce pytest NODE ids for the test functions the PR added/changed
+    (e.g. `tests/test_x.py::test_new`). Falls back to the whole file when no added `def test_*`
+    is visible. `changed_tests` are build-root-relative; the patch paths are repo-relative."""
+    added: Dict[str, List[str]] = {}
+    cur = None
+    for ln in patch.splitlines():
+        if ln.startswith("+++ b/"):
+            cur = ln[6:].strip()
+        elif ln.startswith("+") and not ln.startswith("+++") and cur:
+            m = re.search(r"\bdef (test_\w+)", ln)
+            if m:
+                added.setdefault(cur, []).append(m.group(1))
+    pref = subdir + "/" if subdir else ""
+    nodes: List[str] = []
+    for t in changed_tests:                                  # build-root-relative
+        funcs = list(dict.fromkeys(added.get(pref + t, [])))  # repo-relative key
+        nodes += [f"{t}::{fn}" for fn in funcs] if funcs else [t]
+    return nodes
 
 
 def _prepare_sut(full_bundle: Path, base_sha: str, head_sha: str):
