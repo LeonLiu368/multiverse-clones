@@ -1,0 +1,30 @@
+schema_version = "1.2"
+name = "discord-clone/discord-recall"
+description = "Read-only context-recovery task on a Discord-clone guild (image-pull). The agent uses the discord CLI / discord-mcp (pulled discord-agent) against the pulled discord-service:prod-v1 gateway to recover an agreed per-API-key rate limit that was decided only in the team's #engineering channel, and writes it to /workspace/answer.txt. No code fix. The verifier reads answer.txt and checks the recovered values. nop=0, oracle=1."
+
+[metadata]
+category = "software-engineering"
+service = "discord"
+clone = "discord-clone"
+tools = ["discord", "discord-mcp"]
+tags = ["discord", "tool-use", "read-only", "context-recovery", "image-pull"]
+
+[agent]
+timeout_sec = 900
+
+[verifier]
+timeout_sec = 300
+
+[environment]
+cpus = 2
+memory_mb = 4096
+storage_mb = 12288
+gpus = 0
+allow_internet = true
+workdir = "/workspace"
+build_timeout_sec = 1800
+
+[[environment.mcp_servers]]
+name = "discord"
+transport = "stdio"
+command = "discord-mcp"

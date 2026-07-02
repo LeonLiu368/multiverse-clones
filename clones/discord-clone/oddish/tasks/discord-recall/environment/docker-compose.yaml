@@ -1,0 +1,37 @@
+# Two-container task: a thin agent (main) + the discord gateway sidecar (prod-v1).
+#   main    — the agent, built by Harbor FROM discord-agent (tools only; read-only
+#             recall task so no codebase is added). Reaches the gateway ONLY over
+#             HTTP at http://discord:8080.
+#   discord — the gateway sidecar. PULL-ONLY: `image:` with NO `build:` block. This
+#             is the "no source left behind" pattern — on Oddish the private image is
+#             pulled via `--registry-login`; on this host it is already present
+#             locally after a one-time `docker build ... -t <same name>` (see
+#             validate_local.sh / the README build steps). The corpus (with the
+#             #engineering rate-limit decision) lives baked in the gateway image ONLY.
+# No `networks:` block (Harbor injects network_mode on main); service-name DNS still
+# resolves `discord`. No hard `platform:` pin — runs native on the host arch.
+services:
+  main:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${MAIN_IMAGE_NAME:-discord-recall-main:local}
+    environment:
+      - DISCORD_API_URL=http://discord:8080
+      - DISCORD_BOT_TOKEN=discord-clone-token
+    depends_on:
+      discord:
+        condition: service_healthy
+
+  discord:
+    # PULL-ONLY — no build: block. The image must already exist locally (built+tagged
+    # once) or be pullable from GHCR with registry creds on Oddish.
+    image: ghcr.io/abundant-ai/discord-service:prod-v1
+    expose:
+      - "8080"
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8080/health')\" || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
