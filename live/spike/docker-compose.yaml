@@ -1,0 +1,19 @@
+# Dokku-in-compose spike (plan step 0). Socket-sibling mode: dokku manages app
+# containers on the same dockerd; attach-post-create joins them to this network.
+services:
+  dokku:
+    image: dokku/dokku:0.35.18
+    hostname: dokku
+    ports:
+      - "3022:22"    # ssh: git push + dokku CLI (the agent surface)
+      - "8085:80"    # dokku nginx proxy (vhost routing by Host header)
+    volumes:
+      - /var/lib/dokku-spike:/mnt/dokku
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      DOKKU_HOSTNAME: dokku.local
+      DOKKU_HOST_ROOT: /var/lib/dokku-spike/home/dokku
+      DOKKU_LIB_HOST_ROOT: /var/lib/dokku-spike/var-lib-dokku
+  sibling:
+    image: python:3.12-slim
+    command: sleep infinity
