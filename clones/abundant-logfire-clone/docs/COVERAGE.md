@@ -23,6 +23,8 @@ scoping) over the `records` table.
 | Recent exceptions | `POST /v2/query` (canned SQL) | `logfire exceptions [--since --limit]` | `find_exceptions_in_file(filepath?, …)` (real upstream name; `find_exceptions` kept as alias) | `[{start_timestamp, exception_type, exception_message, service_name, url_path, http_response_status_code}]` | **yes** — multi-step, query grammar, devops-investigation shape (2,4,5) | `test_api`, `test_cli_mcp` |
 | Records schema | `POST /v2/query` (`limit 0`) | `logfire schema` | `get_logfire_records_schema()` (alias `schema_reference` for logfire-mcp `main`) | `{fields:[{name,data_type}]}` | **yes** — devops-investigation entry point; chains into query construction (multi-step + grammar precursor, 2,4) | `test_cli_mcp` (parity) |
 | Health | `GET /health` | — | — | `{ok, records}` | — (operator) | `test_api` |
+| Live ingest (native records) | `POST /v1/ingest` | — | — | `{inserted, records}`; `400 {error, details}` | — (operator/emitter-facing; env-gated on `LOGFIRE_WRITE_TOKEN`) — real_mapping: real Logfire's ingest backend + write token | `test_ingest` |
+| Live ingest (OTLP/HTTP JSON) | `POST /v1/traces` | — | — | `{inserted, records}`; `400 {error, details}` | — (operator/emitter-facing; env-gated on `LOGFIRE_WRITE_TOKEN`) — real_mapping: real Logfire's OTLP `/v1/traces` ingest (otel-collector `otlphttp` exporter, `encoding: json`) + write token; each span → one `records` row | `test_ingest` |
 | Auth / read-only / validation | `POST /v2/query` (error paths) | (surfaced verbatim, exit 1) | (raises) | `401 {detail}`, `400 {error[,details]}`, `404 {error}` | **yes** — realistic product error envelopes, not 500s (3) | `test_api`, `test_cli_mcp` |
 
 ## Assessment-grade tally (R5)
@@ -52,7 +54,26 @@ end-to-end: the agent must construct SQL over `records` to find the failing exce
 type, service, table, missing column, and occurrence count, then apply a code fix graded
 against the exact recovered values (nop=0, oracle=1).
 
+## Live ingest (env-gated)
+
+Real Logfire is an OTLP ingest backend, so the clone now carries an **operator/emitter-facing**
+ingest surface for live eval episodes — OFF by default and 404 unless `LOGFIRE_WRITE_TOKEN`
+is set, so read-only deployments are byte-identical:
+
+- `POST /v1/traces` — OTLP/HTTP **JSON** (the official otel-collector `otlphttp` exporter with
+  `encoding: json`): `resourceSpans[].scopeSpans[].spans[]`, each span mapped to one `records`
+  row (timestamps/duration, hex ids, kind enum, status/exception events, `service.name`,
+  `deployment.environment*`, http/url semconv → dedicated columns, remaining attributes → JSON).
+- `POST /v1/ingest` — native records-schema rows (the testing seam); unknown fields → 400 with
+  details, missing optional fields → NULL.
+- Both require `Authorization: Bearer $LOGFIRE_WRITE_TOKEN` (401 `{"detail":"Invalid write token"}`),
+  distinct from the read token. Batches are atomic (malformed structure rejects the whole batch),
+  inserts are lock-serialized with reads, and rows are visible to `POST /v2/query` immediately.
+
 ## Intentionally out of scope
 
-- Write/ingest endpoints — the clone is a read-only Query API by design.
+- Agent-facing write tools — the `logfire` CLI / MCP remain read-only, like real Logfire's
+  Query API; ingest is an operator/emitter seam, not an agent surface.
 - The Logfire dashboards/alerts UI — not an agent-used surface.
+- OTLP protobuf ingest (`content-type: application/x-protobuf`) and `/v1/logs`/`/v1/metrics` —
+  JSON traces only.

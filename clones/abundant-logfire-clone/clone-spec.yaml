@@ -2,7 +2,7 @@ clone: abundant-logfire-clone
 service: logfire
 upstream: Pydantic Logfire — Query API + Logfire MCP
 fidelity_tier: T2            # real DuckDB SQL query grammar over a `records` table
-read_only: true             # Logfire Query API is SELECT/WITH only
+read_only: true             # agent surface is SELECT/WITH only; operator ingest is env-gated (see ingest:)
 
 runtime:
   shape: agent + gateway      # canon two-container Harbor task
@@ -12,9 +12,18 @@ runtime:
     tools: [logfire-cli, logfire-mcp]
     data_on_disk: none        # corpus reachable only over HTTP
   gateway:
-    api: POST /v2/query (SQL over `records`), GET /health
+    api: POST /v2/query (SQL over `records`), GET /health; env-gated LIVE INGEST — POST /v1/traces (OTLP/HTTP JSON), POST /v1/ingest (native records)
     store: DuckDB (in-memory, loaded from records.json[.gz])
-    auth: bearer read token (LOGFIRE_TOKEN)
+    auth: bearer read token (LOGFIRE_TOKEN); ingest uses a separate bearer write token (LOGFIRE_WRITE_TOKEN)
+
+ingest:                      # LIVE INGEST for eval episodes (real Logfire is an OTLP backend)
+  gate: LOGFIRE_WRITE_TOKEN   # unset -> both endpoints 404 (read-only deployments unaffected)
+  endpoints:
+    - POST /v1/traces   # OTLP/HTTP JSON (otel-collector otlphttp exporter, encoding: json); span -> one records row
+    - POST /v1/ingest   # native records-schema rows (operator/testing seam)
+  auth: "Authorization: Bearer $LOGFIRE_WRITE_TOKEN (401 {detail: Invalid write token})"
+  semantics: atomic batches (malformed -> 400, nothing inserted); rows visible to /v2/query immediately; inserts lock-serialized with reads
+  tests: tests/test_ingest.py
 
 images:
   trio:
