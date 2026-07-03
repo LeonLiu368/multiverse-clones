@@ -1,0 +1,45 @@
+# smoke-compose.yaml — self-contained smoke stack for the dokku deploy plane +
+# vendored Conduit SUT (sut-conduit/app + sut-conduit/otel-wrap). Driven by
+# smoke.sh; not a task compose, but shaped exactly like one:
+#   dokku      the deploy plane (socket-sibling; see dokku-service.yaml.snippet)
+#   postgres   standard postgres:16 for the SUT
+#   probe      python:3.12-slim sibling = loadgen + agent surface (ssh)
+#
+# Required env (smoke.sh sets them):
+#   SUT_REPO_DIR   assembled SUT repo source (app/* + otel-wrap overlay)
+#   AGENT_PUBKEY   pre-generated agent public key (mounted into dokku)
+#   AGENT_KEY      pre-generated agent PRIVATE key (mounted into probe)
+#   SCRIPTS_DIR    dir with load_probe.py / seed.py (mounted into probe)
+
+services:
+  dokku:
+    image: dokku/dokku:0.35.18
+    hostname: dokku
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/dokku-${COMPOSE_PROJECT_NAME:-live}:/mnt/dokku
+      - ${SUT_REPO_DIR:?}:/mnt/sut:ro
+      - ${AGENT_PUBKEY:?}:/mnt/keys/agent_key.pub:ro
+    environment:
+      DOKKU_HOSTNAME: dokku.local
+      DOKKU_HOST_ROOT: /var/lib/dokku-${COMPOSE_PROJECT_NAME:-live}/home/dokku
+      DOKKU_LIB_HOST_ROOT: /var/lib/dokku-${COMPOSE_PROJECT_NAME:-live}/var-lib-dokku
+
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: conduit
+      POSTGRES_PASSWORD: conduit
+      POSTGRES_DB: conduit
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U conduit"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  probe:
+    image: python:3.12-slim
+    command: sleep infinity
+    volumes:
+      - ${AGENT_KEY:?}:/keys/agent_key:ro
+      - ${SCRIPTS_DIR:?}:/scripts:ro

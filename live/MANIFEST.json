@@ -1,0 +1,14 @@
+{
+  "vendored_at": "2026-07-02",
+  "org": "abundant-ai",
+  "strategy": "vendored-full-source",
+  "suts": {
+    "sut-conduit": {
+      "repo": "https://github.com/nsidnev/fastapi-realworld-example-app",
+      "branch": "master",
+      "commit": "029eb7781c60d5f563ee8990a0cbfb79b244538c",
+      "path": "sut-conduit/app",
+      "note": "RealWorld 'Conduit' backend: FastAPI 0.79 + asyncpg + Postgres. Vendored via `git archive HEAD` (full source, no .git). Upstream Dockerfile kept for provenance at app/Dockerfile but NOT used; deploys use otel-wrap/Dockerfile (OTel auto-instrumented wrapper) overlaid at repo root by the platform provisioner. Fault knob (P4): WEB_CONCURRENCY env -> uvicorn worker count, faulty=1 / fix=4. A single worker serializes CPU-bound bcrypt login verifies (~265ms) on one event loop, so under concurrent load p95 explodes (~4.8x separation, measured in platform/SMOKE-RESULTS.md) while the app is healthy at rest. Fixed via `dokku config:set conduit WEB_CONCURRENCY=4`. NOTE: the originally-hypothesized MAX_CONNECTIONS_COUNT/asyncpg pool knob was measured and REJECTED (asyncpg holds a connection only per-query, sub-ms, so pool=1 vs pool=10 shows no separation) — see otel-wrap/README.md. Deviation from upstream lock: typing-extensions pinned 4.5.0 (lock had 3.10.0.2) because the OTel SDK needs >=3.7.4 and pydantic 1.9.x breaks on typing-extensions>=4.6; pins live in otel-wrap/requirements.txt."
+    }
+  }
+}
