@@ -1,0 +1,71 @@
+{
+  "_doc": "Example soak/SLO config for the RealWorld 'Conduit' SUT (P4 DB_POOL_SIZE fault). A task COPIES this file and tunes the numbers from oracle runs. Keys starting with '_' are ignored (they are docs). The verifier drives THIS load; nothing here is read from the app's own counters.",
+
+  "target": "http://conduit.web.1:5000",
+  "_target": "Overridden by --target / SOAK_TARGET at runtime; the dokku app container name:port (direct container-name path, NOT the nginx vhost).",
+
+  "health_path": "/health",
+  "health_timeout_s": 60,
+  "health_poll_interval_s": 1.0,
+  "_health": "If health never returns <500 within health_timeout_s -> infra_error result (reward 0, tagged infra_error), NOT a silent pass.",
+
+  "warmup_s": 15,
+  "soak_s": 180,
+  "rps": 20,
+  "workers": 24,
+  "request_timeout_s": 5,
+  "_load": "warmup is discarded (absorbs the agent's redeploy blips). soak is the measured window. rps is the offered rate; workers must exceed peak in-flight (>= rps * request_timeout_s). CALIBRATE rps from an oracle run so the FIXED (large-pool) app clears the gates and the BROKEN (DB_POOL_SIZE=1) app fails them.",
+
+  "goodput_min": 0.85,
+  "error_rate_max": 0.12,
+  "min_samples_per_driver": 5,
+  "_gates": "Pass iff (per-driver AND overall) goodput_ratio >= goodput_min AND error_rate <= error_rate_max. goodput = correct/offered (semantic: marker read back / 2xx). error_rate = failures/offered (transport error or HTTP>=500, e.g. the 503 pool-timeout). CALIBRATE against oracle: fixed app should sit well above goodput_min; broken app should breach error_rate_max under the pool-timeout 503s.",
+
+  "bootstrap": {
+    "_doc": "Optional: register+login once before the soak to obtain a token. The token is injected wherever a header value contains {token}. Remove this block if the SUT needs no auth for the driven flows.",
+    "token_json_path": "user.token",
+    "steps": [
+      {
+        "method": "POST",
+        "path": "/api/users",
+        "body": {"user": {"username": "soak_{marker}", "email": "soak_{marker}@ex.com", "password": "soaksoak123"}}
+      },
+      {
+        "method": "POST",
+        "path": "/api/users/login",
+        "body": {"user": {"email": "soak_{marker}@ex.com", "password": "soaksoak123"}}
+      }
+    ]
+  },
+
+  "flows": [
+    {
+      "name": "write_readback",
+      "kind": "write_readback",
+      "weight": 1.0,
+      "write_path": "/api/articles",
+      "write_body": {"article": {"title": "{marker}", "description": "soak", "body": "soak body {marker}", "tagList": ["soak"]}},
+      "slug_json_path": "article.slug",
+      "read_path_template": "/api/articles/{slug}",
+      "marker_field": "title",
+      "headers": {"Authorization": "Token {token}", "Content-Type": "application/json"},
+      "_doc": "POST an article whose title embeds a unique {marker}; extract the returned slug; GET it back and assert the marker text is present. This is the DB-write path that serializes when DB_POOL_SIZE=1."
+    },
+    {
+      "name": "read_feed",
+      "kind": "read",
+      "weight": 1.0,
+      "path": "/api/articles?limit=10",
+      "expect_substring": "articles",
+      "headers": {"Content-Type": "application/json"},
+      "_doc": "GET the global feed. Also DB-bound, but read-only; contrasts with the write path."
+    }
+  ],
+
+  "findings": {
+    "required_keys": ["component", "mechanism"],
+    "mechanism_regexes": ["pool", "connection|conn"],
+    "mechanism_substrings": [],
+    "_doc": "Grades /workspace/findings.json. The agent CANNOT see this spec. required_keys must be present and non-empty. Every regex in mechanism_regexes must match (case-insensitive) somewhere in the joined string values. For the P4 fault, force the agent to name the connection pool as the mechanism (must mention 'pool' AND 'connection'/'conn'). Add e.g. 'DB_POOL_SIZE' as a required substring if you want the exact knob named."
+  }
+}
