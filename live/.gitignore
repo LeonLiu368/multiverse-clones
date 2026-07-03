@@ -6,3 +6,6 @@ platform/agent_key*
 **/agent_key.pub
 __pycache__/
 .pytest_cache/
+tasks/*/environment/**/*.log
+tasks/**/__pycache__/
+tasks/**/*_state/

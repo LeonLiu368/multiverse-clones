@@ -1,0 +1,126 @@
+# conduit-degraded-writes — live-deployment observability + remediation task.
+#
+# Topology (no explicit `networks:` — Harbor puts every service on one default
+# network, so containers reach each other by service/container name):
+#
+#   postgres        SUT database
+#   logfire         telemetry backend (Logfire clone) — live OTLP-JSON ingest + query
+#   otel-collector  OTLP/protobuf in  ->  OTLP/HTTP JSON out to logfire (Bearer write token)
+#   dokku           deploy plane (socket-sibling) — hosts the conduit SUT
+#   provisioner     one-shot: deploys conduit WITH THE FAULT + seeds, then exits 0
+#   main            the agent — diagnoses from logfire, remediates via dokku ssh
+#
+# The SUT (conduit) container is created BY dokku as a sibling on this network and
+# is reachable at conduit.web.1:8000. Its spans flow: conduit -> otel-collector
+# -> logfire, where `logfire query` (the agent's read path) sees them live.
+
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: conduit
+      POSTGRES_PASSWORD: conduit
+      POSTGRES_DB: conduit
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U conduit"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  logfire:
+    image: logfire-service:latest
+    environment:
+      # Live ingest is env-gated on the write token; the collector authenticates with it.
+      LOGFIRE_WRITE_TOKEN: task-write-token
+      # The agent's read path uses this bearer token (LOGFIRE_TOKEN on the client).
+      LOGFIRE_TOKEN: task-read-token
+      LOGFIRE_RECORDS: /data/records.json
+      LOGFIRE_PORT: "80"
+    volumes:
+      # Minimal near-empty valid corpus so the clone boots clean, then fills via ingest.
+      - ./logfire-records.json:/data/records.json:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:80/health || exit 1"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.116.1
+    command: ["--config=/etc/otelcol/config.yaml"]
+    environment:
+      # substituted into the exporter's Authorization header (Bearer write token)
+      LOGFIRE_WRITE_TOKEN: task-write-token
+    volumes:
+      - ./otel/collector-config.yaml:/etc/otelcol/config.yaml:ro
+    depends_on:
+      logfire:
+        condition: service_healthy
+    # No healthcheck: the collector-contrib image is distroless (no shell/curl), so a
+    # CMD-SHELL probe can't run. A bad config makes the process exit, so `service_started`
+    # (container running) is the meaningful readiness signal for dependents.
+
+  dokku:
+    image: dokku/dokku:0.35.18
+    hostname: dokku
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - dokku-data:/mnt/dokku
+      - sut:/mnt/sut            # provisioner assembles the SUT repo here (dokku git:syncs it)
+      - keys:/mnt/keys          # agent pubkey (provisioner writes; dokku authorizes it)
+    environment:
+      DOKKU_HOSTNAME: dokku.local
+      DOKKU_HOST_ROOT: /mnt/dokku/home/dokku
+      DOKKU_LIB_HOST_ROOT: /mnt/dokku/var-lib-dokku
+    healthcheck:
+      test: ["CMD-SHELL", "dokku version >/dev/null 2>&1 || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 40
+      start_period: 20s
+
+  provisioner:
+    build:
+      context: .
+      dockerfile: provisioner/Dockerfile
+    environment:
+      DOKKU_CONTAINER: conduit-degraded-writes-dokku-1
+      APP: conduit
+      PORT: "8000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - sut:/mnt/sut
+      - keys:/mnt/keys
+      - state:/mnt/state
+    depends_on:
+      postgres:
+        condition: service_healthy
+      logfire:
+        condition: service_healthy
+      otel-collector:
+        condition: service_started
+      dokku:
+        condition: service_healthy
+    restart: "no"
+
+  main:
+    build:
+      context: .
+      dockerfile: main/Dockerfile
+    volumes:
+      - keys:/mnt/keys:ro       # agent SSH private key (dokku surface)
+      - state:/mnt/state:ro     # provisioning readiness marker
+    environment:
+      LOGFIRE_URL: http://logfire:80
+      LOGFIRE_TOKEN: task-read-token
+      LOGFIRE_MIN_TIMESTAMP: "2026-07-01T00:00:00Z"
+    depends_on:
+      provisioner:
+        condition: service_completed_successfully
+    command: ["sleep", "infinity"]
+
+volumes:
+  dokku-data:
+  sut:
+  keys:
+  state:

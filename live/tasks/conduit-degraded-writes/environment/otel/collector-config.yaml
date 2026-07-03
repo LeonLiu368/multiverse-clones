@@ -1,0 +1,36 @@
+# otel-collector: receives OTLP/protobuf from the SUT (conduit) on :4318 and
+# re-encodes to OTLP/HTTP JSON for the logfire clone's live-ingest endpoint.
+# The clone's /v1/traces expects exactly what the otlphttp exporter emits with
+# `encoding: json`, and requires the write-token Bearer header.
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch:
+    timeout: 1s
+
+exporters:
+  otlphttp/logfire:
+    # The clone serves ingest at /v1/traces under this base; otlphttp appends it.
+    endpoint: http://logfire:80
+    encoding: json
+    # The clone's stdlib ingest reads the body as plain JSON (no gzip decode), so
+    # disable the exporter's default gzip compression — otherwise /v1/traces 400s.
+    compression: none
+    headers:
+      Authorization: "Bearer ${env:LOGFIRE_WRITE_TOKEN}"
+    tls:
+      insecure: true
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlphttp/logfire]
+  telemetry:
+    logs:
+      level: info

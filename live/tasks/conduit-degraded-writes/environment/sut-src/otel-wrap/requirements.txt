@@ -1,0 +1,51 @@
+# Runtime deps for the vendored nsidnev/fastapi-realworld-example-app @ 029eb77,
+# pinned to the versions in its poetry.lock (main category). Installed via pip
+# instead of poetry==1.1 (upstream Dockerfile) because that poetry vintage no
+# longer resolves reliably against modern PyPI metadata.
+aiosql==6.2
+alembic==1.8.1
+anyio==3.5.0
+asyncpg==0.26.0
+bcrypt==3.2.0
+cffi==1.15.0
+click==8.0.3
+databases==0.6.1
+dnspython==2.2.0
+email-validator==1.1.3
+fastapi==0.79.1
+greenlet==1.1.2
+h11==0.12.0
+idna==3.3
+loguru==0.6.0
+Mako==1.1.6
+MarkupSafe==2.0.1
+passlib==1.7.4
+# DEVIATION from upstream lock (2.9.3): that vintage's aarch64 wheel bundles a
+# pre-v10 libpq that cannot do SCRAM auth against postgres:16. Only alembic
+# uses psycopg2 (runtime queries go through asyncpg).
+psycopg2-binary==2.9.9
+pycparser==2.21
+pydantic==1.9.2
+PyJWT==2.4.0
+PyPika==0.48.9
+python-dotenv==0.19.2
+python-slugify==6.1.2
+six==1.16.0
+sniffio==1.2.0
+SQLAlchemy==1.4.31
+starlette==0.19.1
+text-unidecode==1.3
+Unidecode==1.3.4
+uvicorn==0.18.2
+# DEVIATION from upstream lock (3.10.0.2): the OTel SDK needs typing-extensions
+# >=3.7.4 and pydantic 1.9.x breaks on typing-extensions >=4.6; 4.5.0 satisfies both.
+typing-extensions==4.5.0
+
+# --- OpenTelemetry auto-instrumentation (zero app-code changes) ---
+# api/sdk 1.25.0 + instrumentation 0.46b0: supports py3.9, no conflicting pins
+# against fastapi 0.79.1 / asyncpg 0.26.0.
+opentelemetry-distro==0.46b0
+opentelemetry-exporter-otlp-proto-http==1.25.0
+opentelemetry-instrumentation-fastapi==0.46b0
+opentelemetry-instrumentation-asgi==0.46b0
+opentelemetry-instrumentation-asyncpg==0.46b0

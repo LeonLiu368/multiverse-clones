@@ -1,0 +1,25 @@
+schema_version = "1.2"
+name = "live/conduit-degraded-writes"
+description = "Live-deployment observability + remediation. Conduit (a RealWorld FastAPI+Postgres service) is deployed on a real Dokku plane with a config-driven fault: it runs a single uvicorn worker (WEB_CONCURRENCY=1), so under concurrent load the CPU-bound request path (bcrypt logins) serializes on one event loop and article writes / logins saturate. The agent must diagnose from LIVE OpenTelemetry (spans stream SUT->otel-collector->logfire clone; queried via the `logfire` CLI over a `records` table), remediate the live deployment via its Dokku SSH surface, and write /workspace/findings.json. Graded by a post-agent soak that drives concurrent load and checks the deployment now holds up (calibrated so faulty times out and fixed clears) plus a findings mechanism gate. nop=0, oracle=1."
+
+[metadata]
+category = "software-engineering"
+service = "dokku+logfire"
+failure_mode = "live-deployment-degradation"
+tags = ["live-deployment", "dokku", "logfire", "opentelemetry", "observability", "soak", "remediation", "incident"]
+
+[agent]
+timeout_sec = 2400
+
+[verifier]
+timeout_sec = 600
+
+[environment]
+cpus = 8
+memory_mb = 16384
+storage_mb = 40960
+gpus = 0
+allow_internet = true
+workdir = "/workspace"
+build_timeout_sec = 3600
+custom_docker_compose = true
