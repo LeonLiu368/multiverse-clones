@@ -18,6 +18,8 @@ from typing import Any, Callable, Dict, List, Optional
 
 import httpx
 
+from . import linkage as _link
+
 GITHUB_API = "https://api.github.com"
 
 # a PR whose title/branch matches these is (very likely) resolving a prod incident
@@ -322,8 +324,9 @@ Q_LINEAR_SEV = (
     "or:[ {priority:{eq:1}}, {labels:{some:{name:{containsIgnoreCase:\"incident\"}}}}, "
     "{labels:{some:{name:{containsIgnoreCase:\"sev\"}}}}, {labels:{some:{name:{containsIgnoreCase:\"outage\"}}}}, "
     "{labels:{some:{name:{containsIgnoreCase:\"regression\"}}}} ] }){ "
-    "pageInfo{ hasNextPage endCursor } nodes { identifier title description priority createdAt "
-    "completedAt state{ name type } labels{ nodes{ name } } team{ key } } } }")
+    "pageInfo{ hasNextPage endCursor } nodes { identifier title description branchName priority createdAt "
+    "completedAt state{ name type } labels{ nodes{ name } } team{ key } "
+    "attachments{ nodes{ url title sourceType } } comments{ nodes{ body } } } } }")
 
 
 @feed("linear_sev")
@@ -353,25 +356,38 @@ def linear_sev(token: str, window_days: int = 120, max_candidates: int = 40, **_
             title = (it.get("title") or "").strip()
             labels = [l.get("name") for l in (it.get("labels") or {}).get("nodes", [])]
             t = ca[:19] + "Z" if not ca.endswith("Z") else ca
+            # try to resolve the fix PR — that upgrades a diagnosis-only incident into a GRADEABLE
+            # code task (SUT + F2P tests come from the PR). Low-yield but high-signal; None -> stays
+            # a diagnosis candidate. We prefer a PR in the org that owns oddish-style eng work.
+            fix_pr = _link.best_fix_pr(it, prefer_owner="abundant-ai")
+            res = {"issue": ident, "team": (it.get("team") or {}).get("key"),
+                   "labels": labels, "completed_at": it.get("completedAt"),
+                   "kind": "code_fix" if fix_pr else "diagnosis"}
+            if fix_pr:
+                res["fix_pr"] = dict(fix_pr)
+                res["repo"] = f"{fix_pr['owner']}/{fix_pr['repo']}"
             cands.append(Candidate(
                 id=_cid("linear_sev", ident),
                 feed="linear_sev", t=t,
                 title=f"{ident}: {title[:60]}",
                 summary=(f"Linear {ident} '{title}' (labels: {', '.join(labels) or 'urgent'}). "
-                         f"Diagnose the reported incident and its resolution."),
+                         + (f"Fix PR {res['repo']}#{fix_pr['number']} (via {fix_pr['via']}) — gradeable. "
+                            if fix_pr else "No fix PR linked — diagnosis only. ")
+                         + "Diagnose the reported incident and its resolution."),
                 required_data={"linear": {"as_of": t}, "slack": {"as_of": t},
                                "logfire": {"as_of": t, "incident_hours": 3, "period_days": 30},
                                "github": {"as_of": t}},
-                resolution={"issue": ident, "team": (it.get("team") or {}).get("key"),
-                            "labels": labels, "completed_at": it.get("completedAt"), "kind": "diagnosis"},
-                score=3.0 if labels else 1.5,          # labelled incidents rank above urgent-only
-                signals=["linear"] + (labels[:2] or ["urgent"])))
+                resolution=res,
+                # a linked fix PR is the strongest signal (gradeable) — rank those to the top
+                score=(6.0 if fix_pr else 0.0) + (3.0 if labels else 1.5),
+                signals=["linear"] + (["fix-pr"] if fix_pr else []) + (labels[:2] or ["urgent"])))
             if len(cands) >= max_candidates:
                 break
     except LinearError:
         return []
     finally:
         client.close()
+    cands.sort(key=lambda x: -x.score)          # gradeable (fix-PR-linked) incidents rank first
     return cands
 
 
