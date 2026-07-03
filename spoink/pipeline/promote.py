@@ -92,11 +92,13 @@ def promote_compose(task_dir: str, *, timeout: int = 2400) -> Dict[str, Any]:
             return {"status": "errored", "mode": "compose", "detail": "sidecars didn't come up healthy",
                     "log": (u.stderr or u.stdout)[-1200:]}
         dc("cp", str(root / "tests"), "main:/htests", t=120)
-        dc("cp", str(root / "solution"), "main:/hsol", t=120)
+        # solve.sh applies /solution/fix.patch (harbor's real convention — this is why oddish#517's
+        # oracle passed on the cloud); copy the oracle to /solution so the compose gate matches.
+        dc("cp", str(root / "solution"), "main:/solution", t=120)
         dc("exec", "-T", "main", "mkdir", "-p", "/logs/verifier", t=60)
         dc("exec", "-T", "main", "bash", "/htests/test.sh", t=900)
         nop = reward()
-        dc("exec", "-T", "main", "bash", "/hsol/solve.sh", t=900)
+        dc("exec", "-T", "main", "bash", "/solution/solve.sh", t=900)
         dc("exec", "-T", "main", "bash", "/htests/test.sh", t=900)
         oracle = reward()
         proven = nop in ("0", "") and oracle == "1"

@@ -74,6 +74,10 @@ class TaskSpec:
     oracle_steps: str = ""
     changed_files: List[str] = field(default_factory=list)   # files the fix touched (for verifier + leakage audit)
     fix_patch: str = ""                                       # the resolution diff (base..head) = the oracle
+    # infra sidecars the SUT/tests need to actually run (real backend/DevOps incidents need a DB, cache,
+    # etc.). infra = service names to add to the compose; infra_env = vars wired onto `main` at runtime.
+    infra: List[str] = field(default_factory=list)
+    infra_env: Dict[str, str] = field(default_factory=dict)
 
     def slug(self) -> str:
         return self.name.split("/")[-1]
@@ -111,13 +115,13 @@ def spec_from_candidate(cand: Dict[str, Any], attached: List[Dict[str, Any]],
                 for r in attached]
 
     anchor = None
-    changed, changed_tests, patch = [], [], ""
+    changed, changed_tests, patch, test_src = [], [], "", ""
     gh = next((r for r in attached if r["source"] == "github"), None)
     if gh and res.get("base_sha"):
         full = Path(gh["overlay"]) / repo.replace("/", "__") / "git.bundle"
         # slice the SUT to the incident tip (fix EXCLUDED) + read the fix's changed files + the fix
         # PATCH (the oracle) from the full mirror — served bundle must not contain the answer (non-neg #2)
-        sliced, changed, patch, subdir = _prepare_sut(full, res["base_sha"], res.get("head_sha", ""))
+        sliced, changed, patch, subdir, test_src = _prepare_sut(full, res["base_sha"], res.get("head_sha", ""))
         # test targets, made relative to the detected build root so pytest runs from there
         pref = subdir + "/" if subdir else ""
         changed_tests = [f[len(pref):] if f.startswith(pref) else f
@@ -126,6 +130,7 @@ def spec_from_candidate(cand: Dict[str, Any], attached: List[Dict[str, Any]],
         # pre-existing tests that can fail in a minimal env and sink the oracle
         changed_tests = _added_test_nodes(patch, changed_tests, subdir) or changed_tests
         anchor = Anchor(bundle=str(sliced or full), commit=res["base_sha"], backend_subdir=subdir)
+    infra, infra_env = _detect_infra(patch + "\n" + test_src)
 
     # the archetype gives this incident its task shape: instruction + verifier + kind (diversity)
     from . import archetypes as A
@@ -152,10 +157,32 @@ def spec_from_candidate(cand: Dict[str, Any], attached: List[Dict[str, Any]],
         incident_t=cand.get("t", DEFAULT_T),
         instruction=instr,
         surfaces=surfaces, verifier=verifier, anchor=anchor, changed_files=changed, fix_patch=patch,
+        infra=infra, infra_env=infra_env,
         source_repo=repo, fixed_by_pr=f"#{res.get('pr')}" if res.get("pr") else "",
         oracle_steps=(f"# archetype: {arch.name} ({arch.grounds})\n"
                       f"# resolution: {repo}#{res.get('pr')} "
                       f"base={res.get('base_sha','')[:12]} head={res.get('head_sha','')[:12]}\n"))
+
+
+# the env var a test reads for its DB DSN (ODDISH_DATABASE_URL, DATABASE_URL, TEST_DATABASE_URL, ...)
+_DBURL_VAR = re.compile(r"""(?:environ\.get|getenv|environ\[)\(?["']([A-Z][A-Z0-9_]*DATABASE_URL[A-Z0-9_]*)["']""")
+
+
+def _detect_infra(patch: str):
+    """Detect infra sidecars the SUT/tests need from the fix patch (which includes the changed test
+    files). Real backend/DevOps fixes exercise a real DB — without it the test SKIPS or ERRORS and the
+    task is ungradeable. Returns (infra_services, main_env). Postgres for now; extendable to redis, etc."""
+    infra: List[str] = []
+    env: Dict[str, str] = {}
+    text = patch or ""
+    if any(m in text for m in ("postgresql", "asyncpg", "psycopg", "create_async_engine")) or "DATABASE_URL" in text:
+        infra.append("postgres")
+        m = _DBURL_VAR.search(text)
+        var = m.group(1) if m else "DATABASE_URL"
+        # asyncpg driver iff the test uses the async engine (this repo does); else the sync psycopg URL
+        drv = "postgresql+asyncpg" if ("asyncpg" in text or "create_async_engine" in text) else "postgresql"
+        env[var] = f"{drv}://spoink:spoink@postgres:5432/spoink"
+    return infra, env
 
 
 def _added_test_nodes(patch: str, changed_tests: List[str], subdir: str) -> List[str]:
@@ -187,14 +214,14 @@ def _prepare_sut(full_bundle: Path, base_sha: str, head_sha: str):
     import subprocess
     import tempfile
     if not full_bundle.exists():
-        return None, [], "", ""
+        return None, [], "", "", ""
     tmp = tempfile.mkdtemp(prefix="spoink-sut-")
     changed: List[str] = []
-    patch, subdir = "", ""
+    patch, subdir, test_src = "", "", ""
     try:
         if subprocess.run(["git", "clone", "--quiet", "--mirror", str(full_bundle), tmp],
                           capture_output=True, text=True).returncode != 0:
-            return None, [], "", ""
+            return None, [], "", "", ""
         if head_sha:
             d = subprocess.run(["git", "-C", tmp, "diff", "--name-only", f"{base_sha}..{head_sha}"],
                                capture_output=True, text=True)
@@ -204,6 +231,14 @@ def _prepare_sut(full_bundle: Path, base_sha: str, head_sha: str):
                                capture_output=True, text=True)
             if p.returncode == 0:
                 patch = p.stdout
+            # read the FULL changed test files at head (not just diff context) so infra detection
+            # (e.g. the DATABASE_URL var a skipif reads) is reliable even when that line is unchanged
+            for f in changed:
+                if re.search(r"(^|/)tests?/|_test\.|test_.*\.py", f):
+                    s = subprocess.run(["git", "-C", tmp, "show", f"{head_sha}:{f}"],
+                                       capture_output=True, text=True)
+                    if s.returncode == 0:
+                        test_src += s.stdout + "\n"
         # detect the build root: the top-level dir the fix touches that carries a python manifest.
         # A fix often also touches ancillary tops (.github CI, docs) — those must NOT defeat detection,
         # so we skip dotdirs and consider EVERY changed top, keeping the one(s) with a manifest.
@@ -229,8 +264,8 @@ def _prepare_sut(full_bundle: Path, base_sha: str, head_sha: str):
                        capture_output=True, text=True)
         if subprocess.run(["git", "-C", tmp, "bundle", "create", str(sliced.resolve()), "incident-tip"],
                           capture_output=True, text=True).returncode == 0:
-            return sliced, changed, patch, subdir
-        return None, changed, patch, subdir
+            return sliced, changed, patch, subdir, test_src
+        return None, changed, patch, subdir, test_src
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 

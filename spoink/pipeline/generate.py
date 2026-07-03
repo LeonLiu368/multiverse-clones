@@ -79,6 +79,21 @@ WIRING: Dict[str, Wiring] = {
         health="curl -sf http://localhost:3000/api/v1/version >/dev/null || exit 1"),
 }
 
+# Infra sidecars the SUT/tests need to actually run (real backend/DevOps incidents need a DB, cache,
+# queue). Keyed by the name spec.infra emits; the DSN wired onto `main` (spec.infra_env) must match
+# these creds/host. Stock upstream images (real, pullable) — not spoink gateways.
+INFRA_SERVICES: Dict[str, Dict[str, Any]] = {
+    "postgres": {
+        "image": "postgres:16-alpine",
+        "env": {"POSTGRES_USER": "spoink", "POSTGRES_PASSWORD": "spoink", "POSTGRES_DB": "spoink"},
+        "health": "pg_isready -U spoink -d spoink",
+    },
+    "redis": {
+        "image": "redis:7-alpine",
+        "health": "redis-cli ping | grep -q PONG",
+    },
+}
+
 PIP_SYS = "mcp requests slack_sdk"   # deps the copied python CLIs / MCPs need in system python
 
 
@@ -136,10 +151,26 @@ def _compose(spec: TaskSpec) -> str:
            "    build: { context: ., dockerfile: Dockerfile }",
            "    image: ${MAIN_IMAGE_NAME:-" + spec.slug() + "-main:local}",
            "    working_dir: " + (spec.anchor.workdir if spec.anchor else "/app")]
-    if live:
+    infra = [i for i in (spec.infra or []) if i in INFRA_SERVICES]
+    # infra DSNs / vars the tests read (e.g. ODDISH_DATABASE_URL -> the postgres sidecar) go on main
+    # at RUNTIME (they point at a service host), not baked into the image.
+    if spec.infra_env:
+        out.append("    environment:")
+        out += [f"      {k}: {v}" for k, v in spec.infra_env.items()]
+    deps = [s.hostname for s in live] + infra
+    if deps:
         out.append("    depends_on:")
-        for s in live:
-            out.append(f"      {s.hostname}: {{ condition: service_healthy }}")
+        for h in deps:
+            out.append(f"      {h}: {{ condition: service_healthy }}")
+    for i in infra:
+        cfg = INFRA_SERVICES[i]
+        out += [f"  {i}:", f"    image: {cfg['image']}", "    platform: linux/amd64"]
+        if cfg.get("env"):
+            out.append("    environment:")
+            out += [f"      {k}: {v}" for k, v in cfg["env"].items()]
+        out += ["    healthcheck:",
+                f"      test: [\"CMD-SHELL\", \"{cfg['health']}\"]",
+                "      interval: 5s", "      timeout: 5s", "      retries: 30", "      start_period: 10s"]
     for s in live:
         w = WIRING[s.source]
         out += [f"  {s.hostname}:",
