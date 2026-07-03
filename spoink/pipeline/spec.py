@@ -204,14 +204,24 @@ def _prepare_sut(full_bundle: Path, base_sha: str, head_sha: str):
                                capture_output=True, text=True)
             if p.returncode == 0:
                 patch = p.stdout
-        # detect the build root: the single top-level dir the fix touches that has a python manifest
-        tops = {f.split("/")[0] for f in changed if "/" in f}
-        if len(tops) == 1:
-            top = next(iter(tops))
+        # detect the build root: the top-level dir the fix touches that carries a python manifest.
+        # A fix often also touches ancillary tops (.github CI, docs) — those must NOT defeat detection,
+        # so we skip dotdirs and consider EVERY changed top, keeping the one(s) with a manifest.
+        tops = [t for t in {f.split("/")[0] for f in changed if "/" in f} if not t.startswith(".")]
+        manifest_tops = []
+        for top in tops:
             ls = subprocess.run(["git", "-C", tmp, "ls-tree", "--name-only", f"{base_sha}", f"{top}/"],
                                 capture_output=True, text=True)
             if any(m in ls.stdout for m in ("pyproject.toml", "uv.lock", "setup.py", "requirements.txt")):
-                subdir = top
+                manifest_tops.append(top)
+        if len(manifest_tops) == 1:
+            subdir = manifest_tops[0]
+        elif len(manifest_tops) > 1:
+            # multiple python roots touched — prefer the one holding the PR's changed test files
+            test_tops = {f.split("/")[0] for f in changed
+                         if re.search(r"(^|/)tests?/|_test\.|test_.*\.py", f)}
+            inter = [t for t in manifest_tops if t in test_tops]
+            subdir = (inter or sorted(manifest_tops))[0]
         sliced = full_bundle.with_name("git.sliced.bundle")
         # a bare sha isn't a ref, and `git bundle` needs refs — point a branch at the incident tip,
         # then bundle history reachable from it (the fix commit is NOT included)
