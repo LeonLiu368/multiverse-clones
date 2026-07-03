@@ -107,16 +107,26 @@ def code_cut(bundle: str, head_sha: str) -> Gate:
         shutil.rmtree(tmp, ignore_errors=True)
 
 
-def _answer_tokens(resolution: Dict[str, Any], changed_files: List[str], title: str) -> List[str]:
+def _answer_tokens(resolution: Dict[str, Any], changed_files: List[str], title: str,
+                   hard_only: bool = False) -> List[str]:
+    """Tokens that, if present in a served surface, may reveal the answer.
+
+    HARD tokens point DIRECTLY at the resolution — the fixing PR ref (`#224`) and the fix commit sha.
+    If an evidence surface (telemetry/ticket/chat) contains one, the agent can just look up the fix.
+    SOFT tokens are the fix's file basenames and distinctive title words — i.e. the incident's SUBJECT
+    AREA. An evidence surface legitimately contains those (that IS the load-bearing signal: telemetry
+    about "preview/supabase" errors), so flagging them is a false positive. `hard_only=True` keeps just
+    the direct-reference tokens — the right setting for evidence-surface leakage."""
     toks: List[str] = []
     if resolution.get("pr"):
         toks.append(f"#{resolution['pr']}")
     for k in ("head_sha", "merge_commit_sha"):
         if resolution.get(k):
             toks.append(resolution[k][:12])
-    toks += [Path(f).name for f in (changed_files or [])]            # fix'd file basenames
-    toks += [w for w in re.findall(r"[A-Za-z0-9_]{5,}", title or "")   # distinctive title words
-             if w.lower() not in _STOP][:6]
+    if not hard_only:
+        toks += [Path(f).name for f in (changed_files or [])]            # fix'd file basenames
+        toks += [w for w in re.findall(r"[A-Za-z0-9_]{5,}", title or "")   # distinctive title words
+                 if w.lower() not in _STOP][:6]
     # dedupe, keep non-trivial
     seen, out = set(), []
     for t in toks:
@@ -131,8 +141,13 @@ _STOP = {"revert", "fix", "hotfix", "patch", "update", "changes", "should", "whi
 
 def surface_leakage(overlays: List[str], resolution: Dict[str, Any],
                     changed_files: List[str], title: str) -> Gate:
-    """The answer must not already be written in the served surfaces (they're captured < T)."""
-    tokens = _answer_tokens(resolution, changed_files, title)
+    """The answer must not already be written in the served surfaces (they're captured < T).
+
+    Evidence surfaces (logfire/linear/slack) legitimately mention the incident's subject area — that's
+    the whole point of grounding — so we flag only HARD leaks: a direct reference to the fixing PR or
+    the fix commit. The SUT bundle (which must not contain the fix code) is a separate concern covered
+    by the code_cut gate."""
+    tokens = _answer_tokens(resolution, changed_files, title, hard_only=True)
     if not tokens:
         return Gate("surface_leakage", "warn", "no answer tokens to check")
     hits: List[str] = []
