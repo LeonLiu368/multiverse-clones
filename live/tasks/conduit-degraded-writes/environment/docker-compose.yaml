@@ -28,7 +28,7 @@ services:
       retries: 30
 
   logfire:
-    image: logfire-service:latest
+    image: ghcr.io/abundant-ai/logfire-service:latest
     environment:
       # Live ingest is env-gated on the write token; the collector authenticates with it.
       LOGFIRE_WRITE_TOKEN: task-write-token
