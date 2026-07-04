@@ -1,0 +1,90 @@
+# otel-collector — OTLP/protobuf in (:4318) -> OTLP/HTTP JSON out to the logfire
+# clone. In-cluster Service `otel-collector:4318` (the conduit SUT exports here).
+#
+# The clone's stdlib ingest reads the body as plain JSON (no gzip decode), so the
+# exporter must set `compression: none` (its default gzip makes /v1/traces 400)
+# and `encoding: json`, with the write-token Bearer header.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-collector-config
+  namespace: conduit
+data:
+  config.yaml: |
+    receivers:
+      otlp:
+        protocols:
+          http:
+            endpoint: 0.0.0.0:4318
+    processors:
+      batch:
+        timeout: 1s
+    exporters:
+      otlphttp/logfire:
+        endpoint: http://logfire:80
+        encoding: json
+        compression: none
+        headers:
+          Authorization: "Bearer ${env:LOGFIRE_WRITE_TOKEN}"
+        tls:
+          insecure: true
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [otlphttp/logfire]
+      telemetry:
+        logs:
+          level: info
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otel-collector
+  namespace: conduit
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: otel-collector }
+  template:
+    metadata:
+      labels: { app: otel-collector }
+    spec:
+      containers:
+        - name: otel-collector
+          image: docker.io/otel/opentelemetry-collector-contrib:0.116.1
+          imagePullPolicy: Never
+          args: ["--config=/etc/otelcol/config.yaml"]
+          env:
+            # substituted into the exporter's Authorization header (Bearer write token)
+            - { name: LOGFIRE_WRITE_TOKEN, value: task-write-token }
+          ports:
+            - containerPort: 4318
+          volumeMounts:
+            - { name: cfg, mountPath: /etc/otelcol }
+          readinessProbe:
+            # collector-contrib is distroless (no shell/curl); probe the OTLP
+            # receiver's TCP port instead.
+            tcpSocket: { port: 4318 }
+            initialDelaySeconds: 3
+            periodSeconds: 3
+            timeoutSeconds: 3
+            failureThreshold: 40
+      volumes:
+        - name: cfg
+          configMap:
+            name: otel-collector-config
+            items:
+              - { key: config.yaml, path: config.yaml }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: otel-collector
+  namespace: conduit
+spec:
+  selector: { app: otel-collector }
+  ports:
+    - port: 4318
+      targetPort: 4318

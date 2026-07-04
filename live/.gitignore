@@ -9,3 +9,5 @@ __pycache__/
 tasks/*/environment/**/*.log
 tasks/**/__pycache__/
 tasks/**/*_state/
+tasks/*/environment/k3s/airgap/
+tasks/**/airgap/*.tar

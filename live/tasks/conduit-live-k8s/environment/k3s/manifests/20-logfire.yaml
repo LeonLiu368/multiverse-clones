@@ -1,0 +1,70 @@
+# Logfire clone — the telemetry backend. Live OTLP-JSON ingest on :80
+# (/v1/traces, write-token gated) + query (/v2/query, read-token). Boots from a
+# minimal 1-row corpus (mounted from a ConfigMap), then fills via live ingest.
+#
+# Reached two ways:
+#   * in-cluster:  http://logfire.conduit.svc.cluster.local:80  (collector export)
+#   * from `main`: http://k3s:30080  (NodePort) for `logfire query`
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logfire-records
+  namespace: conduit
+data:
+  # Minimal near-empty valid corpus so the clone boots clean, then fills via ingest.
+  records.json: |
+    [{"start_timestamp":"2026-07-01T00:00:00.000000Z","end_timestamp":"2026-07-01T00:00:00.001000Z","duration":0.001,"trace_id":"00000000000000000000000000000001","span_id":"0000000000000001","parent_span_id":null,"kind":"span","level":9,"span_name":"bootstrap","message":"telemetry gateway ready","is_exception":false,"exception_type":null,"exception_message":null,"exception_stacktrace":null,"attributes":{},"service_name":"telemetry-gateway","deployment_environment":"prod","http_response_status_code":null,"url_path":null,"url_query":null,"http_route":null,"http_method":null}]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: logfire
+  namespace: conduit
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: logfire }
+  template:
+    metadata:
+      labels: { app: logfire }
+    spec:
+      containers:
+        - name: logfire
+          image: ghcr.io/abundant-ai/logfire-service:latest
+          imagePullPolicy: Never
+          env:
+            # Live ingest is env-gated on the write token; the collector authenticates with it.
+            - { name: LOGFIRE_WRITE_TOKEN, value: task-write-token }
+            # The agent's read path uses this bearer token (LOGFIRE_TOKEN on the client).
+            - { name: LOGFIRE_TOKEN, value: task-read-token }
+            - { name: LOGFIRE_RECORDS, value: /data/records.json }
+            - { name: LOGFIRE_PORT, value: "80" }
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - { name: records, mountPath: /data }
+          readinessProbe:
+            httpGet: { path: /health, port: 80 }
+            initialDelaySeconds: 3
+            periodSeconds: 3
+            timeoutSeconds: 3
+            failureThreshold: 40
+      volumes:
+        - name: records
+          configMap:
+            name: logfire-records
+            items:
+              - { key: records.json, path: records.json }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: logfire
+  namespace: conduit
+spec:
+  type: NodePort
+  selector: { app: logfire }
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30080         # `main` queries at http://k3s:30080

@@ -1,0 +1,79 @@
+# conduit-live-k8s — live-deployment observability + remediation on a
+# SELF-CONTAINED k3s plane.
+#
+# EXACTLY TWO services (the whole point — NO docker.sock mounted anywhere):
+#
+#   k3s   a single privileged container running k3s server with its OWN embedded
+#         containerd. The whole stack — postgres, logfire, otel-collector, the
+#         conduit SUT + a seed Job — runs as k8s Deployments/Services INSIDE this
+#         cluster (baked into the image as auto-applied manifests). Workload
+#         images are airgap-imported into containerd at boot (also baked), so no
+#         registry is contacted. Exposes two NodePorts on the k3s container:
+#           :30080 -> logfire (agent's `logfire query` read path)
+#           :30800 -> conduit SUT (soak verifier's load target)
+#
+#   main  the agent. Reaches the cluster with kubectl (kubeconfig copied from the
+#         shared `kube` volume, apiserver rewritten 127.0.0.1:6443 -> k3s:6443),
+#         diagnoses via `logfire query` at http://k3s:30080, remediates via
+#         `kubectl -n conduit set env deploy/conduit ...`.
+#
+# No explicit `networks:` — Harbor puts both on one default network, so `main`
+# reaches the cluster at hostname `k3s`. No socket-sibling plane, no nested
+# dockerd: k3s IS the deploy plane, self-contained in its own container.
+
+services:
+  k3s:
+    build:
+      context: .
+      dockerfile: k3s/Dockerfile
+    hostname: k3s
+    # k3s needs its own container namespaces + cgroups for embedded containerd.
+    # This is NOT a docker.sock mount — no host daemon is shared.
+    privileged: true
+    command: >
+      server
+      --disable traefik
+      --disable metrics-server
+      --snapshotter native
+      --tls-san k3s
+    tmpfs:
+      - /run
+      - /var/run
+    environment:
+      K3S_TOKEN: conduittoken
+      K3S_KUBECONFIG_OUTPUT: /output/kubeconfig.yaml
+      K3S_KUBECONFIG_MODE: "666"
+    volumes:
+      - kube:/output            # kubeconfig lands here; `main` reads + rewrites it
+    ports:
+      # exposed inside the compose network for `main`; not host-published (Harbor
+      # siblings reach them by service name anyway). Declared for clarity.
+      - "30080"
+      - "30800"
+    healthcheck:
+      test: ["CMD", "kubectl", "get", "--raw=/readyz"]
+      interval: 5s
+      timeout: 5s
+      retries: 40
+      start_period: 20s
+
+  main:
+    build:
+      context: .
+      dockerfile: main/Dockerfile
+    volumes:
+      - kube:/mnt/kube:ro       # k3s kubeconfig (entrypoint rewrites the server host)
+    environment:
+      KUBE_SRC: /mnt/kube/kubeconfig.yaml
+      K3S_HOST: k3s
+      CONDUIT_URL: http://k3s:30800
+      LOGFIRE_URL: http://k3s:30080
+      LOGFIRE_TOKEN: task-read-token
+      LOGFIRE_MIN_TIMESTAMP: "2026-07-01T00:00:00Z"
+    depends_on:
+      k3s:
+        condition: service_healthy
+    command: ["sleep", "infinity"]
+
+volumes:
+  kube:

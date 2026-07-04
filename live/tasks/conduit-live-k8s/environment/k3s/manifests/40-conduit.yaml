@@ -1,0 +1,70 @@
+# conduit — the SUT (RealWorld FastAPI + Postgres), OTel auto-instrumented.
+#
+# THE FAULT: WEB_CONCURRENCY=1 (a single uvicorn worker). Under concurrent load
+# the CPU-bound request path (bcrypt logins) serializes on one asyncio event loop
+# and article writes / logins saturate. Healthy at rest. The image CMD runs
+# `alembic upgrade head` (retried until postgres answers) then
+# `opentelemetry-instrument uvicorn app.main:app` — uvicorn reads WEB_CONCURRENCY
+# natively for its worker count, so the fault (and the fix) is pure config.
+#
+# Remediation surface for the agent:
+#   kubectl -n conduit set env deploy/conduit WEB_CONCURRENCY=4   -> rollout (~1s)
+#
+# Reached two ways:
+#   * in-cluster: http://conduit.conduit.svc.cluster.local:8000
+#   * from `main`: http://k3s:30800 (NodePort) — the soak verifier drives load here.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: conduit
+  namespace: conduit
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: conduit }
+  template:
+    metadata:
+      labels: { app: conduit }
+    spec:
+      containers:
+        - name: conduit
+          image: docker.io/library/conduit-otel:latest
+          imagePullPolicy: Never
+          env:
+            # --- THE FAULT KNOB (uvicorn worker count; faulty=1, fix=4) ---
+            - { name: WEB_CONCURRENCY, value: "1" }
+            # app runtime
+            - { name: PORT, value: "8000" }
+            # postgresql:// scheme (SQLAlchemy 1.4 alembic rejects legacy postgres://)
+            - { name: DATABASE_URL, value: "postgresql://conduit:conduit@postgres:5432/conduit" }
+            - { name: SECRET_KEY, value: "task-secret-please-change" }
+            - { name: MAX_CONNECTIONS_COUNT, value: "10" }
+            - { name: MIN_CONNECTIONS_COUNT, value: "5" }
+            # --- OpenTelemetry: export to the in-cluster collector ---
+            - { name: OTEL_SERVICE_NAME, value: conduit }
+            - { name: OTEL_EXPORTER_OTLP_ENDPOINT, value: "http://otel-collector:4318" }
+            - { name: OTEL_EXPORTER_OTLP_PROTOCOL, value: "http/protobuf" }
+            - { name: OTEL_TRACES_EXPORTER, value: otlp }
+            - { name: OTEL_METRICS_EXPORTER, value: none }
+            - { name: OTEL_LOGS_EXPORTER, value: none }
+          ports:
+            - containerPort: 8000
+          readinessProbe:
+            httpGet: { path: /api/tags, port: 8000 }
+            initialDelaySeconds: 5
+            periodSeconds: 3
+            timeoutSeconds: 3
+            failureThreshold: 60
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: conduit
+  namespace: conduit
+spec:
+  type: NodePort
+  selector: { app: conduit }
+  ports:
+    - port: 8000
+      targetPort: 8000
+      nodePort: 30800         # soak verifier (in main) drives load at http://k3s:30800

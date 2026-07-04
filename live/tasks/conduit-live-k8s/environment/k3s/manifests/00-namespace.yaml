@@ -1,0 +1,7 @@
+# All task workloads live in the `conduit` namespace. k3s auto-applies every
+# manifest in /var/lib/rancher/k3s/server/manifests/*.yaml at boot, in filename
+# order, so 00- runs first.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: conduit

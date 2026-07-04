@@ -1,0 +1,91 @@
+{
+  "target": "http://k3s:30800",
+  "health_path": "/api/tags",
+  "health_timeout_s": 90,
+  "health_poll_interval_s": 1.0,
+  "warmup_s": 12,
+  "soak_s": 60,
+  "rps": 8,
+  "workers": 24,
+  "request_timeout_s": 1.5,
+  "goodput_min": 0.8,
+  "error_rate_max": 0.15,
+  "min_samples_per_driver": 5,
+  "bootstrap": {
+    "token_json_path": "user.token",
+    "steps": [
+      {
+        "method": "POST",
+        "path": "/api/users",
+        "body": {
+          "user": {
+            "username": "soak_{marker}",
+            "email": "soak_{marker}@ex.com",
+            "password": "soaksoak123"
+          }
+        }
+      },
+      {
+        "method": "POST",
+        "path": "/api/users/login",
+        "body": {
+          "user": {
+            "email": "soak_{marker}@ex.com",
+            "password": "soaksoak123"
+          }
+        }
+      }
+    ]
+  },
+  "flows": [
+    {
+      "name": "write_readback",
+      "kind": "write_readback",
+      "weight": 1.0,
+      "write_path": "/api/articles",
+      "write_body": {
+        "article": {
+          "title": "{marker}",
+          "description": "soak",
+          "body": "soak body {marker}",
+          "tagList": [
+            "soak"
+          ]
+        }
+      },
+      "slug_json_path": "article.slug",
+      "read_path_template": "/api/articles/{slug}",
+      "marker_field": "title",
+      "headers": {
+        "Authorization": "Token {token}",
+        "Content-Type": "application/json"
+      }
+    },
+    {
+      "name": "login_churn",
+      "kind": "write_readback",
+      "weight": 1.0,
+      "write_path": "/api/users/login",
+      "write_body": {
+        "user": {
+          "email": "soakfixed@ex.com",
+          "password": "soaksoak123"
+        }
+      },
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  ],
+  "findings": {
+    "required_keys": [
+      "component",
+      "mechanism"
+    ],
+    "mechanism_regexes": [
+      "(worker|concurren|event.?loop)",
+      "(bcrypt|cpu|serial|saturat|block|queue)"
+    ],
+    "mechanism_substrings": []
+  }
+}

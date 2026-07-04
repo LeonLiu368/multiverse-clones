@@ -1,0 +1,25 @@
+schema_version = "1.2"
+name = "live/conduit-live-k8s"
+description = "Live-deployment observability + remediation on a SELF-CONTAINED k3s plane. Conduit (a RealWorld FastAPI+Postgres service) runs as a k8s Deployment inside an embedded-containerd k3s cluster (one privileged container, NO host docker.sock) with a config-driven fault: it runs a single uvicorn worker (WEB_CONCURRENCY=1), so under concurrent load the CPU-bound request path (bcrypt logins) serializes on one event loop and article writes / logins saturate. The agent must diagnose from LIVE OpenTelemetry (spans stream SUT->otel-collector->logfire clone, all in-cluster; queried via the `logfire` CLI over a `records` table at a NodePort), remediate the live deployment via its kubectl surface (`kubectl -n conduit set env deploy/conduit WEB_CONCURRENCY=4` -> rollout), and write /workspace/findings.json. Graded by a post-agent soak that drives concurrent load at the conduit NodePort and checks the deployment now holds up (calibrated so faulty times out and fixed clears) plus a findings mechanism gate. nop=0, oracle=1."
+
+[metadata]
+category = "software-engineering"
+service = "k3s+logfire"
+failure_mode = "live-deployment-degradation"
+tags = ["live-deployment", "kubernetes", "k3s", "logfire", "opentelemetry", "observability", "soak", "remediation", "incident"]
+
+[agent]
+timeout_sec = 2400
+
+[verifier]
+timeout_sec = 600
+
+[environment]
+cpus = 8
+memory_mb = 16384
+storage_mb = 40960
+gpus = 0
+allow_internet = true
+workdir = "/workspace"
+build_timeout_sec = 3600
+custom_docker_compose = true
