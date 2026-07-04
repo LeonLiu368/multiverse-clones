@@ -61,7 +61,7 @@ export function GaugeApp({ appId }: { appId: string }) {
         onLoaded={load}
         allowPull
         allowOverlay
-        pullHint="ghcr.io/abundant-ai/gauge-gateway:<dataset>"
+        pullHint="ghcr.io/abundant-ai/grafana-service:prod-v1"
       />
       {!v ? (
         <div className="empty-state">Load a gauge <b>state.json</b> to inspect its logs (Loki), metrics (Prometheus), dashboards and datasources.</div>

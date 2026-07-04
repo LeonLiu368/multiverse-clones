@@ -169,7 +169,7 @@ export function LinearApp({ appId }: { appId: string }) {
         accept=".json,application/json"
         onLoaded={load}
         allowPull
-        pullHint="ghcr.io/abundant-ai/jira-gateway:prod-v1"
+        pullHint="ghcr.io/abundant-ai/jira-gateway-mv:prod-v1"
       />
       {!v ? (
         <div className="empty-state">

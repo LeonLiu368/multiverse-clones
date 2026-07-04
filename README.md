@@ -87,11 +87,15 @@ Pick a bundled sample (under `samples/`) or **upload** any seed file (`POST /api
   **Docs** (the `body.content` structural tree as a Doc page + outline), **Calendar** and **Gmail**.
 
 All clone image names + baked paths track **`~/projects/multiverse-clones`** (the canonical clone
-source): `grafana-service` `/srv/grafana/state.json`, `sentry-clone-service`
-`/srv/sentry-clone/corpus-state.json`, `logfire-service` `/data/records.json.gz`,
-`gworkspace-service` `/srv/gws.db`, `figma-service` `/srv/figma.db`, `jira-gateway`
-`/var/lib/ticketvector/state.json`; the Slack/Jira code bridges import from the multiverse checkouts
-(`MULTIVERSE_CLONES` overrides the base).
+source). Its CI publishes gateways under repo-owned names — most with an `-mv` suffix:
+`figma-service-mv` `/srv/figma.db`, `gworkspace-service-mv` `/srv/gws.db`,
+`sentry-clone-service-mv` `/srv/sentry-clone/corpus-state.json`, `aws-clone-service-mv`
+`/opt/aws-clone-corpus/state.json`, `ghc-service-mv`, `jira-gateway-mv` + `slack-gateway-mv`
+(`/var/lib/ticketvector/state.json`, `/opt/slack.prebuilt.db`), while `grafana-service`
+`/srv/grafana/state.json`, `logfire-service` `/data/records.json.gz`, `notion-service`
+`/srv/notion.db` and `discord-service` `/srv/discord.db` keep plain names. Adapters match both the
+`-mv` and legacy names (substring match); the Slack/Jira code bridges import from the multiverse
+checkouts (`MULTIVERSE_CLONES` overrides the base).
 
 ## Scaling to other clones
 

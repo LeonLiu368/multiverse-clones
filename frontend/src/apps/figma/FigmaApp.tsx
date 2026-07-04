@@ -99,7 +99,7 @@ export function FigmaApp({ appId }: { appId: string }) {
         accept=".json,application/json"
         onLoaded={load}
         allowPull
-        pullHint="ghcr.io/abundant-ai/figma-service:prod-v1"
+        pullHint="ghcr.io/abundant-ai/figma-service-mv:prod-v1"
       />
       {!v ? (
         <div className="empty-state">

@@ -40,7 +40,8 @@ export function SentryApp({ appId }: { appId: string }) {
 
   return (
     <div className="sentry">
-      <SeedFileBar appId={appId} accept=".json,application/json" onLoaded={load} />
+      <SeedFileBar appId={appId} accept=".json,application/json" onLoaded={load} allowPull
+        pullHint="ghcr.io/abundant-ai/sentry-clone-service-mv:prod-v1" />
       {!v ? (
         <div className="empty-state">Load a Sentry <b>state.json</b> to inspect its issues and events.</div>
       ) : (

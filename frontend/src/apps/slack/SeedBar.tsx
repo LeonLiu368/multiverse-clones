@@ -169,7 +169,7 @@ export function SeedBar({
         <input
           className="pull-input"
           value={pullRef}
-          placeholder="ghcr.io/abundant-ai/slack-gateway:<tag>"
+          placeholder="ghcr.io/abundant-ai/slack-gateway-mv:<tag>"
           onChange={(e) => setPullRef(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && doPull()}
         />

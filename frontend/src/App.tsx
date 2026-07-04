@@ -20,7 +20,7 @@ const APP_META: Record<string, { glyph: string; color: string; blurb: string }> 
   slack: { glyph: "S", color: "#4a154b", blurb: "Slack workspace (base + overlay)" },
   jira: { glyph: "J", color: "#0052cc", blurb: "Jira issues (state.json base + overlay)" },
   figma: { glyph: "F", color: "#0d99ff", blurb: "Design file (fixture.json node tree)" },
-  gauge: { glyph: "G", color: "#f46800", blurb: "Logs & dashboards (gauge state.json)" },
+  gauge: { glyph: "G", color: "#f46800", blurb: "Logs & dashboards (grafana-clone state.json)" },
   sentry: { glyph: "S", color: "#362d59", blurb: "Issues & events (Sentry state.json)" },
   github: { glyph: "G", color: "#24292f", blurb: "Repos/issues/PRs (gh seed.sh)" },
   logfire: { glyph: "🔥", color: "#e5202e", blurb: "Traces & spans (Logfire records.json)" },

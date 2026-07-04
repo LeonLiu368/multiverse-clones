@@ -10,7 +10,7 @@ from adapters.fileseed import FileSeedAdapter
 
 class GaugeAdapter(FileSeedAdapter):
     id = "gauge"
-    display_name = "gauge"
+    display_name = "Grafana"
     status = "active"
     ui_module = "gauge"
     sample_files = ("gauge.state.json",)

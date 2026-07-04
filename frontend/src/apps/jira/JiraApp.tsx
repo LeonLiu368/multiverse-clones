@@ -422,7 +422,7 @@ function JiraSeedBar({
         <input
           className="pull-input"
           value={pullRef}
-          placeholder="ghcr.io/abundant-ai/jira-gateway:prod-v1"
+          placeholder="ghcr.io/abundant-ai/jira-gateway-mv:prod-v1"
           onChange={(e) => setPullRef(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && doPull()}
         />

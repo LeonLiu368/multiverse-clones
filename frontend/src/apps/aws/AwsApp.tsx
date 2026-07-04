@@ -112,7 +112,7 @@ export function AwsApp({ appId }: { appId: string }) {
   return (
     <div className="aws">
       <SeedFileBar appId={appId} accept=".json,application/json" onLoaded={load} allowPull
-        pullHint="ghcr.io/abundant-ai/aws-clone-service:prod-v1" />
+        pullHint="ghcr.io/abundant-ai/aws-clone-service-mv:prod-v1" />
       {!v ? (
         <div className="empty-state">Load an aws-clone <b>state.json</b> to browse S3, SQS, DynamoDB, Lambda, IAM &amp; more.</div>
       ) : (

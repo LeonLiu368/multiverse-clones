@@ -151,7 +151,7 @@ export function GworkspaceApp({ appId }: { appId: string }) {
         accept=".json,application/json"
         onLoaded={load}
         allowPull
-        pullHint="ghcr.io/abundant-ai/gws-service:prod-v1"
+        pullHint="ghcr.io/abundant-ai/gworkspace-service-mv:prod-v1"
       />
       {!v ? (
         <div className="empty-state">
