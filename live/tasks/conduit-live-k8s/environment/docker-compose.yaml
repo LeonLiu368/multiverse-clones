@@ -69,11 +69,13 @@ services:
       LOGFIRE_MIN_TIMESTAMP: "2026-07-01T00:00:00Z"
     depends_on:
       k3s:
-        # service_started (not _healthy): main must come up even when k3s crashes
-        # at boot, so its entrypoint can surface /mnt/kube/k3s-boot.log (the crash
-        # reason) into trial.log. A healthy-gate makes a k3s crash an invisible
-        # "dependency failed to start" with no artifacts collected.
-        condition: service_started
+        # MUST be service_healthy, not service_started: Harbor execs the agent as
+        # soon as main's CONTAINER is running (it does NOT wait for main's
+        # entrypoint readiness loop), so the ONLY thing that gates "k3s ready
+        # before the agent runs" is this compose-level health dependency. With
+        # service_started, a host where k3s crashes at boot yields a false reward=0
+        # (agent runs against a dead cluster) instead of a retryable infra_error.
+        condition: service_healthy
     command: ["sleep", "infinity"]
 
 volumes:
