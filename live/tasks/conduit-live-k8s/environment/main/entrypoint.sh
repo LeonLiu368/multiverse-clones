@@ -25,7 +25,9 @@ while [ ! -s "$KUBE_SRC" ]; do
   sleep 2
 done
 if [ -s "$KUBE_SRC" ]; then
-  sed "s#https://127.0.0.1:6443#https://${K3S_HOST}:6443#g" "$KUBE_SRC" > "$KUBECONFIG"
+  # Reach the apiserver by service name regardless of what host k3s baked in
+  # (127.0.0.1 locally; the container/host IP on Daytona).
+  sed -E "s#server: https://[^[:space:]]+#server: https://${K3S_HOST}:6443#g" "$KUBE_SRC" > "$KUBECONFIG"
   chmod 600 "$KUBECONFIG"
   echo "[agent-entrypoint] kubeconfig ready (server -> https://${K3S_HOST}:6443)"
 fi

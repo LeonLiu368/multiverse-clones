@@ -31,12 +31,8 @@ services:
     # k3s needs its own container namespaces + cgroups for embedded containerd.
     # This is NOT a docker.sock mount — no host daemon is shared.
     privileged: true
-    command: >
-      server
-      --disable traefik
-      --disable metrics-server
-      --snapshotter native
-      --tls-san k3s
+    # server flags (incl. --node-ip pinned to the container IP) live in the image
+    # ENTRYPOINT (k3s/k3s-entrypoint.sh) — the Daytona multi-homing fix.
     tmpfs:
       - /run
       - /var/run

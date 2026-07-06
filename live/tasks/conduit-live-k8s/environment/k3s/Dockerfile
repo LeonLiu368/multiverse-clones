@@ -22,3 +22,10 @@
 FROM rancher/k3s:v1.31.5-k3s1
 
 COPY k3s/manifests/*.yaml /var/lib/rancher/k3s/server/manifests/
+
+# Pin the node IP to the container address (Daytona multi-homing fix — see script).
+# The base image ENTRYPOINT is /bin/k3s; override it with our launcher, which bakes
+# all the server flags, so the compose `command:` is no longer needed.
+COPY k3s/k3s-entrypoint.sh /k3s-entrypoint.sh
+RUN chmod +x /k3s-entrypoint.sh
+ENTRYPOINT ["/k3s-entrypoint.sh"]
