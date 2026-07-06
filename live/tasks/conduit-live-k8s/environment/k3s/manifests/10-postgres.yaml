@@ -1,5 +1,6 @@
 # Postgres — the SUT database. In-cluster Service `postgres:5432` (namespace
-# conduit). Image postgres:16 is airgap-imported into k3s at boot (no pull).
+# conduit). Public image postgres:16 — k3s pulls it at runtime (Oddish) or reuses
+# it from containerd if already imported (local).
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -16,7 +17,7 @@ spec:
       containers:
         - name: postgres
           image: docker.io/library/postgres:16
-          imagePullPolicy: Never          # airgap-imported; never reach out to a registry
+          imagePullPolicy: IfNotPresent   # public; local containerd reuse or Oddish runtime pull
           env:
             - { name: POSTGRES_USER, value: conduit }
             - { name: POSTGRES_PASSWORD, value: conduit }

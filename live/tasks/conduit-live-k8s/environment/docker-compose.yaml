@@ -6,9 +6,10 @@
 #   k3s   a single privileged container running k3s server with its OWN embedded
 #         containerd. The whole stack — postgres, logfire, otel-collector, the
 #         conduit SUT + a seed Job — runs as k8s Deployments/Services INSIDE this
-#         cluster (baked into the image as auto-applied manifests). Workload
-#         images are airgap-imported into containerd at boot (also baked), so no
-#         registry is contacted. Exposes two NodePorts on the k3s container:
+#         cluster (baked into the image as auto-applied manifests). Workload images
+#         are PUBLIC and pulled by k3s's containerd at runtime (imagePullPolicy:
+#         IfNotPresent) — no --registry-login needed (it can't authenticate
+#         containerd anyway). Exposes two NodePorts on the k3s container:
 #           :30080 -> logfire (agent's `logfire query` read path)
 #           :30800 -> conduit SUT (soak verifier's load target)
 #

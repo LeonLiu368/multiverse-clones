@@ -28,8 +28,11 @@ spec:
     spec:
       containers:
         - name: conduit
-          image: docker.io/library/conduit-otel:latest
-          imagePullPolicy: Never
+          # PUBLIC ghcr image, built from the vendored RealWorld app + otel-wrap
+          # overlay (provenance in ../../MANIFEST.json). Needs the public-flip on the
+          # ghcr package. k3s pulls it at runtime on Oddish; local reuse if imported.
+          image: ghcr.io/abundant-ai/conduit-otel:latest
+          imagePullPolicy: IfNotPresent
           env:
             # --- THE FAULT KNOB (uvicorn worker count; faulty=1, fix=4) ---
             - { name: WEB_CONCURRENCY, value: "1" }

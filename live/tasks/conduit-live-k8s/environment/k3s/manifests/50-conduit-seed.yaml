@@ -141,8 +141,9 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: seed
-          image: docker.io/library/conduit-otel:latest
-          imagePullPolicy: Never
+          # reuse the SUT image purely as a Python runtime for seed.py (stdlib-only)
+          image: ghcr.io/abundant-ai/conduit-otel:latest
+          imagePullPolicy: IfNotPresent
           command: ["sh", "-c"]
           args:
             - |

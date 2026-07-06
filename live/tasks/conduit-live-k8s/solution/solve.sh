@@ -76,9 +76,29 @@ FIX_WORKERS=4
 log "scaling workers: kubectl set env deploy/$APP WEB_CONCURRENCY=$FIX_WORKERS (rolls out)"
 kubectl -n "$NS" set env deploy/"$APP" WEB_CONCURRENCY="$FIX_WORKERS"
 
-# ---------- wait for the rollout to be healthy ----------
+# ---------- wait for the rollout to FULLY converge ----------
+# `rollout status` returns when the Deployment reports complete, but the old
+# single-worker ReplicaSet's pod (and the Service endpoint routing to it) can
+# linger briefly. Wait until (a) the rollout is complete, (b) every non-target
+# ReplicaSet is scaled to 0, and (c) only the new pod is Ready — so the NodePort
+# serves exclusively from the fixed pod before any load hits it.
 log "waiting for rollout to complete"
 kubectl -n "$NS" rollout status deploy/"$APP" --timeout=180s || true
+
+log "waiting for old ReplicaSets to scale to 0 (endpoint fully switched)"
+i=0
+while [ "$i" -lt 90 ]; do
+  # sum of pods across all conduit ReplicaSets that are NOT the current one
+  CURRS="$(kubectl -n "$NS" get rs -l app="$APP" \
+    -o jsonpath='{range .items[?(@.status.replicas>0)]}{.metadata.name}={.status.replicas}{"\n"}{end}' 2>/dev/null | wc -l | tr -d ' ')"
+  READY="$(kubectl -n "$NS" get po -l app="$APP" \
+    --field-selector=status.phase=Running -o jsonpath='{range .items[*]}{.status.containerStatuses[0].ready}{"\n"}{end}' 2>/dev/null | grep -c true || true)"
+  # exactly one RS with replicas>0 AND exactly one Ready pod => converged
+  if [ "${CURRS:-9}" -le 1 ] && [ "${READY:-0}" -eq 1 ]; then
+    log "rollout converged (1 ReplicaSet active, 1 Ready pod)"; break
+  fi
+  i=$((i+1)); sleep 2
+done
 
 log "waiting for $APP to answer health after rollout"
 i=0
@@ -86,6 +106,8 @@ until curl -fsS -m3 "$BASE/api/tags" >/dev/null 2>&1; do
   i=$((i+1)); [ "$i" -lt 120 ] || { echo "app did not come back after fix" >&2; exit 1; }
   sleep 2
 done
+# A short settle so kube-proxy endpoint slices propagate to the NodePort before load.
+sleep 3
 NOW="$(kubectl -n "$NS" get deploy/"$APP" \
   -o jsonpath='{range .spec.template.spec.containers[0].env[?(@.name=="WEB_CONCURRENCY")]}{.value}{end}' 2>/dev/null || echo "?")"
 log "app healthy after fix; workers now: $NOW"

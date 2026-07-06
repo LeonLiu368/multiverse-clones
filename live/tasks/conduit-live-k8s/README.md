@@ -41,8 +41,10 @@ both on one default network, so `main` reaches everything at hostname `k3s`.
 ## How the stack is manifested (inside k3s)
 
 k3s auto-applies every manifest dropped in `/var/lib/rancher/k3s/server/manifests/`
-at boot. They are **baked into the k3s image** (`k3s/Dockerfile` COPYs
-`k3s/manifests/*.yaml` there). All workloads are in the `conduit` namespace:
+at boot. Only the manifests are **baked into the k3s image** (`k3s/Dockerfile` COPYs
+`k3s/manifests/*.yaml` there — that is the k3s image's *entire* payload over the
+`rancher/k3s` base; it stays 286MB, no bigger than the base). All workloads are in
+the `conduit` namespace:
 
 | Manifest | Workload |
 |---|---|
@@ -51,7 +53,7 @@ at boot. They are **baked into the k3s image** (`k3s/Dockerfile` COPYs
 | `20-logfire.yaml` | logfire clone Deployment (records from a ConfigMap mount) + **NodePort 30080** Service; live OTLP-JSON ingest + `/v2/query` |
 | `30-otel-collector.yaml` | collector Deployment (config from a ConfigMap) + Service `otel-collector:4318`; OTLP/protobuf in → OTLP/HTTP **JSON** out to `http://logfire:80`, `compression: none`, Bearer write token |
 | `40-conduit.yaml` | conduit SUT Deployment (**`WEB_CONCURRENCY=1` — the fault**) + **NodePort 30800** Service |
-| `50-conduit-seed.yaml` | a Job that seeds 3 users / 6 articles + the fixed `soakfixed` login user (seed.py mounted from a ConfigMap; runs on the conduit-otel image as a Python runtime) |
+| `50-conduit-seed.yaml` | a Job that seeds 3 users / 6 articles + the fixed `soakfixed` login user (seed.py mounted from a ConfigMap; runs on the public `conduit-otel` image as a Python runtime) |
 
 The one telemetry hop that matters (unchanged from the Dokku task): the clone's
 stdlib ingest reads the body as plain JSON, so the collector's `otlphttp` exporter
@@ -59,44 +61,54 @@ must set **`compression: none`** (its default gzip makes `/v1/traces` 400). With
 that, `OTEL_SERVICE_NAME=conduit` lands as `service_name='conduit'` rows carrying
 `duration`, `span_name`, `http_route`, `http_method`, `http_response_status_code`.
 
-## How images get into k3s (the one real wrinkle — solved: **Option 1, airgap-bake**)
+## How images get into k3s — **k3s pulls PUBLIC images at runtime** (`IfNotPresent`)
 
 k3s uses **containerd, not docker**, so Oddish's `--registry-login` (a `docker
-login`) does **not** authenticate k3s's image pulls. We avoid all runtime registry
-auth by **airgap-baking**: every workload image is placed as a tar in
-`/var/lib/rancher/k3s/agent/images/*.tar`, which k3s auto-imports into containerd
-at startup. Every workload sets `imagePullPolicy: Never`, so no registry is ever
-contacted.
+login`) does **not** authenticate k3s's image pulls. The strategy is therefore:
+**all workload images are PUBLIC, and k3s's containerd pulls them at runtime** — no
+registry auth needed. Every workload sets `imagePullPolicy: IfNotPresent` (reuse a
+locally-present image, else pull).
 
-- `environment/k3s/bake-images.sh` (run before `docker compose build k3s`):
-  1. builds the `conduit-otel` SUT image (vendored `sut-src/app/` + `otel-wrap/`
-     overlay) with `--provenance=false` (single-arch docker manifest, which k3s's
-     airgap importer handles cleanly), and
-  2. `docker save`s the 4 workload images — `postgres:16`,
-     `otel/opentelemetry-collector-contrib:0.116.1`, the **private**
-     `ghcr.io/abundant-ai/logfire-service:latest`, and `conduit-otel:latest` —
-     into `k3s/airgap/*.tar` (gitignored; ~450MB).
-- `environment/k3s/Dockerfile` COPYs `k3s/airgap/*.tar` into the airgap dir and
-  `k3s/manifests/*.yaml` into the server-manifests dir.
+Image refs:
 
-**Confirmed locally:** after boot, all three image-pulling Deployments
-(postgres, logfire, conduit) roll out from `imagePullPolicy: Never` with no
-`ErrImagePull` — i.e. the airgap import populated containerd. (The collector too.)
+| Image | Registry | Status |
+|---|---|---|
+| `docker.io/library/postgres:16` | Docker Hub | already public |
+| `docker.io/otel/opentelemetry-collector-contrib:0.116.1` | Docker Hub | already public |
+| `ghcr.io/abundant-ai/logfire-service:latest` | ghcr | **needs public-flip** |
+| `ghcr.io/abundant-ai/conduit-otel:latest` | ghcr | **needs public-flip** — the SUT (published this rework, `sha256:29401be3…`) |
 
-### On Oddish
-- The private `logfire-service` image and whatever registry the SUT is pushed to
-  are already pulled locally by Harbor's `--registry-login` **before** the build,
-  so `docker save` in `bake-images.sh` finds them exactly as it does locally. No
-  runtime auth, no public-flip needed with this option.
-- If a future harness cannot run `bake-images.sh` as a pre-build step, the
-  fallback (Option 2 in the plan) is to make `logfire-service` + the SUT image
-  **public** on ghcr and drop `imagePullPolicy: Never` so k3s pulls them (public →
-  no auth). That is a manual package-visibility UI flip; not needed for the baked
-  path.
-- **Resource needs:** k3s + 5 in-cluster workloads. `task.toml` requests 8 cpu /
-  16 GB / 40 GB storage (same as the Dokku task). The `k3s` container must be
-  `privileged: true` (embedded containerd needs its own namespaces/cgroups — this
-  is **not** a docker.sock share).
+### Two ghcr packages must be flipped PUBLIC (manual UI step, one-time)
+`ghcr.io/abundant-ai/logfire-service` and `ghcr.io/abundant-ai/conduit-otel`. Until
+they are public, k3s cannot pull them on Oddish. (Local runs sidestep this — see
+below.) The two Docker Hub images are already public.
+
+### The SUT image (`conduit-otel`)
+Published this rework to `ghcr.io/abundant-ai/conduit-otel:latest` from the OTel
+overlay (`sut-src/otel-wrap/`) over the vendored RealWorld app. Because it's now a
+published image, **the vendored app source is no longer carried in this task dir**
+(the image carries it) — provenance + the rebuild recipe are in
+`sut-src/MANIFEST.json` and `sut-src/otel-wrap/publish-sut.sh` (an OPTIONAL
+maintenance script; the task's `docker compose build` never builds the SUT).
+
+### Why the previous airgap-bake is GONE
+An earlier revision airgap-baked all 4 images into the k3s image
+(`/var/lib/rancher/k3s/agent/images/*.tar`). That produced a **422MB task upload
+that Oddish's S3 rejected — EntityTooLarge**, and it could not use
+`--registry-login` for k3s anyway. Runtime public-pull removes both problems and
+shrinks the upload to ~117KB.
+
+### Local runs before the public flip
+`validate_local.sh` imports the workload images into k3s's containerd
+(`docker save <img> | k3s-container ctr -n k8s.io images import -`) right after boot,
+so `IfNotPresent` finds them without any registry pull. This writes nothing to the
+tree and is NOT in the task Dockerfile. On Oddish (packages public) k3s just pulls
+them itself — no import step.
+
+### Resource needs
+k3s + 5 in-cluster workloads. `task.toml` requests 8 cpu / 16 GB / 40 GB storage
+(same as the Dokku task). The `k3s` container must be `privileged: true` (embedded
+containerd needs its own namespaces/cgroups — this is **not** a docker.sock share).
 
 ## The agent surface
 
@@ -130,22 +142,34 @@ Target rewritten to the NodePort `http://k3s:30800`; all calibration values kept
 loop). Findings gate (`mechanism_regexes`): must match
 `(worker|concurren|event.?loop)` AND `(bcrypt|cpu|serial|saturat|block|queue)`.
 
-## Measured nop vs oracle (local, arm64 Docker Desktop)
+## Measured nop vs oracle (local, arm64 Docker Desktop) — re-verified after the rework
 
-Two-service compose up; k3s healthy in ~6s; all in-cluster workloads Running;
-`logfire query` returns live `service_name='conduit'` rows (680 spans seen);
-soak drives load at the conduit NodePort.
+Two-service compose up; k3s healthy in ~6s; all 4 in-cluster workloads Running
+(conduit + logfire via containerd-imported public images, postgres + otel-collector
+via runtime pull); `logfire query` returns live `service_name='conduit'` rows
+(800–950 spans seen); soak drives load at the conduit NodePort. **Two consecutive
+full `validate_local.sh` runs both PASS (nop=0, oracle=1 ×3).**
 
 | Scenario | WEB_CONCURRENCY | overall goodput | overall error_rate | overall p95 | reward |
 |---|---|---|---|---|---|
-| **NOP** (faulty, no fix) | 1 | 0.040 | 0.961 | ~1510 ms (timeouts) | **0.0** |
-| **ORACLE** ×3 (solve.sh fix) | 4 | 1.000 | 0.000 | ~377–402 ms | **1.0, 1.0, 1.0** |
+| **NOP** (faulty, no fix) | 1 | 0.62 (login_churn driver **0.00**) | low | ~360 ms + queue | **0.0** |
+| **ORACLE** ×3 (solve.sh fix) | 4 | 1.000 | 0.000 | ~329–402 ms | **1.0, 1.0, 1.0** |
 
-NOP fails BOTH goodput and error_rate gates, per-driver AND overall — a wide,
-non-marginal margin. ORACLE is stable ×3. The oracle each run: `logfire query`
-diagnoses the single-service latency saturation (all latency on `conduit`, spans in
-the multi-second range under load) → `kubectl -n conduit set env deploy/conduit
-WEB_CONCURRENCY=4` → `rollout status` → writes `findings.json`.
+NOP fails the goodput gate decisively: the `login_churn` driver (bcrypt on the
+single event loop) scores **0.00 goodput** — 0/262 logins complete within the SLO —
+so overall goodput (0.62) is well under the 0.80 gate. ORACLE is stable ×3 (goodput
+1.0, error 0.0). The oracle each run: `logfire query` diagnoses the single-service
+latency saturation (all latency on `conduit`, spans in the multi-second range under
+load) → `kubectl -n conduit set env deploy/conduit WEB_CONCURRENCY=4` → waits for
+the rollout to FULLY converge → writes `findings.json`.
+
+### Rollout-convergence hardening (learned during re-verify)
+`kubectl rollout status` returns when the Deployment reports complete, but the old
+single-worker pod (and the Service endpoint routing to it) can linger for a beat.
+An early oracle run measured that stale window and failed. `solution/solve.sh` (and
+the validator's re-arm) now wait until exactly **one ReplicaSet is active and one
+pod is Ready** (old RS scaled to 0), plus a short endpoint-settle, before load hits
+the NodePort. With that, oracle is stable ×3 across repeated runs.
 
 ## Anti-leak (verified)
 
@@ -165,9 +189,25 @@ service. Confirmed at runtime: `ls /var/run/docker.sock` inside the `k3s` contai
 returns "No such file or directory" — k3s runs its own embedded containerd. This is
 the entire reason for the re-platform.
 
+## Task upload size
+
+**~117 KB** (manifests + the `main` agent image build context + soak + docs). No
+image tars, no vendored app source. This is the fix for the Oddish S3
+`EntityTooLarge` rejection the 422MB airgap-baked revision hit.
+
 ## Local validation
 
-`./validate_local.sh` bakes the airgap images, brings the two-service stack up,
-waits for the in-cluster workloads + seed Job, confirms live spans reach logfire,
-then runs NOP (faulty → reward 0) and ORACLE (`solution/solve.sh` → reward 1,
-repeated ×3). `KEEP=1` leaves the stack up; `SKIP_BAKE=1` reuses existing tars.
+`./validate_local.sh` imports the workload images into k3s's containerd (so
+`IfNotPresent` works before the ghcr packages are public), brings the two-service
+stack up, waits for the in-cluster workloads + seed Job, confirms live spans reach
+logfire, then runs NOP (faulty → reward 0) and ORACLE (`solution/solve.sh` → reward
+1, repeated ×3). `KEEP=1` leaves the stack up.
+
+## Oddish checklist
+
+1. **Flip PUBLIC** the two ghcr packages: `ghcr.io/abundant-ai/logfire-service` and
+   `ghcr.io/abundant-ai/conduit-otel` (manual package-visibility UI step). The two
+   Docker Hub images are already public.
+2. That's it for images — k3s pulls all four at runtime; no `--registry-login`
+   needed for k3s (it wouldn't help containerd anyway).
+3. `k3s` needs `privileged: true`; resources 8cpu/16GB/40GB.

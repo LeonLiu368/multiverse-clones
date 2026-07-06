@@ -54,7 +54,7 @@ spec:
       containers:
         - name: otel-collector
           image: docker.io/otel/opentelemetry-collector-contrib:0.116.1
-          imagePullPolicy: Never
+          imagePullPolicy: IfNotPresent   # public; local containerd reuse or Oddish runtime pull
           args: ["--config=/etc/otelcol/config.yaml"]
           env:
             # substituted into the exporter's Authorization header (Bearer write token)

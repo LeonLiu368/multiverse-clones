@@ -1,27 +1,27 @@
-# otel-wrap/ — OTel deploy overlay for the VENDORED Conduit SUT (`../app/`)
+# otel-wrap/ — OTel overlay + build recipe for the Conduit SUT image
 
-This directory wraps the **vendored real-OSS RealWorld backend**
-(`nsidnev/fastapi-realworld-example-app` @ `029eb77`, full source in `../app/`,
-provenance in `../../MANIFEST.json`) into the dokku-deployable, OTel-
-auto-instrumented SUT. The vendored tree stays pristine (its upstream
-poetry Dockerfile is kept for provenance but never used).
+This directory is the **build recipe** for the published SUT image
+`ghcr.io/abundant-ai/conduit-otel:latest` (PUBLIC on ghcr). It wraps the real-OSS
+RealWorld backend (`nsidnev/fastapi-realworld-example-app` @ `029eb77`) with OTel
+auto-instrumentation. **The upstream app source is no longer vendored in this task
+dir** — the published image carries it, and the task references the image only (k3s
+pulls it at runtime). Provenance is in `../MANIFEST.json`.
 
-## Assembly (done by `platform/smoke.sh` / task setup)
+## Rebuild / republish the image (optional maintenance)
 
-```sh
-repo=$(mktemp -d)
-cp -R sut-conduit/app/ "$repo"                  # vendored source
-cp sut-conduit/otel-wrap/Dockerfile \
-   sut-conduit/otel-wrap/requirements.txt "$repo"/   # overlay at repo root
-# git init + commit, then `dokku git:sync --build conduit $repo`
-```
+`./publish-sut.sh` re-fetches the upstream repo@commit, overlays this dir's
+`Dockerfile` + `requirements.txt` at the repo root, builds
+`ghcr.io/abundant-ai/conduit-otel:latest` (`--provenance=false`), and pushes it
+(needs `docker login ghcr.io`). The task's `docker compose build` does NOT run
+this — the SUT is a published public image, not built at task time.
 
 ## Files
 | File | Role |
 |---|---|
 | `Dockerfile` | Replaces the upstream poetry Dockerfile: pip-pinned deps + `opentelemetry-instrument uvicorn` CMD (alembic migrations at boot, DB-wait retry). Zero app-code changes. |
 | `requirements.txt` | Upstream poetry.lock main-category pins + OTel distro/exporter/instrumentors. Two documented deviations (typing-extensions, psycopg2-binary). |
-| `seed.py` | Idempotent API-level fixture: 3 users, 6 tagged articles. |
+| `publish-sut.sh` | Optional: (re)build + push the public SUT image from provenance. NOT in the task build/run path. |
+| `seed.py` | Idempotent API-level fixture: 3 users, 6 tagged articles. Inlined into `k3s/manifests/50-conduit-seed.yaml` (the seed Job's ConfigMap). |
 | `load_probe.py` | Stdlib concurrent load probe (writers × requests, write/read/mixed + `--login-every` session churn). Prints JSON p50/p95/max/error-rate. |
 
 ## Runtime env (set via `dokku config:set`)

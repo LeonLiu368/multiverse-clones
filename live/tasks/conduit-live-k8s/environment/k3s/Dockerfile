@@ -4,28 +4,21 @@
 # container — the self-contained deploy plane that works on Oddish/Daytona where
 # the socket-sibling Dokku plane failed.
 #
-# This image bakes TWO things at build time so the cluster is hermetic at boot:
+# Images are PULLED AT RUNTIME by k3s's containerd from PUBLIC registries. Every
+# workload uses `imagePullPolicy: IfNotPresent`, so:
+#   * on Oddish, k3s pulls the public ghcr/docker.io images at boot (no
+#     --registry-login / docker-login needed — the two abundant-ai images are
+#     published PUBLIC), and
+#   * locally, images already imported into k3s's containerd are reused (see
+#     validate_local.sh, which imports them so a run works before the public flip).
 #
-#  1. AIRGAP IMAGES  -> /var/lib/rancher/k3s/agent/images/*.tar
-#     k3s auto-imports every tar here into its containerd at startup, so the
-#     workloads never pull from a registry. This sidesteps the one k3s wrinkle:
-#     k3s uses containerd, not docker, so Oddish's `--registry-login` (a
-#     `docker login`) does NOT authenticate k3s image pulls. Baking avoids all
-#     runtime registry auth — public AND private images alike.
-#     The tars are produced on the host by ./bake-images.sh (docker save of
-#     postgres:16, otel-collector, the private logfire-service, and the locally
-#     built conduit-otel SUT) into ./airgap/ before this build.
+# (An earlier revision airgap-baked the images into the image; that produced a
+# 422MB task upload that Oddish's S3 rejected — EntityTooLarge — so it is gone.)
 #
-#  2. AUTO-APPLIED MANIFESTS -> /var/lib/rancher/k3s/server/manifests/*.yaml
-#     k3s applies every manifest dropped here at boot: the whole stack (postgres,
-#     logfire, otel-collector, conduit SUT + seed Job) as k8s Deployments/Services.
+# This image bakes ONLY the auto-applied manifests: k3s applies every manifest in
+# /var/lib/rancher/k3s/server/manifests/*.yaml at boot — the whole stack (postgres,
+# logfire, otel-collector, conduit SUT + seed Job) as k8s Deployments/Services.
+# Path is relative to the compose build context (the `environment/` dir).
 FROM rancher/k3s:v1.31.5-k3s1
 
-# Paths are relative to the compose build context (the `environment/` dir).
-#
-# 1. airgap image tars (imported into containerd at boot; imagePullPolicy: Never
-#    on every workload, so no registry is ever contacted)
-COPY k3s/airgap/*.tar /var/lib/rancher/k3s/agent/images/
-
-# 2. stack manifests (auto-applied at boot, in filename order)
 COPY k3s/manifests/*.yaml /var/lib/rancher/k3s/server/manifests/

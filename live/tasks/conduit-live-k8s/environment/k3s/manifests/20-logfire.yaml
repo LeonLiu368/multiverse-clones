@@ -30,8 +30,10 @@ spec:
     spec:
       containers:
         - name: logfire
+          # PUBLIC ghcr image (needs the public-flip on the ghcr package). k3s pulls
+          # it at runtime on Oddish; locally it is reused from containerd if imported.
           image: ghcr.io/abundant-ai/logfire-service:latest
-          imagePullPolicy: Never
+          imagePullPolicy: IfNotPresent
           env:
             # Live ingest is env-gated on the write token; the collector authenticates with it.
             - { name: LOGFIRE_WRITE_TOKEN, value: task-write-token }

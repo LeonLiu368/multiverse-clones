@@ -1,0 +1,14 @@
+{
+  "conduit-otel": {
+    "published_image": "ghcr.io/abundant-ai/conduit-otel:latest",
+    "public": true,
+    "built_from": {
+      "repo": "https://github.com/nsidnev/fastapi-realworld-example-app",
+      "commit": "029eb7781c60d5f563ee8990a0cbfb79b244538c",
+      "note": "RealWorld 'Conduit' backend: FastAPI 0.79 + asyncpg + Postgres. The upstream app source is NO LONGER vendored in this task dir (the published image carries it) — this task references the image only. To rebuild/republish the image from provenance alone, run otel-wrap/publish-sut.sh, which re-fetches this repo@commit and overlays the OTel wrapper (otel-wrap/Dockerfile + requirements.txt) at the repo root, then builds `ghcr.io/abundant-ai/conduit-otel:latest` (--provenance=false) and pushes it.",
+      "overlay": "otel-wrap/ (Dockerfile: pip-pinned deps + `opentelemetry-instrument uvicorn`, alembic-at-boot; requirements.txt: upstream poetry.lock main pins + OTel distro/exporter/instrumentors; zero app-code changes)",
+      "fault_knob": "WEB_CONCURRENCY env -> uvicorn worker count, faulty=1 / fix=4. A single worker serializes CPU-bound bcrypt login verifies (~265ms) on one asyncio event loop, so under concurrent load p95 explodes (~5x separation) while the app is healthy at rest. Fixed via `kubectl -n conduit set env deploy/conduit WEB_CONCURRENCY=4`. See otel-wrap/README.md for the measured numbers and why MAX_CONNECTIONS_COUNT/asyncpg pool was measured and REJECTED as the knob.",
+      "deviation": "typing-extensions pinned 4.5.0 (upstream lock had 3.10.0.2): the OTel SDK needs >=3.7.4 and pydantic 1.9.x breaks on typing-extensions>=4.6. Pins in otel-wrap/requirements.txt."
+    }
+  }
+}
