@@ -1,7 +1,7 @@
 {
   "target": "http://k3s:30800",
   "health_path": "/api/tags",
-  "health_timeout_s": 90,
+  "health_timeout_s": 180,
   "health_poll_interval_s": 1.0,
   "warmup_s": 12,
   "soak_s": 60,
