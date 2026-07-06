@@ -69,7 +69,11 @@ services:
       LOGFIRE_MIN_TIMESTAMP: "2026-07-01T00:00:00Z"
     depends_on:
       k3s:
-        condition: service_healthy
+        # service_started (not _healthy): main must come up even when k3s crashes
+        # at boot, so its entrypoint can surface /mnt/kube/k3s-boot.log (the crash
+        # reason) into trial.log. A healthy-gate makes a k3s crash an invisible
+        # "dependency failed to start" with no artifacts collected.
+        condition: service_started
     command: ["sleep", "infinity"]
 
 volumes:

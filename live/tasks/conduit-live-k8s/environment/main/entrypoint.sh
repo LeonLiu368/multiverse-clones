@@ -18,10 +18,26 @@ LOGFIRE_TOKEN="${LOGFIRE_TOKEN:-task-read-token}"
 # 1. Assemble kubeconfig from the shared volume; rewrite the server to reach k3s
 #    by service name (k3s writes 127.0.0.1:6443, valid only inside its container).
 mkdir -p "$(dirname "$KUBECONFIG")"
+K3S_LOG="$(dirname "$KUBE_SRC")/k3s-boot.log"
+# Dump k3s's boot log (crash reason) to our stdout -> trial.log. Harbor captures
+# main's logs even when the environment ultimately fails, so this is the only way
+# to see WHY k3s died on a given Daytona host.
+dump_k3s_log() {
+  if [ -s "$K3S_LOG" ]; then
+    echo "===== BEGIN k3s-boot.log ====="; cat "$K3S_LOG"; echo "===== END k3s-boot.log ====="
+    [ -n "$REWARD_DIR" ] && cp "$K3S_LOG" "$REWARD_DIR/k3s-boot.log" 2>/dev/null || true
+  else
+    echo "[agent-entrypoint] no k3s-boot.log at $K3S_LOG (k3s wrote nothing?)"
+  fi
+}
 echo "[agent-entrypoint] waiting for kubeconfig at $KUBE_SRC"
 i=0
 while [ ! -s "$KUBE_SRC" ]; do
-  i=$((i+1)); [ "$i" -lt 120 ] || { echo "[agent-entrypoint] kubeconfig never appeared" >&2; break; }
+  # Short-circuit if k3s has clearly crashed rather than waiting out the full budget.
+  if [ -s "$K3S_LOG" ] && grep -qiE "level=fatal|panic:|k3s exited rc=[1-9]|failed to start|error running server" "$K3S_LOG"; then
+    echo "[agent-entrypoint] k3s appears to have FAILED at boot:"; dump_k3s_log; break
+  fi
+  i=$((i+1)); [ "$i" -lt 150 ] || { echo "[agent-entrypoint] kubeconfig never appeared (300s)"; dump_k3s_log; break; }
   sleep 2
 done
 if [ -s "$KUBE_SRC" ]; then
