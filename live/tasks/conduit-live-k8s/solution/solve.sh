@@ -103,7 +103,13 @@ done
 log "waiting for $APP to answer health after rollout"
 i=0
 until curl -fsS -m3 "$BASE/api/tags" >/dev/null 2>&1; do
-  i=$((i+1)); [ "$i" -lt 120 ] || { echo "app did not come back after fix" >&2; exit 1; }
+  i=$((i+1)); [ "$i" -lt 120 ] || {
+    echo "app did not come back after fix" >&2
+    echo "===== cluster state at failure =====" >&2
+    kubectl get pods -A -o wide >&2 2>&1 || true
+    kubectl get events -n "$NS" --sort-by=.lastTimestamp 2>/dev/null | tail -15 >&2 || true
+    exit 1
+  }
   sleep 2
 done
 # A short settle so kube-proxy endpoint slices propagate to the NodePort before load.

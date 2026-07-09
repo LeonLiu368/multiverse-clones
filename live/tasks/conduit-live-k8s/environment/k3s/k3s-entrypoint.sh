@@ -45,7 +45,11 @@ if [ -f /sys/fs/cgroup/cgroup.controllers ]; then
 fi
 
 IP="$(pick_ip)"
-FLAGS="--disable traefik --disable metrics-server --snapshotter native --tls-san k3s"
+# host-gw flannel backend: vxlan (the default) needs the vxlan kernel module,
+# which nested/Daytona sandboxes may lack -> every pod stuck ContainerCreating
+# while the control plane looks healthy. host-gw just programs routes; on a
+# single-node cluster it is equivalent and dependency-free.
+FLAGS="--disable traefik --disable metrics-server --snapshotter native --tls-san k3s --flannel-backend=host-gw"
 if [ -n "$IP" ]; then
   echo "[k3s-entrypoint] pinning node-ip=$IP"
   FLAGS="$FLAGS --node-ip $IP --advertise-address $IP"

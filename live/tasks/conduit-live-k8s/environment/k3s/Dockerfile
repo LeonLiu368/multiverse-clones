@@ -22,6 +22,10 @@
 FROM rancher/k3s:v1.31.5-k3s1
 
 COPY k3s/manifests/*.yaml /var/lib/rancher/k3s/server/manifests/
+# docker.io via mirror.gcr.io first (shared Daytona egress IPs exhaust Docker
+# Hub's anonymous pull quota); containerd falls back to docker.io if the
+# mirror misses.
+COPY k3s/etc/registries.yaml /etc/rancher/k3s/registries.yaml
 
 # Pin the node IP to the container address (Daytona multi-homing fix — see script).
 # The base image ENTRYPOINT is /bin/k3s; override it with our launcher, which bakes
