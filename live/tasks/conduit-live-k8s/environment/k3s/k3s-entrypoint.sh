@@ -28,6 +28,22 @@ pick_ip() {
   return 0
 }
 
+# cgroup v2 nesting fix (the standard k3s-in-docker/k3d dance): on cgroup v2,
+# the container's ROOT cgroup holds our processes, and the "no internal process"
+# rule then forbids creating child cgroups with controllers — which is exactly
+# what kubelet/containerd must do, so k3s dies at boot on hosts whose nested
+# dockerd doesn't pre-delegate. Evacuate PIDs to /init and enable subtree
+# control. Every write is || true: on hosts that don't need it (or where cgroupfs
+# is read-only) this is a no-op, never a new failure mode.
+if [ -f /sys/fs/cgroup/cgroup.controllers ]; then
+  echo "[k3s-entrypoint] cgroup v2 detected; enabling nested delegation"
+  mkdir -p /sys/fs/cgroup/init 2>/dev/null || true
+  # busybox xargs supports -r and -n1
+  xargs -rn1 < /sys/fs/cgroup/cgroup.procs > /sys/fs/cgroup/init/cgroup.procs 2>/dev/null || true
+  sed -e 's/ / +/g' -e 's/^/+/' < /sys/fs/cgroup/cgroup.controllers \
+    > /sys/fs/cgroup/cgroup.subtree_control 2>/dev/null || true
+fi
+
 IP="$(pick_ip)"
 FLAGS="--disable traefik --disable metrics-server --snapshotter native --tls-san k3s"
 if [ -n "$IP" ]; then
