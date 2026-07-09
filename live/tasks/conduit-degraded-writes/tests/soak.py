@@ -53,6 +53,10 @@ except ImportError:  # pragma: no cover - env must provide httpx
     httpx = None
 
 
+# Exit code for infra failures (environment never usable): tells the harness
+# this trial should be an ERROR (retry on a fresh sandbox), not a 0 reward.
+INFRA_EXIT_CODE = 3
+
 # --------------------------------------------------------------------------- #
 # Config
 # --------------------------------------------------------------------------- #
@@ -589,8 +593,16 @@ def infra_error_result(reward_dir: str, reason: str,
         "config": config_snap,
         "audit": audit,
     }
-    write_result(reward_dir, 0.0, result)
-    print("SOAK: INFRA_ERROR reward=0.0 reason=%s" % reason)
+    # Do NOT write reward.txt: a written reward is a TERMINAL grade to the
+    # harness. Infra failures must become trial ERRORS (retryable on a fresh
+    # sandbox), never a false 0 — a model trial hitting a dead environment
+    # would otherwise be graded unfairly. result.json is still written for
+    # debugging; the caller exits nonzero (INFRA_EXIT_CODE).
+    os.makedirs(reward_dir, exist_ok=True)
+    result["reward"] = None
+    with open(os.path.join(reward_dir, "result.json"), "w") as fh:
+        json.dump(result, fh, indent=2, default=str)
+    print("SOAK: INFRA_ERROR (no reward written) reason=%s" % reason)
     return result
 
 
@@ -706,23 +718,26 @@ def main(argv: Optional[List[str]] = None) -> int:
         if not cfg.target:
             infra_error_result(reward_dir,
                                "no --target and none in config", {})
-            return 0
+            return INFRA_EXIT_CODE
     except Exception as e:
         import traceback
         traceback.print_exc()
         infra_error_result(reward_dir,
                            "could not load soak config %s: %s" % (args.config, e),
                            {})
-        return 0
+        return INFRA_EXIT_CODE
 
     try:
-        run(cfg, reward_dir, findings_path, args.audit_cmd, args.audit_file)
-    except Exception as e:  # never let the verifier crash without a reward
+        result = run(cfg, reward_dir, findings_path, args.audit_cmd, args.audit_file)
+    except Exception as e:  # infra exception -> explicit ERROR exit (retryable)
         import traceback
         traceback.print_exc()
         infra_error_result(reward_dir,
                            "verifier raised: %s" % e,
                            asdict(cfg))
+        return INFRA_EXIT_CODE
+    if result.get("infra_error"):
+        return INFRA_EXIT_CODE
     return 0
 
 

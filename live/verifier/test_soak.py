@@ -281,6 +281,9 @@ def test_d2_wrong_mechanism_findings_fails():
 
 
 def test_e_app_never_up_is_infra_error():
+    # Infra contract: NO reward.txt (a written reward is a terminal grade to the
+    # harness) — result.json carries infra_error and the caller must exit
+    # nonzero (INFRA_EXIT_CODE) so the trial is a retryable ERROR, not a false 0.
     port = _free_port()  # nothing listening here
     with tempfile.TemporaryDirectory() as td:
         cfg = base_config("http://127.0.0.1:%d" % port)
@@ -289,8 +292,14 @@ def test_e_app_never_up_is_infra_error():
         res = run_soak(cfg, fp, td)
         assert res["infra_error"] is True, res
         assert res["slos_pass"] is False
-        assert read_reward(td) == 0.0
+        assert not os.path.exists(os.path.join(td, "reward.txt")), \
+            "infra_error must NOT write reward.txt"
         assert "never became healthy" in res["reason"]
+        # result.json is still written for debugging
+        with open(os.path.join(td, "result.json")) as fh:
+            saved = json.load(fh)
+        assert saved["infra_error"] is True
+        assert saved["reward"] is None
 
 
 def test_result_json_written_with_reward_basis():

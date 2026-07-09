@@ -58,12 +58,16 @@ set +e
 rc=$?
 set -e
 
-# Safety net: guarantee a reward.txt exists even if soak.py died before writing.
-if [ ! -s "$REWARD_DIR/reward.txt" ]; then
-  echo "0.0" > "$REWARD_DIR/reward.txt"
-  printf '{"infra_error": true, "reason": "soak.py exited rc=%s without writing reward"}\n' \
-    "$rc" > "$REWARD_DIR/result.json"
-  echo "run_verifier: soak.py crashed (rc=$rc) -> reward 0 (infra_error)"
+# Infra failure contract: soak.py exits NONZERO *without* writing reward.txt when
+# the environment was never usable (dead target, crashed cluster, verifier bug).
+# Propagate that exit code so the harness records a trial ERROR (retryable on a
+# fresh sandbox) instead of scraping a false 0. Only a genuine graded run (rc=0)
+# leaves a reward.txt behind.
+if [ "$rc" -ne 0 ]; then
+  echo "run_verifier: INFRA ERROR (rc=$rc) -> propagating as trial error (no reward)"
+  rm -f "$REWARD_DIR/reward.txt"
+  rm -rf "$GRADE"
+  exit "$rc"
 fi
 
 echo "run_verifier: reward=$(cat "$REWARD_DIR/reward.txt" 2>/dev/null)"
