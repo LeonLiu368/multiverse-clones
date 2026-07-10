@@ -48,32 +48,46 @@ Local (Docker Desktop): k3s boots to READY in ~5–32 s, `kubectl set env` rolls
 NodePorts reachable from the `main` sibling; **nop=0.0 / oracle=1.0 ×3**. The task logic,
 telemetry path, and soak grading are correct.
 
-## Oddish/Daytona result — capability PROVEN; a platform-variance limitation remains
+## Oddish result — GREEN: nop=0 / oracle=1 (exp `3d288875`, 2026-07-09)
 
-Runs on Oddish (task `conduit-live-k8s-d878252a`):
+Final state: **nop=0.0, oracle=1.0, oracle=1.0 on Oddish, first attempt, zero retries,
+~6 min/trial** (experiment `eager-quartz-519p` / `3d288875`).
 
-| Exp | Config | nop | oracle | Read |
-|---|---|---|---|---|
-| `4e75302b` | pre node-ip fix | infra_error | infra_error | k3s auto-picked the Daytona HOST public IP as node-ip → `main` couldn't route |
-| `ec1f5c85` | `--node-ip $(hostname -i)` | **0.0 (real soak)** | infra_error | node-ip pin regressed k3s boot on some hosts |
-| `95fb2fb3` | boot-safe node-ip guard | **0.0 (real soak)** | infra_error ×6 | k3s `exited (1)` at boot on all 6 oracle-host draws |
-| `cd52a4fb` | + `service_started` (diag) | 0.0 | **false 0.0** | proved Harbor execs the agent on container-**running**, not entrypoint-ready; the `service_healthy` gate is the only readiness barrier — reverted |
-| `13a8beec` | restored + oracle ×3 | infra_error | infra_error ×3 | **entire host pool bad at that time** — no good draw across 4 trials × many retries |
+### The real root cause (and the two bugs that masked it)
 
-**Root cause: Daytona host variance.** On some Daytona hosts, nested privileged k3s **crashes
-at boot** — almost certainly the same read-only `/sys/fs/cgroup` constraint that blocks nested
-dockerd (a container runtime can't write cgroups there). On hosts without it, the full stack
-works — which is why `nop` ran **real end-to-end soaks** on Oddish (exps `ec1f5c85`, `95fb2fb3`).
-`oracle` simply never drew a good host, and in `13a8beec` the pool was bad enough that even `nop`
-failed. This is a **platform constraint, not a task defect**: there is no task-side flag that
-makes k3s boot on a read-only-cgroup host, and k3s's crash reason isn't capturable through
-Harbor's log collection (it captures the agent's exec stdout + orchestration, but not a sibling
-container's logs nor `main`'s entrypoint stdout).
+**Root cause: `ghcr.io/abundant-ai/conduit-otel:latest` was a single-arch linux/arm64
+image** (publish-sut.sh defaulted `PLATFORM=linux/arm64`, pushed from a Mac). Daytona
+sandboxes are amd64: the SUT container crashed instantly (exec format error) →
+CrashLoopBackOff on every sandbox, while running natively on arm64 dev machines — a
+perfect works-locally/dies-in-cloud trap. Fixed: publish-sut.sh now builds+pushes
+`linux/amd64,linux/arm64` via buildx (like the CI-built logfire-service always did).
 
-**Status: the live-deployment capability (P1 deploy actuation, P2 live OTLP ingest, P3 soak
-grading, P4 seed-fault) is built and validated** — `oracle=1/nop=0` locally ×3, and `nop`
-end-to-end soaks live on Oddish. Landing a clean `oracle=1` on Oddish is gated only on drawing a
-Daytona host where nested k3s boots. Mitigations when Daytona capacity allows: (a) re-run with a
-higher trial/retry budget until a good host is drawn (bad-host rate is time-varying — good hosts
-existed in `ec1f5c85`/`95fb2fb3`); (b) if Harbor exposes a cgroup-writable or k8s-native runner,
-target that instead of nested k3s. Not fixable by changing the task.
+Two masking layers made this take five Oddish iterations to see:
+1. **k3s couldn't boot at all on many sandboxes** (cgroup v2 nesting: the container's
+   root cgroup held our PIDs, so kubelet couldn't create delegated child cgroups —
+   pods are exactly that). Fixed in k3s-entrypoint.sh with the standard k3d dance
+   (evacuate PIDs to /init + enable subtree_control). Until then, most attempts died
+   before ever reaching the CrashLoop.
+2. **The old verifier graded dead environments 0.0** ("never crash without a reward"
+   wrote reward.txt=0.0 with infra_error:true — but the harness scrapes any reward
+   file as a TERMINAL grade). Early "nop=0.0 (real soak)" results were therefore
+   FALSE grades on dead targets; the "host variance" theory they supported was wrong.
+   Fixed contract: infra failure → result.json only (debug), NO reward file, exit 3 →
+   `RewardFileNotFoundError` → retryable trial error. Model trials can no longer be
+   unfairly zeroed by a dead environment.
+
+What finally cut through: **cluster-state diagnostics in the verifier** (pods -A,
+describe non-ready, events — captured in test-stdout.txt even on infra exits). One
+look showed postgres/logfire/otel/coredns Running and only conduit crash-looping with
+successful pulls; three commands later the arm64 manifest was confirmed.
+
+Robustness fixes that remain in place from the investigation (each independently
+sound): boot-safe node-IP pin + kubeconfig rewrite (Daytona multi-homing),
+`--flannel-backend=host-gw` (no vxlan kernel-module dependency), docker.io pulls via
+mirror.gcr.io with fallback (shared-egress-IP rate limits), k3s boot log tee'd to the
+shared volume, cluster-state dumps in test.sh + solve.sh failure paths.
+
+**Debugging lesson for future live tasks:** when something "works locally but fails
+in the cloud", check image architectures FIRST (`docker manifest inspect`) — and make
+sure the verifier can never convert an infra failure into a terminal grade, or every
+later diagnosis inherits the false data.
