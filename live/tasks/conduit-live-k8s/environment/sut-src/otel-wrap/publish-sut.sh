@@ -19,7 +19,10 @@ set -euo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 IMAGE="${IMAGE:-ghcr.io/abundant-ai/conduit-otel:latest}"
-PLATFORM="${PLATFORM:-linux/arm64}"
+# MULTI-ARCH is mandatory: Daytona/Oddish sandboxes are linux/amd64, dev Macs are
+# arm64. A single-arch arm64 push (the old default) CrashLoopBackOffs on every
+# Oddish sandbox with exec-format-error while working perfectly locally.
+PLATFORM="${PLATFORM:-linux/amd64,linux/arm64}"
 UPSTREAM="${UPSTREAM:-https://github.com/nsidnev/fastapi-realworld-example-app}"
 COMMIT="${COMMIT:-029eb7781c60d5f563ee8990a0cbfb79b244538c}"
 
@@ -35,14 +38,18 @@ rm -rf "$BUILD/src/.git"
 echo "### overlaying the OTel wrapper (Dockerfile + requirements.txt)"
 cp "$HERE/Dockerfile" "$HERE/requirements.txt" "$BUILD/src/"
 
-echo "### building $IMAGE ($PLATFORM, --provenance=false -> single-arch manifest)"
-docker build --provenance=false --platform "$PLATFORM" -t "$IMAGE" "$BUILD/src"
+# buildx with a container builder: multi-platform manifests need it (the classic
+# `docker build` can only produce the host arch).
+BUILDER="conduit-multiarch"
+docker buildx inspect "$BUILDER" >/dev/null 2>&1 || docker buildx create --name "$BUILDER" >/dev/null
 
 if [ "${PUSH:-1}" = "1" ]; then
-  echo "### pushing $IMAGE (requires: docker login ghcr.io)"
-  docker push "$IMAGE"
-  echo "### pushed. confirm:"
-  docker manifest inspect "$IMAGE" | head -6
+  echo "### building+pushing $IMAGE ($PLATFORM) via buildx (requires: docker login ghcr.io)"
+  docker buildx build --builder "$BUILDER" --platform "$PLATFORM" \
+    --provenance=false -t "$IMAGE" --push "$BUILD/src"
+  echo "### pushed. confirm both platforms:"
+  docker manifest inspect "$IMAGE" | grep -A2 '"platform"' | grep architecture
 else
-  echo "### PUSH=0 — built only, not pushed"
+  echo "### PUSH=0 — building single host-arch image locally (no push)"
+  docker build --provenance=false -t "$IMAGE" "$BUILD/src"
 fi
