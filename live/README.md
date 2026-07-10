@@ -53,6 +53,20 @@ telemetry path, and soak grading are correct.
 Final state: **nop=0.0, oracle=1.0, oracle=1.0 on Oddish, first attempt, zero retries,
 ~6 min/trial** (experiment `eager-quartz-519p` / `3d288875`).
 
+### First model trial: gemini-3.1-pro-preview = 1.0 (good success, exp `4e84404e`)
+
+Verified via trajectory forensics (80 tool calls), not just the grade: explored the cluster,
+read the logfire schema, ran real distributed-tracing queries (per-route duration aggregates,
+trace-id drill-downs into the slow POST /api/articles chain), wrote its own concurrent load
+generators to reproduce the degradation, ran controlled knob experiments (WEB_CONCURRENCY x
+MAX_CONNECTIONS_COUNT sweeps, including a deliberate WEB_CONCURRENCY=1/pool=100 control),
+inspected postgres + pod resources, settled on WEB_CONCURRENCY=8 (a valid fix different from
+the oracle's 4 — exactly what behavior-over-time grading is for), and filed a findings.json
+naming the saturation mechanism. No verifier tampering; remediation via the sanctioned kubectl
+surface only. discord-recall re-confirmed 1.0 in the same experiment (agent `gemini-cli`,
+model `google/gemini-3.1-pro-preview` — note the agent NAME is `gemini-cli`; `gemini` fails
+at `starting` with empty logs).
+
 ### The real root cause (and the two bugs that masked it)
 
 **Root cause: `ghcr.io/abundant-ai/conduit-otel:latest` was a single-arch linux/arm64
