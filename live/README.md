@@ -67,6 +67,24 @@ surface only. discord-recall re-confirmed 1.0 in the same experiment (agent `gem
 model `google/gemini-3.1-pro-preview` — note the agent NAME is `gemini-cli`; `gemini` fails
 at `starting` with empty logs).
 
+### Headroom sweep: SATURATED at the frontier (exp `9b2ee94e`, 2026-07-10)
+
+| Agent | Model | Trials | Reward |
+|---|---|---|---|
+| gemini-cli | google/gemini-3.1-pro-preview | 3 (incl. exp 4e84404e) | 1.0, 1.0, 1.0 |
+| codex | openai/gpt-5.5 | 2 | 1.0, 1.0 |
+| opencode | xai/grok-4 | 2 | 1.0, 1.0 |
+
+7/7 model trials pass. All spot-checked trajectories are GOOD successes (real telemetry
+diagnosis, sanctioned kubectl remediation, correct mechanism in findings.json) — notably
+codex proved causality by reverting WEB_CONCURRENCY to 1 and then fixed via horizontal
+scaling (`kubectl scale --replicas=12`), a valid alternative the behavior-graded soak
+correctly accepts. Verdict: the task cleanly separates nop (0) from any real fix (1) but
+does NOT discriminate between frontier models — it is a smoke-test-tier live-ops task.
+Headroom paths (the DevOps-Gym-informed roadmap): Level-2 code-fix-and-redeploy variants,
+subtler faults (retry storms, cache TTL, connection leaks), ambient noise / multiple
+plausible suspects, multi-fault episodes, tighter SLO gates, leaner instructions.
+
 ### The real root cause (and the two bugs that masked it)
 
 **Root cause: `ghcr.io/abundant-ai/conduit-otel:latest` was a single-arch linux/arm64
