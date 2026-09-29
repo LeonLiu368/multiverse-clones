@@ -1,38 +1,28 @@
-# Data-free multi-service Oddish task: a shared slack-clone service (`slack`) seeded
-# by NAME from its baked-in workspace catalog, plus the agent (`client`) with slack-cli
-# + the slack-mcp MCP server. NO seed data lives in this task directory — the workspace
-# 'acme-incident' comes from the image's catalog (repo-level workspaces/acme-incident.json).
+# Merged on top of Harbor's base compose. Harbor auto-configures the `main` (agent)
+# container from environment/Dockerfile; here we only OVERRIDE `main` (point it at the
+# service + wait for health) and ADD the self-contained `slack` service.
 #
-# NOTE: no `networks:` here. The Harbor/Oddish runtime injects `network_mode` on the
-# `client` service (mutually exclusive with an explicit `networks:` key) and wires
-# inter-service networking itself — services still resolve each other by name
-# (client -> http://slack:3000).
+# No `networks:` — Harbor wires networking (and injects network_mode on `main` for the
+# Modal/DinD provider, which is mutually exclusive with an explicit networks: key).
+# The agent reaches the service by name at http://slack:3000.
 #
-# Images are shared (built once from the repo root). The `build:` blocks are a local
-# fallback so `docker compose` works from a full checkout; in a prebuilt/registry setup
-# the runtime supplies the images and the build context is ignored.
+# The `slack` service builds self-contained from THIS environment/ dir (vendored
+# package + this task's workspace seed) — no repo-root build context, so it builds
+# inside Harbor's sandbox where only the task is uploaded.
 services:
-  client:
-    image: ${APEX_TASK_DOCKER_CLIENT_IMAGE_NAME:-abundant-slack-client:latest}
-    build:
-      context: ../../../..
-      dockerfile: docker/client.Dockerfile
-    container_name: ${APEX_TASK_DOCKER_CLIENT_CONTAINER_NAME:-client}
+  main:
     environment:
       - SLACK_API_URL=http://slack:3000
-    command: ["sh", "-c", "sleep infinity"]
     depends_on:
       slack:
         condition: service_healthy
 
   slack:
-    image: abundant-slack-clone:latest
     build:
-      context: ../../../..
-      dockerfile: docker/Dockerfile
-    container_name: slack
-    environment:
-      - SLACK_WORKSPACE=acme-incident
+      context: .
+      dockerfile: slack/Dockerfile
+    expose:
+      - "3000"
     healthcheck:
       test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:3000/health')\" || exit 1"]
       interval: 5s

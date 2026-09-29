@@ -27,61 +27,72 @@ grader, **not** what the agent is told.
 
 `nop`→reward 0, `oracle`→reward 1, verified by reading workspace state back through the Slack API.
 
-## Layout
+## Layout (self-contained, per the Harbor multi-container recipe)
+
+Each task is **self-contained**: its `environment/` holds everything needed to build, so it
+works in Harbor's per-task sandbox (Modal/DinD included), where only the task directory is
+uploaded. Harbor auto-provides the agent (`main`) container and **merges** the task's
+`docker-compose.yaml` on top — the task only overrides `main` and adds the `slack` service.
 
 ```
-workspaces/                        # canonical seeds (repo root, NOT under oddish/) — baked into the image
+workspaces/                        # canonical seeds (source of truth; repo root, NOT under oddish/)
   {acme-incident,globex-staging,hooli-decisions}.json
-docker/{Dockerfile,client.Dockerfile,entrypoint.sh}   # shared slack + client images (built once)
+docker/                            # standalone shared images + control plane (local dev / non-Harbor)
 oddish/
-  slack-clone-manifest.yaml        # create-oddish-task manifest (task_path, tasks, agents)
-  sweep.yaml                       # oddish CLI sweep config
+  slack-clone-manifest.yaml  sweep.yaml
   tasks/
     slack-incident-triage/         # (and slack-search-retrieval/, slack-thread-summary-pin/)
       task.toml  instruction.md
       environment/
-        docker-compose.yaml        # references shared images; sets SLACK_WORKSPACE  (NO data, NO vendored pkg)
+        Dockerfile                 # the agent (`main`) image: installs slack-cli + slack-mcp
+        docker-compose.yaml        # overrides `main` (SLACK_API_URL + depends_on) and adds `slack`
+        slackclone/                # vendored package CODE (kept in sync with ../../../../src)
+        slack/
+          Dockerfile               # service image: build context = environment/ (self-contained)
+          entrypoint.sh            # seeds from the baked workspace.json, then serves
+          workspace.json           # THIS task's single seed (copy of a workspaces/<name>.json)
       solution/solve.sh            # oracle
       tests/{test.sh, run_verifier.sh}   # split-harness verifier (reads state via the API)
 ```
 
+> **Data location & anti-cheat.** Each task's one workspace seed lives at
+> `environment/slack/workspace.json` so the service can build self-contained in the sandbox. It
+> is COPYed **only** into the `slack` service image — never the agent image, and Harbor does not
+> mount the task source into the agent — so the agent still can't read the answer; it must use
+> the tools. (This is the tradeoff the Harbor recipe requires vs. a fully data-free task dir.)
+
 ## Run via Oddish
 
 ```bash
-cd /path/to/oddish/oddish
 uv run oddish run /path/to/abundant-slack-clone/oddish/tasks \
   -a gemini-cli -m google/gemini-3.1-pro-preview --n-trials 1
-# or with the sweep config:
-uv run oddish run .../oddish/tasks -c .../oddish/sweep.yaml
+# or:  uv run oddish run .../oddish/tasks -c .../oddish/sweep.yaml
 ```
-
-> Image availability: tasks reference the shared `abundant-slack-clone:latest` /
-> `abundant-slack-client:latest` images. The composes also carry a `build:` (context = repo
-> root) so plain `docker compose` builds them from a full checkout. If your Oddish runtime
-> uploads only the task subtree, pre-build/publish these images first.
 
 ## Local validation (per task)
 
-```bash
-# build the two shared images once (from repo root)
-docker build -f docker/Dockerfile        -t abundant-slack-clone:latest .
-docker build -f docker/client.Dockerfile -t abundant-slack-client:latest .
+Harbor supplies the `main` service, so for a plain `docker compose` run, simulate it with a
+throwaway base file:
 
-cd oddish/tasks/slack-incident-triage/environment
-docker compose up -d --build          # slack seeds 'acme-incident', goes healthy, then client
-docker cp ../tests   client:/tests
-docker cp ../solution client:/solution
-docker compose exec -T client bash /tests/run_verifier.sh   # nop  -> reward 0
-docker compose exec -T client bash /solution/solve.sh
-docker compose exec -T client bash /tests/run_verifier.sh   # oracle -> reward 1
-docker compose down -v
+```bash
+T=oddish/tasks/slack-incident-triage/environment
+cat > "$T/docker-compose.base.yaml" <<'EOF'
+services:
+  main: { build: { context: ., dockerfile: Dockerfile }, command: ["sh","-c","sleep infinity"] }
+EOF
+dc() { docker compose -f "$T/docker-compose.base.yaml" -f "$T/docker-compose.yaml" --project-directory "$T" "$@"; }
+dc up -d --build --wait
+dc cp oddish/tasks/slack-incident-triage/tests    main:/tests
+dc cp oddish/tasks/slack-incident-triage/solution main:/solution
+dc exec -T main bash /tests/run_verifier.sh    # nop    -> reward 0
+dc exec -T main bash /solution/solve.sh
+dc exec -T main bash /tests/run_verifier.sh    # oracle -> reward 1
+dc down -v && rm -f "$T/docker-compose.base.yaml"
 ```
 
 ## Add a new task
-1. Add a canonical workspace to [`workspaces/`](../workspaces/) (author it with
-   `slack-cli seed generate|import-export|load --emit workspaces/<name>.json`) and rebuild the
-   slack image so the catalog includes it.
-2. Copy `tasks/slack-incident-triage`, set `SLACK_WORKSPACE=<name>` in
-   `environment/docker-compose.yaml`, and rewrite `instruction.md` + `solution/solve.sh` +
-   `tests/run_verifier.sh`. **No data files go in the task.**
+1. Author a canonical workspace (e.g. `slack-cli seed generate|load --emit workspaces/<name>.json`).
+2. Copy an existing task dir. Replace `environment/slack/workspace.json` with your new workspace,
+   refresh the vendored `environment/slackclone/` from `src/`, and rewrite `instruction.md` +
+   `solution/solve.sh` + `tests/run_verifier.sh`.
 3. Add the name to the manifest/sweep.

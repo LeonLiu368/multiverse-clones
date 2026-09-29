@@ -1,0 +1,40 @@
+[project]
+name = "slackclone"
+version = "0.1.0"
+description = "A Slack-faithful service clone for Harbor/Oddish simulation environments"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "sqlalchemy>=2.0",
+    "typer>=0.12",
+    "httpx>=0.27",
+    "python-multipart>=0.0.9",
+]
+
+[project.optional-dependencies]
+# MCP server is opt-in so the slack-service image stays lean; only the client
+# image installs `.[mcp]`.
+mcp = [
+    "mcp>=1.0",
+]
+dev = [
+    "pytest>=8.0",
+    "mcp>=1.0",
+]
+
+[project.scripts]
+slack-cli = "slackclone.cli.main:app"
+slack-mcp = "slackclone.mcp.server:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/slackclone"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
