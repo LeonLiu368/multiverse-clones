@@ -16,6 +16,12 @@ verdict: **PASS**
 | fixed load run | 10s |
 | **total smoke** | **125s** |
 
+Cold-cache reference (first-ever run on this host): compose up incl. image pulls
+~74s; `git:sync --build` deploy ~275s (dominated by the SUT image build: apt gcc
++ pip install incl. compiling asyncpg 0.26 from source on aarch64). Warm-layer
+deploys (the numbers above) are ~40s, matching the spike's 38s `git push` deploy.
+The `config:set` fix redeploy ranged 30-39s across runs, matching the spike's 30s.
+
 ## The fault, measured through dokku (direct container-name path)
 Workload: 12 concurrent writers x 20 iterations; each iteration = 1 write
 (`POST /api/articles`) + 1 read (`GET /api/articles?limit=20`), plus a login
