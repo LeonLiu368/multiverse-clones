@@ -1,0 +1,13 @@
+# figma-service:prod-v1 — the base service image with a REAL design corpus baked in.
+#
+# FROM the data-free base; bake a pre-built SQLite corpus to $FIGMA_DB. The entrypoint
+# serves an existing $FIGMA_DB as-is and skips seeding, so this image needs no fixture
+# mount — it serves the full corpus out of the box. A task switches empty↔prod-v1 by
+# the image tag alone; on prod-v1 the per-task fixture mount (if any) is ignored because
+# the baked DB already exists. Build context must contain `figma_corpus.db`.
+ARG BASE=ghcr.io/abundant-ai/figma-service:empty
+FROM ${BASE}
+
+COPY figma_corpus.db /srv/figma.db
+ENV FIGMA_DB=/srv/figma.db
+# (entrypoint, port, etc. inherited from the base)

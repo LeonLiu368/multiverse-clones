@@ -1,0 +1,32 @@
+schema_version = "1.2"
+name = "abundant-figma-clone/figma-spec-recovery"
+description = "Observability + SWE task. A PricingCard component in the repo ships placeholder design values and its hidden grader fails. The finalized spec lives only in a Figma file: card geometry in the node tree (confirmed by a FINAL review comment that supersedes a v1 decoy), the price only in the tree, and a CTA-copy override that only appears in a comment (the node still shows the stale 'Sign up'). The agent must use the `figma` tool (figma-cli + figma-mcp) to read the node tree AND the comment thread, recover the exact spec (catching the superseded decoys and the stale node text), update the component, and post a completion comment on the card node. A hidden grader pins the exact spec; the comment is read back through the API. nop=0, oracle=1."
+
+[metadata]
+category = "software-engineering"
+service = "figma"
+tools = ["figma-cli", "figma-mcp"]
+tags = ["figma", "figma-clone", "observability", "swe", "tool-use", "design-spec", "isolated", "tests"]
+
+[agent]
+timeout_sec = 2400
+
+[verifier]
+timeout_sec = 600
+
+[environment]
+cpus = 2
+memory_mb = 4096
+storage_mb = 12288
+gpus = 0
+allow_internet = true
+workdir = "/workspace"
+build_timeout_sec = 1800
+
+# The agent operates Figma through the `figma-cli` command and this MCP server (stdio).
+# figma-mcp is installed in the agent image (from the vendored figmaclone package) and
+# reaches the figma service via the baked FIGMA_API_URL / FIGMA_TOKEN env.
+[[environment.mcp_servers]]
+name = "figma"
+transport = "stdio"
+command = "figma-mcp"
