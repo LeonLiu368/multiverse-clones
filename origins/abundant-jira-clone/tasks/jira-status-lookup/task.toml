@@ -1,0 +1,25 @@
+schema_version = "1.2"
+name = "jira-clone/jira-status-lookup"
+description = "Read task over the Jira clone. The agent must use the `jira` CLI (talking to the `jira` sidecar over HTTP) to look up issue ENG-2016 in the real ENG corpus and write its status and assignee to /workspace/answer.txt. The ticket data lives only in the sidecar (jira-gateway:prod-v1); the agent has no state.json on disk, so it must go through the tool. nop=0, oracle=1."
+
+[metadata]
+category = "observability"
+source_repo = "askzeta/eng"
+failure_mode = "tool-required-lookup"
+tags = ["jira", "ticketvector", "observability", "read", "smoke"]
+
+[agent]
+timeout_sec = 900
+
+[verifier]
+timeout_sec = 300
+
+[environment]
+cpus = 2
+memory_mb = 4096
+storage_mb = 20480
+gpus = 0
+allow_internet = true
+workdir = "/workspace"
+build_timeout_sec = 1800
+custom_docker_compose = true

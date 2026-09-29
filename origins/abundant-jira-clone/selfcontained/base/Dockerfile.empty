@@ -1,0 +1,29 @@
+# syntax=docker/dockerfile:1
+# jira-gateway:empty — the SHARED empty gateway: the ticketvector issue service with NO baked data.
+# A task using this as its `jira` sidecar MOUNTS its OWN state.json at
+# /var/lib/ticketvector/state.json (read-only) and the service serves exactly that at boot. Use this
+# when a task wants a clean, fully-custom project instead of the real ENG prod corpus
+# (jira-gateway:prod-v1). This is the analogue of slack-gateway:empty.
+#
+# The stock ticketvector-service:latest ships a small demo "PAY" state baked at
+# /var/lib/ticketvector/state.json. We REMOVE it so an un-mounted empty gateway serves nothing,
+# and any task that forgets to mount its own state.json fails loudly rather than silently
+# leaking the demo data.
+ARG TICKETVECTOR_SERVICE=ghcr.io/abundant-ai/ticketvector-service:latest
+FROM --platform=linux/amd64 ${TICKETVECTOR_SERVICE}
+
+RUN rm -f /var/lib/ticketvector/state.json
+
+ENV WORLD_ISSUES_STATE_FILE=/var/lib/ticketvector/state.json \
+    WORLD_ISSUES_BIND_HOST=0.0.0.0 \
+    WORLD_ISSUES_PORT=8765
+
+# Boot pre-processor (same as the prod gateway): a task mounts its own full state.json
+# at /var/lib/ticketvector/state.json (becomes SRC) and may ALSO mount a
+# /data/state-overlay.json (additive merge) and/or /data/state-patch.json (op-list).
+# The runtime copy is served, so a mounted read-only state still allows boot-time
+# overlay/patch. See docs/PROD-OVERLAY.md.
+COPY jira-boot.sh apply_state_patch.py /opt/
+RUN chmod +x /opt/jira-boot.sh /opt/apply_state_patch.py
+ENTRYPOINT ["/opt/jira-boot.sh"]
+CMD []
