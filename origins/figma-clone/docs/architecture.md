@@ -4,7 +4,7 @@ One governing commitment (inherited from the `service-clone-builder` pattern):
 
 > **One HTTP API is the single source of truth. The CLI, the MCP server, and the
 > verifier are thin clients of that API. The seeded data lives only behind the
-> API, never in a file the agent can read.**
+> API and mounted on a per-task basis, never in a file the agent can read.**
 
 ## Layers
 
@@ -31,7 +31,8 @@ verifier reads back are produced by the same code that seeded them.
 
 ## Why the node tree is the payload
 
-A Figma file is one deeply-nested **document node tree**
+A Figma file is one deeply-nested **document node tree**. 
+https://developers.figma.com/docs/rest-api/files/
 (`DOCUMENT → CANVAS → FRAME → … → TEXT/RECTANGLE/COMPONENT`). The design spec an
 observability task hides — exact `fills` (colors), `characters` (copy), `style`
 (typography), `cornerRadius`, `itemSpacing`/`padding*` (spacing), `layoutMode` —
@@ -44,7 +45,7 @@ because pixels are never graded — the structured values are.
 The real Figma API has no search/text-extract endpoints, so `figma-cli`'s
 `tree`/`node`/`text`/`search` (and the matching MCP tools) are **client-side
 derivations** over `GET /v1/files/{key}`, sharing `store.iter_nodes` /
-`store.find_node`. The API stays faithful; the ergonomics live in the thin client.
+`store.find_node`. 
 
 ## Isolation
 
