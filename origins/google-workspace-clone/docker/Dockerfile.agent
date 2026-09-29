@@ -1,0 +1,29 @@
+# The thin `gworkspace-agent` image — tools ONLY, zero data, zero server source.
+#
+# An agent task's `main` container builds `FROM` this. It ships `gws-cli` and the
+# `gws-mcp` MCP server (both thin HTTP clients) but NOT the API server (`api/`) or
+# the seed system (`seed/`, incl. fixtures) — so the agent box carries no seedable
+# data and no Workspace content an agent could grep for an answer. A build-time
+# smoke test asserts the server/seed modules are absent and the CLI still loads.
+FROM python:3.12-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends curl jq \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /tmp/build
+COPY pyproject.toml README.md ./
+COPY src ./src
+RUN pip install --no-cache-dir ".[mcp]" && \
+    PKG="$(python -c 'import gwsclone, os; print(os.path.dirname(gwsclone.__file__))')" && \
+    rm -rf "$PKG/api" "$PKG/seed" && \
+    rm -rf /tmp/build && \
+    # smoke test: data-free agent (no server/seed source) + tools still load
+    test ! -e "$PKG/api" && test ! -e "$PKG/seed" && \
+    gws-cli --help >/dev/null && \
+    python -c "import gwsclone.cli.main, gwsclone.mcp.server" && \
+    echo "thin gworkspace-agent OK (no api/, no seed/; gws-cli + gws-mcp load)"
+
+ENV GWS_API_URL=http://gworkspace:8080 \
+    GWS_TOKEN=gws-clone-token
+WORKDIR /app
+CMD ["sleep", "infinity"]

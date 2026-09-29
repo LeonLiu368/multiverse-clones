@@ -1,0 +1,28 @@
+schema_version = "1.2"
+name = "gworkspace/gws-launch-multihop"
+description = "Multi-hop observability task on the Google Workspace clone (Gmail + Calendar). The release scheduler needs the Atlas launch date, which no single source states outright: an email thread settles WHICH launch is authoritative (its final message names the 'Atlas Launch — GA' calendar event but gives no date), and the Calendar holds that event's DATE (2026-10-06) among several decoy Atlas holds (tentative/slipped) and other-project launches. The agent must chain Gmail->Calendar via gws-cli/gws-mcp, then implement launch_date(). Defuses single-hop shortcuts (first calendar hold = tentative; earliest email = overridden). Hidden grader pins the date. nop=0, oracle=1."
+
+[metadata]
+category = "observability"
+failure_mode = "multi-hop-cross-surface"
+tags = ["gworkspace", "gmail", "google-calendar", "gws-clone", "observability", "multi-hop"]
+
+[agent]
+timeout_sec = 1200
+
+[verifier]
+timeout_sec = 180
+
+[environment]
+cpus = 2
+memory_mb = 4096
+storage_mb = 12288
+gpus = 0
+allow_internet = true
+workdir = "/app"
+build_timeout_sec = 2400
+
+[[environment.mcp_servers]]
+name = "gws"
+transport = "stdio"
+command = "gws-mcp"

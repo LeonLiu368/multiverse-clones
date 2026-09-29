@@ -1,0 +1,34 @@
+# PROD-V1 difficulty variant of gws-launch-date.
+#
+# Identical to the base task EXCEPT the gworkspace service uses the :prod-v1 image,
+# which bakes a full Drive corpus (the needle "Q3 Launch Plan" buried among decoy
+# launch docs with plausible-but-wrong dates + bulk filler). No fixture mount: the
+# baked DB already exists, so the entrypoint serves the corpus as-is. The needle and
+# the graded answer (2026-09-15) are identical to the base task — only retrieval
+# difficulty changes (needle-among-distractors instead of needle-alone).
+# No networks: block; agent reaches the API at http://gworkspace:8080.
+services:
+  main:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${MAIN_IMAGE_NAME}
+    working_dir: /app
+    environment:
+      GWS_API_URL: http://gworkspace:8080
+      GWS_TOKEN: gws-clone-token
+    depends_on:
+      gworkspace:
+        condition: service_healthy
+
+  gworkspace:
+    image: ghcr.io/abundant-ai/gworkspace-service:prod-v1
+    hostname: gworkspace
+    platform: linux/amd64
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8080/health >/dev/null || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 24
+      start_period: 15s

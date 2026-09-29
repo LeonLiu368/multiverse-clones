@@ -1,0 +1,17 @@
+# gworkspace-service:prod-v1 — the base service with a REAL Drive corpus baked in.
+#
+# FROM the data-free base; bake a pre-built SQLite corpus to $GWS_DB. The entrypoint
+# serves an existing $GWS_DB as-is and skips seeding (the `if [ ! -f "$DB" ]` guard),
+# so this image needs no fixture mount — it serves the full corpus out of the box. A
+# task switches empty↔prod-v1 by the image tag alone; on prod-v1 the per-task fixture
+# mount (if any) is ignored because the baked DB already exists. The baked corpus
+# carries the SAME needle as the per-task fixture, so the answer is unchanged — only
+# the retrieval difficulty (needle-alone vs needle-among-distractors) differs.
+#
+# Build context must contain `gws_corpus.db` (see docker/build-prod-v1.sh).
+ARG BASE=ghcr.io/abundant-ai/gworkspace-service:empty
+FROM ${BASE}
+
+COPY gws_corpus.db /srv/gws.db
+ENV GWS_DB=/srv/gws.db
+# (entrypoint, port, etc. inherited from the base)

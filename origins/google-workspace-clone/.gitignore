@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.db
+
+# harbor local run artifacts
+jobs/
+**/jobs/
+
+# generated corpus artifacts (rebuilt by docker/build-prod-v1.sh)
+*.db
+docker/gws_corpus.db

@@ -1,0 +1,32 @@
+# main (agent) + the gworkspace service (seeded per task by mounting fixture.json
+# into the service container only). No networks: block; agent reaches the API at
+# http://gworkspace:8080.
+services:
+  main:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${MAIN_IMAGE_NAME}
+    working_dir: /app
+    environment:
+      GWS_API_URL: http://gworkspace:8080
+      GWS_TOKEN: gws-clone-token
+    depends_on:
+      gworkspace:
+        condition: service_healthy
+
+  gworkspace:
+    image: ghcr.io/abundant-ai/gworkspace-service:latest
+    hostname: gworkspace
+    platform: linux/amd64
+    environment:
+      GWS_FIXTURE: /srv/fixture.json
+    volumes:
+      - ./data/gws/fixture.json:/srv/fixture.json:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8080/health >/dev/null || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 24
+      start_period: 15s

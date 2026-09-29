@@ -1,0 +1,28 @@
+schema_version = "1.2"
+name = "gworkspace/gws-launch-date"
+description = "Observability task on the Google Workspace clone (Drive + Docs). The release scheduler needs the Q3 launch date, which lives only in the 'Q3 Launch Plan' Google Doc — not the repo. The agent must use the gws tool (gws-cli / gws-mcp) to find the doc in Drive and read its text, then implement launch_date(). A hidden grader pins the date. nop=0, oracle=1."
+
+[metadata]
+category = "observability"
+failure_mode = "info-in-doc-only"
+tags = ["gworkspace", "google-drive", "google-docs", "gws-clone", "observability"]
+
+[agent]
+timeout_sec = 1200
+
+[verifier]
+timeout_sec = 180
+
+[environment]
+cpus = 2
+memory_mb = 4096
+storage_mb = 12288
+gpus = 0
+allow_internet = true
+workdir = "/app"
+build_timeout_sec = 2400
+
+[[environment.mcp_servers]]
+name = "gws"
+transport = "stdio"
+command = "gws-mcp"
