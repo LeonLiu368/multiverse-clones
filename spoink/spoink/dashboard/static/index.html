@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>spoink</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="side">
+      <div class="brand">
+        <h1 class="logo">spoink</h1>
+        <span class="tag">snapshot engine</span>
+      </div>
+
+      <nav class="tabs">
+        <button data-tab="sources" class="active">
+          <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.4"><ellipse cx="8" cy="3.6" rx="5.3" ry="2"/><path d="M2.7 3.6v8.8c0 1.1 2.4 2 5.3 2s5.3-.9 5.3-2V3.6"/><path d="M2.7 8c0 1.1 2.4 2 5.3 2s5.3-.9 5.3-2"/></svg>
+          <span>Sources</span>
+        </button>
+        <button data-tab="runs">
+          <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 8h2.7l2-5 3 10 2-5h2.8"/></svg>
+          <span>Runs</span><span id="runBadge" class="badge" hidden>0</span>
+        </button>
+        <button data-tab="published">
+          <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1.6 13.7 5 8 8.3 2.3 5z"/><path d="M2.3 11 8 14.4 13.7 11"/></svg>
+          <span>Published</span>
+        </button>
+        <button data-tab="tasks">
+          <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M8 1.6 13.7 5v6L8 14.4 2.3 11V5z"/><path d="M2.4 5 8 8.3 13.6 5M8 8.3v6.1"/></svg>
+          <span>Task&nbsp;Creator</span>
+        </button>
+        <button data-tab="generated">
+          <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 2.5h11v11h-11z"/><path d="M5 6h6M5 8.5h6M5 11h4"/></svg>
+          <span>Tasks</span>
+        </button>
+      </nav>
+
+      <div class="side-t">
+        <label for="tzSelect">Time zone</label>
+        <select id="tzSelect" class="tzsel" aria-label="time zone"></select>
+      </div>
+      <div class="side-foot">Capture · Snapshot · Publish</div>
+    </aside>
+
+    <main>
+      <!-- SOURCES -->
+      <section id="tab-sources" class="tab active">
+        <p class="hint">Capture a source, snapshotted to a chosen moment (defaults to now).</p>
+        <div id="sourceList" class="source-list"></div>
+      </section>
+
+      <!-- RUNS -->
+      <section id="tab-runs" class="tab">
+        <div class="grp-row">
+          <h2 class="grp">Running</h2>
+          <button id="refresh" class="ghost sm">Refresh</button>
+        </div>
+        <div id="running" class="runs"></div>
+        <p id="runningEmpty" class="muted sm">Nothing running.</p>
+        <h2 class="grp">Completed</h2>
+        <div id="completed" class="runs"></div>
+        <p id="completedEmpty" class="muted sm">No completed runs yet — capture a source.</p>
+      </section>
+
+      <!-- TASK CREATOR -->
+      <section id="tab-tasks" class="tab">
+        <p class="hint">Scan points in time for unresolved incidents, then snapshot &amp; process them into tasks.</p>
+        <div class="disc-bar">
+          <label class="disc-lbl">Mine
+            <select id="discFeed" class="tzsel" aria-label="incident source and signal"><option value="github_revert">Revert / hotfix PR · fix (provable)</option></select>
+          </label>
+          <input id="discOrg" value="abundant-ai" placeholder="org / owner" />
+          <label class="disc-days">window <input id="discDays" type="number" value="120" /> d</label>
+          <button id="discGo">Discover incidents</button>
+        </div>
+        <p class="hint sm"><b>fix</b> — code task proven end-to-end (nop fails / oracle passes), no surfaces needed &nbsp;·&nbsp; <b>diagnose</b> — symptom-driven, graded by a hidden test, needs evidence surfaces attached at&nbsp;T.</p>
+        <div class="grp-row"><h2 class="grp">Candidate queue</h2><button id="refreshCands" class="ghost sm">Refresh</button></div>
+        <div id="candList" class="runs"></div>
+        <p id="candEmpty" class="muted sm">No candidates yet — run Discover.</p>
+      </section>
+
+      <!-- GENERATED TASKS -->
+      <section id="tab-generated" class="tab">
+        <div class="grp-row"><h2 class="grp">Generated tasks</h2><span><button id="clearTasks" class="ghost sm danger">Clear all</button> <button id="refreshTasks" class="ghost sm">Refresh</button></span></div>
+        <div id="taskList" class="runs"></div>
+        <p id="taskEmpty" class="muted sm">No tasks yet — process a candidate from the Task Creator.</p>
+      </section>
+
+      <!-- PUBLISHED -->
+      <section id="tab-published" class="tab">
+        <div class="grp-row">
+          <h2 class="grp">Published images</h2>
+          <button id="refreshPub" class="ghost sm">Refresh</button>
+        </div>
+        <div id="publishedList"></div>
+        <p id="publishedEmpty" class="muted sm">No published images yet — Publish a completed run.</p>
+      </section>
+    </main>
+  </div>
+
+  <!-- PUBLISH MODAL -->
+  <div id="publishModal" class="modal" hidden>
+    <div class="sheet">
+      <div class="sheet-head"><h3>Publish snapshot</h3><button id="pubClose" class="x">×</button></div>
+      <div class="sheet-body">
+        <div class="grp">Metadata</div>
+        <div id="pubMeta" class="kv"></div>
+        <div class="field"><label>GHCR image</label><input id="pubImage" spellcheck="false" /></div>
+        <div id="pubStatus" class="pub-status"></div>
+      </div>
+      <div class="sheet-foot">
+        <button id="pubGo">Publish to GHCR</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASK SOURCE MODAL -->
+  <div id="taskModal" class="modal" hidden>
+    <div class="sheet sheet-wide">
+      <div class="sheet-head"><h3 id="taskModalTitle">Task source</h3><button id="taskClose" class="x">×</button></div>
+      <div class="sheet-body">
+        <div class="src-view"><div id="taskFiles" class="src-files"></div><pre id="taskCode" class="src-code"></pre></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>

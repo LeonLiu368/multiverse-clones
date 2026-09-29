@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+*.pyc
+*.db
+slack-export/
+*.egg-info/
+.pytest_cache/
+.env
+
+# spoink dashboard capture artifacts (real company data)
+runs/
+.gstack/
+
+# spoink farm output + local preview config
+task-bank/
+.claude/

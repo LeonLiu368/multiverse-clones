@@ -1,0 +1,310 @@
+"""generate_task(spec, out_dir) — render a runnable Harbor/Oddish task from a TaskSpec.
+
+Emits the preview-500s shape, generalized over N evidence surfaces and both task kinds:
+  <out>/<slug>/
+    task.toml  instruction.md
+    environment/Dockerfile  environment/docker-compose.yaml  [environment/codebase.bundle]
+    tests/test.sh  [tests/grade.py]
+    solution/solve.sh
+  <out>/manifest.yaml
+
+Gateways are the BAKED per-incident images (we do NOT consolidate to :empty+mount) — each
+Surface.gateway_image already contains its overlay, so the compose just references it; the
+agent's matching client CLIs are copied from the AGENT images. See clone-task-builder.
+"""
+from __future__ import annotations
+
+import json
+import shutil
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Dict, List
+
+from . import verifier as V
+from .spec import Surface, TaskSpec
+
+
+# --------------------------------------------------------------- per-source wiring
+@dataclass
+class Wiring:
+    agent_image: str
+    copy: List[str]                       # Dockerfile COPY --from lines ({img} -> agent_image)
+    pythonpath: List[str]
+    main_env: Dict[str, str]
+    port: int
+    health: str
+    svc_env: Dict[str, str] = field(default_factory=dict)
+
+
+WIRING: Dict[str, Wiring] = {
+    "logfire": Wiring(
+        agent_image="ghcr.io/abundant-ai/logfire-agent:latest",
+        copy=["COPY --from={img} /opt/logfire_clone /opt/logfire_clone",
+              "COPY --from={img} /usr/local/bin/logfire /usr/local/bin/logfire-mcp /usr/local/bin/"],
+        pythonpath=["/opt"],
+        main_env={"LOGFIRE_URL": "http://logfire", "LOGFIRE_TOKEN": "test-token-acme-eval"},
+        port=80,
+        health="python3 -c \\\"import urllib.request; urllib.request.urlopen('http://localhost/health')\\\" || exit 1"),
+    "slack": Wiring(
+        agent_image="ghcr.io/abundant-ai/slack-agent:slack-mcp-oss",
+        copy=["COPY --from={img} /usr/local/bin/slack /usr/local/bin/slack-mcp /usr/local/bin/slack-mcp-server-bin /usr/local/bin/",
+              "COPY --from={img} /opt/slackcli /opt/slackcli"],
+        pythonpath=["/opt/slackcli"],
+        main_env={"SLACK_API_URL": "http://slack", "SLACK_TOKEN": "xoxp-acme-eval-0001",
+                  "SLACK_BOT_TOKEN": "xoxp-acme-eval-0001", "SLACK_MCP_XOXP_TOKEN": "xoxp-acme-eval-0001"},
+        port=80,
+        health="curl -sf http://localhost/api/auth.test -H 'Authorization: Bearer xoxp-acme-eval-0001' >/dev/null || exit 1"),
+    "linear": Wiring(
+        agent_image="ghcr.io/abundant-ai/jira-agent:latest",
+        copy=["COPY --from={img} /usr/local/bin/linear /usr/local/bin/jira /usr/local/bin/",
+              "COPY --from={img} /opt/ticketvector /opt/ticketvector"],
+        pythonpath=["/opt/ticketvector"],
+        main_env={"WORLD_ISSUES_BACKEND": "remote", "WORLD_ISSUES_AGENT_MODE": "1",
+                  "WORLD_ISSUES_OUTPUT": "json", "PLANE_BASE_URL": "http://jira:8765"},
+        port=8765,
+        health="python3 -c \\\"import urllib.request; urllib.request.urlopen('http://localhost:8765/health')\\\" || exit 1",
+        svc_env={"WORLD_ISSUES_STATE_FILE": "/var/lib/ticketvector/state.json",
+                 "WORLD_ISSUES_BIND_HOST": "0.0.0.0", "WORLD_ISSUES_PORT": "8765", "WORLD_ISSUES_ACTOR": "agent"}),
+    "gauge": Wiring(
+        agent_image="ghcr.io/abundant-ai/gauge-agent:latest",
+        copy=["COPY --from={img} /usr/local/bin/gcx /usr/local/bin/gcx",
+              "COPY --from={img} /opt/gaugecli /opt/gaugecli"],
+        pythonpath=["/opt/gaugecli"],
+        main_env={"GRAFANA_URL": "http://gauge", "GRAFANA_TOKEN": "test-token-acme-eval"},
+        port=80,
+        health="python3 -c \\\"import urllib.request as u; u.urlopen(u.Request('http://localhost/api/datasources', headers={'Authorization':'Bearer test-token-acme-eval'}))\\\" || exit 1"),
+    "github": Wiring(
+        agent_image="", copy=[], pythonpath=[],
+        main_env={"GH_HOST": "http://github"}, port=3000,
+        health="curl -sf http://localhost:3000/api/v1/version >/dev/null || exit 1"),
+}
+
+# Infra sidecars the SUT/tests need to actually run (real backend/DevOps incidents need a DB, cache,
+# queue). Keyed by the name spec.infra emits; the DSN wired onto `main` (spec.infra_env) must match
+# these creds/host. Stock upstream images (real, pullable) — not spoink gateways.
+INFRA_SERVICES: Dict[str, Dict[str, Any]] = {
+    "postgres": {
+        "image": "postgres:16-alpine",
+        "env": {"POSTGRES_USER": "spoink", "POSTGRES_PASSWORD": "spoink", "POSTGRES_DB": "spoink"},
+        "health": "pg_isready -U spoink -d spoink",
+    },
+    "redis": {
+        "image": "redis:7-alpine",
+        "health": "redis-cli ping | grep -q PONG",
+    },
+}
+
+PIP_SYS = "mcp requests slack_sdk"   # deps the copied python CLIs / MCPs need in system python
+
+
+# --------------------------------------------------------------- renderers
+def _main_dockerfile(spec: TaskSpec) -> str:
+    L = ["# Generated by spoink.pipeline — agent box: SUT (git bundle @ incident tip) + clone client tools.",
+         "FROM python:3.13-slim-bookworm",
+         "RUN apt-get update && apt-get install -y --no-install-recommends git curl jq ca-certificates \\",
+         "    && rm -rf /var/lib/apt/lists/*",
+         "RUN pip install --no-cache-dir uv", ""]
+    if spec.anchor:
+        a = spec.anchor
+        L += [f"# SUT: clone the history bundle and check out the incident tip {a.commit[:12]} (fix excluded).",
+              "COPY codebase.bundle /tmp/codebase.bundle",
+              f"RUN git clone -q /tmp/codebase.bundle {a.workdir} \\",
+              f"    && git -C {a.workdir} checkout -q {a.commit} \\",
+              "    && rm /tmp/codebase.bundle",
+              f"WORKDIR {a.workdir}/{a.backend_subdir}",
+              # harbor runs the agent AND the verifier in this one container, so the test toolchain
+              # (pytest + the project's dev/test deps) must be present — `--no-dev` alone omits it
+              # and every grade would fail with "No module named pytest". Sync all groups, then a
+              # pytest safety net for projects that don't declare it as a managed dep.
+              "RUN uv sync --frozen --all-extras --all-groups \\",
+              "    || uv sync --all-extras --all-groups \\",
+              "    || uv sync --no-dev || true",
+              "RUN [ -x .venv/bin/pytest ] || .venv/bin/python -m pip install -q pytest || true", ""]
+    # clone client tools, copied from the AGENT images
+    copies, paths, env = [], [], {}
+    for s in spec.surfaces:
+        w = WIRING[s.source]
+        for c in w.copy:
+            copies.append(c.format(img=w.agent_image))
+        paths += w.pythonpath
+        env.update(w.main_env)
+    if copies:
+        L += ["# clone client tools (from the matched agent images)"] + copies
+        L += [f"RUN pip install --no-cache-dir {PIP_SYS} || true", ""]
+    pp = ":".join(["/opt"] + paths) if paths else "/opt"
+    envline = " \\\n    ".join([f"PYTHONPATH={pp}"] + [f"{k}={v}" for k, v in sorted(env.items())]
+                               + ([f"ODDISH_ROOT={spec.anchor.workdir}/{spec.anchor.backend_subdir}"] if spec.anchor else []))
+    L += [f"ENV {envline}", "", "ENTRYPOINT []", 'CMD ["sleep", "infinity"]', ""]
+    return "\n".join(L)
+
+
+def _compose(spec: TaskSpec) -> str:
+    # Only wire sidecars whose gateway image is actually PUBLISHED. A placeholder ":TODO" tag
+    # can't be pulled, so a spurious sidecar (e.g. a github evidence surface a self-contained
+    # code-fix task never needs) would make the whole task fail to boot under harbor/oddish.
+    # When no real surface remains, emit a single-container compose with no depends_on.
+    live = [s for s in spec.surfaces if "TODO" not in (s.gateway_image or "")]
+    out = ["# Generated by spoink.pipeline. main + baked evidence sidecars. amd64; resolve by name.",
+           "services:",
+           "  main:",
+           "    platform: linux/amd64",
+           "    build: { context: ., dockerfile: Dockerfile }",
+           "    image: ${MAIN_IMAGE_NAME:-" + spec.slug() + "-main:local}",
+           "    working_dir: " + (spec.anchor.workdir if spec.anchor else "/app")]
+    infra = [i for i in (spec.infra or []) if i in INFRA_SERVICES]
+    # infra DSNs / vars the tests read (e.g. ODDISH_DATABASE_URL -> the postgres sidecar) go on main
+    # at RUNTIME (they point at a service host), not baked into the image.
+    if spec.infra_env:
+        out.append("    environment:")
+        out += [f"      {k}: {v}" for k, v in spec.infra_env.items()]
+    deps = [s.hostname for s in live] + infra
+    if deps:
+        out.append("    depends_on:")
+        for h in deps:
+            out.append(f"      {h}: {{ condition: service_healthy }}")
+    for i in infra:
+        cfg = INFRA_SERVICES[i]
+        out += [f"  {i}:", f"    image: {cfg['image']}", "    platform: linux/amd64"]
+        if cfg.get("env"):
+            out.append("    environment:")
+            out += [f"      {k}: {v}" for k, v in cfg["env"].items()]
+        out += ["    healthcheck:",
+                f"      test: [\"CMD-SHELL\", \"{cfg['health']}\"]",
+                "      interval: 5s", "      timeout: 5s", "      retries: 30", "      start_period: 10s"]
+    for s in live:
+        w = WIRING[s.source]
+        out += [f"  {s.hostname}:",
+                f"    image: {s.gateway_image}",
+                f"    hostname: {s.hostname}",
+                "    platform: linux/amd64"]
+        if w.svc_env:
+            out.append("    environment:")
+            out += [f"      {k}: \"{v}\"" if v.isdigit() else f"      {k}: {v}" for k, v in w.svc_env.items()]
+        out += ["    healthcheck:",
+                f"      test: [\"CMD-SHELL\", \"{w.health}\"]",
+                "      interval: 5s", "      timeout: 5s", "      retries: 24", "      start_period: 15s"]
+    return "\n".join(out) + "\n"
+
+
+def _task_toml(spec: TaskSpec) -> str:
+    tags = sorted({s.source for s in spec.surfaces} | {spec.kind, "spoink-generated"})
+    return f'''schema_version = "1.2"
+name = "{spec.name}"
+description = {json.dumps(spec.instruction.strip()[:300] + " (generated by spoink.pipeline)")}
+
+[metadata]
+category = "{spec.kind}"
+source_repo = "{spec.source_repo}"
+incident_t = "{spec.incident_t}"
+broke_in_pr = "{spec.broke_in_pr}"
+fixed_by_pr = "{spec.fixed_by_pr}"
+tags = {json.dumps(tags)}
+
+[agent]
+timeout_sec = 3600
+
+[verifier]
+timeout_sec = 300
+
+[environment]
+custom_docker_compose = true
+cpus = 4
+memory_mb = 6144
+storage_mb = 30720
+gpus = 0
+allow_internet = true
+workdir = "{spec.anchor.workdir if spec.anchor else '/app'}"
+build_timeout_sec = 3600
+'''
+
+
+def _manifest(spec: TaskSpec) -> str:
+    suite = spec.name.split("/")[0]
+    lines = ["metadata:",
+             f"  name: {spec.slug()}",
+             "  enable_image_push: true",
+             '  description: ""',
+             f"  task_path: experiments/{suite}/tasks",
+             "  n_trials: 1",
+             "  skip_trajectory_analysis: false",
+             "", "tasks:", f"  - {spec.slug()}", "", "agents:"]
+    for a in spec.agents:
+        lines.append(f"  - name: {a['name']}")
+        if a.get("model_name"):
+            lines.append(f"    model_name: {a['model_name']}")
+        if a.get("n_trials"):
+            lines.append(f"    n_trials: {a['n_trials']}")
+    return "\n".join(lines) + "\n"
+
+
+def _solve(spec: TaskSpec) -> str:
+    lines = ["#!/usr/bin/env bash",
+             "# Oracle — generated. Applies the real fix, then drives any tool actions via the agent's CLIs.",
+             "set -uo pipefail",
+             spec.oracle_steps.rstrip()]
+    if spec.fix_patch:
+        wd = spec.anchor.workdir if spec.anchor else "/app"
+        sub = spec.anchor.backend_subdir if spec.anchor else ""
+        target = f"{wd}/{sub}".rstrip("/")
+        lines += [f'cd "{target}" || cd "{wd}"',
+                  "git apply --whitespace=nowarn /solution/fix.patch "
+                  "|| patch -p1 < /solution/fix.patch"]
+    else:
+        lines.append("echo 'TODO: no fix.patch — author the oracle (fix code / drive tools)'")
+    return "\n".join(lines) + "\n"
+
+
+# --------------------------------------------------------------- entry
+def generate_task(spec: TaskSpec, out_dir: str) -> Dict[str, str]:
+    root = Path(out_dir) / spec.slug()
+    env = root / "environment"
+    (env).mkdir(parents=True, exist_ok=True)
+    (root / "tests").mkdir(exist_ok=True)
+    (root / "solution").mkdir(exist_ok=True)
+
+    (root / "task.toml").write_text(_task_toml(spec))
+    (root / "instruction.md").write_text(spec.instruction.rstrip() + "\n")
+    (env / "Dockerfile").write_text(_main_dockerfile(spec))
+    (env / "docker-compose.yaml").write_text(_compose(spec))
+    (Path(out_dir) / "manifest.yaml").write_text(_manifest(spec))
+
+    # SUT bundle
+    if spec.anchor and Path(spec.anchor.bundle).exists():
+        shutil.copy2(spec.anchor.bundle, env / "codebase.bundle")
+
+    # verifier + oracle (#5)
+    test_sh, extra = V.render_verifier(spec)
+    (root / "tests" / "test.sh").write_text(test_sh)
+    for fname, content in extra.items():
+        (root / "tests" / fname).write_text(content)
+    (root / "solution" / "solve.sh").write_text(_solve(spec))
+    for p in (root / "tests" / "test.sh", root / "solution" / "solve.sh"):
+        p.chmod(0o755)
+
+    # oracle patch (the fix) — lives in solution/, NEVER given to the agent's container
+    if spec.fix_patch:
+        (root / "solution" / "fix.patch").write_text(spec.fix_patch)
+        # the HIDDEN test (test hunks only) — shipped in tests/ (mounted at GRADE time, not in the
+        # agent's SUT), so the failing test can be injected to grade an observability/hidden-test task
+        import re as _re2
+        chunks = _re2.split(r"(?=^diff --git )", spec.fix_patch, flags=_re2.M)
+        test_only = "".join(c for c in chunks
+                            if _re2.search(r"(^|/)tests?/|_test\.|test_.*\.py|\.test\.", c.split("\n", 1)[0]))
+        if test_only.strip():
+            (root / "tests" / "hidden_test.patch").write_text(test_only)
+
+    # harness manifest for the docker nop/oracle promote gate (promote.py)
+    import re as _re
+    _is_test = lambda f: bool(_re.search(r"(^|/)tests?/|_test\.|test_.*\.py|\.test\.", f))
+    fix_files = [f for f in spec.changed_files if not _is_test(f)]   # the fix (non-test) files
+    (root / ".promote.json").write_text(json.dumps({
+        "base_commit": spec.anchor.commit if spec.anchor else "",
+        "backend_subdir": spec.anchor.backend_subdir if spec.anchor else "",
+        "workdir": spec.anchor.workdir if spec.anchor else "/app",
+        "verifier": spec.verifier.kind, "f2p": spec.verifier.f2p,
+        "fix_files": fix_files, "test_cmd": spec.verifier.test_cmd, "has_patch": bool(spec.fix_patch),
+        "source_repo": spec.source_repo,
+    }, indent=2))
+
+    return {"task_dir": str(root), "manifest": str(Path(out_dir) / "manifest.yaml"),
+            "surfaces": [s.source for s in spec.surfaces], "verifier": spec.verifier.kind}
