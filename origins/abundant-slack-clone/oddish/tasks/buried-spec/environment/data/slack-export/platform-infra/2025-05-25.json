@@ -1,0 +1,66 @@
+[
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1748163960.000000",
+    "client_msg_id": "512910fec2b8b92dd2",
+    "text": "thumbsup looks good. keeping a close eye for the next few days",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1748164020.000000",
+    "client_msg_id": "9e6fd588d0fb0b241e",
+    "text": "metrics look stable after 12h. no incidents, rejection rate <0.5%",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1748165220.000000",
+    "client_msg_id": "3d08bfdfed27b6ec5a",
+    "text": "partner A is happy. they reported near-zero 429s since the config change",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UDCA6211FB8",
+    "type": "message",
+    "ts": "1748168220.000000",
+    "client_msg_id": "4e7cdaf42670aa0cb6",
+    "text": "great outcome. I'm updating the post-mortem with the final resolution",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "quinn",
+      "real_name": "Quinn",
+      "display_name": "quinn",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

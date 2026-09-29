@@ -1,0 +1,98 @@
+[
+  {
+    "user": "U0FEBC363B6",
+    "type": "message",
+    "ts": "1731155760.000000",
+    "client_msg_id": "4431506ce9e6b7cac0",
+    "text": "checkout latency back to normal",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "heidi",
+      "real_name": "Heidi",
+      "display_name": "heidi",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UF519BCE8B0",
+    "type": "message",
+    "ts": "1731158160.000000",
+    "client_msg_id": "20df0896641420be52",
+    "text": "cdn cache purge completed",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "grafana",
+      "real_name": "Grafana",
+      "display_name": "grafana",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U38FC8CAEA6",
+    "type": "message",
+    "ts": "1731166260.000000",
+    "client_msg_id": "3efba6b78ead14d1a3",
+    "text": "checkout latency back to normal",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "judy",
+      "real_name": "Judy",
+      "display_name": "judy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UB5382301BB",
+    "type": "message",
+    "ts": "1731171480.000000",
+    "client_msg_id": "bf38795d4096ced049",
+    "text": "cdn cache purge completed",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "peggy",
+      "real_name": "Peggy",
+      "display_name": "peggy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U0FEBC363B6",
+    "type": "message",
+    "ts": "1731171540.000000",
+    "client_msg_id": "2315ad01d0e1dc8943",
+    "text": "[resolved] email provider degraded 2h window",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "heidi",
+      "real_name": "Heidi",
+      "display_name": "heidi",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1731174840.000000",
+    "client_msg_id": "f74e75603a982e5e23",
+    "text": "memory leak patched and deployed",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

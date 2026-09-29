@@ -1,0 +1,34 @@
+[
+  {
+    "user": "U5CC9DC7FA7",
+    "type": "message",
+    "ts": "1748250180.000000",
+    "client_msg_id": "76c624641d4ef2d110",
+    "text": "also updated the runbook with: CAPACITY=100, REFILL_RATE=10.0, INITIAL_TOKENS=100 (=CAPACITY), OVERDRAFT_ALLOWANCE=0 (strict)",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "olivia",
+      "real_name": "Olivia",
+      "display_name": "olivia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1748253000.000000",
+    "client_msg_id": "e826f082547b148ddf",
+    "text": "48h post-deploy: all green",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

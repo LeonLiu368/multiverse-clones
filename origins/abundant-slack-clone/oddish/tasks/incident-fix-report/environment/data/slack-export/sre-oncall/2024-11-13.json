@@ -1,0 +1,66 @@
+[
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1731456000.000000",
+    "client_msg_id": "be6ded48c3817bb140",
+    "text": "all services green on the dashboard",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1731466800.000000",
+    "client_msg_id": "05e7f683bdf444780d",
+    "text": "capacity planning doc updated",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U6525ABCCE7",
+    "type": "message",
+    "ts": "1731477600.000000",
+    "client_msg_id": "a380595421c1a8bf0c",
+    "text": "grafana dashboard bookmark: internal.acme.io/grafana",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "niaj",
+      "real_name": "Niaj",
+      "display_name": "niaj",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1731488400.000000",
+    "client_msg_id": "17da61eb960e03df45",
+    "text": "incident retrospective meeting Thursday 2pm",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

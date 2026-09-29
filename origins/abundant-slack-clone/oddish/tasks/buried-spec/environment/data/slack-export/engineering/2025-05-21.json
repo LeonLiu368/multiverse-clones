@@ -1,0 +1,98 @@
+[
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1747818060.000000",
+    "client_msg_id": "69bc21383693e08f9f",
+    "text": "heads up: I'm touching the auth middleware this week, might have a short outage window fri night",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1747818300.000000",
+    "client_msg_id": "2b286e3bfd79d016d2",
+    "text": "please post in #incidents if anything goes sideways",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1747819560.000000",
+    "client_msg_id": "df78be0896c971fad2",
+    "text": "will do",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U1DB01D43E0",
+    "type": "message",
+    "ts": "1747836360.000000",
+    "client_msg_id": "d9a7a56d0d3aa8dd33",
+    "text": "reminder: no hardcoded secrets in PRs. use vault. found one in a draft PR today",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "noah",
+      "real_name": "Noah",
+      "display_name": "noah",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U1DB01D43E0",
+    "type": "message",
+    "ts": "1747836480.000000",
+    "client_msg_id": "f0336640815b8f75df",
+    "text": "no worries, already scrubbed. just a reminder for everyone",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "noah",
+      "real_name": "Noah",
+      "display_name": "noah",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U3C5E7EAB99",
+    "type": "message",
+    "ts": "1747836540.000000",
+    "client_msg_id": "aae106060a7e538b59",
+    "text": "oops, was that mine? sorry",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "liam",
+      "real_name": "Liam",
+      "display_name": "liam",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1730754000.000000",
+    "client_msg_id": "c267d53d8777ba5e5f",
+    "text": "monthly SLO review scheduled for next Friday",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

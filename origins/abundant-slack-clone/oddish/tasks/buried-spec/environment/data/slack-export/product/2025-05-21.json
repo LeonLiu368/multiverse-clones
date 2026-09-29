@@ -1,0 +1,50 @@
+[
+  {
+    "user": "UFD1CF5E271",
+    "type": "message",
+    "ts": "1747821900.000000",
+    "client_msg_id": "32f181184bd21d8ab8",
+    "text": "design mocks for the new settings page are in Figma",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "grace",
+      "real_name": "Grace",
+      "display_name": "grace",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U3ECA10F300",
+    "type": "message",
+    "ts": "1747836060.000000",
+    "client_msg_id": "08918417fff0b28d17",
+    "text": "looks nice! a few feedback comments in Figma",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "henry",
+      "real_name": "Henry",
+      "display_name": "henry",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UFD1CF5E271",
+    "type": "message",
+    "ts": "1747837200.000000",
+    "client_msg_id": "a3f8296d2709271b32",
+    "text": "will revise this afternoon",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "grace",
+      "real_name": "Grace",
+      "display_name": "grace",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

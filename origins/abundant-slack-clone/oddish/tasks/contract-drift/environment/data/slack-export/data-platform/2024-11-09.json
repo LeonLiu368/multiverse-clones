@@ -1,0 +1,194 @@
+[
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1731113580.000000",
+    "client_msg_id": "dcf8cb995da919dbdc",
+    "text": "Thanks niaj! One question \u2014 is the timestamp field called `recorded_at` or `event_time`? I saw `event_time` mentioned in an old RFC doc.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U6525ABCCE7",
+    "type": "message",
+    "ts": "1731121260.000000",
+    "client_msg_id": "6f09bd239d91ec0c73",
+    "text": "It's `recorded_at`. The old RFC used `event_time` as a placeholder \u2014 disregard that. Final spec uses `recorded_at` as an **integer milliseconds** Unix timestamp.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "niaj",
+      "real_name": "Niaj",
+      "display_name": "niaj",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1731133440.000000",
+    "client_msg_id": "626efbf66998cce299",
+    "text": "Getting started on the migration. My initial read: v2 uses `event_name`, `author_id`, `attributes`, `recorded_at`. Does that look right?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1731143160.000000",
+    "client_msg_id": "4e63ce885fb6cbac77",
+    "text": "Looks close but I think the user field might be different \u2014 niaj can confirm?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1731157860.000000",
+    "client_msg_id": "aa0e073a2e6542e083",
+    "text": "Standup in 5.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U0AA1C221CA",
+    "type": "message",
+    "ts": "1731160320.000000",
+    "client_msg_id": "48d0d3286166b07284",
+    "text": "Morning everyone \u2615",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "trent",
+      "real_name": "Trent",
+      "display_name": "trent",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U6525ABCCE7",
+    "type": "message",
+    "ts": "1731161100.000000",
+    "client_msg_id": "02a11687a0ba045d87",
+    "text": "\u26a0\ufe0f Correction on bob's message above: the field is **`actor_id`**, NOT `author_id`. `author_id` was used in an early internal draft but was dropped before the spec was finalised. The correct v2 field is `actor_id`. Please don't copy the `author_id` name from earlier messages in this thread.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "niaj",
+      "real_name": "Niaj",
+      "display_name": "niaj",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1731166620.000000",
+    "client_msg_id": "9d94944de5ed2d6513",
+    "text": "Thanks for clarifying! Updated my PR \u2014 using `actor_id`. Sorry for the confusion.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1731166740.000000",
+    "client_msg_id": "1c3bcc4e96226b9cad",
+    "text": "Happy Friday people, great week \ud83c\udf89",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U0AA1C221CA",
+    "type": "message",
+    "ts": "1731174780.000000",
+    "client_msg_id": "206ecaf32b7498553a",
+    "text": "Welcome to the new folks joining this week! \ud83d\udc4b",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "trent",
+      "real_name": "Trent",
+      "display_name": "trent",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1731179580.000000",
+    "client_msg_id": "86c8d9672dbffdda24",
+    "text": "What type is `recorded_at` exactly? Our publisher uses a float currently.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U6525ABCCE7",
+    "type": "message",
+    "ts": "1731195060.000000",
+    "client_msg_id": "592ae05ee449a820a4",
+    "text": "Integer milliseconds. Convert with `int(time.time() * 1000)`. The pipeline rejects float values \u2014 the type check is strict.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "niaj",
+      "real_name": "Niaj",
+      "display_name": "niaj",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

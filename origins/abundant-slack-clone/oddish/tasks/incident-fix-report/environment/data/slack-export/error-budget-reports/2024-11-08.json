@@ -1,0 +1,18 @@
+[
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1731096000.000000",
+    "client_msg_id": "2e5f0d11b9c30e7283",
+    "text": "note: error budget monitor update pending",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

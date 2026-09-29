@@ -1,0 +1,50 @@
+[
+  {
+    "user": "U596727C8A0",
+    "type": "message",
+    "ts": "1748423160.000000",
+    "client_msg_id": "403dd11b6cc86b2645",
+    "text": "fingers crossed",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "jack",
+      "real_name": "Jack",
+      "display_name": "jack",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1748423520.000000",
+    "client_msg_id": "f4bba43330a0e41dac",
+    "text": "PagerDuty quiet for 48h",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U5CC9DC7FA7",
+    "type": "message",
+    "ts": "1748424240.000000",
+    "client_msg_id": "579680c99f09b2f842",
+    "text": "let's keep it that way",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "olivia",
+      "real_name": "Olivia",
+      "display_name": "olivia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

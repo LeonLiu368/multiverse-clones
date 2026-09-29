@@ -1,0 +1,314 @@
+[
+  {
+    "id": "C4F9B6503D0",
+    "name": "alerts-dev",
+    "created": 1730455860,
+    "creator": "U9FE84ADC4E",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "U9FE84ADC4E",
+      "U522B276A35",
+      "U48181ACD22",
+      "U28B92B56EE",
+      "U252C17A453",
+      "UBFCDF3E6CA",
+      "U2A4B17B116",
+      "U86A8C2DA85",
+      "UFD1CF5E271",
+      "UF519BCE8B0",
+      "U0FEBC363B6",
+      "UA15F8B81A1",
+      "U38FC8CAEA6",
+      "U1BEEF78000",
+      "U6525ABCCE7",
+      "U5CC9DC7FA7",
+      "UB5382301BB",
+      "U0AA1C221CA",
+      "U88FA846E5F"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "#alerts-dev",
+      "creator": "U9FE84ADC4E",
+      "last_set": 1730455860
+    }
+  },
+  {
+    "id": "C72917EF6C1",
+    "name": "engineering",
+    "created": 1730454660,
+    "creator": "U9FE84ADC4E",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "U9FE84ADC4E",
+      "U522B276A35",
+      "U48181ACD22",
+      "U28B92B56EE",
+      "U252C17A453",
+      "UBFCDF3E6CA",
+      "U2A4B17B116",
+      "U86A8C2DA85",
+      "UFD1CF5E271",
+      "UF519BCE8B0",
+      "U0FEBC363B6",
+      "UA15F8B81A1",
+      "U38FC8CAEA6",
+      "U1BEEF78000",
+      "U6525ABCCE7",
+      "U5CC9DC7FA7",
+      "UB5382301BB",
+      "U0AA1C221CA",
+      "U88FA846E5F"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "#engineering",
+      "creator": "U9FE84ADC4E",
+      "last_set": 1730454660
+    }
+  },
+  {
+    "id": "C719FA13A74",
+    "name": "error-budget-reports",
+    "created": 1730574000,
+    "creator": "U9FE84ADC4E",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "U9FE84ADC4E",
+      "U522B276A35",
+      "U48181ACD22",
+      "U28B92B56EE",
+      "U252C17A453",
+      "UBFCDF3E6CA",
+      "U2A4B17B116",
+      "U86A8C2DA85",
+      "UFD1CF5E271",
+      "UF519BCE8B0",
+      "U0FEBC363B6",
+      "UA15F8B81A1",
+      "U38FC8CAEA6",
+      "U1BEEF78000",
+      "U6525ABCCE7",
+      "U5CC9DC7FA7",
+      "UB5382301BB",
+      "U0AA1C221CA",
+      "U88FA846E5F"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "#error-budget-reports",
+      "creator": "U9FE84ADC4E",
+      "last_set": 1730574000
+    }
+  },
+  {
+    "id": "CDFE2DB7497",
+    "name": "general",
+    "created": 1730455560,
+    "creator": "U9FE84ADC4E",
+    "is_archived": false,
+    "is_general": true,
+    "members": [
+      "U9FE84ADC4E",
+      "U522B276A35",
+      "U48181ACD22",
+      "U28B92B56EE",
+      "U252C17A453",
+      "UBFCDF3E6CA",
+      "U2A4B17B116",
+      "U86A8C2DA85",
+      "UFD1CF5E271",
+      "UF519BCE8B0",
+      "U0FEBC363B6",
+      "UA15F8B81A1",
+      "U38FC8CAEA6",
+      "U1BEEF78000",
+      "U6525ABCCE7",
+      "U5CC9DC7FA7",
+      "UB5382301BB",
+      "U0AA1C221CA",
+      "U88FA846E5F"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "#general",
+      "creator": "U9FE84ADC4E",
+      "last_set": 1730455560
+    }
+  },
+  {
+    "id": "CFE281BA3BC",
+    "name": "incidents",
+    "created": 1730467860,
+    "creator": "U9FE84ADC4E",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "U9FE84ADC4E",
+      "U522B276A35",
+      "U48181ACD22",
+      "U28B92B56EE",
+      "U252C17A453",
+      "UBFCDF3E6CA",
+      "U2A4B17B116",
+      "U86A8C2DA85",
+      "UFD1CF5E271",
+      "UF519BCE8B0",
+      "U0FEBC363B6",
+      "UA15F8B81A1",
+      "U38FC8CAEA6",
+      "U1BEEF78000",
+      "U6525ABCCE7",
+      "U5CC9DC7FA7",
+      "UB5382301BB",
+      "U0AA1C221CA",
+      "U88FA846E5F"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "#incidents",
+      "creator": "U9FE84ADC4E",
+      "last_set": 1730467860
+    }
+  },
+  {
+    "id": "C38A007151A",
+    "name": "product",
+    "created": 1730454180,
+    "creator": "U9FE84ADC4E",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "U9FE84ADC4E",
+      "U522B276A35",
+      "U48181ACD22",
+      "U28B92B56EE",
+      "U252C17A453",
+      "UBFCDF3E6CA",
+      "U2A4B17B116",
+      "U86A8C2DA85",
+      "UFD1CF5E271",
+      "UF519BCE8B0",
+      "U0FEBC363B6",
+      "UA15F8B81A1",
+      "U38FC8CAEA6",
+      "U1BEEF78000",
+      "U6525ABCCE7",
+      "U5CC9DC7FA7",
+      "UB5382301BB",
+      "U0AA1C221CA",
+      "U88FA846E5F"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "#product",
+      "creator": "U9FE84ADC4E",
+      "last_set": 1730454180
+    }
+  },
+  {
+    "id": "CA415AB5CC1",
+    "name": "random",
+    "created": 1730451720,
+    "creator": "U9FE84ADC4E",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "U9FE84ADC4E",
+      "U522B276A35",
+      "U48181ACD22",
+      "U28B92B56EE",
+      "U252C17A453",
+      "UBFCDF3E6CA",
+      "U2A4B17B116",
+      "U86A8C2DA85",
+      "UFD1CF5E271",
+      "UF519BCE8B0",
+      "U0FEBC363B6",
+      "UA15F8B81A1",
+      "U38FC8CAEA6",
+      "U1BEEF78000",
+      "U6525ABCCE7",
+      "U5CC9DC7FA7",
+      "UB5382301BB",
+      "U0AA1C221CA",
+      "U88FA846E5F"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "#random",
+      "creator": "U9FE84ADC4E",
+      "last_set": 1730451720
+    }
+  },
+  {
+    "id": "C8A45FE454E",
+    "name": "sre-oncall",
+    "created": 1730656800,
+    "creator": "U9FE84ADC4E",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "U9FE84ADC4E",
+      "U522B276A35",
+      "U48181ACD22",
+      "U28B92B56EE",
+      "U252C17A453",
+      "UBFCDF3E6CA",
+      "U2A4B17B116",
+      "U86A8C2DA85",
+      "UFD1CF5E271",
+      "UF519BCE8B0",
+      "U0FEBC363B6",
+      "UA15F8B81A1",
+      "U38FC8CAEA6",
+      "U1BEEF78000",
+      "U6525ABCCE7",
+      "U5CC9DC7FA7",
+      "UB5382301BB",
+      "U0AA1C221CA",
+      "U88FA846E5F"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "#sre-oncall",
+      "creator": "U9FE84ADC4E",
+      "last_set": 1730656800
+    }
+  }
+]

@@ -1,0 +1,290 @@
+[
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1747827840.000000",
+    "client_msg_id": "8f6105c67ecc99e319",
+    "text": "current config: CAPACITY=50, REFILL_RATE=5.0. partners hitting the ceiling",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1747827900.000000",
+    "client_msg_id": "d3bc95936e3304707c",
+    "text": "P2 \u2014 elevated 429s on the API gateway. rate limiter rejecting legitimate traffic",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1747828020.000000",
+    "client_msg_id": "d4e21682d4778f1169",
+    "text": "so every job start triggers a 429 storm. that's the pattern",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1747828080.000000",
+    "client_msg_id": "792c3c7022c343a197",
+    "text": "yeah we're seeing 40% of partner A's requests getting rejected",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1747828080.000001",
+    "client_msg_id": "ee1252689c9c2e2fe9",
+    "text": "CAPACITY=50 is way too low for partner A's traffic pattern. they burst to 80 req/s on job start",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1747828260.000000",
+    "client_msg_id": "eb70579f71f4953e99",
+    "text": "mitigation: temporarily raising CAPACITY to 80 via feature flag to stop the bleeding",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1747828320.000000",
+    "client_msg_id": "6ed26b9cc1b45939ee",
+    "text": "on it, looking at the metrics now",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U5CC9DC7FA7",
+    "type": "message",
+    "ts": "1747828440.000000",
+    "client_msg_id": "85f7889af169501f8a",
+    "text": "grafana: token exhaustion graph shows the bucket draining in under 2s",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "olivia",
+      "real_name": "Olivia",
+      "display_name": "olivia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1747828500.000000",
+    "client_msg_id": "cd804248f5f7f5affa",
+    "text": "ack, do it. this is an emergency patch, not the final config",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1747828920.000000",
+    "client_msg_id": "bc8a7e17522079b15b",
+    "text": "done. 429 rate dropping. still elevated but manageable",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1747829160.000000",
+    "client_msg_id": "586ab0be1247368e45",
+    "text": "good. we need a proper fix though. REFILL_RATE=5.0 is also too slow",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1747829640.000000",
+    "client_msg_id": "8cb9048fc7d930dc7d",
+    "text": "partner A's success rate back to 95%, they're happy for now",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1747829820.000000",
+    "client_msg_id": "d2276f3d5bad79c7b3",
+    "text": "action item: team to agree proper production config via load test. tracking in #platform-infra",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U5CC9DC7FA7",
+    "type": "message",
+    "ts": "1747830060.000000",
+    "client_msg_id": "2546fdd3e65dfd9845",
+    "text": "REFILL_RATE=5.0 means full recovery from empty bucket takes 10 seconds. that's brutal",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "olivia",
+      "real_name": "Olivia",
+      "display_name": "olivia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1747830180.000000",
+    "client_msg_id": "da2303f9ad9ea27322",
+    "text": "incident resolved. root cause: CAPACITY=50, REFILL_RATE=5.0 are holdovers from the initial stub values",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1747847700.000000",
+    "client_msg_id": "f99917f8b262ba9acb",
+    "text": "postmortem draft: docs/postmortem-2025-05-21.md \u2014 review before EOD",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1747849740.000000",
+    "client_msg_id": "ac66193206d18a3486",
+    "text": "reviewed, added my section",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1747851600.000000",
+    "client_msg_id": "f9c18f789e4691a848",
+    "text": "LGTM on the postmortem",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

@@ -1,0 +1,20 @@
+# Oddish CLI sweep config:  oddish run oddish/tasks -c oddish/sweep.yaml
+task_names:
+  - buried-spec
+  - contract-drift
+  - incident-fix-report
+
+agents:
+  - name: nop
+    n_trials: 1
+  - name: oracle
+    n_trials: 1
+  - name: gemini
+    model_name: google/gemini-3.1-pro-preview
+    n_trials: 1
+  - name: codex
+    model_name: openai/codex-mini-latest
+    n_trials: 1
+  - name: claude
+    model_name: anthropic/claude-opus-4-5
+    n_trials: 1

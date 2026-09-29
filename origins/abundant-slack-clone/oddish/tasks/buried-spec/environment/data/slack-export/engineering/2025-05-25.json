@@ -1,0 +1,50 @@
+[
+  {
+    "user": "U3E9AFE235A",
+    "type": "message",
+    "ts": "1748163600.000000",
+    "client_msg_id": "effb8fb11a70c2da81",
+    "text": "regression suite green on staging after the auth middleware update",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "iris",
+      "real_name": "Iris",
+      "display_name": "iris",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1748164620.000000",
+    "client_msg_id": "3fba98a42b6e239823",
+    "text": "ack, post in #general when it's done",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1748165040.000000",
+    "client_msg_id": "98dd2ae139747065fd",
+    "text": "great! moving to prod tonight",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

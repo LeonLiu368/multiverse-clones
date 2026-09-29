@@ -1,0 +1,66 @@
+[
+  {
+    "user": "U252C17A453",
+    "type": "message",
+    "ts": "1731578520.000000",
+    "client_msg_id": "9903351044fc3f1ed0",
+    "text": "upstream payment gateway timeout resolved",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "ci-bot",
+      "real_name": "Ci-bot",
+      "display_name": "ci-bot",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1731584640.000000",
+    "client_msg_id": "32f9b4843646f76723",
+    "text": "cdn cache purge completed",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U252C17A453",
+    "type": "message",
+    "ts": "1731595920.000000",
+    "client_msg_id": "954a17a8f13437f628",
+    "text": "upstream payment gateway timeout resolved",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "ci-bot",
+      "real_name": "Ci-bot",
+      "display_name": "ci-bot",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1731600120.000000",
+    "client_msg_id": "0f23a3ea1df5a529a6",
+    "text": "cdn cache purge completed",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

@@ -1,0 +1,482 @@
+[
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1747904940.000000",
+    "client_msg_id": "dc7e15c0b31fec84c5",
+    "text": "this should handle even the most aggressive partner traffic patterns",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1747905240.000000",
+    "client_msg_id": "abc803a43259e07787",
+    "text": "CAPACITY=200 gives a big burst buffer. REFILL_RATE=15.0 means recovery from empty in ~13s",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1747905360.000000",
+    "client_msg_id": "d76c6cd5194428a454",
+    "text": "hmm, CAPACITY=200 seems too high to me. that's 4x the current value",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1747905540.000000",
+    "client_msg_id": "1e6f2581f66a599dac",
+    "text": "ok I ran some numbers. my proposal: CAPACITY=200, REFILL_RATE=15.0",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1747906560.000000",
+    "client_msg_id": "3c260bc7ebcc83f683",
+    "text": "agreed, CAPACITY=200 will let a misbehaving client hammer our downstream services",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U44844B8AA9",
+    "type": "message",
+    "ts": "1747906860.000000",
+    "client_msg_id": "9ddc61926339ce3d51",
+    "text": "what about CAPACITY=120? covers partner A at peak with 20% headroom",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "kate",
+      "real_name": "Kate",
+      "display_name": "kate",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1747906920.000000",
+    "client_msg_id": "aa7e11f8e1e0bce629",
+    "text": "CAPACITY=200 is definitely too permissive. we need headroom above partner peaks but not 2x",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1747906980.000000",
+    "client_msg_id": "d940fffb5e126f1d26",
+    "text": "downstream services are sized for ~120 req/s. if we allow 200-token bursts we could overwhelm them",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1747907940.000000",
+    "client_msg_id": "9bc8399dbd7a5759f7",
+    "text": "we'd update the config then. we shouldn't set it speculatively high now",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1747908000.000001",
+    "client_msg_id": "92b60fe8de4eae6b0c",
+    "text": "120 feels tight. what if we get a new partner with higher traffic?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1747908180.000000",
+    "client_msg_id": "537134aa3bb0961706",
+    "text": "I'd say CAPACITY=100 is the right compromise. round number, covers partner A, keeps downstream safe",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1747908720.000000",
+    "client_msg_id": "3bc4fcffa6f79e6f31",
+    "text": "100 makes sense to me. 2x the current value, covers real traffic, doesn't risk downstream",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1747908960.000000",
+    "client_msg_id": "feae935cf11d34bb1f",
+    "text": "ok, CAPACITY=200 is off the table. let's go with 100. any objections?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1747909140.000000",
+    "client_msg_id": "6876ddb68ea8118d5e",
+    "text": "yeah, 100 feels right. the incident showed 50 is too low, 200 is too high, 100 is the sweet spot",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U5CC9DC7FA7",
+    "type": "message",
+    "ts": "1747909560.000000",
+    "client_msg_id": "8fd3badf9a04ccbd7c",
+    "text": "100 works for me",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "olivia",
+      "real_name": "Olivia",
+      "display_name": "olivia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1747909980.000000",
+    "client_msg_id": "70732c0b63ea874a36",
+    "text": "fine with 100 if everyone agrees",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U44844B8AA9",
+    "type": "message",
+    "ts": "1747909980.000001",
+    "client_msg_id": "15c2881cba86193bff",
+    "text": "thumbsup",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "kate",
+      "real_name": "Kate",
+      "display_name": "kate",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1747910100.000000",
+    "client_msg_id": "1a96243bc38bbab7b0",
+    "text": "CAPACITY=100 agreed.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U3C5E7EAB99",
+    "type": "message",
+    "ts": "1747910400.000000",
+    "client_msg_id": "2a235d93f744100abc",
+    "text": "thumbsup",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "liam",
+      "real_name": "Liam",
+      "display_name": "liam",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1747922880.000000",
+    "client_msg_id": "1c2be6c2ccb51afe27",
+    "text": "now for REFILL_RATE. I still think 15.0 is right based on my load test analysis",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1747923180.000000",
+    "client_msg_id": "80ac003a9e997682c5",
+    "text": "wait, recovery from empty at CAPACITY=100 and REFILL_RATE=15.0 is 100/15 = 6.67s. that is fast",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1747923540.000000",
+    "client_msg_id": "6a4f9ad0c979bb0340",
+    "text": "actually I'm not sure 15.0 is right for our traffic patterns. let me re-read the load test data",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1747923600.000000",
+    "client_msg_id": "ed9811caeea05265c4",
+    "text": "at REFILL_RATE=15.0, recovery from empty takes 6.7s. that's acceptable",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1747924560.000000",
+    "client_msg_id": "70235821136bcafeb5",
+    "text": "the load test showed steady-state at 100 req/s. to sustain that without rejections we need REFILL_RATE >= 100? no that's not right",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1747924560.000001",
+    "client_msg_id": "48e342a35034f1b6ee",
+    "text": "at REFILL_RATE=15.0 that's 6.7s. at 10.0 it's 10s. both seem ok?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1747924980.000000",
+    "client_msg_id": "54360d333a1f5d6de4",
+    "text": "REFILL_RATE doesn't need to match peak req/s. it's about recovery speed after a burst",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1747925400.000000",
+    "client_msg_id": "b8fb56faa864668f60",
+    "text": "right. partners burst then drop to ~10 req/s steady. so we need to recover 100 tokens in a reasonable window",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1747926000.000000",
+    "client_msg_id": "172604c338364b9cb6",
+    "text": "I ran the numbers with 15.0 and it looked great in the simulation",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1747926120.000000",
+    "client_msg_id": "7d80a50e7fea0f6e34",
+    "text": "frank can you share the simulation? I want to double-check",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1747926900.000000",
+    "client_msg_id": "fd74b668a232f68d1a",
+    "text": "yeah, sharing now: /docs/load-test-simulation.xlsx",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

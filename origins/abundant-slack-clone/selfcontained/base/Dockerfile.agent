@@ -1,0 +1,26 @@
+# slack-agent — the published THIN AGENT base image (ghcr.io/abundant-ai/slack-agent).
+# Tools + runtime only, NO gateway, NO importer, NO data. Tasks build `main` FROM this and add just
+# their codebase. The Slack workspace lives in the separate `slack` sidecar; the agent reaches it
+# only over HTTP via the `slack` CLI / korotovsky `slack-mcp`, so it can't bypass the tools.
+FROM python:3.12-slim
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl jq git ca-certificates bash && \
+    pip3 install --no-cache-dir "slack_sdk>=3.27" pytest && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Just the agent's tools from the service image — the CLI + the korotovsky MCP binary + slackcli.
+# No gateway code (slackgw), no importer, no data ride along.
+COPY --from=ghcr.io/abundant-ai/slack-service:slack-mcp-oss \
+     /usr/local/bin/slack /usr/local/bin/slack-mcp /usr/local/bin/slack-mcp-server-bin /usr/local/bin/
+COPY --from=ghcr.io/abundant-ai/slack-service:slack-mcp-oss /opt/slackcli /opt/slackcli
+
+COPY agent-entrypoint.sh /usr/local/bin/agent-entrypoint.sh
+RUN chmod +x /usr/local/bin/agent-entrypoint.sh
+
+ENV PYTHONPATH=/opt:/opt/slackcli \
+    SLACK_API_URL=http://slack \
+    SLACK_BOT_TOKEN=xoxp-acme-eval-0001 \
+    HOME=/root
+WORKDIR /workspace
+ENTRYPOINT ["/usr/local/bin/agent-entrypoint.sh"]
