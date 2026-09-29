@@ -1,0 +1,758 @@
+{
+ "users": [
+  {
+   "object": "user",
+   "id": "u-mira",
+   "type": "person",
+   "name": "Mira Devon",
+   "person": {
+    "email": "mira@acme.example"
+   }
+  },
+  {
+   "object": "user",
+   "id": "u-omar",
+   "type": "person",
+   "name": "Omar Reyes",
+   "person": {
+    "email": "omar@acme.example"
+   }
+  }
+ ],
+ "databases": [
+  {
+   "id": "db-tasks",
+   "parent": {
+    "type": "workspace",
+    "workspace": true
+   },
+   "title": [
+    {
+     "type": "text",
+     "text": {
+      "content": "Engineering Tasks",
+      "link": null
+     },
+     "annotations": {
+      "bold": false,
+      "italic": false,
+      "strikethrough": false,
+      "underline": false,
+      "code": false,
+      "color": "default"
+     },
+     "plain_text": "Engineering Tasks",
+     "href": null
+    }
+   ],
+   "description": [
+    {
+     "type": "text",
+     "text": {
+      "content": "Sprint work for the payments team",
+      "link": null
+     },
+     "annotations": {
+      "bold": false,
+      "italic": false,
+      "strikethrough": false,
+      "underline": false,
+      "code": false,
+      "color": "default"
+     },
+     "plain_text": "Sprint work for the payments team",
+     "href": null
+    }
+   ],
+   "icon": {
+    "type": "emoji",
+    "emoji": "\ud83d\udee0\ufe0f"
+   },
+   "properties": {
+    "Name": {
+     "id": "title",
+     "name": "Name",
+     "type": "title",
+     "title": {}
+    },
+    "Status": {
+     "id": "stat",
+     "name": "Status",
+     "type": "status",
+     "status": {
+      "options": [
+       {
+        "name": "To Do",
+        "color": "gray"
+       },
+       {
+        "name": "In Progress",
+        "color": "blue"
+       },
+       {
+        "name": "Done",
+        "color": "green"
+       }
+      ]
+     }
+    },
+    "Priority": {
+     "id": "prio",
+     "name": "Priority",
+     "type": "select",
+     "select": {
+      "options": [
+       {
+        "name": "High",
+        "color": "red"
+       },
+       {
+        "name": "Medium",
+        "color": "yellow"
+       },
+       {
+        "name": "Low",
+        "color": "green"
+       }
+      ]
+     }
+    },
+    "Assignee": {
+     "id": "asgn",
+     "name": "Assignee",
+     "type": "people",
+     "people": {}
+    },
+    "Due": {
+     "id": "due",
+     "name": "Due",
+     "type": "date",
+     "date": {}
+    }
+   },
+   "created_time": "2026-06-01T09:00:00Z",
+   "url": "https://notion.so/db-tasks"
+  }
+ ],
+ "pages": [
+  {
+   "id": "p-login",
+   "parent": {
+    "type": "database_id",
+    "database_id": "db-tasks"
+   },
+   "database_id": "db-tasks",
+   "properties": {
+    "Name": {
+     "id": "title",
+     "type": "title",
+     "title": [
+      {
+       "type": "text",
+       "text": {
+        "content": "Fix login redirect loop",
+        "link": null
+       },
+       "annotations": {
+        "bold": false,
+        "italic": false,
+        "strikethrough": false,
+        "underline": false,
+        "code": false,
+        "color": "default"
+       },
+       "plain_text": "Fix login redirect loop",
+       "href": null
+      }
+     ]
+    },
+    "Status": {
+     "type": "status",
+     "status": {
+      "name": "In Progress",
+      "color": "blue"
+     }
+    },
+    "Priority": {
+     "type": "select",
+     "select": {
+      "name": "High",
+      "color": "red"
+     }
+    },
+    "Assignee": {
+     "type": "people",
+     "people": [
+      {
+       "id": "u-mira",
+       "name": "Mira Devon"
+      }
+     ]
+    },
+    "Due": {
+     "type": "date",
+     "date": {
+      "start": "2026-06-10",
+      "end": null
+     }
+    }
+   },
+   "icon": {
+    "type": "emoji",
+    "emoji": "\ud83d\udcc4"
+   },
+   "created_time": "2026-06-02T10:00:00Z",
+   "last_edited_time": "2026-06-06T14:00:00Z",
+   "url": "https://notion.so/p-login",
+   "in_trash": false,
+   "blocks": [
+    {
+     "id": "b-heading_2-119",
+     "type": "heading_2",
+     "body": {
+      "heading_2": {
+       "rich_text": [
+        {
+         "type": "text",
+         "text": {
+          "content": "Context",
+          "link": null
+         },
+         "annotations": {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "underline": false,
+          "code": false,
+          "color": "default"
+         },
+         "plain_text": "Context",
+         "href": null
+        }
+       ]
+      }
+     },
+     "position": 0
+    },
+    {
+     "id": "b-paragraph-4919",
+     "type": "paragraph",
+     "body": {
+      "paragraph": {
+       "rich_text": [
+        {
+         "type": "text",
+         "text": {
+          "content": "Users hit an infinite redirect after SSO when the session cookie is missing the SameSite attribute.",
+          "link": null
+         },
+         "annotations": {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "underline": false,
+          "code": false,
+          "color": "default"
+         },
+         "plain_text": "Users hit an infinite redirect after SSO when the session cookie is missing the SameSite attribute.",
+         "href": null
+        }
+       ]
+      }
+     },
+     "position": 1
+    },
+    {
+     "id": "b-heading_2-6473",
+     "type": "heading_2",
+     "body": {
+      "heading_2": {
+       "rich_text": [
+        {
+         "type": "text",
+         "text": {
+          "content": "Acceptance criteria",
+          "link": null
+         },
+         "annotations": {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "underline": false,
+          "code": false,
+          "color": "default"
+         },
+         "plain_text": "Acceptance criteria",
+         "href": null
+        }
+       ]
+      }
+     },
+     "position": 2
+    },
+    {
+     "id": "b-to_do-4883",
+     "type": "to_do",
+     "body": {
+      "to_do": {
+       "rich_text": [
+        {
+         "type": "text",
+         "text": {
+          "content": "Reproduce on staging",
+          "link": null
+         },
+         "annotations": {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "underline": false,
+          "code": false,
+          "color": "default"
+         },
+         "plain_text": "Reproduce on staging",
+         "href": null
+        }
+       ],
+       "checked": true
+      }
+     },
+     "position": 3
+    },
+    {
+     "id": "b-to_do-1096",
+     "type": "to_do",
+     "body": {
+      "to_do": {
+       "rich_text": [
+        {
+         "type": "text",
+         "text": {
+          "content": "Set SameSite=Lax on the session cookie",
+          "link": null
+         },
+         "annotations": {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "underline": false,
+          "code": false,
+          "color": "default"
+         },
+         "plain_text": "Set SameSite=Lax on the session cookie",
+         "href": null
+        }
+       ],
+       "checked": false
+      }
+     },
+     "position": 4
+    },
+    {
+     "id": "b-to_do-5315",
+     "type": "to_do",
+     "body": {
+      "to_do": {
+       "rich_text": [
+        {
+         "type": "text",
+         "text": {
+          "content": "Add a regression test",
+          "link": null
+         },
+         "annotations": {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "underline": false,
+          "code": false,
+          "color": "default"
+         },
+         "plain_text": "Add a regression test",
+         "href": null
+        }
+       ],
+       "checked": false
+      }
+     },
+     "position": 5
+    },
+    {
+     "id": "b-bulleted_list_item-5955",
+     "type": "bulleted_list_item",
+     "body": {
+      "bulleted_list_item": {
+       "rich_text": [
+        {
+         "type": "text",
+         "text": {
+          "content": "Affected: /auth/callback",
+          "link": null
+         },
+         "annotations": {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "underline": false,
+          "code": false,
+          "color": "default"
+         },
+         "plain_text": "Affected: /auth/callback",
+         "href": null
+        }
+       ]
+      }
+     },
+     "position": 6
+    },
+    {
+     "id": "b-bulleted_list_item-3786",
+     "type": "bulleted_list_item",
+     "body": {
+      "bulleted_list_item": {
+       "rich_text": [
+        {
+         "type": "text",
+         "text": {
+          "content": "Owner: payments",
+          "link": null
+         },
+         "annotations": {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "underline": false,
+          "code": false,
+          "color": "default"
+         },
+         "plain_text": "Owner: payments",
+         "href": null
+        }
+       ]
+      }
+     },
+     "position": 7
+    }
+   ],
+   "comments": [
+    {
+     "id": "c1",
+     "rich_text": [
+      {
+       "type": "text",
+       "text": {
+        "content": "Confirmed on staging \u2014 it's the cookie attribute.",
+        "link": null
+       },
+       "annotations": {
+        "bold": false,
+        "italic": false,
+        "strikethrough": false,
+        "underline": false,
+        "code": false,
+        "color": "default"
+       },
+       "plain_text": "Confirmed on staging \u2014 it's the cookie attribute.",
+       "href": null
+      }
+     ],
+     "created_by": {
+      "id": "u-omar",
+      "name": "Omar Reyes"
+     },
+     "created_time": "2026-06-05T12:00:00Z"
+    }
+   ]
+  },
+  {
+   "id": "p-webhook",
+   "parent": {
+    "type": "database_id",
+    "database_id": "db-tasks"
+   },
+   "database_id": "db-tasks",
+   "properties": {
+    "Name": {
+     "id": "title",
+     "type": "title",
+     "title": [
+      {
+       "type": "text",
+       "text": {
+        "content": "Harden webhook signature check",
+        "link": null
+       },
+       "annotations": {
+        "bold": false,
+        "italic": false,
+        "strikethrough": false,
+        "underline": false,
+        "code": false,
+        "color": "default"
+       },
+       "plain_text": "Harden webhook signature check",
+       "href": null
+      }
+     ]
+    },
+    "Status": {
+     "type": "status",
+     "status": {
+      "name": "To Do",
+      "color": "gray"
+     }
+    },
+    "Priority": {
+     "type": "select",
+     "select": {
+      "name": "Medium",
+      "color": "yellow"
+     }
+    },
+    "Assignee": {
+     "type": "people",
+     "people": [
+      {
+       "id": "u-omar",
+       "name": "Omar Reyes"
+      }
+     ]
+    },
+    "Due": {
+     "type": "date",
+     "date": {
+      "start": "2026-06-14",
+      "end": null
+     }
+    }
+   },
+   "icon": {
+    "type": "emoji",
+    "emoji": "\ud83d\udcc4"
+   },
+   "created_time": "2026-06-02T10:00:00Z",
+   "last_edited_time": "2026-06-06T14:00:00Z",
+   "url": "https://notion.so/p-webhook",
+   "in_trash": false,
+   "blocks": [
+    {
+     "id": "b-heading_2-4345",
+     "type": "heading_2",
+     "body": {
+      "heading_2": {
+       "rich_text": [
+        {
+         "type": "text",
+         "text": {
+          "content": "Problem",
+          "link": null
+         },
+         "annotations": {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "underline": false,
+          "code": false,
+          "color": "default"
+         },
+         "plain_text": "Problem",
+         "href": null
+        }
+       ]
+      }
+     },
+     "position": 0
+    },
+    {
+     "id": "b-paragraph-8026",
+     "type": "paragraph",
+     "body": {
+      "paragraph": {
+       "rich_text": [
+        {
+         "type": "text",
+         "text": {
+          "content": "We accept webhooks without verifying the HMAC signature.",
+          "link": null
+         },
+         "annotations": {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "underline": false,
+          "code": false,
+          "color": "default"
+         },
+         "plain_text": "We accept webhooks without verifying the HMAC signature.",
+         "href": null
+        }
+       ]
+      }
+     },
+     "position": 1
+    },
+    {
+     "id": "b-to_do-2895",
+     "type": "to_do",
+     "body": {
+      "to_do": {
+       "rich_text": [
+        {
+         "type": "text",
+         "text": {
+          "content": "Verify X-Signature header",
+          "link": null
+         },
+         "annotations": {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "underline": false,
+          "code": false,
+          "color": "default"
+         },
+         "plain_text": "Verify X-Signature header",
+         "href": null
+        }
+       ],
+       "checked": false
+      }
+     },
+     "position": 2
+    },
+    {
+     "id": "b-to_do-9213",
+     "type": "to_do",
+     "body": {
+      "to_do": {
+       "rich_text": [
+        {
+         "type": "text",
+         "text": {
+          "content": "Reject on mismatch with 401",
+          "link": null
+         },
+         "annotations": {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "underline": false,
+          "code": false,
+          "color": "default"
+         },
+         "plain_text": "Reject on mismatch with 401",
+         "href": null
+        }
+       ],
+       "checked": false
+      }
+     },
+     "position": 3
+    }
+   ],
+   "comments": []
+  },
+  {
+   "id": "p-cache",
+   "parent": {
+    "type": "database_id",
+    "database_id": "db-tasks"
+   },
+   "database_id": "db-tasks",
+   "properties": {
+    "Name": {
+     "id": "title",
+     "type": "title",
+     "title": [
+      {
+       "type": "text",
+       "text": {
+        "content": "Cache refresh is slow",
+        "link": null
+       },
+       "annotations": {
+        "bold": false,
+        "italic": false,
+        "strikethrough": false,
+        "underline": false,
+        "code": false,
+        "color": "default"
+       },
+       "plain_text": "Cache refresh is slow",
+       "href": null
+      }
+     ]
+    },
+    "Status": {
+     "type": "status",
+     "status": {
+      "name": "Done",
+      "color": "green"
+     }
+    },
+    "Priority": {
+     "type": "select",
+     "select": {
+      "name": "Low",
+      "color": "green"
+     }
+    },
+    "Assignee": {
+     "type": "people",
+     "people": [
+      {
+       "id": "u-mira",
+       "name": "Mira Devon"
+      }
+     ]
+    },
+    "Due": {
+     "type": "date",
+     "date": {
+      "start": "2026-06-03",
+      "end": null
+     }
+    }
+   },
+   "icon": {
+    "type": "emoji",
+    "emoji": "\ud83d\udcc4"
+   },
+   "created_time": "2026-06-02T10:00:00Z",
+   "last_edited_time": "2026-06-06T14:00:00Z",
+   "url": "https://notion.so/p-cache",
+   "in_trash": false,
+   "blocks": [
+    {
+     "id": "b-paragraph-2865",
+     "type": "paragraph",
+     "body": {
+      "paragraph": {
+       "rich_text": [
+        {
+         "type": "text",
+         "text": {
+          "content": "Batched the MSET calls; refresh dropped from 2.1s to 0.4s.",
+          "link": null
+         },
+         "annotations": {
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "underline": false,
+          "code": false,
+          "color": "default"
+         },
+         "plain_text": "Batched the MSET calls; refresh dropped from 2.1s to 0.4s.",
+         "href": null
+        }
+       ]
+      }
+     },
+     "position": 0
+    }
+   ],
+   "comments": []
+  }
+ ]
+}
