@@ -9,25 +9,15 @@ import os
 import sys
 from functools import lru_cache
 
-# Canonical clone source now lives in ~/projects/multiverse-clones/clones (see the repo's
-# MANIFEST.json). We prefer it and fall back to the older standalone abundant-* checkouts so the
-# viewer keeps working on a box that only has one of them.
+# Clone source lives in this repo's clones/ folder (see clones/MANIFEST.json). Every default below
+# resolves relative to the repo, so the viewer works from any checkout; set the env vars to override.
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 MULTIVERSE = os.path.expanduser(
-    os.environ.get("MULTIVERSE_CLONES", "/Users/leonliu/projects/multiverse-clones/clones")
+    os.environ.get("MULTIVERSE_CLONES", os.path.join(REPO_ROOT, "clones"))
 )
 
 
-def _first_existing(*paths: str) -> str:
-    for p in paths:
-        if p and os.path.isdir(p):
-            return p
-    return paths[0]  # a stable default even if missing (callers raise a clear error)
-
-
-DEFAULT_SLACK_CLONE_BASE = _first_existing(
-    os.path.join(MULTIVERSE, "abundant-slack-clone", "selfcontained", "base"),
-    "/Users/leonliu/projects/abundant-slack-clone-mattermost/selfcontained/base",
-)
+DEFAULT_SLACK_CLONE_BASE = os.path.join(MULTIVERSE, "abundant-slack-clone", "selfcontained", "base")
 
 
 def slack_clone_base() -> str:
@@ -63,11 +53,9 @@ def load_slack_clone():
 # state.json + apply_state_patch.py + jira-gateway images now live in the multiverse jira clone;
 # the read/write engine (ticketvector's FakePlaneBackend) is not vendored there, so it stays on the
 # standalone ticketvector checkout (the state.json format is identical, so this is drift-free).
-DEFAULT_TICKETVECTOR_BASE = "/Users/leonliu/projects/ticketvector"
-DEFAULT_JIRA_DATA_BASE = _first_existing(
-    os.path.join(MULTIVERSE, "abundant-jira-clone"),
-    "/Users/leonliu/projects/abundant-jira-clone",
-)
+# ticketvector isn't part of this collection; by default we look for a checkout next to the repo.
+DEFAULT_TICKETVECTOR_BASE = os.path.join(os.path.dirname(REPO_ROOT), "ticketvector")
+DEFAULT_JIRA_DATA_BASE = os.path.join(MULTIVERSE, "abundant-jira-clone")
 
 
 def ticketvector_base() -> str:

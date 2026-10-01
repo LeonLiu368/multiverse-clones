@@ -84,7 +84,7 @@ either in its own folder or in [`experiments/fleet-smoke/`](experiments/fleet-sm
 | [`seed-dashboard/`](seed-dashboard/) | A viewer for the data seeded into a clone, drawn to look like the real product. You can also edit that data and download the changes, so a task is built from exactly what you looked at. |
 | [`abundant-identity/`](abundant-identity/) | Maps the same anonymized person across the Slack and Jira exports, so one person has one name in every clone. |
 | [`origins/`](origins/) | The standalone repositories five of the clones started in, with their early development history and some files that never made it into `clones/`. |
-| [`docs/`](docs/) | [`COLLECTION.md`](docs/COLLECTION.md) explains where everything came from and how the commit history is organized. |
+| [`docs/`](docs/) | [`COLLECTION.md`](docs/COLLECTION.md) explains where everything came from and how the commit history is organized. [`ci-reference/`](docs/ci-reference/) keeps the old image-publishing workflows for reference. |
 
 ## Example tasks
 
@@ -116,18 +116,15 @@ cd viz && python3 -m http.server 8770
 # open http://localhost:8770
 ```
 
-**The seed dashboard** needs Python 3 and Node. Point it at the Slack clone in this repo:
+**The seed dashboard** needs Python 3 and Node. It reads the clones in this repo by default:
 
 ```bash
-SLACK_CLONE_BASE=$PWD/clones/abundant-slack-clone/selfcontained/base \
-JIRA_DATA_BASE=$PWD/clones/abundant-jira-clone \
-  ./seed-dashboard/run.sh
+./seed-dashboard/run.sh
 # open http://localhost:5273
 ```
 
-The defaults inside `run.sh` point at folders on my old machine, so always set these variables.
-The Jira viewer also needs the `ticketvector` repository, which isn't in this collection; set
-`TICKETVECTOR_BASE` to a copy of it or skip that viewer.
+The Jira viewer also needs the `ticketvector` repository, which isn't in this collection. It
+looks for a checkout next to this repo; set `TICKETVECTOR_BASE` to use one somewhere else.
 
 **Spoink** installs as a Python package:
 

@@ -18,7 +18,10 @@ import pytest
 from identity_registry import build_registry, extract_person_number, lookup
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-CATALOG = "/Users/leonliu/projects/abundant-slack-clone-mattermost/selfcontained/prod/v1/catalog/users.json"
+CATALOG = os.environ.get(
+    "SLACK_PROD_CATALOG",
+    os.path.join(HERE, "..", "clones", "abundant-slack-clone", "selfcontained", "prod", "v1", "catalog", "users.json"),
+)
 REGISTRY_JSON = os.path.join(HERE, "registry.json")
 SLACK_ID_RE = re.compile(r"^PERSON_(\d+)_SLACK_ID$")
 

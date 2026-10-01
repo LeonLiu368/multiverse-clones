@@ -3,11 +3,11 @@
 # The frontend proxies /api -> :8000, so just open http://localhost:5273.
 #
 #   ./run.sh
-#   SLACK_CLONE_BASE=/path/to/abundant-slack-clone-mattermost/selfcontained/base ./run.sh
+#
+# By default it reads the clones in this repo's clones/ folder. To view a different checkout, set
+# SLACK_CLONE_BASE, JIRA_DATA_BASE or TICKETVECTOR_BASE (see backend/clone_bridge.py).
 set -euo pipefail
 cd "$(dirname "$0")"
-
-export SLACK_CLONE_BASE="${SLACK_CLONE_BASE:-/Users/leonliu/projects/abundant-slack-clone-mattermost/selfcontained/base}"
 
 # backend
 cd backend

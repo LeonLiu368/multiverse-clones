@@ -22,12 +22,14 @@ re-pull from the repo/commit recorded there and replace the folder.
 | [`grafana-clone`](grafana-clone) | Grafana HTTP API (+ Loki / Prometheus query APIs) | `Dockerfile.service` | ✅ `examples/docker-compose.yaml` |
 | [`sentry-clone`](sentry-clone) | Sentry | `Dockerfile.service` | ✅ `examples/docker-compose.yaml` |
 | [`aws-clone`](aws-clone) | AWS APIs (S3 / Kinesis / IAM …) | `Dockerfile.service`, `Dockerfile.tools` | ✅ `examples/docker-compose.yaml` |
+| [`notion-clone`](notion-clone) | Notion API (pages, blocks, databases, search, comments) | `docker/Dockerfile{,.agent,.empty,.prod-v1}` | ⚠️ per-task only (`oddish/tasks/*/environment`) |
+| [`discord-clone`](discord-clone) | Discord REST API v10 | `docker/Dockerfile{,.agent,.empty,.prod-v1}` | ⚠️ per-task only (`oddish/tasks/*/environment`) |
 
 Legend: ✅ ships a base-level compose for standing the clone up • ⚠️ only ships
 per-task compose files • ❌ ships none.
 
-`abundant-jira-clone` is built on the **ticketvector** issue service + `jira` CLI;
-ticketvector is clone-shaped but not yet vendored here (see scope notes).
+`abundant-jira-clone` is built on the **ticketvector** issue service + `jira` CLI.
+ticketvector isn't included in this collection (see scope notes).
 
 ## Conventions across clones
 
@@ -42,8 +44,9 @@ Layouts differ by clone, but the recurring pieces are:
 
 ## Scope notes
 
-- This folder holds repos whose **name or description** identifies them as a clone.
-- Excluded as *tooling about* clones (not clones themselves): `org-slice-warehouse`,
-  `seed-dashboard`, `task-env-reviewer`.
-- `ticketvector` (CLI-first Jira/Linear tracker) is clone-shaped but does not say "clone" in
-  its name/description, so it is **not** vendored here yet — flag if it should be.
+- This folder holds the clones themselves. Tooling *about* clones lives elsewhere in this repo:
+  `seed-dashboard/` and `viz/` at the root. `org-slice-warehouse` and `task-env-reviewer` were
+  separate tooling repos and aren't part of this collection.
+- `ticketvector` (the CLI-first Jira/Linear tracker the Jira clone runs on) isn't included; it was
+  mostly other people's work. The seed dashboard's Jira viewer looks for a checkout next to this
+  repo, or wherever `TICKETVECTOR_BASE` points.

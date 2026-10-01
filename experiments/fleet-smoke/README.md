@@ -11,19 +11,21 @@ The point is a single, cheap signal that the whole fleet is runnable end-to-end 
   Clone Standard v1.
 - `sync_tasks.sh` — regenerates `tasks/` from the in-repo clone tasks (`clones/<clone>/.../<task>`).
 
-## Coverage — all 10 clones
-Every clone's canonical task is vendored here (via `sync_tasks.sh`), each in the **image-pull** shape:
-`environment/` has no clone source — the gateway is pulled (`ghcr.io/abundant-ai/<svc>-service*:...`)
-and the agent is `FROM ghcr.io/abundant-ai/<svc>-agent*`. notion, figma, google-workspace, sentry,
-grafana, logfire, aws, jira, slack, gh-cli.
+## Coverage: nine clones
+One canonical task per clone, vendored here by `sync_tasks.sh`: notion, figma, google-workspace,
+sentry, grafana, logfire, aws, jira and slack. Each is in the **image-pull** shape: `environment/`
+holds no clone source. The gateway is pulled (`ghcr.io/abundant-ai/<svc>-service*:...`) and the
+agent is `FROM ghcr.io/abundant-ai/<svc>-agent*`.
 
-> **Runner access:** the published packages are currently **private**. To run this smoke on Oddish (or
-> any external runner), flip the `<svc>-service*` / `<svc>-agent*` packages to **internal/public** in
-> GitHub → abundant-ai → Packages (container-package visibility is UI-only; there's no API for it).
+gh-cli was dropped from the set because its task builds the clone from source instead of pulling
+an image, so it isn't self-contained. Its tasks live in `clones/gh-cli-clone/`. discord was added
+after this smoke was set up and has its own tasks in `clones/discord-clone/`.
 
 ## Running
 This is an oddish experiment manifest. Point your oddish/Harbor runner at it
-(`task_path: experiments/fleet-smoke/tasks`, `n_trials: 1`). nop and oracle establish the 0/1 floor and
-ceiling per task; gemini-cli is the one real-model trial. Tasks build their gateway locally via the
-`build:`+`image:` dual, so no registry pull is required — but once `publish-images.yml` has published
-the trios to `ghcr.io/leonliu368/<svc>-service:prod-v1`, the tasks can be repointed to pull instead.
+(`task_path: experiments/fleet-smoke/tasks`, `n_trials: 1`). nop and oracle establish the 0/1 floor
+and ceiling per task; gemini-cli is the one real-model trial.
+
+> **Images:** most of the `ghcr.io/abundant-ai/...` images these tasks pull are no longer publicly
+> pullable. To run a task, build the clone's service and agent images from its folder in `clones/`
+> and point the task's `docker-compose.yaml` and `Dockerfile` at your local tags.
