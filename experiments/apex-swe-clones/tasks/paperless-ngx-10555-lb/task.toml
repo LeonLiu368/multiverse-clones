@@ -1,0 +1,36 @@
+schema_version = "1.2"
+name = "apex-swe-clones/paperless-ngx-10555-lb"
+description = "LOAD-BEARING variant of paperless-ngx #10555 (secure webhook delivery / SSRF hardening). The instruction is deliberately underspecified: the exact controls AND the configuration interface (the PAPERLESS_WEBHOOKS_* setting names the hidden tests pin) live ONLY in the gauge incident logs (INC-4471), not in the prompt. A telemetry-blind agent cannot match the hidden tests. Graded by the upstream PR's own pytest suite (F2P+P2P). nop=0, oracle=1 (oracle must recover the spec from gauge before fixing)."
+
+[metadata]
+category = "observability"
+source_repo = "paperless-ngx/paperless-ngx"
+apex_task = "Observability/paperless-ngx-paperless-ngx-10555-observability"
+apex_origin = "mercor/APEX-SWE (exact task, re-platformed onto abundant clones)"
+failure_mode = "rest-api-validation"
+tags = ["apex-swe", "observability", "clones", "multi-service", "sre", "ticketvector", "slack", "gauge", "python", "django"]
+
+[agent]
+timeout_sec = 2700
+
+[verifier]
+timeout_sec = 1800
+
+[environment]
+allow_internet = true
+build_timeout_sec = 3000
+cpus = 4
+memory_mb = 8192
+storage_mb = 40960
+gpus = 0
+workdir = "/app/repo"
+
+[[environment.mcp_servers]]
+name = "slack"
+transport = "stdio"
+command = "slack-mcp"
+
+[[environment.mcp_servers]]
+name = "grafana"
+transport = "stdio"
+command = "mcp-grafana"

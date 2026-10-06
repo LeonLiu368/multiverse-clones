@@ -1,0 +1,17 @@
+[2026-01-23 11:31:02,114] [WARNING] [paperless.security] INC-4471 opened: anomalous outbound webhook traffic from the workflow engine (alertname=WebhookEgressAnomaly service=paperless-ngx)
+[2026-01-23 11:31:02,540] [INFO] [django.server] "POST /api/workflows/ HTTP/1.1" 200 142
+[2026-01-23 11:31:03,889] [WARNING] [paperless.handlers] Webhook sent to http://169.254.169.254/latest/meta-data/iam/security-credentials/ (workflow_action=12 trigger=document_added)
+[2026-01-23 11:31:04,201] [WARNING] [paperless.handlers] Webhook sent to http://127.0.0.1:6379/ (workflow_action=12) — outbound delivery reached a loopback address
+[2026-01-23 11:31:05,003] [WARNING] [paperless.handlers] Webhook sent to http://10.0.13.7:9200/_cluster/health (workflow_action=12) — outbound delivery reached an RFC1918 private address
+[2026-01-23 11:31:06,742] [WARNING] [paperless.handlers] Webhook delivery attempted to ftp://exfil.attacker.example/dump (workflow_action=12) — non-HTTP scheme accepted by the sender
+[2026-01-23 11:31:07,310] [WARNING] [paperless.handlers] Webhook sent to http://paperless-ngx.com:8080/hook (workflow_action=12) — delivery used a non-standard destination port
+[2026-01-23 11:31:08,455] [WARNING] [paperless.handlers] Outbound webhook followed redirect: 302 http://paperless-ngx.com/hook -> http://internal-service.local/admin (workflow_action=12) — redirect chased to an internal host
+[2026-01-23 11:31:09,118] [WARNING] [paperless.handlers] Webhook request used a client-supplied Host header 'evil.test' overriding the resolved hostname (workflow_action=12)
+[2026-01-23 11:31:10,402] [ERROR] [paperless.security] INC-4471 classified as SSRF: workflow webhooks accept attacker-controlled URLs with no destination validation
+[2026-01-23 11:31:42,777] [INFO] [paperless.security] INC-4471 mitigation agreed (see #incident-4471): validate every webhook URL before send. Required controls:
+[2026-01-23 11:31:42,778] [INFO] [paperless.security] INC-4471 control-1: restrict URL scheme to an allowlist, configurable via setting PAPERLESS_WEBHOOKS_ALLOWED_SCHEMES (default: http, https); reject any other scheme or a URL with no hostname
+[2026-01-23 11:31:42,779] [INFO] [paperless.security] INC-4471 control-2: restrict the destination port to an allowlist, configurable via setting PAPERLESS_WEBHOOKS_ALLOWED_PORTS (empty = any); reject ports outside it
+[2026-01-23 11:31:42,780] [INFO] [paperless.security] INC-4471 control-3: resolve the hostname and reject private, loopback, link-local, multicast or unspecified addresses unless setting PAPERLESS_WEBHOOKS_ALLOW_INTERNAL_REQUESTS is true (default: false)
+[2026-01-23 11:31:42,781] [INFO] [paperless.security] INC-4471 control-4: strip any client-supplied Host header so the resolved hostname is used; control-5: disable HTTP redirect following on webhook delivery
+[2026-01-23 11:31:42,782] [INFO] [paperless.security] INC-4471 contract: each blocked destination (controls 1-3) must be rejected by raising a built-in ValueError BEFORE any request is sent (not a custom exception subclass); with redirect following disabled (control-5) a 3xx webhook response must surface as an httpx HTTPError
+[2026-01-23 11:31:43,002] [INFO] [paperless.security] INC-4471 acceptance: the workflows test suite (TestWebhookSecurity) encodes the exact expected behaviour for each control above
