@@ -5,9 +5,8 @@ metadata:
   description: |
     The 6 APEX-SWE paperless-ngx Observability tasks on the per-repo apex-paperless corpora, seeded
     DIRECTLY: jira-gateway:apex-paperless (shared 2262-issue tracker) + slack-gateway:apex-paperless
-    (shared 11.4k-msg community chat) baked + reused across all 6; each task mounts only its own gauge
-    incident overlay (real app-<n>.log) merged onto the baked gauge baseline. Agent fixes /app/repo;
-    graded by each upstream PR's pytest. No apex-seed converter.
+    (shared 11.4k-msg community chat) baked + reused across all 6. A gauge per-task incident overlay
+    (observability logs merged at boot) merged onto the baked gauge baseline. Agent fixes /app/repo. 
   task_path: experiments/paperless-clones/tasks
   n_trials: 1
   skip_trajectory_analysis: false
