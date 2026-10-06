@@ -1,0 +1,33 @@
+schema_version = "1.3"
+artifacts = ["/app/repo", "/var/lib/ticketvector/state.json"]
+authors = []
+
+[task]
+name = "action-bench/git-bug-1541"
+description = "Implement git-bug #1541, 'repo: add RepoBrowse features to support code browsing UIs': expose commit, tree, and blob lookups plus paginated commit history and last-commit-per-path queries through the GraphQL API. The work happens in the checkout at /app/repo, driven by a ticket in the local linear/jira tracker that must be worked to completion. Verified by hidden upstream tests and tracker-state checks."
+
+[metadata]
+difficulty_explanation = "This is a real feature implementation, not a one-line patch. git-bug needs commit, tree, and blob browsing exposed through its GraphQL API, which means defining a RepoBrowse interface in the repository layer, implementing it on go-git with a cache for last-commit-per-path lookups, surfacing it through the cache layer, extending the GraphQL schema, and rerunning gqlgen so the generated resolvers and models stay consistent. Reconciling the generated code is where most attempts die. The agent also has to discover what to build from a ticket in the local tracker, among plausible distractors, and complete the tracker workflow through the CLI. The repository and hidden tests are real OSS data; the tracker world is synthetic."
+solution_explanation = "The fix implements the upstream RepoBrowse feature end to end. repository/browse.go defines the RepoBrowse interface and types; repository/gogit.go implements it on go-git (Head, CommitLog, TreeAtPath, BlobAtPath, CommitDetail, CommitFileDiff, and LastCommitForEntries backed by a bounded LRU cache so per-entry last-commit lookups do not rewalk history); cache/repo_cache_common.go exposes the layer through the repo cache. On the API side the GraphQL schema gains repository commit/blob/tree plus paginated commits/lastCommits connection fields, with gqlgen code generation rerun and the generated resolver and model signatures reconciled across api/graphql (graph, models, resolvers, connections). It works because resolvers delegate to the browse layer instead of reimplementing git traversal. solve.sh starts the ticket through the tracker, applies the post-fix files, commits, then records the investigation comment, commit link, and dry-run PR receipt on the ticket and moves it to In Review."
+verification_explanation = "Two checks, both required. The verifier copies the hidden GraphQL browse test into the checkout and runs go test ./api/graphql against the agent's code, using the Go toolchain installed system-wide in the task image. It then replays the tracker state: the primary ticket must be In Review and assigned to the agent, must have been worked in order (assigned and In Progress before the move to In Review), and must carry an agent investigation comment, a commit link that resolves to a real commit in the repo rather than the starting snapshot, and a dry-run PR receipt, while the distractor tickets remain untouched."
+category = "software-engineering"
+tags = ["go", "git-bug", "dvcs", "regression", "ticketvector"]
+expert_time_estimate_hours = 2.0
+relevant_experience = ""
+
+[agent]
+timeout_sec = 2700
+user = "agent"
+
+[verifier]
+timeout_sec = 2700
+user = "root"
+environment_mode = "separate"
+
+[environment]
+allow_internet = true
+build_timeout_sec = 1800
+cpus = 4
+memory_mb = 8192
+storage_mb = 40960
+gpus = 0

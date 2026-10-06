@@ -1,0 +1,66 @@
+[
+  {
+    "user": "UDCA6211FB8",
+    "type": "message",
+    "ts": "1748080860.000000",
+    "client_msg_id": "a9d5940c2b74f26f81",
+    "text": "company offsite is booked for August. more details soon",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "quinn",
+      "real_name": "Quinn",
+      "display_name": "quinn",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1748081400.000000",
+    "client_msg_id": "71e74d90ce2ad9255f",
+    "text": "exciting!!",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UDCA6211FB8",
+    "type": "message",
+    "ts": "1748081520.000000",
+    "client_msg_id": "99068fdc01c91a1809",
+    "text": "lol no promises",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "quinn",
+      "real_name": "Quinn",
+      "display_name": "quinn",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1748081880.000001",
+    "client_msg_id": "7950251aee93d5e9c4",
+    "text": "please not another escape room",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

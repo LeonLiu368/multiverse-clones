@@ -1,0 +1,20 @@
+# Oddish experiment manifest — run via "/oddish" on the PR.
+# Runs both real2sim Figma tasks with controls + a 2-trial gemini model run.
+metadata:
+  name: figma-realsim
+  enable_image_push: true
+  description: "Real2sim: read values from imported real Figma files (greeting name; iOS Home Screen widget sizes)."
+  task_path: experiments/figma-realsim/tasks
+  n_trials: 1
+  skip_trajectory_analysis: false
+
+tasks:
+  - figma-greeting-name
+  - figma-ios-widget-sizes
+
+agents:
+  - name: nop
+  - name: oracle
+  - name: gemini-cli
+    model_name: google/gemini-3.1-pro-preview
+    n_trials: 2

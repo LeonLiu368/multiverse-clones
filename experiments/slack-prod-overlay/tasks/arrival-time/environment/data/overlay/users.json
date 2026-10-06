@@ -1,0 +1,19 @@
+[
+  {
+    "id": "U6683E4B170",
+    "team_id": "T0EXACME01",
+    "name": "robin.vega",
+    "real_name": "Robin.vega",
+    "deleted": false,
+    "is_bot": false,
+    "is_app_user": false,
+    "profile": {
+      "real_name": "Robin.vega",
+      "display_name": "robin.vega",
+      "real_name_normalized": "Robin.vega",
+      "display_name_normalized": "robin.vega",
+      "email": "robin.vega@acme.example",
+      "team": "T0EXACME01"
+    }
+  }
+]

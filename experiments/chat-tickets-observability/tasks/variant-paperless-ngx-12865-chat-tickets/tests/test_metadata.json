@@ -1,0 +1,13 @@
+{
+  "test_command": "python -m pytest src/documents/tests/search/test_backend.py::TestWriteBatch::test_writer_released_when_commit_fails -o addopts='' -p no:cacheprovider -q",
+  "test_framework": "pytest",
+  "language": "Python",
+  "test_files": [
+    "src/documents/tests/search/test_backend.py"
+  ],
+  "FAIL_TO_PASS": [
+    "src/documents/tests/search/test_backend.py::TestWriteBatch::test_writer_released_when_commit_fails"
+  ],
+  "PASS_TO_PASS": [],
+  "base_commit": "97e3c7572018f071956ee735db44c27f11d37bc7"
+}

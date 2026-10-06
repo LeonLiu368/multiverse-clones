@@ -1,0 +1,106 @@
+[
+  {
+    "id": "C50C68BF840",
+    "name": "broker-oncall",
+    "created": 1781180640,
+    "creator": "U13E51919BD",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "U13E51919BD",
+      "UB443DE4B0F",
+      "U56E60E1F1E",
+      "U1B2A5C518A",
+      "U6C720B6ECE",
+      "UF16BED5618"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "#broker-oncall",
+      "creator": "U13E51919BD",
+      "last_set": 1781180640
+    }
+  },
+  {
+    "id": "C607003606C",
+    "name": "customer-support",
+    "created": 1781182260,
+    "creator": "U13E51919BD",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "U13E51919BD",
+      "UB443DE4B0F",
+      "U56E60E1F1E",
+      "U1B2A5C518A",
+      "U6C720B6ECE",
+      "UF16BED5618"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "#customer-support",
+      "creator": "U13E51919BD",
+      "last_set": 1781182260
+    }
+  },
+  {
+    "id": "CBD3B4EB434",
+    "name": "infra-noise",
+    "created": 1781183340,
+    "creator": "U13E51919BD",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "U13E51919BD",
+      "UB443DE4B0F",
+      "U56E60E1F1E",
+      "U1B2A5C518A",
+      "U6C720B6ECE",
+      "UF16BED5618"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "#infra-noise",
+      "creator": "U13E51919BD",
+      "last_set": 1781183340
+    }
+  },
+  {
+    "id": "C156B83F835",
+    "name": "release-coordination",
+    "created": 1781182920,
+    "creator": "U13E51919BD",
+    "is_archived": false,
+    "is_general": false,
+    "members": [
+      "U13E51919BD",
+      "UB443DE4B0F",
+      "U56E60E1F1E",
+      "U1B2A5C518A",
+      "U6C720B6ECE",
+      "UF16BED5618"
+    ],
+    "topic": {
+      "value": "",
+      "creator": "",
+      "last_set": 0
+    },
+    "purpose": {
+      "value": "#release-coordination",
+      "creator": "U13E51919BD",
+      "last_set": 1781182920
+    }
+  }
+]

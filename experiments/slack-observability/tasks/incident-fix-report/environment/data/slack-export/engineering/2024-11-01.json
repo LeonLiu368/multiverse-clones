@@ -1,0 +1,130 @@
+[
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1730454660.000000",
+    "client_msg_id": "90c7e8b76a0ebfed6e",
+    "text": "updated the runbook for database failover",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UFD1CF5E271",
+    "type": "message",
+    "ts": "1730462700.000000",
+    "client_msg_id": "80f4cc02487f37b693",
+    "text": "anyone seen the load balancer restart?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "grace",
+      "real_name": "Grace",
+      "display_name": "grace",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1730463660.000000",
+    "client_msg_id": "ba70db1f68082517d0",
+    "text": "RFC: moving to gRPC for internal comms",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UB5382301BB",
+    "type": "message",
+    "ts": "1730465640.000000",
+    "client_msg_id": "e9676929c496834a07",
+    "text": "anyone seen the load balancer restart?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "peggy",
+      "real_name": "Peggy",
+      "display_name": "peggy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UFD1CF5E271",
+    "type": "message",
+    "ts": "1730469060.000000",
+    "client_msg_id": "ae3b2ecaa66fcdae90",
+    "text": "rebased the auth PR, CI is green",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "grace",
+      "real_name": "Grace",
+      "display_name": "grace",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1730470440.000000",
+    "client_msg_id": "155a1dc705231e4b44",
+    "text": "updated the runbook for database failover",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UFD1CF5E271",
+    "type": "message",
+    "ts": "1730470860.000000",
+    "client_msg_id": "5769f00d6b4deb8bcc",
+    "text": "dependency audit done, 3 vulns patched",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "grace",
+      "real_name": "Grace",
+      "display_name": "grace",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1730472060.000000",
+    "client_msg_id": "7387295afb5dcfaae6",
+    "text": "updated the runbook for database failover",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

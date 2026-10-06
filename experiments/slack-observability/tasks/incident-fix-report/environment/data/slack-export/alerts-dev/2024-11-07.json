@@ -1,0 +1,66 @@
+[
+  {
+    "user": "U38FC8CAEA6",
+    "type": "message",
+    "ts": "1730970480.000000",
+    "client_msg_id": "a449614e44fce1f014",
+    "text": "alert for p99 latency needs tuning",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "judy",
+      "real_name": "Judy",
+      "display_name": "judy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U88FA846E5F",
+    "type": "message",
+    "ts": "1730980980.000000",
+    "client_msg_id": "469d885173d56b10e3",
+    "text": "alert batching implementation in progress",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "victor",
+      "real_name": "Victor",
+      "display_name": "victor",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U38FC8CAEA6",
+    "type": "message",
+    "ts": "1730991660.000000",
+    "client_msg_id": "16e25c6f726f3a4215",
+    "text": "webhook integration working",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "judy",
+      "real_name": "Judy",
+      "display_name": "judy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1730992740.000000",
+    "client_msg_id": "2c7734538ac7bbb0a2",
+    "text": "testing notification routing to #sre-oncall",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

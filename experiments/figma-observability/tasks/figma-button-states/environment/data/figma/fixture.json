@@ -1,0 +1,185 @@
+{
+  "team": {"id": "T_ACME", "name": "Acme Design"},
+  "projects": [{"id": "P_DS", "name": "Design System", "files": ["BtnStatesSpecFile0001x"]}],
+  "files": [
+    {
+      "key": "BtnStatesSpecFile0001x",
+      "name": "Design System — Button",
+      "version": "9",
+      "lastModified": "2026-05-12T16:40:00Z",
+      "thumbnailUrl": "/static/BtnStatesSpecFile0001x/thumb.png",
+      "editorType": "figma",
+      "role": "owner",
+      "document": {
+        "type": "DOCUMENT",
+        "id": "0:0",
+        "name": "Document",
+        "children": [
+          {
+            "type": "CANVAS",
+            "id": "1:0",
+            "name": "Components",
+            "backgroundColor": {"r": 1, "g": 1, "b": 1, "a": 1},
+            "children": [
+              {
+                "type": "COMPONENT_SET",
+                "id": "2:0",
+                "name": "Button",
+                "absoluteBoundingBox": {"x": 0, "y": 0, "width": 520, "height": 220},
+                "children": [
+                  {
+                    "type": "COMPONENT",
+                    "id": "2:1",
+                    "name": "State=Default",
+                    "layoutMode": "HORIZONTAL",
+                    "itemSpacing": 8,
+                    "paddingLeft": 20, "paddingRight": 20, "paddingTop": 12, "paddingBottom": 12,
+                    "cornerRadius": 10,
+                    "primaryAxisAlignItems": "CENTER",
+                    "counterAxisAlignItems": "CENTER",
+                    "fills": [{"type": "SOLID", "color": {"r": 0.1765, "g": 0.4235, "b": 0.8745, "a": 1}}],
+                    "absoluteBoundingBox": {"x": 0, "y": 0, "width": 160, "height": 48},
+                    "children": [
+                      {
+                        "type": "TEXT",
+                        "id": "2:2",
+                        "name": "Label",
+                        "characters": "Buy now",
+                        "style": {"fontFamily": "Inter", "fontWeight": 600, "fontSize": 16, "lineHeightPx": 24, "letterSpacing": 0, "textAlignHorizontal": "CENTER"},
+                        "fills": [{"type": "SOLID", "color": {"r": 1, "g": 1, "b": 1, "a": 1}}],
+                        "absoluteBoundingBox": {"x": 20, "y": 12, "width": 120, "height": 24}
+                      }
+                    ]
+                  },
+                  {
+                    "type": "COMPONENT",
+                    "id": "2:3",
+                    "name": "State=Hover",
+                    "layoutMode": "HORIZONTAL",
+                    "itemSpacing": 8,
+                    "paddingLeft": 20, "paddingRight": 20, "paddingTop": 12, "paddingBottom": 12,
+                    "cornerRadius": 10,
+                    "fills": [{"type": "SOLID", "color": {"r": 0.1451, "g": 0.3882, "b": 0.9216, "a": 1}}],
+                    "absoluteBoundingBox": {"x": 0, "y": 80, "width": 160, "height": 48},
+                    "children": [
+                      {
+                        "type": "TEXT",
+                        "id": "2:4",
+                        "name": "Label",
+                        "characters": "Buy now",
+                        "style": {"fontFamily": "Inter", "fontWeight": 600, "fontSize": 16, "lineHeightPx": 24, "letterSpacing": 0, "textAlignHorizontal": "CENTER"},
+                        "fills": [{"type": "SOLID", "color": {"r": 1, "g": 1, "b": 1, "a": 1}}],
+                        "absoluteBoundingBox": {"x": 20, "y": 92, "width": 120, "height": 24}
+                      }
+                    ]
+                  },
+                  {
+                    "type": "COMPONENT",
+                    "id": "2:5",
+                    "name": "State=Disabled",
+                    "layoutMode": "HORIZONTAL",
+                    "itemSpacing": 8,
+                    "paddingLeft": 20, "paddingRight": 20, "paddingTop": 12, "paddingBottom": 12,
+                    "cornerRadius": 10,
+                    "fills": [{"type": "SOLID", "color": {"r": 0.1765, "g": 0.4235, "b": 0.8745, "a": 1}}],
+                    "absoluteBoundingBox": {"x": 0, "y": 160, "width": 160, "height": 48},
+                    "children": [
+                      {
+                        "type": "TEXT",
+                        "id": "2:6",
+                        "name": "Label",
+                        "characters": "Buy now",
+                        "style": {"fontFamily": "Inter", "fontWeight": 600, "fontSize": 16, "lineHeightPx": 24, "letterSpacing": 0, "textAlignHorizontal": "CENTER"},
+                        "fills": [{"type": "SOLID", "color": {"r": 1, "g": 1, "b": 1, "a": 1}}],
+                        "absoluteBoundingBox": {"x": 20, "y": 172, "width": 120, "height": 24}
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "components": {
+        "2:1": {"key": "cmpDefault", "name": "Button / State=Default", "description": "Default button", "containing_frame": {"name": "Button", "nodeId": "2:0"}},
+        "2:3": {"key": "cmpHover", "name": "Button / State=Hover", "description": "Hover button", "containing_frame": {"name": "Button", "nodeId": "2:0"}},
+        "2:5": {"key": "cmpDisabled", "name": "Button / State=Disabled", "description": "Disabled button", "containing_frame": {"name": "Button", "nodeId": "2:0"}}
+      },
+      "componentSets": {
+        "2:0": {"key": "csBtn", "name": "Button", "description": "Primary button, three states"}
+      },
+      "styles": {
+        "S1": {"key": "styP500", "name": "Primary/500", "styleType": "FILL", "description": "Brand primary, default — #2D6CDF"},
+        "S2": {"key": "styP600", "name": "Primary/600", "styleType": "FILL", "description": "Brand primary, hover/pressed — #1B4AA8"},
+        "S3": {"key": "styN0", "name": "Neutral/0", "styleType": "FILL", "description": "On-primary text — #FFFFFF"}
+      },
+      "images": {
+        "2:0": "/static/BtnStatesSpecFile0001x/2-0.png",
+        "2:1": "/static/BtnStatesSpecFile0001x/2-1.png"
+      },
+      "comments": [
+        {
+          "id": "1",
+          "message": "v1 button: corner radius 8, height 44. first pass, will revisit after the design review.",
+          "user": {"id": "U1", "handle": "rae.designer", "email": "rae@acme.example"},
+          "client_meta": {"node_id": "2:0"},
+          "created_at": "2026-05-05T09:00:00Z",
+          "order_id": 1
+        },
+        {
+          "id": "2",
+          "message": "Default state fill is locked: Primary/500 (#2D6CDF), white label.",
+          "user": {"id": "U3", "handle": "lee.eng", "email": "lee@acme.example"},
+          "client_meta": {"node_id": "2:1"},
+          "created_at": "2026-05-06T11:30:00Z",
+          "order_id": 2
+        },
+        {
+          "id": "3",
+          "message": "Trying corner radius 12 for a rounder look — see updated mock.",
+          "user": {"id": "U1", "handle": "rae.designer", "email": "rae@acme.example"},
+          "client_meta": {"node_id": "2:0"},
+          "created_at": "2026-05-08T14:10:00Z",
+          "order_id": 3
+        },
+        {
+          "id": "4",
+          "message": "Hover state must use the Primary/600 token now (not the old bright blue still in the mock). Pull the hex from the color styles.",
+          "user": {"id": "U2", "handle": "mira.pm", "email": "mira@acme.example"},
+          "client_meta": {"node_id": "2:3"},
+          "created_at": "2026-05-10T10:05:00Z",
+          "order_id": 4
+        },
+        {
+          "id": "5",
+          "message": "FINAL geometry call: horizontal padding 20, corner radius 10. (Height is whatever the frame measures — don't hardcode a guess, read it off the component.)",
+          "user": {"id": "U2", "handle": "mira.pm", "email": "mira@acme.example"},
+          "client_meta": {"node_id": "2:0"},
+          "created_at": "2026-05-11T15:20:00Z",
+          "order_id": 5
+        },
+        {
+          "id": "6",
+          "message": "Disabled state renders the button at 40% opacity (same fill as default, just dimmed).",
+          "user": {"id": "U1", "handle": "rae.designer", "email": "rae@acme.example"},
+          "client_meta": {"node_id": "2:5"},
+          "created_at": "2026-05-12T09:45:00Z",
+          "order_id": 6
+        },
+        {
+          "id": "7",
+          "message": "Copy change: the button label should read 'Place order' (not 'Buy now'). The mock text is stale.",
+          "user": {"id": "U2", "handle": "mira.pm", "email": "mira@acme.example"},
+          "client_meta": {"node_id": "2:2"},
+          "created_at": "2026-05-12T16:40:00Z",
+          "order_id": 7
+        }
+      ],
+      "versions": [
+        {"id": "v9", "label": "Button states final", "description": "Hover token + copy + geometry locked", "created_at": "2026-05-12T16:40:00Z", "user": {"handle": "mira.pm"}},
+        {"id": "v1", "label": "Button draft", "description": "Initial button", "created_at": "2026-05-05T09:00:00Z", "user": {"handle": "rae.designer"}}
+      ]
+    }
+  ]
+}

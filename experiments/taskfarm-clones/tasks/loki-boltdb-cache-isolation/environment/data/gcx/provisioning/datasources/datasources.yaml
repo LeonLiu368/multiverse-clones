@@ -1,0 +1,7 @@
+apiVersion: 1
+datasources:
+  - name: Loki Incident Evidence
+    type: grafana-testdata-datasource
+    access: proxy
+    uid: loki-incident-evidence
+    isDefault: true

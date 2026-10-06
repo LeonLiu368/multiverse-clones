@@ -1,0 +1,82 @@
+[
+  {
+    "user": "U5CC9DC7FA7",
+    "type": "message",
+    "ts": "1747908540.000000",
+    "client_msg_id": "d53389bc1fe4dba73f",
+    "text": "infra note: we're migrating k8s node pools next Thursday, expect a rolling restart window 11pm-1am",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "olivia",
+      "real_name": "Olivia",
+      "display_name": "olivia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1747908660.000000",
+    "client_msg_id": "c226d85e49326a2d30",
+    "text": "will this affect the rate limiter service?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U5CC9DC7FA7",
+    "type": "message",
+    "ts": "1747909320.000000",
+    "client_msg_id": "fa88b4200971dd26cd",
+    "text": "yes briefly, token buckets will reset on restart \u2014 that's expected",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "olivia",
+      "real_name": "Olivia",
+      "display_name": "olivia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U5CC9DC7FA7",
+    "type": "message",
+    "ts": "1747909500.000000",
+    "client_msg_id": "9121a9db1d1ca428ae",
+    "text": "agreed, I'll add it",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "olivia",
+      "real_name": "Olivia",
+      "display_name": "olivia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1747909800.000000",
+    "client_msg_id": "c1ce94b734542598b3",
+    "text": "we should document that in the runbook",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

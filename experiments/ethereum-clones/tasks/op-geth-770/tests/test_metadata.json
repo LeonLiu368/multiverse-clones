@@ -1,0 +1,13 @@
+{
+  "task_id": "variant-ethereum-optimism-op-geth-770-observability",
+  "source_repo": "",
+  "source_pr_url": "",
+  "hidden_test_command": "go test ./params -count=1 -v",
+  "changed_files": [
+    "params/config_test.go"
+  ],
+  "ticketvector": {
+    "primary_issue": "TV-770",
+    "workflow": "linear/jira ticket state must be In Review with completion evidence"
+  }
+}

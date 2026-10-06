@@ -1,0 +1,829 @@
+{
+  "attachments": {
+    "PNGX-531": [
+      {
+        "content_type": "text/plain",
+        "id": "attachment-pngx-531-1",
+        "name": "consumer-lock-errors.log",
+        "size": 16720,
+        "uploaded_at": "2026-06-06T09:40:00Z"
+      }
+    ]
+  },
+  "base_url": "https://plane.local",
+  "comments": {
+    "PNGX-531": [
+      {
+        "author": {
+          "handle": "dana",
+          "id": "user-dana",
+          "name": "Dana Okafor"
+        },
+        "body": "Lock error rate on the dashboard tracks indexing concurrency 1:1. Single consumer: ~0 errors. Four parallel consumers: hundreds of `Could not acquire index lock within 5s` and a matching number of docs missing from search.",
+        "created_at": "2026-06-06T10:05:00Z",
+        "id": "comment-pngx-531-1",
+        "issue": "PNGX-531",
+        "updated_at": "2026-06-06T10:05:00Z"
+      },
+      {
+        "author": {
+          "handle": "mia",
+          "id": "user-mia",
+          "name": "Mia Schultz"
+        },
+        "body": "Customer migration import (~9k docs) \u2014 about 600 not searchable afterwards. A re-index fixed all of them, so the docs themselves are fine.",
+        "created_at": "2026-06-06T10:30:00Z",
+        "id": "comment-pngx-531-2",
+        "issue": "PNGX-531",
+        "updated_at": "2026-06-06T10:30:00Z"
+      },
+      {
+        "author": {
+          "handle": "ravi",
+          "id": "user-ravi",
+          "name": "Ravi Menon"
+        },
+        "body": "Root cause is that index writes make a single lock-acquire attempt and just give up on contention \u2014 no retry, and the failure is swallowed so the write is dropped. Working the exact fix in #paperless-oncall; will link the PR here. Bumping the timeout (PNGX-529) is not it.",
+        "created_at": "2026-06-06T11:00:00Z",
+        "id": "comment-pngx-531-3",
+        "issue": "PNGX-531",
+        "updated_at": "2026-06-06T11:00:00Z"
+      }
+    ]
+  },
+  "cycles": [
+    {
+      "ends_at": "2026-06-14",
+      "id": "cycle-a",
+      "name": "Sprint 2026-06-A",
+      "starts_at": "2026-06-01"
+    }
+  ],
+  "history": {},
+  "issues": [
+    {
+      "assignees": [
+        {
+          "handle": "agent",
+          "id": "user-agent",
+          "name": "Agent User"
+        }
+      ],
+      "attachments_count": 1,
+      "comments_count": 3,
+      "created_at": "2026-06-06T09:15:00Z",
+      "cycle": {
+        "ends_at": "2026-06-14",
+        "id": "cycle-a",
+        "name": "Sprint 2026-06-A",
+        "starts_at": "2026-06-01"
+      },
+      "description": "When several consumers run in parallel (nightly bulk import, re-OCR sweeps), a fraction of newly consumed documents never appear in search \u2014 no error is surfaced to the user. The worker log shows bursts of `SearchIndexLockError: Could not acquire index lock within 5s`. It correlates exactly with indexing concurrency: the more parallel consumers, the more docs go missing. A later manual re-index makes them searchable, so the documents are fine \u2014 the index write is being lost under lock contention. Root-cause + the agreed fix are being worked in #paperless-oncall. Impact: silent search gaps after every large import.",
+      "id": "issue-pngx-531",
+      "identifier": "PNGX-531",
+      "labels": [
+        {
+          "id": "label-search",
+          "name": "search"
+        },
+        {
+          "id": "label-incident",
+          "name": "incident"
+        },
+        {
+          "id": "label-regression",
+          "name": "regression"
+        }
+      ],
+      "links": [
+        {
+          "id": "link-pngx-531-1",
+          "title": "Search indexing runbook",
+          "url": "https://runbooks.paperless.local/search-indexing"
+        },
+        {
+          "id": "link-pngx-531-2",
+          "title": "Index lock error-rate dashboard",
+          "url": "https://grafana.paperless.local/d/search/lock-errors"
+        }
+      ],
+      "module": {
+        "id": "module-search",
+        "name": "Search Indexing"
+      },
+      "priority": "urgent",
+      "project": {
+        "archived": false,
+        "id": "proj-pngx",
+        "key": "PNGX",
+        "name": "Paperless"
+      },
+      "relations": [
+        {
+          "id": "relation-pngx-531-1",
+          "issue": "PNGX-531",
+          "related_issue": "PNGX-532",
+          "type": "duplicated-by"
+        }
+      ],
+      "state": {
+        "category": "unstarted",
+        "id": "state-todo",
+        "name": "Todo"
+      },
+      "title": "Documents silently missing from search after bulk consumption (index lock contention)",
+      "updated_at": "2026-06-06T11:30:00Z",
+      "url": "https://plane.local/acme/projects/PNGX/issues/PNGX-531"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "theo",
+          "id": "user-theo",
+          "name": "Theo Park"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-02T09:00:00Z",
+      "cycle": {
+        "ends_at": "2026-06-14",
+        "id": "cycle-a",
+        "name": "Sprint 2026-06-A",
+        "starts_at": "2026-06-01"
+      },
+      "description": "Tesseract step lags on 200+ page scans; queue depth climbs in the evening.",
+      "id": "issue-pngx-405",
+      "identifier": "PNGX-405",
+      "labels": [
+        {
+          "id": "label-ocr",
+          "name": "ocr"
+        }
+      ],
+      "links": [],
+      "module": {
+        "id": "module-ocr",
+        "name": "OCR Pipeline"
+      },
+      "priority": "high",
+      "project": {
+        "archived": false,
+        "id": "proj-pngx",
+        "key": "PNGX",
+        "name": "Paperless"
+      },
+      "relations": [],
+      "state": {
+        "category": "started",
+        "id": "state-progress",
+        "name": "In Progress"
+      },
+      "title": "OCR queue backlog grows on very large PDFs",
+      "updated_at": "2026-06-05T11:00:00Z",
+      "url": "https://plane.local/acme/projects/PNGX/issues/PNGX-405"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "ravi",
+          "id": "user-ravi",
+          "name": "Ravi Menon"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-03T09:00:00Z",
+      "cycle": {
+        "ends_at": "2026-06-14",
+        "id": "cycle-a",
+        "name": "Sprint 2026-06-A",
+        "starts_at": "2026-06-01"
+      },
+      "description": "Last page returns one fewer item than `count` implies when page_size divides evenly.",
+      "id": "issue-pngx-409",
+      "identifier": "PNGX-409",
+      "labels": [
+        {
+          "id": "label-api",
+          "name": "api"
+        }
+      ],
+      "links": [],
+      "module": {
+        "id": "module-api",
+        "name": "REST API"
+      },
+      "priority": "medium",
+      "project": {
+        "archived": false,
+        "id": "proj-pngx",
+        "key": "PNGX",
+        "name": "Paperless"
+      },
+      "relations": [],
+      "state": {
+        "category": "unstarted",
+        "id": "state-todo",
+        "name": "Todo"
+      },
+      "title": "REST API: /api/documents/ pagination off-by-one on last page",
+      "updated_at": "2026-06-03T10:00:00Z",
+      "url": "https://plane.local/acme/projects/PNGX/issues/PNGX-409"
+    },
+    {
+      "assignees": [],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-06T09:00:00Z",
+      "cycle": {
+        "ends_at": "2026-06-14",
+        "id": "cycle-a",
+        "name": "Sprint 2026-06-A",
+        "starts_at": "2026-06-01"
+      },
+      "description": "Applying a tag to a large selection takes minutes; N+1 on document_tags.",
+      "id": "issue-pngx-411",
+      "identifier": "PNGX-411",
+      "labels": [
+        {
+          "id": "label-backend",
+          "name": "backend"
+        },
+        {
+          "id": "label-database",
+          "name": "database"
+        }
+      ],
+      "links": [],
+      "module": {
+        "id": "module-ingest",
+        "name": "Document Ingestion"
+      },
+      "priority": "medium",
+      "project": {
+        "archived": false,
+        "id": "proj-pngx",
+        "key": "PNGX",
+        "name": "Paperless"
+      },
+      "relations": [],
+      "state": {
+        "category": "backlog",
+        "id": "state-backlog",
+        "name": "Backlog"
+      },
+      "title": "Bulk tag edit slow for >5k documents",
+      "updated_at": "2026-06-06T10:00:00Z",
+      "url": "https://plane.local/acme/projects/PNGX/issues/PNGX-411"
+    },
+    {
+      "assignees": [],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-06T09:00:00Z",
+      "cycle": {
+        "ends_at": "2026-06-14",
+        "id": "cycle-a",
+        "name": "Sprint 2026-06-A",
+        "starts_at": "2026-06-01"
+      },
+      "description": "Selected nav item is hard to read in dark theme.",
+      "id": "issue-pngx-412",
+      "identifier": "PNGX-412",
+      "labels": [
+        {
+          "id": "label-frontend",
+          "name": "frontend"
+        }
+      ],
+      "links": [],
+      "module": {
+        "id": "module-api",
+        "name": "REST API"
+      },
+      "priority": "low",
+      "project": {
+        "archived": false,
+        "id": "proj-pngx",
+        "key": "PNGX",
+        "name": "Paperless"
+      },
+      "relations": [],
+      "state": {
+        "category": "backlog",
+        "id": "state-backlog",
+        "name": "Backlog"
+      },
+      "title": "Dark mode: sidebar contrast too low",
+      "updated_at": "2026-06-06T10:00:00Z",
+      "url": "https://plane.local/acme/projects/PNGX/issues/PNGX-412"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "dana",
+          "id": "user-dana",
+          "name": "Dana Okafor"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-04T09:00:00Z",
+      "cycle": {
+        "ends_at": "2026-06-14",
+        "id": "cycle-a",
+        "name": "Sprint 2026-06-A",
+        "starts_at": "2026-06-01"
+      },
+      "description": "Expose index writer/lock status so we can alert before users notice stalls.",
+      "id": "issue-pngx-414",
+      "identifier": "PNGX-414",
+      "labels": [
+        {
+          "id": "label-observability",
+          "name": "observability"
+        },
+        {
+          "id": "label-search",
+          "name": "search"
+        }
+      ],
+      "links": [],
+      "module": {
+        "id": "module-search",
+        "name": "Search Indexing"
+      },
+      "priority": "medium",
+      "project": {
+        "archived": false,
+        "id": "proj-pngx",
+        "key": "PNGX",
+        "name": "Paperless"
+      },
+      "relations": [],
+      "state": {
+        "category": "unstarted",
+        "id": "state-todo",
+        "name": "Todo"
+      },
+      "title": "Add a healthcheck endpoint for the search index",
+      "updated_at": "2026-06-04T10:00:00Z",
+      "url": "https://plane.local/acme/projects/PNGX/issues/PNGX-414"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "theo",
+          "id": "user-theo",
+          "name": "Theo Park"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-06T08:00:00Z",
+      "cycle": {
+        "ends_at": "2026-06-14",
+        "id": "cycle-a",
+        "name": "Sprint 2026-06-A",
+        "starts_at": "2026-06-01"
+      },
+      "description": "The weekly re-OCR job and the nightly bulk import both run at 02:00, doubling indexing concurrency. Consider staggering them. (Ops mitigation, not the root cause.)",
+      "id": "issue-pngx-528",
+      "identifier": "PNGX-528",
+      "labels": [
+        {
+          "id": "label-ocr",
+          "name": "ocr"
+        },
+        {
+          "id": "label-backend",
+          "name": "backend"
+        }
+      ],
+      "links": [],
+      "module": {
+        "id": "module-ingest",
+        "name": "Document Ingestion"
+      },
+      "priority": "medium",
+      "project": {
+        "archived": false,
+        "id": "proj-pngx",
+        "key": "PNGX",
+        "name": "Paperless"
+      },
+      "relations": [],
+      "state": {
+        "category": "unstarted",
+        "id": "state-todo",
+        "name": "Todo"
+      },
+      "title": "Re-OCR sweep schedule overlaps nightly import",
+      "updated_at": "2026-06-06T08:30:00Z",
+      "url": "https://plane.local/acme/projects/PNGX/issues/PNGX-528"
+    },
+    {
+      "assignees": [],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-06T10:00:00Z",
+      "cycle": {
+        "ends_at": "2026-06-14",
+        "id": "cycle-a",
+        "name": "Sprint 2026-06-A",
+        "starts_at": "2026-06-01"
+      },
+      "description": "Floated as a quick fix for the lock errors. NOTE: ruled out in the incident review \u2014 a longer single timeout just delays the failure under sustained contention and stalls consumers; it does not retry. Kept for reference only.",
+      "id": "issue-pngx-529",
+      "identifier": "PNGX-529",
+      "labels": [
+        {
+          "id": "label-search",
+          "name": "search"
+        }
+      ],
+      "links": [],
+      "module": {
+        "id": "module-search",
+        "name": "Search Indexing"
+      },
+      "priority": "low",
+      "project": {
+        "archived": false,
+        "id": "proj-pngx",
+        "key": "PNGX",
+        "name": "Paperless"
+      },
+      "relations": [],
+      "state": {
+        "category": "backlog",
+        "id": "state-backlog",
+        "name": "Backlog"
+      },
+      "title": "Proposal: raise index lock timeout 5s -> 30s",
+      "updated_at": "2026-06-06T10:20:00Z",
+      "url": "https://plane.local/acme/projects/PNGX/issues/PNGX-529"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "mia",
+          "id": "user-mia",
+          "name": "Mia Schultz"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-06T09:50:00Z",
+      "cycle": {
+        "ends_at": "2026-06-14",
+        "id": "cycle-a",
+        "name": "Sprint 2026-06-A",
+        "starts_at": "2026-06-01"
+      },
+      "description": "Customer reports a batch of uploads not searchable after their migration import.",
+      "id": "issue-pngx-532",
+      "identifier": "PNGX-532",
+      "labels": [
+        {
+          "id": "label-customer-report",
+          "name": "customer-report"
+        },
+        {
+          "id": "label-search",
+          "name": "search"
+        }
+      ],
+      "links": [],
+      "module": {
+        "id": "module-search",
+        "name": "Search Indexing"
+      },
+      "priority": "medium",
+      "project": {
+        "archived": false,
+        "id": "proj-pngx",
+        "key": "PNGX",
+        "name": "Paperless"
+      },
+      "relations": [
+        {
+          "id": "relation-pngx-532-1",
+          "issue": "PNGX-532",
+          "related_issue": "PNGX-531",
+          "type": "duplicates"
+        }
+      ],
+      "state": {
+        "category": "unstarted",
+        "id": "state-todo",
+        "name": "Todo"
+      },
+      "title": "Duplicate of PNGX-531 from support intake",
+      "updated_at": "2026-06-06T09:50:00Z",
+      "url": "https://plane.local/acme/projects/PNGX/issues/PNGX-532"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "ravi",
+          "id": "user-ravi",
+          "name": "Ravi Menon"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-04T09:00:00Z",
+      "cycle": {
+        "ends_at": "2026-06-14",
+        "id": "cycle-a",
+        "name": "Sprint 2026-06-A",
+        "starts_at": "2026-06-01"
+      },
+      "description": "Highlight offsets occasionally off by one under parallel test runs.",
+      "id": "issue-pngx-423",
+      "identifier": "PNGX-423",
+      "labels": [
+        {
+          "id": "label-search",
+          "name": "search"
+        }
+      ],
+      "links": [],
+      "module": {
+        "id": "module-search",
+        "name": "Search Indexing"
+      },
+      "priority": "low",
+      "project": {
+        "archived": false,
+        "id": "proj-pngx",
+        "key": "PNGX",
+        "name": "Paperless"
+      },
+      "relations": [],
+      "state": {
+        "category": "unstarted",
+        "id": "state-todo",
+        "name": "Todo"
+      },
+      "title": "Flaky test: test_search_highlight intermittently fails in CI",
+      "updated_at": "2026-06-04T10:00:00Z",
+      "url": "https://plane.local/acme/projects/PNGX/issues/PNGX-423"
+    },
+    {
+      "assignees": [],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-06T09:00:00Z",
+      "cycle": {
+        "ends_at": "2026-06-14",
+        "id": "cycle-a",
+        "name": "Sprint 2026-06-A",
+        "starts_at": "2026-06-01"
+      },
+      "description": "Thumbnail generation skips TIFFs with >1 frame.",
+      "id": "issue-pngx-425",
+      "identifier": "PNGX-425",
+      "labels": [
+        {
+          "id": "label-ocr",
+          "name": "ocr"
+        }
+      ],
+      "links": [],
+      "module": {
+        "id": "module-ocr",
+        "name": "OCR Pipeline"
+      },
+      "priority": "low",
+      "project": {
+        "archived": false,
+        "id": "proj-pngx",
+        "key": "PNGX",
+        "name": "Paperless"
+      },
+      "relations": [],
+      "state": {
+        "category": "backlog",
+        "id": "state-backlog",
+        "name": "Backlog"
+      },
+      "title": "Thumbnails missing for multi-page TIFF",
+      "updated_at": "2026-06-06T10:00:00Z",
+      "url": "https://plane.local/acme/projects/PNGX/issues/PNGX-425"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "theo",
+          "id": "user-theo",
+          "name": "Theo Park"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-06T06:00:00Z",
+      "cycle": {
+        "ends_at": "2026-06-14",
+        "id": "cycle-a",
+        "name": "Sprint 2026-06-A",
+        "starts_at": "2026-06-01"
+      },
+      "description": "Celery workers occasionally exhaust the Redis pool during nightly bulk imports; raise pool size. (Surfaced the same night; not the search-index lock issue.)",
+      "id": "issue-pngx-427",
+      "identifier": "PNGX-427",
+      "labels": [
+        {
+          "id": "label-backend",
+          "name": "backend"
+        }
+      ],
+      "links": [],
+      "module": {
+        "id": "module-ingest",
+        "name": "Document Ingestion"
+      },
+      "priority": "medium",
+      "project": {
+        "archived": false,
+        "id": "proj-pngx",
+        "key": "PNGX",
+        "name": "Paperless"
+      },
+      "relations": [],
+      "state": {
+        "category": "unstarted",
+        "id": "state-todo",
+        "name": "Todo"
+      },
+      "title": "Redis connection pool exhaustion under load",
+      "updated_at": "2026-06-06T06:30:00Z",
+      "url": "https://plane.local/acme/projects/PNGX/issues/PNGX-427"
+    }
+  ],
+  "labels": [
+    {
+      "id": "label-backend",
+      "name": "backend"
+    },
+    {
+      "id": "label-search",
+      "name": "search"
+    },
+    {
+      "id": "label-incident",
+      "name": "incident"
+    },
+    {
+      "id": "label-regression",
+      "name": "regression"
+    },
+    {
+      "id": "label-ocr",
+      "name": "ocr"
+    },
+    {
+      "id": "label-api",
+      "name": "api"
+    },
+    {
+      "id": "label-frontend",
+      "name": "frontend"
+    },
+    {
+      "id": "label-database",
+      "name": "database"
+    },
+    {
+      "id": "label-observability",
+      "name": "observability"
+    },
+    {
+      "id": "label-customer-report",
+      "name": "customer-report"
+    }
+  ],
+  "links": {
+    "PNGX-531": [
+      {
+        "id": "link-pngx-531-1",
+        "title": "Search indexing runbook",
+        "url": "https://runbooks.paperless.local/search-indexing"
+      },
+      {
+        "id": "link-pngx-531-2",
+        "title": "Index lock error-rate dashboard",
+        "url": "https://grafana.paperless.local/d/search/lock-errors"
+      }
+    ]
+  },
+  "modules": [
+    {
+      "id": "module-search",
+      "name": "Search Indexing"
+    },
+    {
+      "id": "module-ingest",
+      "name": "Document Ingestion"
+    },
+    {
+      "id": "module-ocr",
+      "name": "OCR Pipeline"
+    },
+    {
+      "id": "module-api",
+      "name": "REST API"
+    }
+  ],
+  "project": {
+    "archived": false,
+    "id": "proj-pngx",
+    "key": "PNGX",
+    "name": "Paperless"
+  },
+  "relations": {
+    "PNGX-531": [
+      {
+        "id": "relation-pngx-531-1",
+        "issue": "PNGX-531",
+        "related_issue": "PNGX-532",
+        "type": "duplicated-by"
+      }
+    ],
+    "PNGX-532": [
+      {
+        "id": "relation-pngx-532-1",
+        "issue": "PNGX-532",
+        "related_issue": "PNGX-531",
+        "type": "duplicates"
+      }
+    ]
+  },
+  "states": [
+    {
+      "category": "backlog",
+      "id": "state-backlog",
+      "name": "Backlog"
+    },
+    {
+      "category": "unstarted",
+      "id": "state-todo",
+      "name": "Todo"
+    },
+    {
+      "category": "started",
+      "id": "state-progress",
+      "name": "In Progress"
+    },
+    {
+      "category": "started",
+      "id": "state-review",
+      "name": "In Review"
+    },
+    {
+      "category": "started",
+      "id": "state-blocked",
+      "name": "Blocked"
+    },
+    {
+      "category": "completed",
+      "id": "state-done",
+      "name": "Done"
+    },
+    {
+      "category": "cancelled",
+      "id": "state-canceled",
+      "name": "Canceled"
+    }
+  ],
+  "users": [
+    {
+      "handle": "agent",
+      "id": "user-agent",
+      "name": "Agent User"
+    },
+    {
+      "handle": "dana",
+      "id": "user-dana",
+      "name": "Dana Okafor"
+    },
+    {
+      "handle": "ravi",
+      "id": "user-ravi",
+      "name": "Ravi Menon"
+    },
+    {
+      "handle": "mia",
+      "id": "user-mia",
+      "name": "Mia Schultz"
+    },
+    {
+      "handle": "theo",
+      "id": "user-theo",
+      "name": "Theo Park"
+    }
+  ],
+  "workspace": "acme"
+}

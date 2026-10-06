@@ -1,0 +1,66 @@
+diff --git a/consensus/beacon/consensus.go b/consensus/beacon/consensus.go
+index d64b125..d2ab16e 100644
+--- a/consensus/beacon/consensus.go
++++ b/consensus/beacon/consensus.go
+@@ -235,8 +235,8 @@ func (beacon *Beacon) verifyHeader(chain consensus.ChainHeaderReader, header, pa
+ 	if len(header.Extra) > int(params.MaximumExtraDataSize) {
+ 		return fmt.Errorf("extra-data longer than 32 bytes (%d)", len(header.Extra))
+ 	}
+-	// Validate Optimism extraData format
+-	if chain.Config().IsOptimism() {
++	// Validate Optimism extraData format (skip genesis block which may have non-empty extraData)
++	if chain.Config().IsOptimism() && !chain.Config().IsOptimismGenesisBlock(header.Number) {
+ 		if err := eip1559.ValidateOptimismExtraData(chain.Config(), header.Time, header.Extra); err != nil {
+ 			return fmt.Errorf("invalid optimism extraData: %w", err)
+ 		}
+diff --git a/consensus/misc/eip1559/eip1559_optimism.go b/consensus/misc/eip1559/eip1559_optimism.go
+index a1ab511..a48124d 100644
+--- a/consensus/misc/eip1559/eip1559_optimism.go
++++ b/consensus/misc/eip1559/eip1559_optimism.go
+@@ -24,7 +24,7 @@ func ValidateOptimismExtraData(fc ForkChecker, time uint64, extraData []byte) er
+ 		return ValidateJovianExtraData(extraData)
+ 	} else if fc.IsHolocene(time) {
+ 		return ValidateHoloceneExtraData(extraData)
+-	} else if len(extraData) > 0 { // pre-Holocene
++	} else if len(extraData) > 0 { // pre-Holocene, apart from the genesis block
+ 		return errors.New("extraData must be empty before Holocene")
+ 	}
+ 	return nil
+diff --git a/params/config.go b/params/config.go
+index a76990b..265c926 100644
+--- a/params/config.go
++++ b/params/config.go
+@@ -36,9 +36,10 @@ var (
+ )
+ 
+ const (
+-	OPMainnetChainID   = 10
+-	BaseMainnetChainID = 8453
+-	baseSepoliaChainID = 84532
++	OPMainnetChainID         = 10
++	OPMainnetGenesisBlockNum = 105235063
++	BaseMainnetChainID       = 8453
++	baseSepoliaChainID       = 84532
+ )
+ 
+ func newUint64(val uint64) *uint64 { return &val }
+@@ -1033,6 +1034,19 @@ func (c *ChainConfig) IsOptimism() bool {
+ 	return c.Optimism != nil
+ }
+ 
++// IsOptimismGenesisBlock returns true if the given block number is the genesis block for this
++// Optimism chain. For OP Mainnet (chain ID 10), the genesis block is 105235063. For all other
++// OP chains, the genesis block is 0.
++func (c *ChainConfig) IsOptimismGenesisBlock(num *big.Int) bool {
++	if !c.IsOptimism() || num == nil {
++		return false
++	}
++	if c.ChainID.Cmp(big.NewInt(OPMainnetChainID)) == 0 {
++		return num.Uint64() == OPMainnetGenesisBlockNum
++	}
++	return num.Sign() == 0
++}
++
+ // IsOptimismBedrock returns true iff this is an optimism node & bedrock is active
+ func (c *ChainConfig) IsOptimismBedrock(num *big.Int) bool {
+ 	return c.IsOptimism() && c.IsBedrock(num)

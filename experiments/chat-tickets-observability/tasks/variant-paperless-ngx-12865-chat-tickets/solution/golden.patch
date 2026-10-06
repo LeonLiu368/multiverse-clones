@@ -1,0 +1,22 @@
+diff --git a/src/documents/search/_backend.py b/src/documents/search/_backend.py
+index 5c5930c1ed..22c02b299c 100644
+--- a/src/documents/search/_backend.py
++++ b/src/documents/search/_backend.py
+@@ -225,12 +225,14 @@ def __exit__(self, exc_type, exc_val, exc_tb):
+                 # in-progress merge on the same index files.
+                 self._writer.wait_merging_threads()
+                 self._backend._index.reload()
+-            # Explicitly delete writer to release tantivy's internal lock.
+-            # On exception the uncommitted writer is simply discarded.
++        finally:
++            # Always release the writer (and Tantivy's internal writer lock),
++            # even if commit/merge/reload raised, so the next batch can acquire
++            # a writer instead of failing with LockBusy. An uncommitted writer
++            # is simply discarded.
+             if self._raw_writer is not None:
+                 del self._raw_writer
+                 self._raw_writer = None
+-        finally:
+             if self._lock is not None:
+                 self._lock.release()
+ 

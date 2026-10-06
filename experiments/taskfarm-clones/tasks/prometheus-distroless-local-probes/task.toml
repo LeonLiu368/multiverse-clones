@@ -1,0 +1,37 @@
+schema_version = "1.3"
+source = "TaskFarm Scout Accepted episode promoted to runnable task"
+
+[task]
+name = "taskfarm-clones/prometheus-distroless-local-probes"
+authors = []
+keywords = ["prometheus", "kubernetes", "distroless", "probes", "operator", "incident-response", "postgres", "grafana"]
+description = "PROMOP-8605 is the Prometheus Operator probe incident where listenLocal=true renders shell-based probes that fail in distroless Prometheus containers."
+
+[metadata]
+difficulty = "hard"
+difficulty_explanation = "The task requires scoped incident repair across a local operator-style repo, Postgres incident state, k3s evidence, Grafana panels, and TicketVector. The tempting fixes are broad image rollback or fleet-wide probe rewrites, but only two distroless listenLocal instances are affected while two similar decoys must remain untouched."
+solution_explanation = "The reference solution fixes prometheus_operator/probe_policy.py so distroless listenLocal instances render httpGet probe specs instead of shell/curl exec probes, runs tools/build_distroless_probe_repair.py --apply, and updates PROMOP-8605 to In Review with a scoped handoff comment."
+verification_explanation = "The verifier checks the generated JSON artifact schema and exact affected instance ids, verifies Postgres repair rows and untouched decoys, exercises the renderer behavior directly, and inspects TicketVector for an In Review handoff that rejects broad rollback/fleet rewrite workarounds."
+category = "kubernetes-incident-response"
+tags = ["prometheus-operator", "distroless", "kubernetes", "probes", "debugging", "postgres", "grafana"]
+expert_time_estimate_hours = 2.0
+relevant_experience = "SWE/SRE on-call, Kubernetes operator debugging, incident triage"
+custom_docker_compose = true
+
+[agent]
+timeout_sec = 900
+user = "agent"
+
+[verifier]
+type = "shell"
+timeout_sec = 600
+user = "root"
+
+[environment]
+allow_internet = true
+build_timeout_sec = 1800
+cpus = 2
+memory_mb = 6144
+storage_mb = 20480
+gpus = 0
+workdir = "/app/src"

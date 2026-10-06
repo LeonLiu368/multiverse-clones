@@ -1,0 +1,114 @@
+[
+  {
+    "user": "U88FA846E5F",
+    "type": "message",
+    "ts": "1731493680.000000",
+    "client_msg_id": "ae084606b677d91a55",
+    "text": "Moving secrets to Vault this sprint.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "victor",
+      "real_name": "Victor",
+      "display_name": "victor",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1731496500.000000",
+    "client_msg_id": "beb26b7048621566d5",
+    "text": "Rollback window closes at midnight.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1731496800.000000",
+    "client_msg_id": "2d8bfb4bbc83672700",
+    "text": "Backfill for historical events is 72% done.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U5CC9DC7FA7",
+    "type": "message",
+    "ts": "1731503340.000000",
+    "client_msg_id": "27567b40b9404b19f0",
+    "text": "Added an index on events(recorded_at) \u2014 3x query speedup.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "olivia",
+      "real_name": "Olivia",
+      "display_name": "olivia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U0FEBC363B6",
+    "type": "message",
+    "ts": "1731503640.000000",
+    "client_msg_id": "df01ce5685411209d9",
+    "text": "Migration M-44 (jobs queue) runs Tuesday night.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "heidi",
+      "real_name": "Heidi",
+      "display_name": "heidi",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1731513600.000000",
+    "client_msg_id": "7e432a9e11f5bccc75",
+    "text": "Added an index on events(recorded_at) \u2014 3x query speedup.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1731517440.000000",
+    "client_msg_id": "d01f1245f717ff415a",
+    "text": "Migration took 40 min, no downtime. \u2705",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

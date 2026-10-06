@@ -1,0 +1,98 @@
+[
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1731663180.000000",
+    "client_msg_id": "a835051dd16410b29d",
+    "text": "Best debugging playlist? Drop links \ud83c\udfa7",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U38FC8CAEA6",
+    "type": "message",
+    "ts": "1731672420.000000",
+    "client_msg_id": "7b866a703897c19db7",
+    "text": "Highly recommend the lunch special today",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "judy",
+      "real_name": "Judy",
+      "display_name": "judy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U1BEEF78000",
+    "type": "message",
+    "ts": "1731678600.000000",
+    "client_msg_id": "f0522d11a47a63279c",
+    "text": "TIL you can pin messages in channels",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "mallory",
+      "real_name": "Mallory",
+      "display_name": "mallory",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U0AA1C221CA",
+    "type": "message",
+    "ts": "1731687360.000000",
+    "client_msg_id": "9a1732780ff2d5d99f",
+    "text": "Highly recommend the lunch special today",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "trent",
+      "real_name": "Trent",
+      "display_name": "trent",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U1BEEF78000",
+    "type": "message",
+    "ts": "1731689340.000000",
+    "client_msg_id": "c7d1350abb70daa18e",
+    "text": "Thunderstorm outside, cozy day \u26c8\ufe0f",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "mallory",
+      "real_name": "Mallory",
+      "display_name": "mallory",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U0AA1C221CA",
+    "type": "message",
+    "ts": "1731689460.000000",
+    "client_msg_id": "963b067e4b56fa90c2",
+    "text": "Who took my mug? \ud83d\ude21",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "trent",
+      "real_name": "Trent",
+      "display_name": "trent",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

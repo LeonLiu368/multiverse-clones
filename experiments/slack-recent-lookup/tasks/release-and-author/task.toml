@@ -1,0 +1,26 @@
+schema_version = "1.2"
+name = "slack-recent-lookup/release-and-author"
+description = "Simple two-source read task on the shared prod Slack corpus + a recent overlay. The agent reports (1) a v9.0.0 go-live date from a RECENT planted note in the real #release-status channel (overlay), and (2) the author of a unique 'feature and code-complete' message that already exists in the baked prod data (#product). Exercises finding information in both the overlay and the baked corpus. Pure tool-use; no codebase. nop=0, oracle=1."
+
+[metadata]
+category = "tool-use"
+service = "slack"
+tools = ["slack-cli", "slack-mcp"]
+tags = ["slack", "read", "tool-use", "prod-overlay", "real-data", "simple"]
+
+[agent]
+timeout_sec = 1800
+[verifier]
+timeout_sec = 300
+[environment]
+custom_docker_compose = true
+cpus = 2
+memory_mb = 4096
+storage_mb = 8192
+allow_internet = true
+workdir = "/workspace"
+build_timeout_sec = 1800
+[[environment.mcp_servers]]
+name = "slack"
+transport = "stdio"
+command = "slack-mcp"

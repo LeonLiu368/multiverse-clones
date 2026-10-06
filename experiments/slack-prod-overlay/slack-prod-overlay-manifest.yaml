@@ -1,0 +1,33 @@
+metadata:
+  name: slack-prod-overlay
+  enable_image_push: true
+  description: |
+    Demonstrates the shared-prod-corpus + per-task-overlay model. One large, realistic prod Slack
+    workspace (ghcr.io/abundant-ai/slack-gateway:prod-v1 — 88 channels, ~2.4M messages, named users)
+    is the shared base for each task's sidecar; a task adds only a tiny overlay LAYER on top (the prod
+    base layers are shared/cached, the KB overlay differs per task) and slack-boot.sh imports it on
+    top of the prod DB at standup (preserving prod rows, adding the planted data).
+
+      - arrival-time: a planted #engineering message says a teammate is "coming in at 6pm" to push
+        the payments hotfix; find it and report the time (18:00).
+      - changelog-build: a planted #engineering changelog message needs a build number defined as a
+        delta over the build v8.5.0 originally shipped as (a REAL message in
+        #defect-and-blocker-thunderdome) — combine both messages (10 + 9 = 19).
+      - testing-smoke: smoke test on a second baked dataset (WorldsDataTest) + a one-message overlay;
+        count messages containing "testing" (answer 3).
+
+    Two-container, isolated (agent has no filesystem access to the data). Deterministic: nop=0, oracle=1.
+  task_path: experiments/slack-prod-overlay/tasks
+  n_trials: 1
+  skip_trajectory_analysis: false
+
+tasks:
+  - arrival-time
+  - changelog-build
+  - testing-smoke
+
+agents:
+  - name: nop
+  - name: oracle
+  - name: gemini-cli
+    model_name: google/gemini-3.1-pro-preview

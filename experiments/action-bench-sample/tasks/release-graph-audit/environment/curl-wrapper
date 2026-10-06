@@ -1,0 +1,46 @@
+#!/usr/local/bin/python3
+import sys
+import urllib.request
+
+
+def main() -> int:
+    args = sys.argv[1:]
+    output = None
+    url = None
+    i = 0
+    while i < len(args):
+        arg = args[i]
+        if arg in {"-o", "--output"}:
+            i += 1
+            if i >= len(args):
+                print("curl: option requires an argument: " + arg, file=sys.stderr)
+                return 2
+            output = args[i]
+        elif arg.startswith("--output="):
+            output = arg.split("=", 1)[1]
+        elif arg.startswith("-o") and arg != "-o":
+            output = arg[2:]
+        elif arg.startswith("-"):
+            pass
+        else:
+            url = arg
+        i += 1
+
+    if not url:
+        print("curl: no URL specified", file=sys.stderr)
+        return 2
+
+    request = urllib.request.Request(url, headers={"User-Agent": "curl/8"})
+    with urllib.request.urlopen(request, timeout=120) as response:
+        data = response.read()
+
+    if output and output != "-":
+        with open(output, "wb") as handle:
+            handle.write(data)
+    else:
+        sys.stdout.buffer.write(data)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

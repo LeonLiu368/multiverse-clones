@@ -1,0 +1,24 @@
+schema_version = "1.2"
+name = "gh-ops-scenarios/security-patch-pr"
+description = "Fix a SQL-injection vulnerability in acme/api-service, ship the fix via a reviewed and merged PR, and close the security issue. The agent must use `gh` to read the open issue, clone the repo, patch the vulnerable f-string query, push a branch, open and approve a PR, merge it, and close the issue. nop=0, oracle=1."
+
+[metadata]
+category = "swe"
+source_repo = "acme/api-service"
+failure_mode = "security-vulnerability"
+tags = ["gh", "security", "pr-workflow", "multi-container", "realistic", "sql-injection"]
+
+[agent]
+timeout_sec = 1800
+
+[verifier]
+timeout_sec = 300
+
+[environment]
+cpus = 2
+memory_mb = 3072
+storage_mb = 12288
+gpus = 0
+allow_internet = true
+workdir = "/app"
+build_timeout_sec = 2400

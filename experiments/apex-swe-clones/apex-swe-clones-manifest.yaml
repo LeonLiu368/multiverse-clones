@@ -1,0 +1,31 @@
+metadata:
+  name: apex-swe-clones-v2
+  description: |
+    Two exact mercor/APEX-SWE Observability tasks re-platformed onto abundant-ai's service
+    clones (staged, approval-gated, near-perfect-fidelity conversion):
+      - paperless-ngx-10555    : secure webhook delivery (SSRF / redirect / host-header)
+      - podman-compose-2-1238  : x-podman compose network-name compat + service discovery
+    Each fetches its upstream repo + APEX fixtures at build and converts data/{plane,mattermost,loki}
+    -> ticketvector (issues) + slack-service (chat; empty here, Mattermost was template-empty) + gauge
+    (Loki/Grafana logs) via apex_to_clones.py. Graded by the upstream PR's own pytest suite (F2P/P2P,
+    clone-independent). Decisive signal lives in gauge logs + the Plane issue corpus. See README.md.
+  task_path: experiments/apex-swe-clones/tasks
+  n_trials: 1
+  skip_trajectory_analysis: false
+
+tasks:
+  - paperless-ngx-10555
+  - podman-compose-2-1238
+
+agents:
+  - name: oracle
+  - name: nop
+  - name: codex
+    model_name: openai/gpt-5.2-codex
+    n_trials: 2
+  - name: claude-code
+    model_name: anthropic/claude-opus-4-7
+    n_trials: 2
+  - name: gemini-cli
+    model_name: gemini/gemini-3.1-pro-preview
+    n_trials: 2

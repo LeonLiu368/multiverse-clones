@@ -1,0 +1,50 @@
+{
+  "issues": [
+    {
+      "id": "MVS-EXT-73B",
+      "state": "active",
+      "priority": "P0",
+      "service": "worlds-prod",
+      "title": "Production regression: extends relative path normalization",
+      "summary": "A service extending Compose config from a subdirectory builds against the wrong path and drops volume subdirectory context.",
+      "signals": [
+        "builds fail only when the base service is imported from a sibling directory",
+        "Containerfile exists but generated build args point at a doubled path",
+        "bind mounts from extended service resolve relative to the root file instead of the source compose file"
+      ],
+      "acceptance": "Recovery is complete when the affected behavior is fixed in /app/repo and the regression test passes."
+    },
+    {
+      "id": "MVS-FILLER-MVS-EXT-73B-1",
+      "state": "backlog",
+      "priority": "P2",
+      "service": "worlds-prod",
+      "title": "Background maintenance item 1",
+      "summary": "Not related to the current active incident."
+    },
+    {
+      "id": "MVS-FILLER-MVS-EXT-73B-2",
+      "state": "backlog",
+      "priority": "P2",
+      "service": "worlds-prod",
+      "title": "Background maintenance item 2",
+      "summary": "Not related to the current active incident."
+    },
+    {
+      "id": "MVS-FILLER-MVS-EXT-73B-3",
+      "state": "backlog",
+      "priority": "P2",
+      "service": "worlds-prod",
+      "title": "Background maintenance item 3",
+      "summary": "Not related to the current active incident."
+    },
+    {
+      "id": "MVS-FILLER-MVS-EXT-73B-4",
+      "state": "backlog",
+      "priority": "P2",
+      "service": "worlds-prod",
+      "title": "Background maintenance item 4",
+      "summary": "Not related to the current active incident."
+    }
+  ]
+}

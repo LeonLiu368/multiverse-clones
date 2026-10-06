@@ -1,0 +1,36 @@
+[
+  {
+    "user": "U7C420EBF74",
+    "type": "message",
+    "ts": "1779299700.000000",
+    "client_msg_id": "b32ed98296224e4752",
+    "text": "Kicking off the reporting-export rollout this week. Tracking under WEB-100.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dana.kim",
+      "real_name": "Dana.kim",
+      "display_name": "dana.kim",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    },
+    "thread_ts": "1779299700.000000"
+  },
+  {
+    "user": "U7C420EBF74",
+    "type": "message",
+    "ts": "1779300120.000000",
+    "client_msg_id": "51fcd7abdf28765c6e",
+    "text": "Reminder for the rollout: the reporting export feature flag is EXPORT_FLAG_4417 \u2014 keep it enabled until the data migration completes.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dana.kim",
+      "real_name": "Dana.kim",
+      "display_name": "dana.kim",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    },
+    "thread_ts": "1779299700.000000"
+  }
+]

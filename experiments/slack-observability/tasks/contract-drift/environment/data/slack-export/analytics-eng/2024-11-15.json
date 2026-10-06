@@ -1,0 +1,130 @@
+[
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1731673980.000000",
+    "client_msg_id": "cf8863c81b3fb96f56",
+    "text": "how many services are still on v1? we show 11 in the dashboard",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1731675780.000000",
+    "client_msg_id": "7a6972f71da96888eb",
+    "text": "migrating the login event first since it's highest volume",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U0FEBC363B6",
+    "type": "message",
+    "ts": "1731675840.000000",
+    "client_msg_id": "76d2a8e59e34b9e24e",
+    "text": "no `source` field \u2014 checked with niaj. just the 5 fields in the spec.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "heidi",
+      "real_name": "Heidi",
+      "display_name": "heidi",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U2A4B17B116",
+    "type": "message",
+    "ts": "1731677040.000000",
+    "client_msg_id": "1c3bcbd01d29461812",
+    "text": "does anyone have a snippet for the new publisher? still on v1 on our end",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "erin",
+      "real_name": "Erin",
+      "display_name": "erin",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U6525ABCCE7",
+    "type": "message",
+    "ts": "1731677400.000000",
+    "client_msg_id": "993eac498116f0a941",
+    "text": "v1 to v2 migration effort tracked in JIRA-3310",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "niaj",
+      "real_name": "Niaj",
+      "display_name": "niaj",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1731683160.000000",
+    "client_msg_id": "fc0fbfa7d3958f3da9",
+    "text": "v1 to v2 migration effort tracked in JIRA-3310",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UFD1CF5E271",
+    "type": "message",
+    "ts": "1731685500.000000",
+    "client_msg_id": "d0f788514b2fc97d52",
+    "text": "note: schema_version needs to be int 2 not string \u2014 caught that the hard way",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "grace",
+      "real_name": "Grace",
+      "display_name": "grace",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U6525ABCCE7",
+    "type": "message",
+    "ts": "1731691140.000000",
+    "client_msg_id": "3d255febe2bcca35af",
+    "text": "anyone hit issues with the recorded_at conversion? We were off by 1000x initially",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "niaj",
+      "real_name": "Niaj",
+      "display_name": "niaj",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "user": "U2A4B17B116",
+    "type": "message",
+    "ts": "1730467860.000001",
+    "client_msg_id": "f835b482c5253d0256",
+    "text": "disk alert resolved: expanded volume",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "erin",
+      "real_name": "Erin",
+      "display_name": "erin",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U0FEBC363B6",
+    "type": "message",
+    "ts": "1730469480.000000",
+    "client_msg_id": "ded65b00ab6407b9c0",
+    "text": "memory leak patched and deployed",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "heidi",
+      "real_name": "Heidi",
+      "display_name": "heidi",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U2A4B17B116",
+    "type": "message",
+    "ts": "1730476080.000000",
+    "client_msg_id": "a0083ade34fd00c8bb",
+    "text": "db failover completed successfully",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "erin",
+      "real_name": "Erin",
+      "display_name": "erin",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

@@ -1,0 +1,36 @@
+schema_version = "1.3"
+
+[task]
+name = "taskfarm-clones/cockroach-descriptor-backref-repair-prodv1"
+description = "CockroachDB catalog repair incident for a Sentry validate.go panic caused by relation descriptors whose depended-on-by backrefs point at missing descriptor IDs."
+authors = []
+keywords = ["cockroachdb", "catalog", "descriptor", "postgres", "sentry", "ticketvector", "github", "incident-response"]
+
+[metadata]
+difficulty = "hard"
+difficulty_explanation = "This is a realistic database-internals incident for a CockroachDB or distributed SQL on-call engineer. The hard part is separating the two live relation descriptors whose depended-on-by back references target missing descriptors from healthy, dropped, and different-validation noise, then proving the repair is narrow enough not to disable validation or scrub unrelated descriptors. The seed data is synthetic but modeled on the public CockroachDB Sentry issue, including stack evidence, ticket context, operational noise, and descriptor-table rows that require careful scoping."
+solution_explanation = "The reference solution fixes the local descriptor repair planner so it selects only public relation descriptors with read.backward_references.relation validation failures and missing referenced descriptor targets. It then runs the repair builder with --apply, which writes the required JSON artifact, marks relation IDs 193 and 211 ready for scoped backref removal in Postgres, inserts exactly two audit rows, and moves CRDB-63963 to In Review with a handoff comment explaining why relation IDs 244, 305, and 318 stayed untouched."
+verification_explanation = "The verifier runs the planner against an independent descriptor fixture to check behavior instead of source strings, parses /app/artifacts/descriptor_backref_repair.json for the documented schema and exact affected/untouched descriptor sets, queries Postgres for scoped repair and audit state, and checks TicketVector for an In Review handoff that names the artifact, affected IDs, untouched IDs, and the broad-workaround avoidance rationale."
+category = "database-incident-response"
+tags = ["cockroachdb", "catalog-validation", "database-repair", "postgres", "sentry", "ticketvector", "debugging"]
+expert_time_estimate_hours = 2.5
+relevant_experience = "Database internals, production incident triage, SQL catalog repair, and on-call handoff"
+custom_docker_compose = true
+
+[agent]
+timeout_sec = 900
+user = "agent"
+
+[verifier]
+type = "shell"
+timeout_sec = 600
+user = "root"
+
+[environment]
+allow_internet = true
+build_timeout_sec = 1800
+cpus = 2
+memory_mb = 4096
+storage_mb = 12288
+gpus = 0
+workdir = "/app/src"

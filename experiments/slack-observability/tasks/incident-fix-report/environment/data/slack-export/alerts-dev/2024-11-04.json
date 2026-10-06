@@ -1,0 +1,66 @@
+[
+  {
+    "user": "U0AA1C221CA",
+    "type": "message",
+    "ts": "1730724120.000000",
+    "client_msg_id": "8f9c3872b3081fbce3",
+    "text": "testing the error rate calculator",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "trent",
+      "real_name": "Trent",
+      "display_name": "trent",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U5CC9DC7FA7",
+    "type": "message",
+    "ts": "1730729760.000000",
+    "client_msg_id": "8cd604fce93f619b87",
+    "text": "testing notification routing to #sre-oncall",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "olivia",
+      "real_name": "Olivia",
+      "display_name": "olivia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UA15F8B81A1",
+    "type": "message",
+    "ts": "1730730360.000000",
+    "client_msg_id": "63f8ae4f4949a74b72",
+    "text": "testing the error rate calculator",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "ivan",
+      "real_name": "Ivan",
+      "display_name": "ivan",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UB5382301BB",
+    "type": "message",
+    "ts": "1730738880.000000",
+    "client_msg_id": "ce136ab97ba75f9466",
+    "text": "false positive rate too high on disk alerts",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "peggy",
+      "real_name": "Peggy",
+      "display_name": "peggy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

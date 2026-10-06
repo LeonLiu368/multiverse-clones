@@ -1,0 +1,194 @@
+[
+  {
+    "user": "U2A4B17B116",
+    "type": "message",
+    "ts": "1731575760.000000",
+    "client_msg_id": "171720abbaca146b16",
+    "text": "the lint check is now enforced in CI",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "erin",
+      "real_name": "Erin",
+      "display_name": "erin",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1731579120.000000",
+    "client_msg_id": "fbd70dbe7db9306236",
+    "text": "bumped grafana agent to latest",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U1BEEF78000",
+    "type": "message",
+    "ts": "1731581160.000000",
+    "client_msg_id": "4963d554e0915a1071",
+    "text": "code freeze starts Friday noon",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "mallory",
+      "real_name": "Mallory",
+      "display_name": "mallory",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1731581580.000000",
+    "client_msg_id": "0f038d358d10e29ef4",
+    "text": "PR #903 up for review",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1731591840.000000",
+    "client_msg_id": "254279b183f3f82b90",
+    "text": "API deprecation schedule posted in wiki",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1731594060.000000",
+    "client_msg_id": "44a23830aa7a64c8e7",
+    "text": "rebased the auth PR, CI is green",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1731597180.000000",
+    "client_msg_id": "10bedfd693267c0cf6",
+    "text": "the lint check is now enforced in CI",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1731600300.000000",
+    "client_msg_id": "8a57101f875b8d214a",
+    "text": "dependency audit done, 3 vulns patched",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U88FA846E5F",
+    "type": "message",
+    "ts": "1731600480.000000",
+    "client_msg_id": "00a8763dc773f788fb",
+    "text": "the lint check is now enforced in CI",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "victor",
+      "real_name": "Victor",
+      "display_name": "victor",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UFD1CF5E271",
+    "type": "message",
+    "ts": "1731601200.000000",
+    "client_msg_id": "eb091e5c4b68158fea",
+    "text": "code freeze starts Friday noon",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "grace",
+      "real_name": "Grace",
+      "display_name": "grace",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1731605100.000000",
+    "client_msg_id": "9a3b5eb608a2a8e126",
+    "text": "dependency audit done, 3 vulns patched",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1731606240.000000",
+    "client_msg_id": "404ced030fe641a20e",
+    "text": "feature flags doc updated",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

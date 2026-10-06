@@ -1,0 +1,162 @@
+# Converted to the abundant clone format: ticketvector -> jira-gateway, slack-service ->
+# slack-gateway. Data lives ONLY in the sidecars (mounted, not on the agent FS); the agent
+# reaches them over HTTP at http://jira:8765 / http://slack via service-name DNS. No
+# network_mode/networks: blocks. See experiments/taskfarm-clones/README.md.
+name: prometheus-distroless-local-probes
+services:
+  main:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${MAIN_IMAGE_NAME:-prometheus-distroless-local-probes-main:local}
+    working_dir: /app/src
+    command:
+    - /bin/sh
+    - -lc
+    - until test -s /shared/kubeconfig; do sleep 1; done; sed 's#https://127.0.0.1:6443#https://k8s:6443#'
+      /shared/kubeconfig >/tmp/kubeconfig; sleep infinity
+    environment:
+      PGHOST: postgres
+      PGUSER: agent
+      PGDATABASE: acme_prometheus_distroless_local_probes
+      GH_HOST: http://github
+      GH_TOKEN_FILE: /run/secrets/token
+      PLANE_BASE_URL: http://jira:8765
+      PLANE_API_KEY: test-token-acme-eval
+      GRAFANA_URL: http://gcx:3000
+      GRAFANA_BASIC_AUTH: admin:admin
+      KUBECONFIG: /tmp/kubeconfig
+      PYTHONPATH: /app/src:/opt:/opt/ghclone:/opt/ticketvector
+      WORLD_ISSUES_BACKEND: remote
+      WORLD_ISSUES_AGENT_MODE: '1'
+      WORLD_ISSUES_OUTPUT: json
+      WORLD_ISSUES_ACTOR: agent
+      WORLD_ISSUES_DEFAULT_PROJECT: PROMOP
+    volumes:
+    - ghc-shared:/run/secrets:ro
+    - k8s-shared:/shared:ro
+    depends_on:
+      k8s:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      github:
+        condition: service_healthy
+      gcx:
+        condition: service_healthy
+      jira:
+        condition: service_healthy
+  jira:
+    image: ${JIRA_GATEWAY_IMAGE:-ghcr.io/abundant-ai/jira-gateway:empty@sha256:71dc8d5d0d992dae3394da5669d6b727036cda67db915a5cc54fd369390f295f}
+    hostname: jira
+    platform: linux/amd64
+    environment:
+      WORLD_ISSUES_STATE_FILE: /var/lib/ticketvector/state.json
+      WORLD_ISSUES_BIND_HOST: 0.0.0.0
+      WORLD_ISSUES_PORT: '8765'
+      WORLD_ISSUES_ACTOR: agent
+    volumes:
+    - ./data/ticketvector/state.json:/data/state-overlay.json:ro
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - python -c "import urllib.request; urllib.request.urlopen('http://localhost:8765/health')" || exit
+        1
+      interval: 5s
+      timeout: 5s
+      retries: 24
+      start_period: 15s
+  postgres:
+    image: postgres:16
+    platform: linux/amd64
+    environment:
+      POSTGRES_USER: agent
+      POSTGRES_DB: acme_prometheus_distroless_local_probes
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+    - ./shared/prometheus-distroless-local-probes/seed.sql:/docker-entrypoint-initdb.d/001-seed.sql:ro
+    - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - pg_isready -U agent -d acme_prometheus_distroless_local_probes
+      interval: 2s
+      timeout: 2s
+      retries: 30
+  github:
+    image: ghcr.io/abundant-ai/ghc-service:latest@sha256:d4e88d7fa4af0ae84213d54f4b884b3a8954ebad9fe88b6f6fb97cea1443b3cf
+    hostname: github
+    platform: linux/amd64
+    volumes:
+    - ghc-shared:/shared
+    - ./data/github/seed.sh:/usr/local/bin/task-seed.sh:ro
+    - ./shared/prometheus-distroless-local-probes/app-src:/seed/app-src:ro
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - curl -sf http://localhost/api/healthz >/dev/null || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 60
+      start_period: 45s
+  gcx:
+    image: grafana/grafana-oss:11.5.2
+    hostname: gcx
+    platform: linux/amd64
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_AUTH_ANONYMOUS_ENABLED: 'false'
+      GF_USERS_ALLOW_SIGN_UP: 'false'
+      GF_PATHS_PROVISIONING: /etc/grafana/provisioning
+    volumes:
+    - ./data/gcx/provisioning:/etc/grafana/provisioning:ro
+    - ./data/gcx/dashboards:/var/lib/grafana/dashboards:ro
+    - gcx-runtime:/var/lib/grafana
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - wget -q -O- http://localhost:3000/api/health >/dev/null || exit 1
+      interval: 2s
+      timeout: 2s
+      retries: 60
+  k8s:
+    image: rancher/k3s:v1.31.5-k3s1
+    hostname: k8s
+    privileged: true
+    cgroup: host
+    command:
+    - server
+    - --disable=traefik
+    - --disable=servicelb
+    - --disable=metrics-server
+    - --disable=coredns
+    - --disable=local-storage
+    - --disable-network-policy
+    - --write-kubeconfig=/shared/kubeconfig
+    - --write-kubeconfig-mode=644
+    - --tls-san=k8s
+    tmpfs:
+    - /run
+    - /var/run
+    volumes:
+    - k8s-data:/var/lib/rancher/k3s
+    - k8s-shared:/shared
+    - ./data/k8s/seed.yaml:/var/lib/rancher/k3s/server/manifests/task-seed.yaml:ro
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - test -s /shared/kubeconfig && kubectl get --raw=/readyz >/dev/null 2>&1 && kubectl wait --for=condition=Ready
+        node --all --timeout=2s >/dev/null 2>&1 && kubectl get -f /var/lib/rancher/k3s/server/manifests/task-seed.yaml
+        >/dev/null 2>&1
+      interval: 5s
+      timeout: 5s
+      retries: 240
+      start_period: 90s
+volumes:
+  pgdata: null
+  ghc-shared: null
+  gcx-runtime: null
+  k8s-data: null
+  k8s-shared: null

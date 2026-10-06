@@ -1,0 +1,126 @@
+{
+  "activity": [],
+  "comments": [],
+  "events": [
+    {
+      "breadcrumbs": [
+        {"category": "sql", "message": "ALTER TABLE _ ALTER PRIMARY KEY USING COLUMNS (_)", "timestamp": "2026-05-21T14:56:20Z"},
+        {"category": "schema-change", "message": "StatementPhase stage 1 of 1 with 24 MutationType ops", "timestamp": "2026-05-21T14:56:21Z"}
+      ],
+      "exception": {
+        "type": "runtime.boundsError",
+        "value": "slice bounds out of range [2:0]"
+      },
+      "id": "evt-sentry-7461557230-a",
+      "issue_id": "sentry_7461557230",
+      "message": "DecodePartitionTuple panic while validating partitioning descriptor",
+      "project_slug": "cockroach",
+      "stacktrace": {
+        "frames": [
+          {"context_line": "github.com/cockroachdb/cockroach/pkg/sql/rowenc.DecodePartitionTuple", "filename": "pkg/sql/rowenc/partition.go", "function": "DecodePartitionTuple", "in_app": true, "lineno": 147},
+          {"context_line": "github.com/cockroachdb/cockroach/pkg/util/encoding.DecodeUntaggedBytesValue", "filename": "pkg/util/encoding/encoding.go", "function": "DecodeUntaggedBytesValue", "in_app": true, "lineno": 3139},
+          {"context_line": "github.com/cockroachdb/cockroach/pkg/sql/schemachanger/scerrors.EventLogger.HandlePanicAndLogError", "filename": "pkg/sql/schemachanger/scerrors/errors.go", "function": "HandlePanicAndLogError", "in_app": true, "lineno": 82}
+        ]
+      },
+      "tags": {
+        "cockroach_release": "v26.1.1",
+        "environment": "production",
+        "platform": "linux arm64",
+        "ticket": "CRDB-63642"
+      },
+      "timestamp": "2026-05-21T14:56:23Z"
+    },
+    {
+      "breadcrumbs": [],
+      "exception": {"type": "DescriptorValidationWarning", "value": "intentional empty list partition"},
+      "id": "evt-crdb-63590-noise",
+      "issue_id": "noise_crdb_63590",
+      "message": "Intentional empty partition list validation audit",
+      "project_slug": "cockroach",
+      "stacktrace": {"frames": [{"context_line": "return nil", "filename": "pkg/sql/catalog/tabledesc/validate.go", "function": "validatePartitioningDescriptor", "in_app": true, "lineno": 2056}]},
+      "tags": {"environment": "production", "ticket": "CRDB-63590"},
+      "timestamp": "2026-05-21T14:41:00Z"
+    },
+    {
+      "breadcrumbs": [],
+      "exception": {"type": "ClosedNoise", "value": "hash shard validation warning"},
+      "id": "evt-crdb-63512-noise",
+      "issue_id": "noise_crdb_63512",
+      "message": "Closed hash shard warning from same component",
+      "project_slug": "cockroach",
+      "stacktrace": {"frames": [{"context_line": "return ok", "filename": "pkg/sql/catalog/tabledesc/validate.go", "function": "validatePartitioning", "in_app": true, "lineno": 2153}]},
+      "tags": {"environment": "production", "ticket": "CRDB-63512"},
+      "timestamp": "2026-05-21T13:24:00Z"
+    }
+  ],
+  "issues": [
+    {
+      "assignedTo": null,
+      "culprit": "pkg/sql/rowenc.DecodePartitionTuple",
+      "firstSeen": "2026-05-21T14:56:23Z",
+      "id": "sentry_7461557230",
+      "lastSeen": "2026-05-21T14:56:23Z",
+      "metadata": {"type": "runtime.boundsError", "value": "slice bounds out of range [2:0]"},
+      "project": {"slug": "cockroach"},
+      "project_slug": "cockroach",
+      "shortId": "COCKROACH-63642",
+      "status": "unresolved",
+      "title": "errors.go:82 executing declarative schema change StatementPhase ALTER TABLE"
+    },
+    {
+      "assignedTo": null,
+      "culprit": "pkg/sql/catalog/tabledesc.validatePartitioningDescriptor",
+      "firstSeen": "2026-05-21T14:41:00Z",
+      "id": "noise_crdb_63590",
+      "lastSeen": "2026-05-21T14:41:00Z",
+      "metadata": {"type": "DescriptorValidationWarning", "value": "intentional empty list partition"},
+      "project": {"slug": "cockroach"},
+      "project_slug": "cockroach",
+      "shortId": "COCKROACH-63590",
+      "status": "resolved",
+      "title": "Intentional empty partition list validation audit"
+    },
+    {
+      "assignedTo": null,
+      "culprit": "pkg/sql/catalog/tabledesc.validatePartitioning",
+      "firstSeen": "2026-05-21T13:24:00Z",
+      "id": "noise_crdb_63512",
+      "lastSeen": "2026-05-21T13:24:00Z",
+      "metadata": {"type": "ClosedNoise", "value": "hash shard validation warning"},
+      "project": {"slug": "cockroach"},
+      "project_slug": "cockroach",
+      "shortId": "COCKROACH-63512",
+      "status": "resolved",
+      "title": "Closed hash shard warning from same component"
+    }
+  ],
+  "meta": {
+    "now": "2026-05-21T15:10:00Z",
+    "organization": "acme"
+  },
+  "mutation_log": [],
+  "ownership_rules": [],
+  "projects": [
+    {
+      "id": "project-cockroach",
+      "name": "Cockroach",
+      "slug": "cockroach",
+      "team_slug": "database-reliability"
+    }
+  ],
+  "releases": [],
+  "teams": [
+    {
+      "id": "team-database-reliability",
+      "name": "Database Reliability",
+      "slug": "database-reliability"
+    }
+  ],
+  "users": [
+    {
+      "email": "agent@example.local",
+      "id": "user-agent",
+      "name": "Agent User"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+metadata:
+  name: slack-read
+  enable_image_push: true
+  description: ""
+  task_path: experiments/figma-linear/tasks
+  n_trials: 1
+  skip_trajectory_analysis: false
+
+tasks:
+  - figma-linear-handoff
+
+agents:
+  - name: nop
+  - name: oracle
+  - name: gemini-cli
+    model_name: google/gemini-3.1-pro-preview
+    n_trials: 2

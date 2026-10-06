@@ -1,0 +1,114 @@
+{
+  "team": {"id": "T_ACME", "name": "Acme Design"},
+  "projects": [{"id": "P_WEB", "name": "Marketing Web", "files": ["PrcCardHandoffFile001x"]}],
+  "files": [
+    {
+      "key": "PrcCardHandoffFile001x",
+      "name": "Pricing Page",
+      "version": "4",
+      "lastModified": "2026-05-12T14:30:00Z",
+      "thumbnailUrl": "/static/PrcCardHandoffFile001x/thumb.png",
+      "editorType": "figma",
+      "role": "owner",
+      "document": {
+        "type": "DOCUMENT",
+        "id": "0:0",
+        "name": "Document",
+        "children": [
+          {
+            "type": "CANVAS",
+            "id": "1:0",
+            "name": "Pricing",
+            "backgroundColor": {"r": 1, "g": 1, "b": 1, "a": 1},
+            "children": [
+              {
+                "type": "FRAME",
+                "id": "1:1",
+                "name": "Pricing / Desktop",
+                "fills": [{"type": "SOLID", "color": {"r": 0.9529, "g": 0.9569, "b": 0.9647, "a": 1}}],
+                "absoluteBoundingBox": {"x": 0, "y": 0, "width": 1200, "height": 700},
+                "children": [
+                  {
+                    "type": "COMPONENT",
+                    "id": "1:2",
+                    "name": "PricingCard",
+                    "layoutMode": "VERTICAL",
+                    "itemSpacing": 16,
+                    "paddingLeft": 24, "paddingRight": 24, "paddingTop": 24, "paddingBottom": 24,
+                    "cornerRadius": 12,
+                    "primaryAxisAlignItems": "MIN",
+                    "counterAxisAlignItems": "MIN",
+                    "fills": [{"type": "SOLID", "color": {"r": 1, "g": 1, "b": 1, "a": 1}}],
+                    "strokes": [{"type": "SOLID", "color": {"r": 0.9529, "g": 0.9569, "b": 0.9647, "a": 1}}],
+                    "absoluteBoundingBox": {"x": 64, "y": 64, "width": 320, "height": 420},
+                    "children": [
+                      {
+                        "type": "TEXT", "id": "1:3", "name": "Plan name", "characters": "Pro",
+                        "style": {"fontFamily": "Inter", "fontWeight": 700, "fontSize": 24, "lineHeightPx": 32, "letterSpacing": 0, "textAlignHorizontal": "LEFT"},
+                        "fills": [{"type": "SOLID", "color": {"r": 0.0667, "g": 0.0745, "b": 0.0902, "a": 1}}],
+                        "absoluteBoundingBox": {"x": 88, "y": 88, "width": 272, "height": 32}
+                      },
+                      {
+                        "type": "TEXT", "id": "1:4", "name": "Price", "characters": "$29/mo",
+                        "style": {"fontFamily": "Inter", "fontWeight": 700, "fontSize": 32, "lineHeightPx": 40, "letterSpacing": 0, "textAlignHorizontal": "LEFT"},
+                        "fills": [{"type": "SOLID", "color": {"r": 0.0667, "g": 0.0745, "b": 0.0902, "a": 1}}],
+                        "absoluteBoundingBox": {"x": 88, "y": 136, "width": 272, "height": 40}
+                      },
+                      {
+                        "type": "FRAME", "id": "1:5", "name": "CTA Button",
+                        "layoutMode": "HORIZONTAL", "itemSpacing": 8,
+                        "paddingLeft": 16, "paddingRight": 16, "paddingTop": 12, "paddingBottom": 12,
+                        "cornerRadius": 8,
+                        "primaryAxisAlignItems": "CENTER", "counterAxisAlignItems": "CENTER",
+                        "fills": [{"type": "SOLID", "color": {"r": 0.1765, "g": 0.4235, "b": 0.8745, "a": 1}}],
+                        "absoluteBoundingBox": {"x": 88, "y": 416, "width": 272, "height": 44},
+                        "children": [
+                          {
+                            "type": "TEXT", "id": "1:6", "name": "CTA Label", "characters": "Subscribe",
+                            "style": {"fontFamily": "Inter", "fontWeight": 600, "fontSize": 16, "lineHeightPx": 24, "letterSpacing": 0, "textAlignHorizontal": "CENTER"},
+                            "fills": [{"type": "SOLID", "color": {"r": 1, "g": 1, "b": 1, "a": 1}}],
+                            "absoluteBoundingBox": {"x": 104, "y": 426, "width": 240, "height": 24}
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "components": {
+        "1:2": {"key": "cmpPricing", "name": "PricingCard", "description": "Pricing tier card", "containing_frame": {"name": "Pricing / Desktop", "nodeId": "1:1"}}
+      },
+      "componentSets": {},
+      "styles": {
+        "S1": {"key": "styP500", "name": "Primary/500", "styleType": "FILL", "description": "Brand primary — #2D6CDF"},
+        "S2": {"key": "styN900", "name": "Neutral/900", "styleType": "FILL", "description": "Text default — #111317"}
+      },
+      "images": {"1:2": "/static/PrcCardHandoffFile001x/1-2.png"},
+      "comments": [
+        {
+          "id": "1",
+          "message": "Card geometry locked: padding 24 on all sides, 16 gap between rows, corner radius 12.",
+          "user": {"id": "U_RAE", "handle": "rae.designer", "email": "rae@acme.example"},
+          "client_meta": {"node_id": "1:2"},
+          "created_at": "2026-05-11T10:00:00Z",
+          "order_id": 1
+        },
+        {
+          "id": "2",
+          "message": "Copy update: the CTA label must read 'Start free trial' (not 'Subscribe'). The mock still shows the old text.",
+          "user": {"id": "U_MIRA", "handle": "mira.pm", "email": "mira@acme.example"},
+          "client_meta": {"node_id": "1:6"},
+          "created_at": "2026-05-12T14:30:00Z",
+          "order_id": 2
+        }
+      ],
+      "versions": [
+        {"id": "v4", "label": "Final copy", "description": "CTA copy locked", "created_at": "2026-05-12T14:30:00Z", "user": {"handle": "mira.pm"}}
+      ]
+    }
+  ]
+}

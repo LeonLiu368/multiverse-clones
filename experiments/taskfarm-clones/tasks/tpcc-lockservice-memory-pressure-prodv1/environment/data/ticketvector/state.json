@@ -1,0 +1,124 @@
+{
+  "attachments": {
+    "MO-24788": [],
+    "MO-24893": []
+  },
+  "base_url": "https://linear.local/acme",
+  "comments": {
+    "MO-24788": [
+      {
+        "author": {"handle": "arun", "id": "user-arun", "name": "Arun"},
+        "body": "Closed after 100W/1000 passed in nightly. This is historical noise for MO-24893.",
+        "created_at": "2026-06-06T18:00:00Z",
+        "id": "comment-mo-24788-1",
+        "issue": "MO-24788",
+        "updated_at": "2026-06-06T18:00:00Z"
+      }
+    ],
+    "MO-24893": [
+      {
+        "author": {"handle": "leah", "id": "user-leah", "name": "Leah"},
+        "body": "Smaller TPCC cases passed before the 1000W/1000T step. Please use the 2026-06-08T18:42:51Z to 18:48:42Z window and the target CN memory evidence.",
+        "created_at": "2026-06-11T03:51:11Z",
+        "id": "comment-mo-24893-1",
+        "issue": "MO-24893",
+        "updated_at": "2026-06-11T03:51:11Z"
+      },
+      {
+        "author": {"handle": "arun", "id": "user-arun", "name": "Arun"},
+        "body": "The later IVF vector index OOMKilled alert is in the same run but about five hours after the TPCC lockservice timeout. Keep it out of the root-cause statement unless new evidence contradicts this.",
+        "created_at": "2026-06-11T04:02:00Z",
+        "id": "comment-mo-24893-2",
+        "issue": "MO-24893",
+        "updated_at": "2026-06-11T04:02:00Z"
+      }
+    ]
+  },
+  "cycles": [
+    {"ends_at": "2026-06-14", "id": "cycle-a", "name": "June Nightly Regressions", "starts_at": "2026-06-01"}
+  ],
+  "history": {
+    "MO-24788": [],
+    "MO-24893": []
+  },
+  "issues": [
+    {
+      "assignees": [{"handle": "agent", "id": "user-agent", "name": "Agent User"}],
+      "attachments_count": 0,
+      "comments_count": 2,
+      "created_at": "2026-06-11T03:51:11Z",
+      "cycle": {"ends_at": "2026-06-14", "id": "cycle-a", "name": "June Nightly Regressions", "starts_at": "2026-06-01"},
+      "description": "TPCC 1000 warehouses / 1000 terminals failed in mo-nightly-regression with lockservice RPC timeouts to 10.143.26.143:6003. Scope the repair to the high-pressure profile and do not conflate the later IVF OOMKilled event.",
+      "id": "issue-mo-24893",
+      "identifier": "MO-24893",
+      "labels": [{"id": "label-database", "name": "database"}, {"id": "label-observability", "name": "observability"}, {"id": "label-ci", "name": "ci"}],
+      "links": [
+        {"id": "link-gh-24893", "title": "Public issue", "url": "https://github.com/matrixorigin/matrixone/issues/24893"},
+        {"id": "link-local-gh", "title": "Local GitHub repository", "url": "https://github.local/acme/tpcc-lockservice-memory-pressure"}
+      ],
+      "module": {"id": "module-nightly", "name": "Nightly Regression"},
+      "priority": "urgent",
+      "project": {"archived": false, "id": "proj-mo", "key": "MO", "name": "MatrixOne Nightly"},
+      "relations": [],
+      "state": {"category": "started", "id": "state-progress", "name": "In Progress"},
+      "title": "TPCC 1000W terminals hit lockservice RPC timeout under CN memory pressure",
+      "updated_at": "2026-06-11T03:51:11Z",
+      "url": "https://linear.local/acme/issue/MO-24893"
+    },
+    {
+      "assignees": [{"handle": "arun", "id": "user-arun", "name": "Arun"}],
+      "attachments_count": 0,
+      "comments_count": 1,
+      "created_at": "2026-06-06T12:00:00Z",
+      "cycle": {"ends_at": "2026-06-14", "id": "cycle-a", "name": "June Nightly Regressions", "starts_at": "2026-06-01"},
+      "description": "Historical smaller TPCC retry audit. Not part of the MO-24893 repair.",
+      "id": "issue-mo-24788",
+      "identifier": "MO-24788",
+      "labels": [{"id": "label-database", "name": "database"}, {"id": "label-ci", "name": "ci"}],
+      "links": [],
+      "module": {"id": "module-nightly", "name": "Nightly Regression"},
+      "priority": "medium",
+      "project": {"archived": false, "id": "proj-mo", "key": "MO", "name": "MatrixOne Nightly"},
+      "relations": [],
+      "state": {"category": "completed", "id": "state-done", "name": "Done"},
+      "title": "TPCC 100W/1000 terminals historical retry audit",
+      "updated_at": "2026-06-06T18:00:00Z",
+      "url": "https://linear.local/acme/issue/MO-24788"
+    }
+  ],
+  "labels": [
+    {"id": "label-database", "name": "database"},
+    {"id": "label-observability", "name": "observability"},
+    {"id": "label-ci", "name": "ci"}
+  ],
+  "links": {
+    "MO-24788": [],
+    "MO-24893": [
+      {"id": "link-gh-24893", "title": "Public issue", "url": "https://github.com/matrixorigin/matrixone/issues/24893"},
+      {"id": "link-local-gh", "title": "Local GitHub repository", "url": "https://github.local/acme/tpcc-lockservice-memory-pressure"}
+    ]
+  },
+  "modules": [
+    {"id": "module-nightly", "name": "Nightly Regression"}
+  ],
+  "project": {"archived": false, "id": "proj-mo", "key": "MO", "name": "MatrixOne Nightly"},
+  "relations": {
+    "MO-24788": [],
+    "MO-24893": []
+  },
+  "states": [
+    {"category": "backlog", "id": "state-backlog", "name": "Backlog"},
+    {"category": "unstarted", "id": "state-todo", "name": "Todo"},
+    {"category": "started", "id": "state-progress", "name": "In Progress"},
+    {"category": "started", "id": "state-review", "name": "In Review"},
+    {"category": "completed", "id": "state-done", "name": "Done"},
+    {"category": "cancelled", "id": "state-canceled", "name": "Canceled"}
+  ],
+  "users": [
+    {"handle": "agent", "id": "user-agent", "name": "Agent User"},
+    {"handle": "leah", "id": "user-leah", "name": "Leah"},
+    {"handle": "arun", "id": "user-arun", "name": "Arun"},
+    {"handle": "owen", "id": "user-owen", "name": "Owen"}
+  ],
+  "workspace": "acme"
+}

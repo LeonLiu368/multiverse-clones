@@ -1,0 +1,53 @@
+metadata:
+  name: taskfarm-clones
+  enable_image_push: true
+  description: |
+    Six taskfarm-e2e tasks (from multiverse-tasks-owen @ codex/taskfarm-scout-accepted-wave)
+    re-pointed from the OLD ticketvector + OLD slack services to our NEW jira-gateway / slack-gateway
+    clones (two-image + mount + service-DNS isolation). Only the slack + ticketvector pieces were
+    swapped; the github/sentry/grafana/postgres sidecars and all app+verifier logic are unchanged.
+
+    Per task the agent reaches the issue tracker over HTTP at http://jira:8765 (the `jira` sidecar =
+    jira-gateway:empty serving the task's mounted state.json) via the `jira` CLI in
+    WORLD_ISSUES_BACKEND=remote/AGENT_MODE=1, and (tbmq only) Slack at http://slack
+    (slack-gateway:empty importing the task's scraped.json). Ticket/message data lives ONLY in the
+    sidecars — never on the agent FS — so the agent must go through the tools. Deterministic
+    nop=0, oracle=1.
+
+    NOTE: a full cloud stand-up also needs the unchanged github (ghc-service), sentry
+    (sentry-clone-service) and grafana images to be pullable; those were not part of this conversion.
+    Each task ships in two variants:
+      - <task>          : sidecars = jira-gateway:empty / slack-gateway:empty (only the task's own
+                          data, mounted). Clean, minimal workspace.
+      - <task>-prodv1   : sidecars = jira-gateway:prod-v1 / slack-gateway:prod-v1 — the REAL prod
+                          corpus (ENG issues / slack prod), with the task's tickets+messages MERGED
+                          on top as an overlay (jira /data/state-overlay.json; slack /data/slack-overlay).
+                          Realism/scale test: the agent must find its tickets/messages among a large
+                          corpus. Same agent + verifier wiring as the empty variant.
+  task_path: experiments/taskfarm-clones/tasks
+  n_trials: 1
+  skip_trajectory_analysis: false
+
+tasks:
+  - cockroach-descriptor-backref-repair
+  - cockroach-partition-tuple-guard
+  - loki-boltdb-cache-isolation
+  - prometheus-distroless-local-probes
+  - tbmq-persistent-session-offset-gap
+  - tpcc-lockservice-memory-pressure
+  - cockroach-descriptor-backref-repair-prodv1
+  - cockroach-partition-tuple-guard-prodv1
+  - loki-boltdb-cache-isolation-prodv1
+  - prometheus-distroless-local-probes-prodv1
+  - tbmq-persistent-session-offset-gap-prodv1
+  - tpcc-lockservice-memory-pressure-prodv1
+
+agents:
+  - name: nop
+  - name: oracle
+  - name: codex
+    model_name: openai/gpt-5.2-codex
+    n_trials: 2
+  - name: gemini-cli
+    model_name: google/gemini-3.1-pro-preview
+    n_trials: 2

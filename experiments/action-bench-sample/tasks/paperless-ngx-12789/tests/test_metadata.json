@@ -1,0 +1,13 @@
+{
+  "task_id": "variant-paperless-ngx-paperless-ngx-12789-observability",
+  "source_repo": "",
+  "source_pr_url": "",
+  "hidden_test_command": "pytest src/documents/tests/search/test_query.py -rA",
+  "changed_files": [
+    "src/documents/tests/search/test_query.py"
+  ],
+  "ticketvector": {
+    "primary_issue": "TV-12789",
+    "workflow": "linear/jira ticket state must be In Review with completion evidence"
+  }
+}

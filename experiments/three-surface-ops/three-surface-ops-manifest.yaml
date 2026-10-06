@@ -1,0 +1,30 @@
+metadata:
+  name: three-surface-ops
+  description: |
+    Three engineering tasks where a fix has already been submitted as a pull
+    request. The agent must correlate ALL THREE seeded discovery surfaces —
+    an issue tracker (ticketvector: linear/jira CLIs), a Slack workspace
+    (slack-service: slack CLI + slack-mcp), and an offline GitHub forge
+    (ghc-service: gh CLI) — to validate that the open PR addresses the
+    agreed fix, then merge it and close the ticket.
+
+    Each surface holds a distinct, non-redundant fragment: the ticket names
+    the active work item and its severity; the Slack thread contains the
+    root-cause diagnosis and the agreed implementation; the GitHub PR holds
+    the proposed code change. Only the intersection of all three confirms
+    whether the patch is correct. nop=0, oracle=1.
+  task_path: experiments/three-surface-ops/tasks
+  n_trials: 3
+  skip_trajectory_analysis: false
+
+tasks:
+  - oncall-fix-and-close
+  - cve-patch-pr
+  - spec-and-ship
+
+agents:
+  - name: oracle
+  - name: nop
+  - name: gemini-cli
+    model_name: gemini/gemini-3.1-pro-preview
+    n_trials: 3

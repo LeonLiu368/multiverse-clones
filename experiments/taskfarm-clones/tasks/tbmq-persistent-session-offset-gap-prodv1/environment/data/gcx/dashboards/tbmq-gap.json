@@ -1,0 +1,32 @@
+{
+  "annotations": {"list": []},
+  "editable": false,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {"type": "testdata", "uid": "grafana-testdata-datasource"},
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+      "id": 1,
+      "options": {
+        "content": "TBMQ-320: mqtt_gap lag rises while offline, then commit jumps from offset 3215 to next pack 3263. Edge bridge has the same replay shape at 8801-8817. DUP=0 PubAck warning is tracked separately.",
+        "mode": "markdown"
+      },
+      "pluginVersion": "11.5.2",
+      "title": "Application persistent session commit gap",
+      "type": "text"
+    }
+  ],
+  "schemaVersion": 39,
+  "tags": ["tbmq", "persistent-session", "kafka"],
+  "templating": {"list": []},
+  "time": {"from": "2026-06-11T12:00:00Z", "to": "2026-06-11T13:30:00Z"},
+  "timezone": "utc",
+  "title": "TBMQ Persistent Session Offset Gap",
+  "uid": "tbmq-gap",
+  "version": 1,
+  "weekStart": ""
+}

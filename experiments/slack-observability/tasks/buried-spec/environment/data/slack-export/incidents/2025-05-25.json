@@ -1,0 +1,50 @@
+[
+  {
+    "user": "U3E9AFE235A",
+    "type": "message",
+    "ts": "1748171340.000000",
+    "client_msg_id": "adaf62c14250d17c4b",
+    "text": "test traffic from staging is properly isolated now, won't affect prod rate limiter",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "iris",
+      "real_name": "Iris",
+      "display_name": "iris",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U596727C8A0",
+    "type": "message",
+    "ts": "1748171940.000000",
+    "client_msg_id": "c1cbb77ef3253e4978",
+    "text": "good, staging was bleeding into prod metrics last week",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "jack",
+      "real_name": "Jack",
+      "display_name": "jack",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1748172480.000000",
+    "client_msg_id": "7c3738abcc885d7d87",
+    "text": "that's been fixed in the ingress rules",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

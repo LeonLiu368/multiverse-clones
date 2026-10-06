@@ -1,0 +1,26 @@
+schema_version = "1.2"
+name = "slack-prod-overlay/changelog-build"
+description = "Cross-reference read task on the shared prod Slack corpus + a per-task overlay. A planted #engineering message (overlay) needs a final build number defined as a delta over the build that v8.5.0 originally shipped as, which is stated in a real message in #defect-and-blocker-thunderdome (baked prod data). The agent must find BOTH messages and combine them (10 + 9 = 19). Pure tool-use; no codebase. nop=0, oracle=1."
+
+[metadata]
+category = "tool-use"
+service = "slack"
+tools = ["slack-cli", "slack-mcp"]
+tags = ["slack", "read", "tool-use", "prod-overlay", "cross-reference", "real-data"]
+
+[agent]
+timeout_sec = 1800
+[verifier]
+timeout_sec = 300
+[environment]
+custom_docker_compose = true
+cpus = 2
+memory_mb = 4096
+storage_mb = 8192
+allow_internet = true
+workdir = "/workspace"
+build_timeout_sec = 1800
+[[environment.mcp_servers]]
+name = "slack"
+transport = "stdio"
+command = "slack-mcp"

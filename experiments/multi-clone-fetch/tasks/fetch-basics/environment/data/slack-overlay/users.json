@@ -1,0 +1,19 @@
+[
+  {
+    "id": "U7C420EBF74",
+    "team_id": "T0EXACME01",
+    "name": "dana.kim",
+    "real_name": "Dana.kim",
+    "deleted": false,
+    "is_bot": false,
+    "is_app_user": false,
+    "profile": {
+      "real_name": "Dana.kim",
+      "display_name": "dana.kim",
+      "real_name_normalized": "Dana.kim",
+      "display_name_normalized": "dana.kim",
+      "email": "dana.kim@acme.example",
+      "team": "T0EXACME01"
+    }
+  }
+]

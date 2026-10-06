@@ -1,0 +1,18 @@
+[
+  {
+    "user": "UB443DE4B0F",
+    "type": "message",
+    "ts": "1781183340.000000",
+    "client_msg_id": "3466ee491789d94c0f",
+    "text": "Routine Kafka compaction check completed for analytics topics; no change to per-client APPLICATION topics.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "nina",
+      "real_name": "Nina",
+      "display_name": "nina",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

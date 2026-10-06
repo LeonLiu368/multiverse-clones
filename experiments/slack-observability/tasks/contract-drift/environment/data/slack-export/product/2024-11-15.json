@@ -1,0 +1,50 @@
+[
+  {
+    "user": "UA15F8B81A1",
+    "type": "message",
+    "ts": "1731669600.000000",
+    "client_msg_id": "11d11b17854dbcc5cb",
+    "text": "Competitive teardown doc updated.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "ivan",
+      "real_name": "Ivan",
+      "display_name": "ivan",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UFD1CF5E271",
+    "type": "message",
+    "ts": "1731670080.000000",
+    "client_msg_id": "1b85bb99863c42e00c",
+    "text": "User research sessions scheduled for Thursday.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "grace",
+      "real_name": "Grace",
+      "display_name": "grace",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1731675180.000000",
+    "client_msg_id": "cdc21610ec67c8c381",
+    "text": "Sprint review is at 3pm Friday.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

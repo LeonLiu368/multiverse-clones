@@ -1,0 +1,114 @@
+[
+  {
+    "user": "U2A4B17B116",
+    "type": "message",
+    "ts": "1731412800.000000",
+    "client_msg_id": "8db248c0f34e3093bb",
+    "text": "M-47 (analytics schema) blocked on the data-platform signoff.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "erin",
+      "real_name": "Erin",
+      "display_name": "erin",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U38FC8CAEA6",
+    "type": "message",
+    "ts": "1731415560.000000",
+    "client_msg_id": "e9bf430410ee6e9758",
+    "text": "Migration took 40 min, no downtime. \u2705",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "judy",
+      "real_name": "Judy",
+      "display_name": "judy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U0AA1C221CA",
+    "type": "message",
+    "ts": "1731417060.000000",
+    "client_msg_id": "15c506b682e68c2df5",
+    "text": "Moving secrets to Vault this sprint.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "trent",
+      "real_name": "Trent",
+      "display_name": "trent",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U6525ABCCE7",
+    "type": "message",
+    "ts": "1731417660.000000",
+    "client_msg_id": "fd5b6d27c6061b7f18",
+    "text": "Migration took 40 min, no downtime. \u2705",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "niaj",
+      "real_name": "Niaj",
+      "display_name": "niaj",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UA15F8B81A1",
+    "type": "message",
+    "ts": "1731418620.000000",
+    "client_msg_id": "83ede4bfc0e6f48d55",
+    "text": "Migration took 40 min, no downtime. \u2705",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "ivan",
+      "real_name": "Ivan",
+      "display_name": "ivan",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U1BEEF78000",
+    "type": "message",
+    "ts": "1731428580.000000",
+    "client_msg_id": "8f11689667713989ab",
+    "text": "Postgres connection pool maxed during the spike \u2014 bumped max_conn.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "mallory",
+      "real_name": "Mallory",
+      "display_name": "mallory",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U5CC9DC7FA7",
+    "type": "message",
+    "ts": "1731430860.000000",
+    "client_msg_id": "ac7fff3fea6298e4fa",
+    "text": "Moving secrets to Vault this sprint.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "olivia",
+      "real_name": "Olivia",
+      "display_name": "olivia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

@@ -1,0 +1,23 @@
+{
+  "test_framework": "pytest",
+  "test_command": "cd /app/repo && uv run pytest /app/repo/src/paperless/tests/test_db_cache.py -v",
+  "test_files": [
+    "src/paperless/tests/test_db_cache.py"
+  ],
+  "num_test_files": 1,
+  "language": "python",
+  "FAIL_TO_PASS": [
+    "src.paperless.tests.test_db_cache.TestDbCacheSettings::test_cachalot_ttl_parsing[7524-7524]",
+    "src.paperless.tests.test_db_cache.TestDbCacheSettings::test_cachalot_ttl_parsing[1-1]",
+    "src.paperless.tests.test_db_cache.TestDbCacheSettings::test_cachalot_ttl_parsing[-500000-3600]",
+    "src.paperless.tests.test_db_cache.TestDbCacheSettings::test_cachalot_ttl_parsing[-1-3600]",
+    "src.paperless.tests.test_db_cache::test_all_redis_caches_have_same_custom_prefix",
+    "src.paperless.tests.test_db_cache.TestDbCacheSettings::test_cachalot_default_settings",
+    "src.paperless.tests.test_db_cache.TestDbCacheSettings::test_cachalot_custom_settings",
+    "src.paperless.tests.test_db_cache.TestDbCacheSettings::test_cachalot_ttl_parsing[99999999999999-31536000]",
+    "src.paperless.tests.test_db_cache.TestDbCacheSettings::test_cachalot_ttl_parsing[0-3600]",
+    "src.paperless.tests.test_db_cache::test_cache_is_disabled_by_default",
+    "src.paperless.tests.test_db_cache::test_cache_hit_when_enabled"
+  ],
+  "PASS_TO_PASS": []
+}

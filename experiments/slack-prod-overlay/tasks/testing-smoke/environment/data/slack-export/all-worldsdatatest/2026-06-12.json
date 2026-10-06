@@ -1,0 +1,18 @@
+[
+  {
+    "user": "U71E41BACEE",
+    "type": "message",
+    "ts": "1781254800.000000",
+    "client_msg_id": "a4f806531768379f02",
+    "text": "just finished testing the latest build, looks good to ship",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dana.reed",
+      "real_name": "Dana.reed",
+      "display_name": "dana.reed",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

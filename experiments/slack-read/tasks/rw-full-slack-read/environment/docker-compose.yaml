@@ -1,0 +1,32 @@
+# Two-container task compose: a thin agent + a Slack gateway sidecar holding the data.
+#   main  — the agent (Harbor force-builds it from environment/Dockerfile). Tools + codebase only,
+#           no gateway, no data. Reaches the workspace ONLY over HTTP at http://slack.
+#   slack — the gateway sidecar (PULLED): the SQLite Slack gateway serving this task's dataset DB
+#           (full). The chat data lives here, NOT on the agent's filesystem — so the agent
+#           can't bypass the slack CLI / MCP by reading the DB directly.
+#
+# Requires `custom_docker_compose = true` in task.toml. NO `networks:` block (Harbor injects
+# network_mode on main; service-name DNS still resolves `slack`). Both services pin linux/amd64.
+services:
+  main:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${APEX_TASK_DOCKER_CLIENT_IMAGE_NAME:-rw-full-slack-read-main:local}
+    platform: linux/amd64
+    environment:
+      SLACK_API_URL: http://slack
+      SLACK_BOT_TOKEN: xoxp-acme-eval-0001
+    depends_on:
+      slack:
+        condition: service_healthy
+
+  slack:
+    image: ${SLACK_GATEWAY_IMAGE:-ghcr.io/abundant-ai/slack-gateway:full}
+    platform: linux/amd64
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:80/api/auth.test >/dev/null || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 60
+      start_period: 30s

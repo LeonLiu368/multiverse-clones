@@ -1,0 +1,98 @@
+[
+  {
+    "user": "UFD1CF5E271",
+    "type": "message",
+    "ts": "1731576960.000000",
+    "client_msg_id": "cdfb0b551eadb9fddd",
+    "text": "Who owns the rollback plan for M-44?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "grace",
+      "real_name": "Grace",
+      "display_name": "grace",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U2A4B17B116",
+    "type": "message",
+    "ts": "1731583440.000000",
+    "client_msg_id": "99593e7c8adf2697b1",
+    "text": "Added an index on events(recorded_at) \u2014 3x query speedup.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "erin",
+      "real_name": "Erin",
+      "display_name": "erin",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UFD1CF5E271",
+    "type": "message",
+    "ts": "1731598680.000000",
+    "client_msg_id": "5f1f5f6c96d39351bc",
+    "text": "Migration took 40 min, no downtime. \u2705",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "grace",
+      "real_name": "Grace",
+      "display_name": "grace",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U2A4B17B116",
+    "type": "message",
+    "ts": "1731602100.000000",
+    "client_msg_id": "e3400c197489c487a6",
+    "text": "Moving secrets to Vault this sprint.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "erin",
+      "real_name": "Erin",
+      "display_name": "erin",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UFD1CF5E271",
+    "type": "message",
+    "ts": "1731604980.000000",
+    "client_msg_id": "893bf9252090ccc5e2",
+    "text": "Backfill for historical events is 72% done.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "grace",
+      "real_name": "Grace",
+      "display_name": "grace",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U5CC9DC7FA7",
+    "type": "message",
+    "ts": "1731604980.000001",
+    "client_msg_id": "4c9159a9a8ff3dca81",
+    "text": "Green light from niaj \u2014 M-47 is a go for next Tuesday.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "olivia",
+      "real_name": "Olivia",
+      "display_name": "olivia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

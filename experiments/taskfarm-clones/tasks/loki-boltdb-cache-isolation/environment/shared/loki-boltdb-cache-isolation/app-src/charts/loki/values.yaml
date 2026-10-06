@@ -1,0 +1,23 @@
+loki:
+  storage_config:
+    boltdb_shipper:
+      active_index_directory: /data/loki/boltdb-shipper-active
+      cache_location: /data/loki/boltdb-shipper-cache
+      shared_store: filesystem
+  replicas:
+    - pod_id: loki-write-2
+      component: write
+      active_index_directory: /data/loki/boltdb-shipper-active
+      cache_location: /data/loki/boltdb-shipper-cache
+    - pod_id: loki-write-5
+      component: write
+      active_index_directory: /data/loki/boltdb-shipper-active
+      cache_location: /data/loki/boltdb-shipper-cache
+    - pod_id: loki-compactor-0
+      component: compactor
+      active_index_directory: /data/loki/boltdb-shipper-compactor
+      cache_location: /data/loki/boltdb-shipper-cache
+    - pod_id: loki-read-1
+      component: read
+      active_index_directory: /data/loki/boltdb-shipper-read
+      cache_location: /data/loki/boltdb-shipper-cache-read

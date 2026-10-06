@@ -1,0 +1,115 @@
+{
+  "attachments": {
+    "CRDB-63888": [],
+    "CRDB-63912": [],
+    "CRDB-63963": []
+  },
+  "base_url": "https://jira.local/cockroach",
+  "comments": {
+    "CRDB-63888": [
+      {
+        "author": {"handle": "maya", "id": "user-maya", "name": "Maya Chen"},
+        "body": "The backup warning is noisy but complete. Please do not fold this into the descriptor validation repair.",
+        "created_at": "2026-05-21T08:26:00Z",
+        "id": "comment-crdb-63888-a"
+      }
+    ],
+    "CRDB-63912": [
+      {
+        "author": {"handle": "eli", "id": "user-eli", "name": "Eli Morgan"},
+        "body": "descriptor_lease_table is a forward-reference validation warning. It shares a timestamp with CRDB-63963 but is tracked separately.",
+        "created_at": "2026-05-21T09:55:00Z",
+        "id": "comment-crdb-63912-a"
+      }
+    ],
+    "CRDB-63963": [
+      {
+        "author": {"handle": "noor", "id": "user-noor", "name": "Noor Shah"},
+        "body": "Sentry event evt-crdb-170371 shows validate.go:358 during unsafe_upsert_descriptor. Relation 193 points at missing descriptor 400 with key sql.schema.validation_errors.read.backward_references.relation.",
+        "created_at": "2026-05-21T11:36:27Z",
+        "id": "comment-crdb-63963-a"
+      },
+      {
+        "author": {"handle": "samir", "id": "user-samir", "name": "Samir Rao"},
+        "body": "Local Postgres has a second live relation with the same missing-target shape. Please prepare a scoped repair; disabling validation or scrubbing every depended-on-by row is too risky for this cluster.",
+        "created_at": "2026-05-21T12:02:00Z",
+        "id": "comment-crdb-63963-b"
+      }
+    ]
+  },
+  "issues": [
+    {
+      "assignee": {"handle": "agent", "id": "user-agent", "name": "Agent User"},
+      "created_at": "2026-05-21T11:36:27Z",
+      "description": "Sentry filed a CockroachDB catalog validation panic: validate.go:358 relation 193 has a depended-on-by back reference to missing descriptor 400 while unsafe_upsert_descriptor is reading descriptors.",
+      "id": "issue-crdb-63963",
+      "identifier": "CRDB-63963",
+      "labels": [{"id": "label-incident", "name": "incident"}, {"id": "label-catalog", "name": "catalog"}],
+      "links": [],
+      "module": {"id": "module-sql-catalog", "name": "SQL Catalog"},
+      "priority": 1,
+      "project": {"archived": false, "id": "proj-crdb", "key": "CRDB", "name": "CockroachDB"},
+      "relations": [],
+      "state": {"category": "started", "id": "state-progress", "name": "In Progress"},
+      "title": "validate.go panic on depended-on-by back reference to missing descriptor",
+      "updated_at": "2026-05-21T12:02:00Z",
+      "url": "https://jira.local/cockroach/browse/CRDB-63963"
+    },
+    {
+      "created_at": "2026-05-21T09:50:00Z",
+      "description": "Forward-reference validation warning on descriptor_lease_table.",
+      "id": "issue-crdb-63912",
+      "identifier": "CRDB-63912",
+      "labels": [{"id": "label-catalog", "name": "catalog"}],
+      "links": [],
+      "module": {"id": "module-sql-catalog", "name": "SQL Catalog"},
+      "priority": 3,
+      "project": {"archived": false, "id": "proj-crdb", "key": "CRDB", "name": "CockroachDB"},
+      "relations": [],
+      "state": {"category": "backlog", "id": "state-backlog", "name": "Backlog"},
+      "title": "forward reference warning for descriptor lease table",
+      "updated_at": "2026-05-21T09:55:00Z",
+      "url": "https://jira.local/cockroach/browse/CRDB-63912"
+    },
+    {
+      "created_at": "2026-05-21T08:10:00Z",
+      "description": "Scheduled backup emitted a slow span scan warning but completed successfully.",
+      "id": "issue-crdb-63888",
+      "identifier": "CRDB-63888",
+      "labels": [{"id": "label-backup", "name": "backup"}],
+      "links": [],
+      "module": {"id": "module-backup", "name": "Backup"},
+      "priority": 4,
+      "project": {"archived": false, "id": "proj-crdb", "key": "CRDB", "name": "CockroachDB"},
+      "relations": [],
+      "state": {"category": "completed", "id": "state-done", "name": "Done"},
+      "title": "slow span scan warning during scheduled backup",
+      "updated_at": "2026-05-21T08:40:00Z",
+      "url": "https://jira.local/cockroach/browse/CRDB-63888"
+    }
+  ],
+  "labels": [{"id": "label-incident", "name": "incident"}, {"id": "label-catalog", "name": "catalog"}],
+  "cycles": [],
+  "links": {
+    "CRDB-63963": [
+      {"id": "link-artifact", "title": "Expected artifact", "url": "/app/artifacts/descriptor_backref_repair.json"},
+      {"id": "link-upstream", "title": "Upstream issue", "url": "https://github.com/cockroachdb/cockroach/issues/170371"}
+    ]
+  },
+  "modules": [{"id": "module-sql-catalog", "name": "SQL Catalog"}, {"id": "module-backup", "name": "Backup"}],
+  "project": {"archived": false, "id": "proj-crdb", "key": "CRDB", "name": "CockroachDB"},
+  "projects": [{"archived": false, "id": "proj-crdb", "key": "CRDB", "name": "CockroachDB"}],
+  "states": [
+    {"category": "backlog", "id": "state-backlog", "name": "Backlog"},
+    {"category": "started", "id": "state-progress", "name": "In Progress"},
+    {"category": "started", "id": "state-review", "name": "In Review"},
+    {"category": "completed", "id": "state-done", "name": "Done"}
+  ],
+  "users": [
+    {"handle": "agent", "id": "user-agent", "name": "Agent User"},
+    {"handle": "eli", "id": "user-eli", "name": "Eli Morgan"},
+    {"handle": "maya", "id": "user-maya", "name": "Maya Chen"},
+    {"handle": "noor", "id": "user-noor", "name": "Noor Shah"},
+    {"handle": "samir", "id": "user-samir", "name": "Samir Rao"}
+  ]
+}

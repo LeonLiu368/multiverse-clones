@@ -1,0 +1,162 @@
+[
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1747647060.000000",
+    "client_msg_id": "83c44d164fca2d43e8",
+    "text": "token bucket PR is up for review: /pull/421",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1747648320.000000",
+    "client_msg_id": "af1a05d7201cafcd2b",
+    "text": "will look today",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1747652640.000000",
+    "client_msg_id": "54d3765a07ed36333a",
+    "text": "left comments on the _refill method",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1747654980.000000",
+    "client_msg_id": "106bce1fbe69f7b511",
+    "text": "good catches, updated",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U44844B8AA9",
+    "type": "message",
+    "ts": "1747663860.000000",
+    "client_msg_id": "69bedfd8e8f9d50b0f",
+    "text": "the consume method signature looks clean. what's the plan for the constants?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "kate",
+      "real_name": "Kate",
+      "display_name": "kate",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U44844B8AA9",
+    "type": "message",
+    "ts": "1747663860.000001",
+    "client_msg_id": "0bd042f5963efa8b9c",
+    "text": "makes sense. LGTM on the logic itself",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "kate",
+      "real_name": "Kate",
+      "display_name": "kate",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1747664640.000000",
+    "client_msg_id": "0c130ea2244ba83d74",
+    "text": "that's the open question, we're doing load tests to figure out the right values",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1747667580.000000",
+    "client_msg_id": "d4109b5bab934e9332",
+    "text": "LGTM too, merging after alice approves",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1747669140.000000",
+    "client_msg_id": "a3bfa660e78ce68fd7",
+    "text": "approved! nice clean implementation",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1747670640.000000",
+    "client_msg_id": "d772c83ff30f55a59b",
+    "text": "merged",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

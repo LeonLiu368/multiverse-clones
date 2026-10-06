@@ -1,0 +1,50 @@
+[
+  {
+    "user": "U0AA1C221CA",
+    "type": "message",
+    "ts": "1731489960.000000",
+    "client_msg_id": "7861970deaa17c3af5",
+    "text": "Coffee machine broken AGAIN",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "trent",
+      "real_name": "Trent",
+      "display_name": "trent",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U6525ABCCE7",
+    "type": "message",
+    "ts": "1731502980.000000",
+    "client_msg_id": "b3d33e4b416a9ac10d",
+    "text": "TIL you can pin messages in channels",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "niaj",
+      "real_name": "Niaj",
+      "display_name": "niaj",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1731516360.000000",
+    "client_msg_id": "bb1e0c8717d1d59f89",
+    "text": "Friday trivia at 5pm in #random-games",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

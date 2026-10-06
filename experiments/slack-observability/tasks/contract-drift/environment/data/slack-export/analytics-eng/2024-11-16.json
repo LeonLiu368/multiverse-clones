@@ -1,0 +1,18 @@
+[
+  {
+    "user": "U6525ABCCE7",
+    "type": "message",
+    "ts": "1731760260.000000",
+    "client_msg_id": "904b9bd53257ba34fd",
+    "text": "does anyone have a snippet for the new publisher? still on v1 on our end",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "niaj",
+      "real_name": "Niaj",
+      "display_name": "niaj",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

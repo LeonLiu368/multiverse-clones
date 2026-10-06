@@ -1,0 +1,146 @@
+[
+  {
+    "user": "U5CC9DC7FA7",
+    "type": "message",
+    "ts": "1731319980.000000",
+    "client_msg_id": "71a6850c37f373b7de",
+    "text": "the lint check is now enforced in CI",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "olivia",
+      "real_name": "Olivia",
+      "display_name": "olivia",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U1BEEF78000",
+    "type": "message",
+    "ts": "1731322920.000000",
+    "client_msg_id": "8ed8253040d577d731",
+    "text": "the lint check is now enforced in CI",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "mallory",
+      "real_name": "Mallory",
+      "display_name": "mallory",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UA15F8B81A1",
+    "type": "message",
+    "ts": "1731327000.000000",
+    "client_msg_id": "4e271ce99b8623d702",
+    "text": "rebased the auth PR, CI is green",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "ivan",
+      "real_name": "Ivan",
+      "display_name": "ivan",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UB5382301BB",
+    "type": "message",
+    "ts": "1731329340.000000",
+    "client_msg_id": "ae58b0acc67dbd4467",
+    "text": "updated the runbook for database failover",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "peggy",
+      "real_name": "Peggy",
+      "display_name": "peggy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U28B92B56EE",
+    "type": "message",
+    "ts": "1731330240.000000",
+    "client_msg_id": "12a77e31d0cbab9309",
+    "text": "updated the runbook for database failover",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "carol",
+      "real_name": "Carol",
+      "display_name": "carol",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UFD1CF5E271",
+    "type": "message",
+    "ts": "1731339120.000000",
+    "client_msg_id": "39a2e987454cd43b4c",
+    "text": "dependency audit done, 3 vulns patched",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "grace",
+      "real_name": "Grace",
+      "display_name": "grace",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U1BEEF78000",
+    "type": "message",
+    "ts": "1731340320.000000",
+    "client_msg_id": "88d25e82e92c11c4fa",
+    "text": "is staging stuck? getting 502s",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "mallory",
+      "real_name": "Mallory",
+      "display_name": "mallory",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UA15F8B81A1",
+    "type": "message",
+    "ts": "1731345600.000000",
+    "client_msg_id": "7e110cd78f5b7b9c48",
+    "text": "API deprecation schedule posted in wiki",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "ivan",
+      "real_name": "Ivan",
+      "display_name": "ivan",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UFD1CF5E271",
+    "type": "message",
+    "ts": "1731345900.000000",
+    "client_msg_id": "29649657e3a35d02c5",
+    "text": "code freeze starts Friday noon",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "grace",
+      "real_name": "Grace",
+      "display_name": "grace",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

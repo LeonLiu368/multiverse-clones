@@ -1,0 +1,600 @@
+{
+  "attachments": {},
+  "base_url": "https://linear.app/acme",
+  "comments": {
+    "PROD-101": [
+      {
+        "author": {
+          "handle": "alice",
+          "id": "user-alice",
+          "name": "Alice Chen"
+        },
+        "body": "On it, checking logs now \u2014 pulling error samples from Datadog.",
+        "created_at": "2026-06-08T09:25:00Z",
+        "id": "cmt-prod-101-1",
+        "issue": "PROD-101",
+        "updated_at": "2026-06-08T09:25:00Z"
+      },
+      {
+        "author": {
+          "handle": "bob",
+          "id": "user-bob",
+          "name": "Bob Kumar"
+        },
+        "body": "Confirmed: only happens on empty query string. See #ops-oncall for the root-cause thread.",
+        "created_at": "2026-06-08T09:40:00Z",
+        "id": "cmt-prod-101-2",
+        "issue": "PROD-101",
+        "updated_at": "2026-06-08T09:40:00Z"
+      }
+    ],
+    "PROD-97": [],
+    "PROD-98": [],
+    "PROD-99": []
+  },
+  "cycles": [
+    {
+      "ends_at": "2026-06-14",
+      "id": "cycle-2026-06a",
+      "name": "Sprint 2026-06-A",
+      "starts_at": "2026-06-01"
+    }
+  ],
+  "history": {
+    "PROD-101": [
+      {
+        "action": "issue.update",
+        "after": {
+          "assignees": [
+            {
+              "handle": "agent",
+              "id": "user-agent",
+              "name": "Agent User"
+            }
+          ],
+          "attachments_count": 0,
+          "comments_count": 2,
+          "created_at": "2026-06-08T09:00:00Z",
+          "cycle": {
+            "ends_at": "2026-06-14",
+            "id": "cycle-2026-06a",
+            "name": "Sprint 2026-06-A",
+            "starts_at": "2026-06-01"
+          },
+          "description": "Error rate elevated on /api/search. The endpoint returns HTTP 500 on certain queries. Check #ops-oncall for the root-cause thread and agreed fix. Repo: acme/webapp.",
+          "id": "issue-prod-101",
+          "identifier": "PROD-101",
+          "labels": [
+            {
+              "id": "label-incident",
+              "name": "incident"
+            },
+            {
+              "id": "label-p1",
+              "name": "p1"
+            }
+          ],
+          "links": [],
+          "module": null,
+          "priority": 1,
+          "project": {
+            "archived": false,
+            "id": "proj-prod",
+            "key": "PROD",
+            "name": "Production Incidents"
+          },
+          "relations": [],
+          "state": {
+            "category": "completed",
+            "id": "state-done",
+            "name": "Done"
+          },
+          "title": "Incident: /api/search returning 500 on empty query string",
+          "updated_at": "2026-06-04T12:00:00Z",
+          "url": "https://linear.app/acme/issue/PROD-101"
+        },
+        "at": "2026-06-04T12:00:00Z",
+        "before": {
+          "assignees": [
+            {
+              "handle": "agent",
+              "id": "user-agent",
+              "name": "Agent User"
+            }
+          ],
+          "attachments_count": 0,
+          "comments_count": 2,
+          "created_at": "2026-06-08T09:00:00Z",
+          "cycle": {
+            "ends_at": "2026-06-14",
+            "id": "cycle-2026-06a",
+            "name": "Sprint 2026-06-A",
+            "starts_at": "2026-06-01"
+          },
+          "description": "Error rate elevated on /api/search. The endpoint returns HTTP 500 on certain queries. Check #ops-oncall for the root-cause thread and agreed fix. Repo: acme/webapp.",
+          "id": "issue-prod-101",
+          "identifier": "PROD-101",
+          "labels": [
+            {
+              "id": "label-incident",
+              "name": "incident"
+            },
+            {
+              "id": "label-p1",
+              "name": "p1"
+            }
+          ],
+          "links": [],
+          "module": null,
+          "priority": 1,
+          "project": {
+            "archived": false,
+            "id": "proj-prod",
+            "key": "PROD",
+            "name": "Production Incidents"
+          },
+          "relations": [],
+          "state": {
+            "category": "started",
+            "id": "state-progress",
+            "name": "In Progress"
+          },
+          "title": "Incident: /api/search returning 500 on empty query string",
+          "updated_at": "2026-06-08T09:00:00Z",
+          "url": "https://linear.app/acme/issue/PROD-101"
+        }
+      },
+      {
+        "action": "issue.update",
+        "after": {
+          "assignees": [
+            {
+              "handle": "agent",
+              "id": "user-agent",
+              "name": "Agent User"
+            }
+          ],
+          "attachments_count": 0,
+          "comments_count": 2,
+          "created_at": "2026-06-08T09:00:00Z",
+          "cycle": {
+            "ends_at": "2026-06-14",
+            "id": "cycle-2026-06a",
+            "name": "Sprint 2026-06-A",
+            "starts_at": "2026-06-01"
+          },
+          "description": "Error rate elevated on /api/search. The endpoint returns HTTP 500 on certain queries. Check #ops-oncall for the root-cause thread and agreed fix. Repo: acme/webapp.",
+          "id": "issue-prod-101",
+          "identifier": "PROD-101",
+          "labels": [
+            {
+              "id": "label-incident",
+              "name": "incident"
+            },
+            {
+              "id": "label-p1",
+              "name": "p1"
+            }
+          ],
+          "links": [],
+          "module": null,
+          "priority": 1,
+          "project": {
+            "archived": false,
+            "id": "proj-prod",
+            "key": "PROD",
+            "name": "Production Incidents"
+          },
+          "relations": [],
+          "state": {
+            "category": "completed",
+            "id": "state-done",
+            "name": "Done"
+          },
+          "title": "Incident: /api/search returning 500 on empty query string",
+          "updated_at": "2026-06-04T12:00:00Z",
+          "url": "https://linear.app/acme/issue/PROD-101"
+        },
+        "at": "2026-06-04T12:00:00Z",
+        "before": {
+          "assignees": [
+            {
+              "handle": "agent",
+              "id": "user-agent",
+              "name": "Agent User"
+            }
+          ],
+          "attachments_count": 0,
+          "comments_count": 2,
+          "created_at": "2026-06-08T09:00:00Z",
+          "cycle": {
+            "ends_at": "2026-06-14",
+            "id": "cycle-2026-06a",
+            "name": "Sprint 2026-06-A",
+            "starts_at": "2026-06-01"
+          },
+          "description": "Error rate elevated on /api/search. The endpoint returns HTTP 500 on certain queries. Check #ops-oncall for the root-cause thread and agreed fix. Repo: acme/webapp.",
+          "id": "issue-prod-101",
+          "identifier": "PROD-101",
+          "labels": [
+            {
+              "id": "label-incident",
+              "name": "incident"
+            },
+            {
+              "id": "label-p1",
+              "name": "p1"
+            }
+          ],
+          "links": [],
+          "module": null,
+          "priority": 1,
+          "project": {
+            "archived": false,
+            "id": "proj-prod",
+            "key": "PROD",
+            "name": "Production Incidents"
+          },
+          "relations": [],
+          "state": {
+            "category": "completed",
+            "id": "state-done",
+            "name": "Done"
+          },
+          "title": "Incident: /api/search returning 500 on empty query string",
+          "updated_at": "2026-06-04T12:00:00Z",
+          "url": "https://linear.app/acme/issue/PROD-101"
+        }
+      },
+      {
+        "action": "issue.update",
+        "after": {
+          "assignees": [
+            {
+              "handle": "agent",
+              "id": "user-agent",
+              "name": "Agent User"
+            }
+          ],
+          "attachments_count": 0,
+          "comments_count": 2,
+          "created_at": "2026-06-08T09:00:00Z",
+          "cycle": {
+            "ends_at": "2026-06-14",
+            "id": "cycle-2026-06a",
+            "name": "Sprint 2026-06-A",
+            "starts_at": "2026-06-01"
+          },
+          "description": "Error rate elevated on /api/search. The endpoint returns HTTP 500 on certain queries. Check #ops-oncall for the root-cause thread and agreed fix. Repo: acme/webapp.",
+          "id": "issue-prod-101",
+          "identifier": "PROD-101",
+          "labels": [
+            {
+              "id": "label-incident",
+              "name": "incident"
+            },
+            {
+              "id": "label-p1",
+              "name": "p1"
+            }
+          ],
+          "links": [],
+          "module": null,
+          "priority": 1,
+          "project": {
+            "archived": false,
+            "id": "proj-prod",
+            "key": "PROD",
+            "name": "Production Incidents"
+          },
+          "relations": [],
+          "state": {
+            "category": "completed",
+            "id": "state-done",
+            "name": "Done"
+          },
+          "title": "Incident: /api/search returning 500 on empty query string",
+          "updated_at": "2026-06-04T12:00:00Z",
+          "url": "https://linear.app/acme/issue/PROD-101"
+        },
+        "at": "2026-06-04T12:00:00Z",
+        "before": {
+          "assignees": [
+            {
+              "handle": "agent",
+              "id": "user-agent",
+              "name": "Agent User"
+            }
+          ],
+          "attachments_count": 0,
+          "comments_count": 2,
+          "created_at": "2026-06-08T09:00:00Z",
+          "cycle": {
+            "ends_at": "2026-06-14",
+            "id": "cycle-2026-06a",
+            "name": "Sprint 2026-06-A",
+            "starts_at": "2026-06-01"
+          },
+          "description": "Error rate elevated on /api/search. The endpoint returns HTTP 500 on certain queries. Check #ops-oncall for the root-cause thread and agreed fix. Repo: acme/webapp.",
+          "id": "issue-prod-101",
+          "identifier": "PROD-101",
+          "labels": [
+            {
+              "id": "label-incident",
+              "name": "incident"
+            },
+            {
+              "id": "label-p1",
+              "name": "p1"
+            }
+          ],
+          "links": [],
+          "module": null,
+          "priority": 1,
+          "project": {
+            "archived": false,
+            "id": "proj-prod",
+            "key": "PROD",
+            "name": "Production Incidents"
+          },
+          "relations": [],
+          "state": {
+            "category": "completed",
+            "id": "state-done",
+            "name": "Done"
+          },
+          "title": "Incident: /api/search returning 500 on empty query string",
+          "updated_at": "2026-06-04T12:00:00Z",
+          "url": "https://linear.app/acme/issue/PROD-101"
+        }
+      }
+    ]
+  },
+  "issues": [
+    {
+      "assignees": [
+        {
+          "handle": "agent",
+          "id": "user-agent",
+          "name": "Agent User"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 2,
+      "created_at": "2026-06-08T09:00:00Z",
+      "cycle": {
+        "ends_at": "2026-06-14",
+        "id": "cycle-2026-06a",
+        "name": "Sprint 2026-06-A",
+        "starts_at": "2026-06-01"
+      },
+      "description": "Error rate elevated on /api/search. The endpoint returns HTTP 500 on certain queries. Check #ops-oncall for the root-cause thread and agreed fix. Repo: acme/webapp.",
+      "id": "issue-prod-101",
+      "identifier": "PROD-101",
+      "labels": [
+        {
+          "id": "label-incident",
+          "name": "incident"
+        },
+        {
+          "id": "label-p1",
+          "name": "p1"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 1,
+      "project": {
+        "archived": false,
+        "id": "proj-prod",
+        "key": "PROD",
+        "name": "Production Incidents"
+      },
+      "relations": [],
+      "state": {
+        "category": "completed",
+        "id": "state-done",
+        "name": "Done"
+      },
+      "title": "Incident: /api/search returning 500 on empty query string",
+      "updated_at": "2026-06-04T12:00:00Z",
+      "url": "https://linear.app/acme/issue/PROD-101"
+    },
+    {
+      "assignees": [],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-06T14:00:00Z",
+      "cycle": null,
+      "description": "p99 latency on /api/users exceeds 2s during peak hours.",
+      "id": "issue-prod-99",
+      "identifier": "PROD-99",
+      "labels": [
+        {
+          "id": "label-perf",
+          "name": "perf"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 3,
+      "project": {
+        "archived": false,
+        "id": "proj-prod",
+        "key": "PROD",
+        "name": "Production Incidents"
+      },
+      "relations": [],
+      "state": {
+        "category": "unstarted",
+        "id": "state-todo",
+        "name": "Todo"
+      },
+      "title": "Slow response on /api/users (>2s p99)",
+      "updated_at": "2026-06-06T14:00:00Z",
+      "url": "https://linear.app/acme/issue/PROD-99"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "bob",
+          "id": "user-bob",
+          "name": "Bob Kumar"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-05T10:00:00Z",
+      "cycle": null,
+      "description": "Disk usage on prod-db-02 is at 83%, trending up.",
+      "id": "issue-prod-97",
+      "identifier": "PROD-97",
+      "labels": [
+        {
+          "id": "label-infra",
+          "name": "infra"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 2,
+      "project": {
+        "archived": false,
+        "id": "proj-prod",
+        "key": "PROD",
+        "name": "Production Incidents"
+      },
+      "relations": [],
+      "state": {
+        "category": "started",
+        "id": "state-progress",
+        "name": "In Progress"
+      },
+      "title": "Disk usage alert on prod-db-02",
+      "updated_at": "2026-06-05T12:00:00Z",
+      "url": "https://linear.app/acme/issue/PROD-97"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "alice",
+          "id": "user-alice",
+          "name": "Alice Chen"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-01T08:00:00Z",
+      "cycle": null,
+      "description": "Memory leak in background worker \u2014 resolved last sprint.",
+      "id": "issue-prod-98",
+      "identifier": "PROD-98",
+      "labels": [
+        {
+          "id": "label-incident",
+          "name": "incident"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 2,
+      "project": {
+        "archived": false,
+        "id": "proj-prod",
+        "key": "PROD",
+        "name": "Production Incidents"
+      },
+      "relations": [],
+      "state": {
+        "category": "completed",
+        "id": "state-done",
+        "name": "Done"
+      },
+      "title": "Memory leak in worker process \u2014 resolved",
+      "updated_at": "2026-06-02T09:00:00Z",
+      "url": "https://linear.app/acme/issue/PROD-98"
+    }
+  ],
+  "labels": [
+    {
+      "id": "label-incident",
+      "name": "incident"
+    },
+    {
+      "id": "label-p1",
+      "name": "p1"
+    },
+    {
+      "id": "label-perf",
+      "name": "perf"
+    },
+    {
+      "id": "label-infra",
+      "name": "infra"
+    }
+  ],
+  "links": {},
+  "modules": [],
+  "project": {
+    "archived": false,
+    "id": "proj-prod",
+    "key": "PROD",
+    "name": "Production Incidents"
+  },
+  "relations": {},
+  "states": [
+    {
+      "category": "backlog",
+      "id": "state-backlog",
+      "name": "Backlog"
+    },
+    {
+      "category": "unstarted",
+      "id": "state-todo",
+      "name": "Todo"
+    },
+    {
+      "category": "started",
+      "id": "state-progress",
+      "name": "In Progress"
+    },
+    {
+      "category": "started",
+      "id": "state-review",
+      "name": "In Review"
+    },
+    {
+      "category": "completed",
+      "id": "state-done",
+      "name": "Done"
+    }
+  ],
+  "users": [
+    {
+      "handle": "agent",
+      "id": "user-agent",
+      "name": "Agent User"
+    },
+    {
+      "handle": "alice",
+      "id": "user-alice",
+      "name": "Alice Chen"
+    },
+    {
+      "handle": "bob",
+      "id": "user-bob",
+      "name": "Bob Kumar"
+    },
+    {
+      "handle": "mia",
+      "id": "user-mia",
+      "name": "Mia Torres"
+    },
+    {
+      "handle": "carol",
+      "id": "user-carol",
+      "name": "Carol Zhang"
+    }
+  ],
+  "workspace": "acme"
+}

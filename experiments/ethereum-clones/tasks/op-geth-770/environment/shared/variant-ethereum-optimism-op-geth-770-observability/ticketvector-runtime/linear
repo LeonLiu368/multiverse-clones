@@ -1,0 +1,12 @@
+#!/usr/bin/env python3
+import os
+
+os.environ.setdefault("WORLD_ISSUES_BACKEND", "remote")
+os.environ.setdefault("PLANE_BASE_URL", "http://127.0.0.1:8765")
+os.environ.setdefault("WORLD_ISSUES_ACTOR", "agent")
+os.environ.setdefault("WORLD_ISSUES_OUTPUT", "json")
+os.environ.setdefault("WORLD_ISSUES_AGENT_MODE", "1")
+
+from world_issues.cli import main_linear
+
+main_linear()

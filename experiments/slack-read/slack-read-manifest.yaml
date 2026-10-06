@@ -1,0 +1,35 @@
+metadata:
+  name: slack-read
+  enable_image_push: true
+  description: |
+    Simple real-world Slack READ tasks (pure tool-use; no codebase). The agent is dropped into
+    a real Slack workspace and must read it through the `slack` CLI + the korotovsky `slack-mcp`
+    server, then write down a few simple message-related facts. These measure whether a model can
+    operate the Slack tools and navigate real exported chat at very different scales.
+
+      - rw-small-slack-read: a tiny real export — count how many messages contain the word
+        "testing" (answer: 2).
+      - rw-large-slack-read: a sizeable real-export slice (4 channels, ~4k messages; one channel
+        exceeds the history page so the agent must search/navigate). Report three counts:
+        #deploys "deploy" (69), #product "release" (32), and the number of channels (4).
+      - rw-full-slack-read: the FULL real export (88 channels, ~2.4M messages, ~9 years).
+
+    Two-container layout (restores tool-use isolation): a thin agent `main`
+    (ghcr.io/abundant-ai/slack-agent — slack CLI + korotovsky MCP only, NO data) reaches a separate
+    `slack` sidecar (ghcr.io/abundant-ai/slack-gateway:<dataset> — a SQLite-backed Slack Web API
+    gateway serving a REAL export, baked per dataset) ONLY over HTTP. The agent has no filesystem
+    access to the chat data, so it can't bypass the tools. Deterministic: nop=0, oracle=1.
+  task_path: experiments/slack-read/tasks
+  n_trials: 1
+  skip_trajectory_analysis: false
+
+tasks:
+  - rw-small-slack-read
+  - rw-large-slack-read
+  - rw-full-slack-read
+
+agents:
+  - name: nop
+  - name: oracle
+  - name: gemini-cli
+    model_name: google/gemini-3.1-pro-preview

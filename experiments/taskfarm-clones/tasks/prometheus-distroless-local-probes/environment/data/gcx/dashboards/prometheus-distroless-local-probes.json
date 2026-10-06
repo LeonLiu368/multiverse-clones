@@ -1,0 +1,47 @@
+{
+  "annotations": {"list": []},
+  "editable": true,
+  "panels": [
+    {
+      "gridPos": {"h": 6, "w": 12, "x": 0, "y": 0},
+      "id": 1,
+      "options": {
+        "content": "PROMOP-8605 firing: kubelet exec probes fail with sh missing on prom-ceems-primary and prom-edge-rules."
+      },
+      "title": "Distroless listenLocal probe failures",
+      "type": "text"
+    },
+    {
+      "gridPos": {"h": 4, "w": 8, "x": 12, "y": 0},
+      "id": 2,
+      "options": {
+        "content": "prom-legacy-shell is a near miss: listenLocal true but shell-capable image."
+      },
+      "title": "Near miss: shell image",
+      "type": "text"
+    },
+    {
+      "gridPos": {"h": 4, "w": 8, "x": 0, "y": 6},
+      "id": 3,
+      "options": {
+        "content": "prom-public-metrics is distroless but not listenLocal; do not mark it repaired."
+      },
+      "title": "Near miss: public listener",
+      "type": "text"
+    },
+    {
+      "gridPos": {"h": 4, "w": 8, "x": 8, "y": 6},
+      "id": 4,
+      "options": {
+        "content": "Rejected broad workaround: fleet image rollback or rewriting every Prometheus probe."
+      },
+      "title": "Rejected broad workaround",
+      "type": "text"
+    }
+  ],
+  "schemaVersion": 39,
+  "tags": ["prometheus", "distroless", "probes"],
+  "title": "prometheus-distroless-local-probes",
+  "uid": "prom-probes",
+  "version": 1
+}

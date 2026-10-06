@@ -1,0 +1,40 @@
+schema_version = "1.3"
+source = "task-specific synthetic incident context"
+
+[task]
+name = "three-surface-ops/oncall-fix-and-close"
+description = "On-call incident: the /api/search endpoint crashes with a 500 on empty query strings. Ticket PROD-101 names the incident; the #ops-oncall Slack thread holds the root-cause diagnosis (an IndexError on term[0] in search.py) and the agreed fix; a fix has already been opened as a pull request on acme/webapp. The agent must correlate all three surfaces, verify the open PR matches the agreed fix, approve and merge it, and move the ticket to Done. nop=0, oracle=1."
+custom_docker_compose = true
+
+[metadata]
+author_name = "Abundant AI"
+author_email = "tasks@abundant.ai"
+author_organization = "Abundant"
+category = "observability"
+source_repo = "acme/webapp"
+difficulty_explanation = "Requires correlating a Linear incident ticket, a noisy Slack on-call thread with red herrings (Redis, DB pool, reindex), and an open GitHub PR, then validating the PR against the agreed root cause before merging and closing the ticket."
+tags = ["gh", "slack", "ticketvector", "multi-surface", "pr-review", "three-service"]
+expert_time_estimate_hours = 0.5
+relevant_experience = "On-call triage, Slack incident review, issue-tracker workflow, GitHub PR review and merge"
+
+[agent]
+timeout_sec = 1800
+user = "agent"
+
+[verifier]
+timeout_sec = 300
+user = "root"
+
+[environment]
+allow_internet = true
+build_timeout_sec = 2400
+cpus = 2
+memory_mb = 4096
+storage_mb = 20480
+gpus = 0
+workdir = "/app"
+
+[[environment.mcp_servers]]
+name = "slack"
+transport = "stdio"
+command = "slack-mcp"

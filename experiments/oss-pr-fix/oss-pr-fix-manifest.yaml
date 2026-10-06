@@ -1,0 +1,41 @@
+metadata:
+  name: oss-pr-fix
+  description: |
+    Two multi-surface software-engineering tasks adapted from real psf/requests
+    bug fixes. Each task seeds a repo with a buggy library snapshot and splits
+    the required information across THREE discovery surfaces:
+
+      - an issue tracker (ticketvector: linear/jira CLIs) — names the symptom,
+        the repo, and points to chat for the implementation contract;
+      - a Slack workspace (slack-service: slack CLI + slack-mcp) — holds the
+        exact, test-enforced implementation contract;
+      - an offline GitHub forge (ghc-service: gh CLI) — holds the code.
+
+    The agent must read the issue, read the agreed contract in Slack, clone the
+    repo, implement the fix, and open a pull request against main. Grading
+    checks out the PR's head and runs the test suite: the existing tests (P2P)
+    must keep passing AND hidden tests that exercise the bug (F2P) must pass.
+    nop=0, oracle=1.
+  task_path: experiments/oss-pr-fix/tasks
+  n_trials: 1
+  skip_trajectory_analysis: false
+
+tasks:
+  - requests-url-case
+  - requests-json-nan
+
+agents:
+  - name: oracle
+  - name: nop
+  - name: gemini-cli
+    model_name: gemini/gemini-3.1-pro-preview
+    n_trials: 2
+  - name: cursor-cli
+    model_name: cursor/composer
+    n_trials: 2
+  - name: codex
+    model_name: openai/gpt-5.2-codex
+    n_trials: 2
+  - name: claude-code
+    model_name: anthropic/claude-opus-4-7
+    n_trials: 2

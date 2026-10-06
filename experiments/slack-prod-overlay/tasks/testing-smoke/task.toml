@@ -1,0 +1,26 @@
+schema_version = "1.2"
+name = "slack-prod-overlay/testing-smoke"
+description = "Smoke test of the baked-image + per-task-overlay mechanism on a second dataset. The WorldsDataTest export (2 messages containing 'testing') is baked into the sidecar image; the per-task overlay plants one more 'testing' message. The agent counts messages containing 'testing' (answer: 3). Pure tool-use; no codebase. nop=0, oracle=1."
+
+[metadata]
+category = "tool-use"
+service = "slack"
+tools = ["slack-cli", "slack-mcp"]
+tags = ["slack", "read", "tool-use", "prod-overlay", "smoke", "real-data"]
+
+[agent]
+timeout_sec = 900
+[verifier]
+timeout_sec = 300
+[environment]
+custom_docker_compose = true
+cpus = 2
+memory_mb = 2048
+storage_mb = 4096
+allow_internet = true
+workdir = "/workspace"
+build_timeout_sec = 1200
+[[environment.mcp_servers]]
+name = "slack"
+transport = "stdio"
+command = "slack-mcp"

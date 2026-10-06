@@ -1,0 +1,273 @@
+{
+  "attachments": {},
+  "base_url": "https://linear.app/acme",
+  "comments": {
+    "DES-101": [
+      {
+        "author": {
+          "handle": "rae",
+          "id": "user-rae",
+          "name": "Rae Designer"
+        },
+        "body": "Design is finalized in Figma file PrcCardHandoffFile001x. The exact card geometry and copy are on the PricingCard component and in its comment thread.",
+        "created_at": "2026-05-12T15:05:00Z",
+        "id": "cmt-des-101-1",
+        "issue": "DES-101",
+        "updated_at": "2026-05-12T15:05:00Z"
+      },
+      {
+        "author": {
+          "handle": "mira",
+          "id": "user-mira",
+          "name": "Mira Devon"
+        },
+        "body": "Assigned to you. Heads up: the CTA label on the mock is out of date \u2014 check the latest design comment for the real copy. Move to In Review once the values match.",
+        "created_at": "2026-05-12T15:10:00Z",
+        "id": "cmt-des-101-2",
+        "issue": "DES-101",
+        "updated_at": "2026-05-12T15:10:00Z"
+      },
+      {
+        "author": {
+          "handle": "agent",
+          "id": "user-agent",
+          "name": "Agent User"
+        },
+        "body": "Implemented PricingCard to the finalized Figma spec: heading 'Pro', price $29/mo, padding 24, radius 12, CTA 'Start free trial'.",
+        "created_at": "2026-06-04T12:00:00Z",
+        "id": "comment-des-101-3",
+        "issue": "DES-101",
+        "updated_at": "2026-06-04T12:00:00Z"
+      }
+    ]
+  },
+  "cycles": [
+    {
+      "ends_at": "2026-06-14",
+      "id": "cycle-2026-06a",
+      "name": "Sprint 2026-06-A",
+      "starts_at": "2026-06-01"
+    }
+  ],
+  "history": {
+    "DES-101": [
+      {
+        "action": "issue.update",
+        "after": {
+          "assignees": [
+            {
+              "handle": "agent",
+              "id": "user-agent",
+              "name": "Agent User"
+            }
+          ],
+          "attachments_count": 0,
+          "comments_count": 2,
+          "created_at": "2026-05-12T15:00:00Z",
+          "cycle": {
+            "ends_at": "2026-06-14",
+            "id": "cycle-2026-06a",
+            "name": "Sprint 2026-06-A",
+            "starts_at": "2026-06-01"
+          },
+          "description": "Implement the PricingCard component to match the finalized design. The finalized spec lives in the Figma file PrcCardHandoffFile001x (the PricingCard component and its comment thread) \u2014 read the node tree and the comments for the exact padding, radius, heading, price, and CTA copy. The mock text may be stale; a later comment supersedes it. Update pricing_card/card.py to match, then move this ticket to In Review and add a comment listing the values you implemented.",
+          "id": "issue-des-101",
+          "identifier": "DES-101",
+          "labels": [
+            {
+              "id": "label-design",
+              "name": "design"
+            },
+            {
+              "id": "label-feature",
+              "name": "feature"
+            }
+          ],
+          "links": [],
+          "module": null,
+          "priority": 2,
+          "project": {
+            "archived": false,
+            "id": "proj-des",
+            "key": "DES",
+            "name": "Design Delivery"
+          },
+          "relations": [],
+          "state": {
+            "category": "started",
+            "id": "state-review",
+            "name": "In Review"
+          },
+          "title": "Implement PricingCard to match the finalized Figma design",
+          "updated_at": "2026-06-04T12:00:00Z",
+          "url": "https://linear.app/acme/issue/DES-101"
+        },
+        "at": "2026-06-04T12:00:00Z",
+        "before": {
+          "assignees": [
+            {
+              "handle": "agent",
+              "id": "user-agent",
+              "name": "Agent User"
+            }
+          ],
+          "attachments_count": 0,
+          "comments_count": 2,
+          "created_at": "2026-05-12T15:00:00Z",
+          "cycle": {
+            "ends_at": "2026-06-14",
+            "id": "cycle-2026-06a",
+            "name": "Sprint 2026-06-A",
+            "starts_at": "2026-06-01"
+          },
+          "description": "Implement the PricingCard component to match the finalized design. The finalized spec lives in the Figma file PrcCardHandoffFile001x (the PricingCard component and its comment thread) \u2014 read the node tree and the comments for the exact padding, radius, heading, price, and CTA copy. The mock text may be stale; a later comment supersedes it. Update pricing_card/card.py to match, then move this ticket to In Review and add a comment listing the values you implemented.",
+          "id": "issue-des-101",
+          "identifier": "DES-101",
+          "labels": [
+            {
+              "id": "label-design",
+              "name": "design"
+            },
+            {
+              "id": "label-feature",
+              "name": "feature"
+            }
+          ],
+          "links": [],
+          "module": null,
+          "priority": 2,
+          "project": {
+            "archived": false,
+            "id": "proj-des",
+            "key": "DES",
+            "name": "Design Delivery"
+          },
+          "relations": [],
+          "state": {
+            "category": "started",
+            "id": "state-progress",
+            "name": "In Progress"
+          },
+          "title": "Implement PricingCard to match the finalized Figma design",
+          "updated_at": "2026-05-12T15:00:00Z",
+          "url": "https://linear.app/acme/issue/DES-101"
+        }
+      }
+    ]
+  },
+  "issues": [
+    {
+      "assignees": [
+        {
+          "handle": "agent",
+          "id": "user-agent",
+          "name": "Agent User"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 2,
+      "created_at": "2026-05-12T15:00:00Z",
+      "cycle": {
+        "ends_at": "2026-06-14",
+        "id": "cycle-2026-06a",
+        "name": "Sprint 2026-06-A",
+        "starts_at": "2026-06-01"
+      },
+      "description": "Implement the PricingCard component to match the finalized design. The finalized spec lives in the Figma file PrcCardHandoffFile001x (the PricingCard component and its comment thread) \u2014 read the node tree and the comments for the exact padding, radius, heading, price, and CTA copy. The mock text may be stale; a later comment supersedes it. Update pricing_card/card.py to match, then move this ticket to In Review and add a comment listing the values you implemented.",
+      "id": "issue-des-101",
+      "identifier": "DES-101",
+      "labels": [
+        {
+          "id": "label-design",
+          "name": "design"
+        },
+        {
+          "id": "label-feature",
+          "name": "feature"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 2,
+      "project": {
+        "archived": false,
+        "id": "proj-des",
+        "key": "DES",
+        "name": "Design Delivery"
+      },
+      "relations": [],
+      "state": {
+        "category": "started",
+        "id": "state-review",
+        "name": "In Review"
+      },
+      "title": "Implement PricingCard to match the finalized Figma design",
+      "updated_at": "2026-06-04T12:00:00Z",
+      "url": "https://linear.app/acme/issue/DES-101"
+    }
+  ],
+  "labels": [
+    {
+      "id": "label-design",
+      "name": "design"
+    },
+    {
+      "id": "label-feature",
+      "name": "feature"
+    }
+  ],
+  "links": {},
+  "modules": [],
+  "project": {
+    "archived": false,
+    "id": "proj-des",
+    "key": "DES",
+    "name": "Design Delivery"
+  },
+  "relations": {},
+  "states": [
+    {
+      "category": "backlog",
+      "id": "state-backlog",
+      "name": "Backlog"
+    },
+    {
+      "category": "unstarted",
+      "id": "state-todo",
+      "name": "Todo"
+    },
+    {
+      "category": "started",
+      "id": "state-progress",
+      "name": "In Progress"
+    },
+    {
+      "category": "started",
+      "id": "state-review",
+      "name": "In Review"
+    },
+    {
+      "category": "completed",
+      "id": "state-done",
+      "name": "Done"
+    }
+  ],
+  "users": [
+    {
+      "handle": "agent",
+      "id": "user-agent",
+      "name": "Agent User"
+    },
+    {
+      "handle": "mira",
+      "id": "user-mira",
+      "name": "Mira Devon"
+    },
+    {
+      "handle": "rae",
+      "id": "user-rae",
+      "name": "Rae Designer"
+    }
+  ],
+  "workspace": "acme"
+}

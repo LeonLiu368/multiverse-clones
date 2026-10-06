@@ -1,0 +1,183 @@
+diff --git a/docs/api.md b/docs/api.md
+index 49e63c04b..050443c19 100644
+--- a/docs/api.md
++++ b/docs/api.md
+@@ -541,6 +541,12 @@ server, the following procedure should be performed:
+ 2.  Determine whether the client is compatible with this server based on
+     the presence/absence of these headers and their values if present.
+
++### API Version Deprecation Policy
++
++Older API versions are guaranteed to be supported for at least one year
++after the release of a new API version. After that, support for older
++API versions may be (but is not guaranteed to be) dropped.
++
+ ### API Changelog
+
+ #### Version 1
+@@ -573,3 +579,11 @@ Initial API version.
+ #### Version 6
+
+ -   Moved acknowledge tasks endpoint to be under `/api/tasks/acknowledge/`.
++
++#### Version 7
++
++-   The format of select type custom fields has changed to return the options
++    as an array of objects with `id` and `label` fields as opposed to a simple
++    list of strings. When creating or updating a custom field value of a
++    document for a select type custom field, the value should be the `id` of
++    the option whereas previously was the index of the option.
+diff --git a/src-ui/src/environments/environment.prod.ts b/src-ui/src/environments/environment.prod.ts
+index 702b584cb..d2108ee86 100644
+--- a/src-ui/src/environments/environment.prod.ts
++++ b/src-ui/src/environments/environment.prod.ts
+@@ -3,7 +3,7 @@ const base_url = new URL(document.baseURI)
+ export const environment = {
+   production: true,
+   apiBaseUrl: document.baseURI + 'api/',
+-  apiVersion: '6',
++  apiVersion: '7',
+   appTitle: 'Paperless-ngx',
+   version: '2.14.5',
+   webSocketHost: window.location.host,
+diff --git a/src-ui/src/environments/environment.ts b/src-ui/src/environments/environment.ts
+index 6256f3ae3..2cad64ce0 100644
+--- a/src-ui/src/environments/environment.ts
++++ b/src-ui/src/environments/environment.ts
+@@ -5,7 +5,7 @@
+ export const environment = {
+   production: false,
+   apiBaseUrl: 'http://localhost:8000/api/',
+-  apiVersion: '6',
++  apiVersion: '7',
+   appTitle: 'Paperless-ngx',
+   version: 'DEVELOPMENT',
+   webSocketHost: 'localhost:8000',
+diff --git a/src/documents/serialisers.py b/src/documents/serialisers.py
+index eb1eba8f1..0732fd242 100644
+--- a/src/documents/serialisers.py
++++ b/src/documents/serialisers.py
+@@ -496,6 +496,15 @@ class StoragePathField(serializers.PrimaryKeyRelatedField):
+
+
+ class CustomFieldSerializer(serializers.ModelSerializer):
++    def __init__(self, *args, **kwargs):
++        context = kwargs.get("context")
++        self.api_version = int(
++            context.get("request").version
++            if context.get("request")
++            else settings.REST_FRAMEWORK["DEFAULT_VERSION"],
++        )
++        super().__init__(*args, **kwargs)
++
+     data_type = serializers.ChoiceField(
+         choices=CustomField.FieldDataType,
+         read_only=False,
+@@ -575,6 +584,38 @@ class CustomFieldSerializer(serializers.ModelSerializer):
+             )
+         return super().validate(attrs)
+
++    def to_internal_value(self, data):
++        ret = super().to_internal_value(data)
++
++        if (
++            self.api_version < 7
++            and ret.get("data_type", "") == CustomField.FieldDataType.SELECT
++            and isinstance(ret.get("extra_data", {}).get("select_options"), list)
++        ):
++            ret["extra_data"]["select_options"] = [
++                {
++                    "label": option,
++                    "id": get_random_string(length=16),
++                }
++                for option in ret["extra_data"]["select_options"]
++            ]
++
++        return ret
++
++    def to_representation(self, instance):
++        ret = super().to_representation(instance)
++
++        if (
++            self.api_version < 7
++            and instance.data_type == CustomField.FieldDataType.SELECT
++        ):
++            # Convert the select options with ids to a list of strings
++            ret["extra_data"]["select_options"] = [
++                option["label"] for option in ret["extra_data"]["select_options"]
++            ]
++
++        return ret
++
+
+ class ReadWriteSerializerMethodField(serializers.SerializerMethodField):
+     """
+@@ -682,6 +723,50 @@ class CustomFieldInstanceSerializer(serializers.ModelSerializer):
+
+         return data
+
++    def get_api_version(self):
++        return int(
++            self.context.get("request").version
++            if self.context.get("request")
++            else settings.REST_FRAMEWORK["DEFAULT_VERSION"],
++        )
++
++    def to_internal_value(self, data):
++        ret = super().to_internal_value(data)
++
++        if (
++            self.get_api_version() < 7
++            and ret.get("field").data_type == CustomField.FieldDataType.SELECT
++            and ret.get("value") is not None
++        ):
++            # Convert the index of the option in the field.extra_data["select_options"]
++            # list to the options unique id
++            ret["value"] = ret.get("field").extra_data["select_options"][ret["value"]][
++                "id"
++            ]
++
++        return ret
++
++    def to_representation(self, instance):
++        ret = super().to_representation(instance)
++
++        if (
++            self.get_api_version() < 7
++            and instance.field.data_type == CustomField.FieldDataType.SELECT
++        ):
++            # return the index of the option in the field.extra_data["select_options"] list
++            ret["value"] = next(
++                (
++                    idx
++                    for idx, option in enumerate(
++                        instance.field.extra_data["select_options"],
++                    )
++                    if option["id"] == instance.value
++                ),
++                None,
++            )
++
++        return ret
++
+     def reflect_doclinks(
+         self,
+         document: Document,
+diff --git a/src/paperless/settings.py b/src/paperless/settings.py
+index ef842dde6..a817abd70 100644
+--- a/src/paperless/settings.py
++++ b/src/paperless/settings.py
+@@ -341,10 +341,10 @@ REST_FRAMEWORK = {
+         "rest_framework.authentication.SessionAuthentication",
+     ],
+     "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.AcceptHeaderVersioning",
+-    "DEFAULT_VERSION": "1",
++    "DEFAULT_VERSION": "7",
+     # Make sure these are ordered and that the most recent version appears
+-    # last
+-    "ALLOWED_VERSIONS": ["1", "2", "3", "4", "5", "6"],
++    # last. See api.md#api-versioning when adding new versions.
++    "ALLOWED_VERSIONS": ["1", "2", "3", "4", "5", "6", "7"],
+ }
+
+ if DEBUG:

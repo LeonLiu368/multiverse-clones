@@ -1,0 +1,23 @@
+metadata:
+  name: notion-smoke
+  enable_image_push: true
+  description: |
+    Standalone smoke test for the notion clone's agent/gateway split (a read + WRITE task; NOT an
+    APEX task). Two containers: a thin data-free notion-agent (notion-cli + notion-mcp) as `main`,
+    and a notion-service:prod-v1 gateway sidecar that serves a baked Tasks-database corpus mount-free.
+    The agent must query the Tasks database, find the "Rotate prod database creds" page, mark its
+    Status=Done + Done checkbox, and post a comment containing "rotated". The verifier reads the state
+    back THROUGH the Notion API (write->read round-trip). Notion data lives only in the notion sidecar.
+    Deterministic nop=0, oracle=1. Built/verified against clone-standard-v1 (meets_standard, gating 7/7).
+  task_path: experiments/notion-smoke/tasks
+  n_trials: 1
+  skip_trajectory_analysis: false
+
+tasks:
+  - notion-db-triage
+
+agents:
+  - name: nop
+  - name: oracle
+  - name: gemini-cli
+    model_name: gemini/gemini-3.1-pro-preview

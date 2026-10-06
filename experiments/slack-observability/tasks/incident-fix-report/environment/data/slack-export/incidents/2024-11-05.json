@@ -1,0 +1,50 @@
+[
+  {
+    "user": "U2A4B17B116",
+    "type": "message",
+    "ts": "1730799120.000000",
+    "client_msg_id": "3d9e08f856cadd3488",
+    "text": "upstream payment gateway timeout resolved",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "erin",
+      "real_name": "Erin",
+      "display_name": "erin",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U88FA846E5F",
+    "type": "message",
+    "ts": "1730814240.000000",
+    "client_msg_id": "deadd379de9570bc22",
+    "text": "db failover completed successfully",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "victor",
+      "real_name": "Victor",
+      "display_name": "victor",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U38FC8CAEA6",
+    "type": "message",
+    "ts": "1730823420.000000",
+    "client_msg_id": "ab042a5918ea8ae6c7",
+    "text": "[auto] heartbeat check passed",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "judy",
+      "real_name": "Judy",
+      "display_name": "judy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

@@ -1,0 +1,23 @@
+metadata:
+  name: slack-recent-lookup
+  enable_image_push: true
+  description: |
+    A single simple read task on the shared prod Slack corpus (slack-gateway:prod-v1, 88 channels /
+    ~2.4M messages) plus a RECENT overlay. The agent must find information in BOTH:
+      - a recent planted note in the real #release-status channel (overlay, dated just after the
+        corpus tail) giving the v9.0.0 go-live date, and
+      - the author of a unique "feature and code-complete" message already in the baked prod data
+        (#product).
+    Two-container, isolated; deterministic nop=0, oracle=1.
+  task_path: experiments/slack-recent-lookup/tasks
+  n_trials: 1
+  skip_trajectory_analysis: false
+
+tasks:
+  - release-and-author
+
+agents:
+  - name: nop
+  - name: oracle
+  - name: gemini-cli
+    model_name: google/gemini-3.1-pro-preview

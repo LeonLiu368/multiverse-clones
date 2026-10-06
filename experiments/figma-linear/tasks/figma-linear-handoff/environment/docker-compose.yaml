@@ -1,0 +1,63 @@
+# Three containers: the agent (`main`) + two PULLED service backends.
+#   * figma         — Figma REST API, seeded per-task by mounting fixture.json (service-only).
+#   * ticketvector  — Linear/Jira issue tracker, seeded per-task by mounting state.json (service-only).
+# The agent reaches them by name (http://figma:3000, http://ticketvector:8765); it never
+# mounts the seed files, so the design spec and the ticket are reachable only via the tools.
+# No `networks:` block — services resolve each other by name. platform pinned so the amd64
+# service images (and the multi-stage agent build that FROMs them) resolve on any host.
+services:
+  main:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${MAIN_IMAGE_NAME}
+    working_dir: /app
+    environment:
+      FIGMA_API_URL: http://figma:3000
+      FIGMA_TOKEN: figma-clone-token
+      FIGMA_FILE_KEY: PrcCardHandoffFile001x
+      WORLD_ISSUES_BACKEND: remote
+      WORLD_ISSUES_AGENT_MODE: "1"
+      WORLD_ISSUES_OUTPUT: json
+      WORLD_ISSUES_ACTOR: agent
+      PLANE_BASE_URL: http://ticketvector:8765
+      PYTHONPATH: /opt:/opt/ticketvector
+    depends_on:
+      figma:
+        condition: service_healthy
+      ticketvector:
+        condition: service_healthy
+
+  figma:
+    image: ghcr.io/abundant-ai/figma-service:latest
+    hostname: figma
+    platform: linux/amd64
+    environment:
+      FIGMA_FIXTURE: /srv/fixture.json
+    volumes:
+      - ./data/figma/fixture.json:/srv/fixture.json:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:3000/health >/dev/null || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 24
+      start_period: 15s
+
+  ticketvector:
+    image: ghcr.io/abundant-ai/ticketvector-service:main
+    hostname: ticketvector
+    platform: linux/amd64
+    environment:
+      WORLD_ISSUES_STATE_FILE: /var/lib/ticketvector/state.json
+      WORLD_ISSUES_BIND_HOST: 0.0.0.0
+      WORLD_ISSUES_PORT: "8765"
+      WORLD_ISSUES_ACTOR: agent
+    volumes:
+      - ./data/ticketvector/state.json:/var/lib/ticketvector/state.json
+    healthcheck:
+      test: ["CMD-SHELL", "python3 -c \"import urllib.request; urllib.request.urlopen('http://localhost:8765/health')\" || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 24
+      start_period: 15s

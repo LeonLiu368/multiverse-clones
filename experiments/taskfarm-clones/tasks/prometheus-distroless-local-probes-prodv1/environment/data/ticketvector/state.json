@@ -1,0 +1,307 @@
+{
+  "attachments": {
+    "PROMOP-8441": [],
+    "PROMOP-8605": [],
+    "PROMOP-8612": []
+  },
+  "base_url": "https://linear.local/acme",
+  "comments": {
+    "PROMOP-8441": [
+      {
+        "author": {
+          "handle": "ian",
+          "id": "user-ian",
+          "name": "Ian"
+        },
+        "body": "Old timeout-only branch predates the distroless image switch.",
+        "created_at": "2026-05-30T13:20:00Z",
+        "id": "comment-promop-8441-a"
+      }
+    ],
+    "PROMOP-8605": [
+      {
+        "author": {
+          "handle": "maya",
+          "id": "user-maya",
+          "name": "Maya"
+        },
+        "body": "prom-ceems-primary and prom-edge-rules both have listenLocal plus a distroless image and kubelet says sh is missing. prom-legacy-shell is not the same failure.",
+        "created_at": "2026-05-31T18:11:00Z",
+        "id": "comment-promop-8605-a"
+      },
+      {
+        "author": {
+          "handle": "ian",
+          "id": "user-ian",
+          "name": "Ian"
+        },
+        "body": "Please avoid rolling all images back or rewriting the whole fleet. The scope should come from renderer behavior plus inventory.",
+        "created_at": "2026-05-31T18:15:00Z",
+        "id": "comment-promop-8605-b"
+      }
+    ],
+    "PROMOP-8612": [
+      {
+        "author": {
+          "handle": "nora",
+          "id": "user-nora",
+          "name": "Nora"
+        },
+        "body": "Public listener cleanup is unrelated to the local-only distroless probe failure.",
+        "created_at": "2026-05-31T18:22:00Z",
+        "id": "comment-promop-8612-a"
+      }
+    ]
+  },
+  "cycles": [
+    {
+      "ends_at": "2026-06-30",
+      "id": "cycle-2026-06",
+      "name": "June Reliability",
+      "starts_at": "2026-06-01"
+    }
+  ],
+  "history": {
+    "PROMOP-8605": [
+      {
+        "action": "issue.created",
+        "at": "2026-05-31T18:10:00Z"
+      }
+    ]
+  },
+  "issues": [
+    {
+      "assignees": [
+        {
+          "handle": "agent",
+          "id": "user-agent",
+          "name": "Agent User"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 2,
+      "created_at": "2026-05-31T18:10:00Z",
+      "cycle": {
+        "ends_at": "2026-06-30",
+        "id": "cycle-2026-06",
+        "name": "June Reliability",
+        "starts_at": "2026-06-01"
+      },
+      "description": "Distroless Prometheus images fail listenLocal probes because the operator renders sh/curl exec probes. Affected scope is prom-ceems-primary and prom-edge-rules.",
+      "id": "issue-promop-8605",
+      "identifier": "PROMOP-8605",
+      "labels": [
+        {
+          "id": "label-incident",
+          "name": "incident"
+        },
+        {
+          "id": "label-kubernetes",
+          "name": "kubernetes"
+        }
+      ],
+      "links": [
+        {
+          "id": "link-artifact",
+          "title": "Expected artifact",
+          "url": "/app/artifacts/prometheus_distroless_probe_repair.json"
+        },
+        {
+          "id": "link-grafana",
+          "title": "Grafana panel",
+          "url": "http://gcx:3000/d/prom-probes/prometheus-distroless-local-probes"
+        }
+      ],
+      "module": {
+        "id": "module-operator",
+        "name": "Operator"
+      },
+      "priority": "urgent",
+      "project": {
+        "archived": false,
+        "id": "proj-promop",
+        "key": "PROMOP",
+        "name": "Prometheus Operator"
+      },
+      "relations": [],
+      "state": {
+        "category": "started",
+        "id": "state-progress",
+        "name": "In Progress"
+      },
+      "title": "Distroless listenLocal Prometheus pods fail shell-based probes",
+      "updated_at": "2026-05-31T18:15:00Z",
+      "url": "https://linear.local/acme/issue/PROMOP-8605"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "ian",
+          "id": "user-ian",
+          "name": "Ian"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 1,
+      "created_at": "2026-05-30T13:12:00Z",
+      "description": "Stale timeout tuning work for slow starts.",
+      "id": "issue-promop-8441",
+      "identifier": "PROMOP-8441",
+      "labels": [
+        {
+          "id": "label-noise",
+          "name": "background"
+        }
+      ],
+      "links": [],
+      "module": {
+        "id": "module-operator",
+        "name": "Operator"
+      },
+      "priority": "medium",
+      "project": {
+        "archived": false,
+        "id": "proj-promop",
+        "key": "PROMOP",
+        "name": "Prometheus Operator"
+      },
+      "relations": [],
+      "state": {
+        "category": "completed",
+        "id": "state-done",
+        "name": "Done"
+      },
+      "title": "Probe timeout tuning for slow startup",
+      "updated_at": "2026-05-30T15:00:00Z",
+      "url": "https://linear.local/acme/issue/PROMOP-8441"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "nora",
+          "id": "user-nora",
+          "name": "Nora"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 1,
+      "created_at": "2026-05-31T18:20:00Z",
+      "description": "Distroless image with public listener; does not share the listenLocal failure.",
+      "id": "issue-promop-8612",
+      "identifier": "PROMOP-8612",
+      "labels": [
+        {
+          "id": "label-noise",
+          "name": "background"
+        }
+      ],
+      "links": [],
+      "module": {
+        "id": "module-operator",
+        "name": "Operator"
+      },
+      "priority": "low",
+      "project": {
+        "archived": false,
+        "id": "proj-promop",
+        "key": "PROMOP",
+        "name": "Prometheus Operator"
+      },
+      "relations": [],
+      "state": {
+        "category": "started",
+        "id": "state-progress",
+        "name": "In Progress"
+      },
+      "title": "Public listener probe cleanup",
+      "updated_at": "2026-05-31T18:22:00Z",
+      "url": "https://linear.local/acme/issue/PROMOP-8612"
+    }
+  ],
+  "labels": [
+    {
+      "id": "label-incident",
+      "name": "incident"
+    },
+    {
+      "id": "label-kubernetes",
+      "name": "kubernetes"
+    },
+    {
+      "id": "label-noise",
+      "name": "background"
+    }
+  ],
+  "links": {
+    "PROMOP-8605": [
+      {
+        "id": "link-artifact",
+        "title": "Expected artifact",
+        "url": "/app/artifacts/prometheus_distroless_probe_repair.json"
+      }
+    ]
+  },
+  "modules": [
+    {
+      "id": "module-operator",
+      "name": "Operator"
+    }
+  ],
+  "project": {
+    "archived": false,
+    "id": "proj-promop",
+    "key": "PROMOP",
+    "name": "Prometheus Operator"
+  },
+  "relations": {},
+  "states": [
+    {
+      "category": "backlog",
+      "id": "state-backlog",
+      "name": "Backlog"
+    },
+    {
+      "category": "unstarted",
+      "id": "state-todo",
+      "name": "Todo"
+    },
+    {
+      "category": "started",
+      "id": "state-progress",
+      "name": "In Progress"
+    },
+    {
+      "category": "started",
+      "id": "state-review",
+      "name": "In Review"
+    },
+    {
+      "category": "completed",
+      "id": "state-done",
+      "name": "Done"
+    }
+  ],
+  "users": [
+    {
+      "handle": "agent",
+      "id": "user-agent",
+      "name": "Agent User"
+    },
+    {
+      "handle": "maya",
+      "id": "user-maya",
+      "name": "Maya"
+    },
+    {
+      "handle": "ian",
+      "id": "user-ian",
+      "name": "Ian"
+    },
+    {
+      "handle": "nora",
+      "id": "user-nora",
+      "name": "Nora"
+    }
+  ],
+  "workspace": "acme"
+}

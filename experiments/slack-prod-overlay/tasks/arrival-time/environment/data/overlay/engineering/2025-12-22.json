@@ -1,0 +1,18 @@
+[
+  {
+    "user": "U6683E4B170",
+    "type": "message",
+    "ts": "1766426700.000000",
+    "client_msg_id": "8e73608aab6f5f7ae0",
+    "text": "hey everyone \u2014 heads up, I'm coming in at 6pm today to push the payments hotfix. will ping here once it's out.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "robin.vega",
+      "real_name": "Robin.vega",
+      "display_name": "robin.vega",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

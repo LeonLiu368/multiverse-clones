@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+set -eu
+case "${1:-}" in
+  dashboards)
+    curl -sf "${GRAFANA_URL:-http://gcx:3000}/api/search" || true
+    ;;
+  *)
+    printf '%s\n' "gcx local wrapper: use Grafana at ${GRAFANA_URL:-http://gcx:3000}"
+    ;;
+esac

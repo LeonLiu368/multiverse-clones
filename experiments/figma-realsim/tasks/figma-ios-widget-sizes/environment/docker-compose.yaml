@@ -1,0 +1,34 @@
+# empty <-> prod-v1 is a one-line switch: FIGMA_SERVICE_IMAGE=ghcr.io/abundant-ai/figma-service:prod-v1
+#   :empty   -> seeds from the mounted slice (iPhone section only; 1 widget set)
+#   :prod-v1 -> serves the baked full iOS corpus (2 widget sets; must disambiguate iPhone)
+# Same codebase + verifier across both, so the pass-rate delta isolates retrieval-under-distraction.
+services:
+  main:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${MAIN_IMAGE_NAME}
+    working_dir: /app
+    environment:
+      FIGMA_API_URL: http://figma:3000
+      FIGMA_TOKEN: figma-clone-token
+      FIGMA_FILE_KEY: R1jno9FuCgYkNXayz8zglW
+    depends_on:
+      figma:
+        condition: service_healthy
+
+  figma:
+    image: ${FIGMA_SERVICE_IMAGE:-ghcr.io/abundant-ai/figma-service:empty}
+    hostname: figma
+    platform: linux/amd64
+    environment:
+      FIGMA_FIXTURE: /srv/fixture.json
+    volumes:
+      - ./data/figma/fixture.json:/srv/fixture.json:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:3000/health >/dev/null || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 24
+      start_period: 15s

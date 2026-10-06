@@ -1,0 +1,93 @@
+diff --git a/src-ui/src/app/components/document-list/bulk-editor/bulk-editor.component.spec.ts b/src-ui/src/app/components/document-list/bulk-editor/bulk-editor.component.spec.ts
+index aa4a07d12..8f89e541a 100644
+--- a/src-ui/src/app/components/document-list/bulk-editor/bulk-editor.component.spec.ts
++++ b/src-ui/src/app/components/document-list/bulk-editor/bulk-editor.component.spec.ts
+@@ -1040,6 +1040,27 @@ describe('BulkEditorComponent', () => {
+       `${environment.apiBaseUrl}documents/?page=1&page_size=100000&fields=id`
+     ) // listAllFilteredIds
+     expect(documentListViewService.selected.size).toEqual(0)
++
++    // Test with archiveFallback enabled
++    modal.componentInstance.deleteOriginals = false
++    modal.componentInstance.archiveFallback = true
++    modal.componentInstance.confirm()
++    req = httpTestingController.expectOne(
++      `${environment.apiBaseUrl}documents/bulk_edit/`
++    )
++    req.flush(true)
++    expect(req.request.body).toEqual({
++      documents: [3, 4],
++      method: 'merge',
++      parameters: { metadata_document_id: 3, archive_fallback: true },
++    })
++    httpTestingController.match(
++      `${environment.apiBaseUrl}documents/?page=1&page_size=50&ordering=-created&truncate_content=true`
++    ) // list reload
++    httpTestingController.match(
++      `${environment.apiBaseUrl}documents/?page=1&page_size=100000&fields=id`
++    ) // listAllFilteredIds
++    expect(documentListViewService.selected.size).toEqual(0)
+   })
+
+   it('should support bulk download with archive, originals or both and file formatting', () => {
+diff --git a/src/documents/tests/test_bulk_edit.py b/src/documents/tests/test_bulk_edit.py
+index 4a7145d34..dd59a6217 100644
+--- a/src/documents/tests/test_bulk_edit.py
++++ b/src/documents/tests/test_bulk_edit.py
+@@ -514,12 +514,23 @@ class TestPDFActions(DirectoriesMixin, TestCase):
+             Path(__file__).parent / "samples" / "simple.jpg",
+             img_doc,
+         )
++        img_doc_archive = self.dirs.archive_dir / "sample_image.pdf"
++        shutil.copy(
++            Path(__file__).parent
++            / "samples"
++            / "documents"
++            / "originals"
++            / "0000001.pdf",
++            img_doc_archive,
++        )
+         self.img_doc = Document.objects.create(
+             checksum="D",
+             title="D",
+             filename=img_doc,
+             mime_type="image/jpeg",
+         )
++        self.img_doc.archive_filename = img_doc_archive
++        self.img_doc.save()
+
+     @mock.patch("documents.tasks.consume_file.s")
+     def test_merge(self, mock_consume_file):
+@@ -605,6 +616,32 @@ class TestPDFActions(DirectoriesMixin, TestCase):
+             doc_ids,
+         )
+
++    @mock.patch("documents.tasks.consume_file.s")
++    def test_merge_with_archive_fallback(self, mock_consume_file):
++        """
++        GIVEN:
++            - Existing documents
++        WHEN:
++            - Merge action is called with 2 documents, one of which is an image and archive_fallback is set to True
++        THEN:
++            - Image document should be included
++        """
++        doc_ids = [self.doc2.id, self.img_doc.id]
++
++        result = bulk_edit.merge(doc_ids, archive_fallback=True)
++        self.assertEqual(result, "OK")
++
++        expected_filename = (
++            f"{'_'.join([str(doc_id) for doc_id in doc_ids])[:100]}_merged.pdf"
++        )
++
++        mock_consume_file.assert_called()
++        consume_file_args, _ = mock_consume_file.call_args
++        self.assertEqual(
++            Path(consume_file_args[0].original_file).name,
++            expected_filename,
++        )
++
+     @mock.patch("documents.tasks.consume_file.delay")
+     @mock.patch("pikepdf.open")
+     def test_merge_with_errors(self, mock_open_pdf, mock_consume_file):

@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+set -eu
+printf '%s\n' "mcp-grafana local wrapper for ${GRAFANA_URL:-http://gcx:3000}"

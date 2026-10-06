@@ -1,0 +1,18 @@
+[
+  {
+    "user": "U47ABDC1C36",
+    "type": "message",
+    "ts": "1766484000.000000",
+    "client_msg_id": "e281fa2962673b0d81",
+    "text": "Pulling together the hotfix changelog. The patched build number is 9 builds after whatever build v8.5.0 originally shipped as in #defect-and-blocker-thunderdome \u2014 can someone grab that original build number so I can finish the entry?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "morgan.cole",
+      "real_name": "Morgan.cole",
+      "display_name": "morgan.cole",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

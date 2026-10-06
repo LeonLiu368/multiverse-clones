@@ -1,0 +1,16 @@
+# three-surface-ops sweep.
+# Submit: uv run oddish run "$TASKS_DIR" -c sweep.yaml --experiment <id> \
+#   --env daytona --run-analysis --force-build --artifact /app --github-user <login> --background
+
+agents:
+  - name: oracle
+  - name: nop
+  - name: gemini-cli
+    model_name: gemini/gemini-3.1-pro-preview
+    n_trials: 3
+  - name: codex
+    model_name: openai/gpt-5.2-codex
+    n_trials: 2
+  - name: claude-code
+    model_name: anthropic/claude-opus-4-7
+    n_trials: 2

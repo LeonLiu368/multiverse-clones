@@ -1,0 +1,41 @@
+{
+  "title": "MatrixOne TPCC 1000W Lockservice Memory Pressure",
+  "schemaVersion": 39,
+  "panels": [
+    {
+      "id": 1,
+      "type": "text",
+      "title": "MO-24893 TPCC failure window",
+      "gridPos": {"h": 6, "w": 12, "x": 0, "y": 0},
+      "options": {"content": "2026-06-08T18:42:51Z to 2026-06-08T18:48:42Z: TPCC 1000W/1000T lockservice RPC timeouts to 10.143.26.143:6003."}
+    },
+    {
+      "id": 2,
+      "type": "text",
+      "title": "Target CN memory",
+      "gridPos": {"h": 6, "w": 12, "x": 12, "y": 0},
+      "options": {"content": "nightly-regression-dis-tp-cn-phqxp reached 54.47Gi / 55Gi with restart_count=0 and no OOMKilled event in the TPCC window."}
+    },
+    {
+      "id": 3,
+      "type": "text",
+      "title": "Passed controls",
+      "gridPos": {"h": 5, "w": 8, "x": 0, "y": 6},
+      "options": {"content": "tpcc_10w_10t, tpcc_10w_100t, tpcc_100w_100t, and tpcc_100w_1000t passed before the failure."}
+    },
+    {
+      "id": 4,
+      "type": "text",
+      "title": "Noise: later IVF OOM",
+      "gridPos": {"h": 5, "w": 8, "x": 8, "y": 6},
+      "options": {"content": "IVF vector index OOMKilled around 2026-06-08T23:49:00Z, about five hours after TPCC failed; do not use as TPCC root cause."}
+    },
+    {
+      "id": 5,
+      "type": "text",
+      "title": "Rejected broad workaround",
+      "gridPos": {"h": 5, "w": 8, "x": 16, "y": 6},
+      "options": {"content": "Avoid disabling TPCC or raising every CN profile globally. Scope the repair to tpcc_1000w_1000t."}
+    }
+  ]
+}

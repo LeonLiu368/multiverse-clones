@@ -1,0 +1,82 @@
+[
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1731493800.000000",
+    "client_msg_id": "c911fb83332afba39e",
+    "text": "User research sessions scheduled for Thursday.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U0FEBC363B6",
+    "type": "message",
+    "ts": "1731507720.000000",
+    "client_msg_id": "2787729fd91185af5d",
+    "text": "Pricing page copy refresh \u2014 feedback welcome.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "heidi",
+      "real_name": "Heidi",
+      "display_name": "heidi",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1731510840.000000",
+    "client_msg_id": "25bb527fcbc87e148f",
+    "text": "NPS survey going out this week.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U38FC8CAEA6",
+    "type": "message",
+    "ts": "1731510960.000000",
+    "client_msg_id": "63ac68e02218e38ece",
+    "text": "NPS survey going out this week.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "judy",
+      "real_name": "Judy",
+      "display_name": "judy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U1BEEF78000",
+    "type": "message",
+    "ts": "1731515580.000000",
+    "client_msg_id": "ec820d122f351076c6",
+    "text": "Roadmap review next Tuesday.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "mallory",
+      "real_name": "Mallory",
+      "display_name": "mallory",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

@@ -1,0 +1,1738 @@
+{
+  "messages": [
+    {
+      "channel": "general",
+      "author": "theo",
+      "content": "can someone approve my PR when you get a sec",
+      "timestamp": "2026-06-05T09:19:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "priya",
+      "content": "I'll be OOO friday",
+      "timestamp": "2026-06-05T09:19:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "leo",
+      "content": "can someone approve my PR when you get a sec",
+      "timestamp": "2026-06-05T09:21:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "theo",
+      "content": "deploy window tonight 22:00 UTC, heads up",
+      "timestamp": "2026-06-05T09:31:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "sam",
+      "content": "can we bump the writer heap next sprint? (PNGX-419)",
+      "timestamp": "2026-06-05T09:32:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "dana",
+      "content": "celery beat schedule changed, FYI",
+      "timestamp": "2026-06-05T09:34:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "priya",
+      "content": "merged the symlink consume fix branch to staging",
+      "timestamp": "2026-06-05T09:34:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "theo",
+      "content": "redis pool got tight during last night's bulk import",
+      "timestamp": "2026-06-05T09:51:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "leo",
+      "content": "I'll be OOO friday",
+      "timestamp": "2026-06-05T09:55:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "ravi",
+      "content": "reminder: the search index lives under data/index; don't hand-edit the writer lock file.",
+      "timestamp": "2026-06-05T10:05:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "theo",
+      "content": "remember to rotate the consume-folder logs",
+      "timestamp": "2026-06-05T10:06:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "priya",
+      "content": "who owns the grafana dashboards now?",
+      "timestamp": "2026-06-05T10:06:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "priya",
+      "content": "who's reviewing the OCR backlog ticket?",
+      "timestamp": "2026-06-05T10:07:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "theo",
+      "content": "who's reviewing the OCR backlog ticket?",
+      "timestamp": "2026-06-05T10:11:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "theo",
+      "content": "I'll be OOO friday",
+      "timestamp": "2026-06-05T10:15:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "ravi",
+      "content": "celery beat schedule changed, FYI",
+      "timestamp": "2026-06-05T10:16:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "sam",
+      "content": "I'll be OOO friday",
+      "timestamp": "2026-06-05T10:17:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "dana",
+      "content": "standup in 10",
+      "timestamp": "2026-06-05T10:17:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "theo",
+      "content": "who owns the grafana dashboards now?",
+      "timestamp": "2026-06-05T10:22:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "ravi",
+      "content": "morning all \u2615",
+      "timestamp": "2026-06-05T10:23:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "priya",
+      "content": "lunch?",
+      "timestamp": "2026-06-05T10:24:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "dana",
+      "content": "I'll be OOO friday",
+      "timestamp": "2026-06-05T10:27:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "leo",
+      "content": "lunch?",
+      "timestamp": "2026-06-05T10:29:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "nina",
+      "content": "docs site needs an update for the new API",
+      "timestamp": "2026-06-05T10:34:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "dana",
+      "content": "the index reindex job finished, all green",
+      "timestamp": "2026-06-05T10:44:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "theo",
+      "content": "celery beat schedule changed, FYI",
+      "timestamp": "2026-06-05T10:48:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "nina",
+      "content": "can someone approve my PR when you get a sec",
+      "timestamp": "2026-06-05T10:49:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "priya",
+      "content": "merged the symlink consume fix branch to staging",
+      "timestamp": "2026-06-05T10:56:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "sam",
+      "content": "who's reviewing the OCR backlog ticket?",
+      "timestamp": "2026-06-05T11:11:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "dana",
+      "content": "deploy window tonight 22:00 UTC, heads up",
+      "timestamp": "2026-06-05T11:14:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "nina",
+      "content": "anyone know why a full reindex takes ~6 min now? commit step seems slower.",
+      "timestamp": "2026-06-05T11:20:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "leo",
+      "content": "coffee machine on 3rd floor is fixed",
+      "timestamp": "2026-06-05T11:24:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "ravi",
+      "content": "merge threads. it's fine. the writer commits then waits_merging_threads().",
+      "timestamp": "2026-06-05T11:25:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "nina",
+      "content": "I'll be OOO friday",
+      "timestamp": "2026-06-05T11:25:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "leo",
+      "content": "anyone else seeing flaky CI on test_search_highlight?",
+      "timestamp": "2026-06-05T11:30:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "ravi",
+      "content": "merged the symlink consume fix branch to staging",
+      "timestamp": "2026-06-05T11:35:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "dana",
+      "content": "the index reindex job finished, all green",
+      "timestamp": "2026-06-05T11:36:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "priya",
+      "content": "can someone approve my PR when you get a sec",
+      "timestamp": "2026-06-05T11:36:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "theo",
+      "content": "lol the printer is down again",
+      "timestamp": "2026-06-05T11:37:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "dana",
+      "content": "docs site needs an update for the new API",
+      "timestamp": "2026-06-05T11:42:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "dana",
+      "content": "lol the printer is down again",
+      "timestamp": "2026-06-05T11:43:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "sam",
+      "content": "the index reindex job finished, all green",
+      "timestamp": "2026-06-05T11:45:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "sam",
+      "content": "pagination bug on /api/documents/ is annoying, PNGX-409",
+      "timestamp": "2026-06-05T11:45:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "priya",
+      "content": "celery beat schedule changed, FYI",
+      "timestamp": "2026-06-05T11:54:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "dana",
+      "content": "lol the printer is down again",
+      "timestamp": "2026-06-05T12:06:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "priya",
+      "content": "pagination bug on /api/documents/ is annoying, PNGX-409",
+      "timestamp": "2026-06-05T12:07:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "ravi",
+      "content": "lol the printer is down again",
+      "timestamp": "2026-06-05T12:18:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "theo",
+      "content": "celery beat schedule changed, FYI",
+      "timestamp": "2026-06-05T12:22:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "dana",
+      "content": "lunch?",
+      "timestamp": "2026-06-05T12:28:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "mia",
+      "content": "pagination bug on /api/documents/ is annoying, PNGX-409",
+      "timestamp": "2026-06-05T12:31:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "priya",
+      "content": "lunch?",
+      "timestamp": "2026-06-05T12:42:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "theo",
+      "content": "the staging box is slow today",
+      "timestamp": "2026-06-05T12:42:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "sam",
+      "content": "the staging box is slow today",
+      "timestamp": "2026-06-05T12:49:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "leo",
+      "content": "can someone approve my PR when you get a sec",
+      "timestamp": "2026-06-05T12:51:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "dana",
+      "content": "celery beat schedule changed, FYI",
+      "timestamp": "2026-06-05T12:53:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "sam",
+      "content": "docs site needs an update for the new API",
+      "timestamp": "2026-06-05T12:58:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "sam",
+      "content": "lunch?",
+      "timestamp": "2026-06-05T13:01:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "theo",
+      "content": "anyone else seeing flaky CI on test_search_highlight?",
+      "timestamp": "2026-06-05T13:09:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "priya",
+      "content": "anyone else seeing flaky CI on test_search_highlight?",
+      "timestamp": "2026-06-05T13:23:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "theo",
+      "content": "the index reindex job finished, all green",
+      "timestamp": "2026-06-05T13:27:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "theo",
+      "content": "lol the printer is down again",
+      "timestamp": "2026-06-05T13:32:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "priya",
+      "content": "coffee machine on 3rd floor is fixed",
+      "timestamp": "2026-06-05T13:34:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "priya",
+      "content": "remember to rotate the consume-folder logs",
+      "timestamp": "2026-06-05T13:35:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "ravi",
+      "content": "thumbnails for TIFF still missing, tracked in PNGX-425",
+      "timestamp": "2026-06-05T13:35:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "leo",
+      "content": "celery beat schedule changed, FYI",
+      "timestamp": "2026-06-05T13:40:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "dana",
+      "content": "morning all \u2615",
+      "timestamp": "2026-06-05T13:49:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "sam",
+      "content": "redis pool got tight during last night's bulk import",
+      "timestamp": "2026-06-05T13:50:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "theo",
+      "content": "the index reindex job finished, all green",
+      "timestamp": "2026-06-05T13:50:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "leo",
+      "content": "can someone approve my PR when you get a sec",
+      "timestamp": "2026-06-05T14:00:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "theo",
+      "content": "TIL Tantivy keeps an internal lock per IndexWriter. neat.",
+      "timestamp": "2026-06-05T14:02:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "theo",
+      "content": "remember to rotate the consume-folder logs",
+      "timestamp": "2026-06-05T14:03:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "sam",
+      "content": "morning all \u2615",
+      "timestamp": "2026-06-05T14:03:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "dana",
+      "content": "reminder: freeze starts thursday",
+      "timestamp": "2026-06-05T14:19:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "sam",
+      "content": "docs site needs an update for the new API",
+      "timestamp": "2026-06-05T14:20:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "leo",
+      "content": "standup in 10",
+      "timestamp": "2026-06-05T14:21:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "leo",
+      "content": "coffee machine on 3rd floor is fixed",
+      "timestamp": "2026-06-05T14:29:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "leo",
+      "content": "support volume is high this morning",
+      "timestamp": "2026-06-05T14:38:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "nina",
+      "content": "reminder: freeze starts thursday",
+      "timestamp": "2026-06-05T14:41:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "theo",
+      "content": "celery beat schedule changed, FYI",
+      "timestamp": "2026-06-05T14:43:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "dana",
+      "content": "can we bump the writer heap next sprint? (PNGX-419)",
+      "timestamp": "2026-06-05T14:50:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "nina",
+      "content": "docs site needs an update for the new API",
+      "timestamp": "2026-06-05T15:13:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "theo",
+      "content": "anyone else seeing flaky CI on test_search_highlight?",
+      "timestamp": "2026-06-05T15:20:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "sam",
+      "content": "morning all \u2615",
+      "timestamp": "2026-06-05T15:24:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "theo",
+      "content": "lol the printer is down again",
+      "timestamp": "2026-06-05T15:26:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "nina",
+      "content": "coffee machine on 3rd floor is fixed",
+      "timestamp": "2026-06-05T15:26:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "ravi",
+      "content": "pagination bug on /api/documents/ is annoying, PNGX-409",
+      "timestamp": "2026-06-05T15:30:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "mia",
+      "content": "can we bump the writer heap next sprint? (PNGX-419)",
+      "timestamp": "2026-06-05T15:32:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "theo",
+      "content": "anyone else seeing flaky CI on test_search_highlight?",
+      "timestamp": "2026-06-05T15:32:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "sam",
+      "content": "can someone approve my PR when you get a sec",
+      "timestamp": "2026-06-05T15:32:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "sam",
+      "content": "I'll be OOO friday",
+      "timestamp": "2026-06-05T15:33:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "sam",
+      "content": "lunch?",
+      "timestamp": "2026-06-05T15:37:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "nina",
+      "content": "can we add a dashboard panel for index writer lock contention?",
+      "timestamp": "2026-06-05T15:40:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "nina",
+      "content": "pagination bug on /api/documents/ is annoying, PNGX-409",
+      "timestamp": "2026-06-05T15:41:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "priya",
+      "content": "support volume is high this morning",
+      "timestamp": "2026-06-05T15:46:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "leo",
+      "content": "merged the symlink consume fix branch to staging",
+      "timestamp": "2026-06-05T15:49:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "mia",
+      "content": "thumbnails for TIFF still missing, tracked in PNGX-425",
+      "timestamp": "2026-06-05T15:54:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "mia",
+      "content": "standup in 10",
+      "timestamp": "2026-06-05T15:54:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "nina",
+      "content": "lunch?",
+      "timestamp": "2026-06-05T15:58:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "mia",
+      "content": "lol the printer is down again",
+      "timestamp": "2026-06-05T15:59:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "priya",
+      "content": "docs site needs an update for the new API",
+      "timestamp": "2026-06-05T16:12:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "ravi",
+      "content": "coffee machine on 3rd floor is fixed",
+      "timestamp": "2026-06-05T16:14:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "nina",
+      "content": "lol the printer is down again",
+      "timestamp": "2026-06-05T16:17:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "sam",
+      "content": "who's reviewing the OCR backlog ticket?",
+      "timestamp": "2026-06-05T16:21:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "theo",
+      "content": "the staging box is slow today",
+      "timestamp": "2026-06-05T16:22:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "nina",
+      "content": "who's reviewing the OCR backlog ticket?",
+      "timestamp": "2026-06-05T16:29:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "theo",
+      "content": "deploy window tonight 22:00 UTC, heads up",
+      "timestamp": "2026-06-05T16:36:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "ravi",
+      "content": "the staging box is slow today",
+      "timestamp": "2026-06-05T16:36:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "sam",
+      "content": "thumbnails for TIFF still missing, tracked in PNGX-425",
+      "timestamp": "2026-06-05T16:39:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "sam",
+      "content": "thumbnails for TIFF still missing, tracked in PNGX-425",
+      "timestamp": "2026-06-05T16:41:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "leo",
+      "content": "remember to rotate the consume-folder logs",
+      "timestamp": "2026-06-05T16:43:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "ravi",
+      "content": "the index reindex job finished, all green",
+      "timestamp": "2026-06-05T16:48:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "sam",
+      "content": "remember to rotate the consume-folder logs",
+      "timestamp": "2026-06-05T16:49:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "mia",
+      "content": "the staging box is slow today",
+      "timestamp": "2026-06-05T16:50:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "sam",
+      "content": "I'll be OOO friday",
+      "timestamp": "2026-06-05T16:50:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "theo",
+      "content": "merged the symlink consume fix branch to staging",
+      "timestamp": "2026-06-05T16:50:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "leo",
+      "content": "celery beat schedule changed, FYI",
+      "timestamp": "2026-06-05T16:51:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "dana",
+      "content": "anyone else seeing flaky CI on test_search_highlight?",
+      "timestamp": "2026-06-05T16:54:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "ravi",
+      "content": "coffee machine on 3rd floor is fixed",
+      "timestamp": "2026-06-05T16:54:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "theo",
+      "content": "redis pool got tight during last night's bulk import",
+      "timestamp": "2026-06-05T16:55:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "mia",
+      "content": "the index reindex job finished, all green",
+      "timestamp": "2026-06-05T17:02:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "dana",
+      "content": "who owns the grafana dashboards now?",
+      "timestamp": "2026-06-05T17:09:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "nina",
+      "content": "the index reindex job finished, all green",
+      "timestamp": "2026-06-05T17:10:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "priya",
+      "content": "lunch?",
+      "timestamp": "2026-06-05T17:12:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "leo",
+      "content": "redis pool got tight during last night's bulk import",
+      "timestamp": "2026-06-05T17:18:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "mia",
+      "content": "can someone approve my PR when you get a sec",
+      "timestamp": "2026-06-05T17:21:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "mia",
+      "content": "standup in 10",
+      "timestamp": "2026-06-05T17:23:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "nina",
+      "content": "morning all \u2615",
+      "timestamp": "2026-06-05T17:25:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "leo",
+      "content": "can we bump the writer heap next sprint? (PNGX-419)",
+      "timestamp": "2026-06-05T17:29:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "leo",
+      "content": "celery beat schedule changed, FYI",
+      "timestamp": "2026-06-05T17:32:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "theo",
+      "content": "reminder: freeze starts thursday",
+      "timestamp": "2026-06-05T17:33:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "theo",
+      "content": "great work on the dark mode fix \ud83c\udf89",
+      "timestamp": "2026-06-05T17:44:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "theo",
+      "content": "celery beat schedule changed, FYI",
+      "timestamp": "2026-06-05T17:50:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "leo",
+      "content": "anyone else seeing flaky CI on test_search_highlight?",
+      "timestamp": "2026-06-05T17:56:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "ravi",
+      "content": "can we bump the writer heap next sprint? (PNGX-419)",
+      "timestamp": "2026-06-05T18:04:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "theo",
+      "content": "I'll be OOO friday",
+      "timestamp": "2026-06-05T18:05:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "nina",
+      "content": "who's reviewing the OCR backlog ticket?",
+      "timestamp": "2026-06-05T18:10:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "mia",
+      "content": "lunch?",
+      "timestamp": "2026-06-05T18:12:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "theo",
+      "content": "standup in 10",
+      "timestamp": "2026-06-05T18:13:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "nina",
+      "content": "lunch?",
+      "timestamp": "2026-06-05T18:13:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "ravi",
+      "content": "merged the symlink consume fix branch to staging",
+      "timestamp": "2026-06-05T18:34:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "leo",
+      "content": "can someone approve my PR when you get a sec",
+      "timestamp": "2026-06-05T18:36:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "mia",
+      "content": "redis pool got tight during last night's bulk import",
+      "timestamp": "2026-06-05T18:37:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "nina",
+      "content": "the staging box is slow today",
+      "timestamp": "2026-06-05T18:51:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "theo",
+      "content": "coffee machine on 3rd floor is fixed",
+      "timestamp": "2026-06-05T18:53:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "sam",
+      "content": "anyone else seeing flaky CI on test_search_highlight?",
+      "timestamp": "2026-06-05T18:56:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "dana",
+      "content": "Paging on PNGX-417: documents ingested after ~02:08 aren't searchable. Indexer throughput flatlined. Worker log is a wall of `LockBusy: failed to acquire index writer lock`.",
+      "timestamp": "2026-06-06T02:12:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "theo",
+      "content": "Smells like a stuck Redis lock to me \u2014 celery beat was retrying a bulk import right before it started. Want me to flush the redis lock keys?",
+      "timestamp": "2026-06-06T02:18:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "ravi",
+      "content": "Checked \u2014 it's not Redis. The LockBusy is Tantivy's *index writer* lock, not a celery/redis lock. It only appears after a batch raises during commit.",
+      "timestamp": "2026-06-06T02:25:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "mia",
+      "content": "Confirming from support side: 3 customers, all uploads after ~02:10 invisible in search. Re-upload doesn't help.",
+      "timestamp": "2026-06-06T02:31:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "nina",
+      "content": "Could we just bump the writer heap? There's a ticket to raise it to 512MB (PNGX-419). Maybe the commit is OOM-ing and wedging the lock?",
+      "timestamp": "2026-06-06T02:40:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "ravi",
+      "content": "Heap isn't it \u2014 I reproduced locally with a tiny doc by forcing commit() to raise. The writer leaks regardless of heap. PNGX-419 is a separate optimisation; let's not conflate them.",
+      "timestamp": "2026-06-06T02:47:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "theo",
+      "content": "What about raising the writer lock acquisition timeout so the next batch waits it out?",
+      "timestamp": "2026-06-06T02:52:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "ravi",
+      "content": "That would just hang instead of erroring \u2014 the lock is never released, so a longer timeout still fails. We need to actually release the writer on the error path.",
+      "timestamp": "2026-06-06T02:58:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "ravi",
+      "content": "Found it. In `src/documents/search/_backend.py`, `WriteBatch.__exit__` only disposes the writer on the SUCCESS path: it commits, waits on merges, reloads, then deletes `self._raw_writer`. When `commit()` (or the merge/reload) raises, that delete is skipped, so the IndexWriter \u2014 and Tantivy's internal write lock \u2014 is never released. The very next batch then hits LockBusy.",
+      "timestamp": "2026-06-06T03:09:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "dana",
+      "content": "So the lock release is outside the finally. That's why a worker restart 'fixes' it until the next failing batch.",
+      "timestamp": "2026-06-06T03:12:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "ravi",
+      "content": "Exactly. Fix: move the writer disposal (`del self._raw_writer; self._raw_writer = None`) into a `finally` so it ALWAYS runs \u2014 on success and on exception \u2014 alongside releasing `self._lock`. An uncommitted writer is just discarded. Then a failed batch no longer wedges the index.",
+      "timestamp": "2026-06-06T03:17:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "theo",
+      "content": "Makes sense. The lock release for `self._lock` was already in a finally; the raw writer disposal just needs to join it.",
+      "timestamp": "2026-06-06T03:21:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "dana",
+      "content": "+1. Please keep the merge/commit logic in the try and only move the writer disposal into finally. I'll link the PR on PNGX-417.",
+      "timestamp": "2026-06-06T03:24:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "ravi",
+      "content": "On it. Will add a regression test that forces commit() to raise and asserts the next batch can still acquire a writer.",
+      "timestamp": "2026-06-06T03:30:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "sam",
+      "content": "celery beat schedule changed, FYI",
+      "timestamp": "2026-06-06T09:04:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "theo",
+      "content": "lol the printer is down again",
+      "timestamp": "2026-06-06T09:05:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "sam",
+      "content": "who owns the grafana dashboards now?",
+      "timestamp": "2026-06-06T09:09:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "priya",
+      "content": "who owns the grafana dashboards now?",
+      "timestamp": "2026-06-06T09:18:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "mia",
+      "content": "the staging box is slow today",
+      "timestamp": "2026-06-06T09:24:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "dana",
+      "content": "can someone approve my PR when you get a sec",
+      "timestamp": "2026-06-06T09:31:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "theo",
+      "content": "deploy window tonight 22:00 UTC, heads up",
+      "timestamp": "2026-06-06T09:33:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "sam",
+      "content": "remember to rotate the consume-folder logs",
+      "timestamp": "2026-06-06T09:33:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "priya",
+      "content": "coffee machine on 3rd floor is fixed",
+      "timestamp": "2026-06-06T09:35:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "priya",
+      "content": "who owns the grafana dashboards now?",
+      "timestamp": "2026-06-06T09:37:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "mia",
+      "content": "who's reviewing the OCR backlog ticket?",
+      "timestamp": "2026-06-06T09:47:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "theo",
+      "content": "who's reviewing the OCR backlog ticket?",
+      "timestamp": "2026-06-06T09:49:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "priya",
+      "content": "great work on the dark mode fix \ud83c\udf89",
+      "timestamp": "2026-06-06T10:03:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "leo",
+      "content": "pagination bug on /api/documents/ is annoying, PNGX-409",
+      "timestamp": "2026-06-06T10:08:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "ravi",
+      "content": "merged the symlink consume fix branch to staging",
+      "timestamp": "2026-06-06T10:15:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "nina",
+      "content": "pagination bug on /api/documents/ is annoying, PNGX-409",
+      "timestamp": "2026-06-06T10:22:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "nina",
+      "content": "reminder: freeze starts thursday",
+      "timestamp": "2026-06-06T10:43:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "priya",
+      "content": "standup in 10",
+      "timestamp": "2026-06-06T10:44:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "nina",
+      "content": "pagination bug on /api/documents/ is annoying, PNGX-409",
+      "timestamp": "2026-06-06T10:53:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "mia",
+      "content": "support volume is high this morning",
+      "timestamp": "2026-06-06T10:53:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "priya",
+      "content": "standup in 10",
+      "timestamp": "2026-06-06T10:54:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "sam",
+      "content": "I'll be OOO friday",
+      "timestamp": "2026-06-06T10:54:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "dana",
+      "content": "thumbnails for TIFF still missing, tracked in PNGX-425",
+      "timestamp": "2026-06-06T11:03:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "theo",
+      "content": "remember to rotate the consume-folder logs",
+      "timestamp": "2026-06-06T11:09:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "nina",
+      "content": "can we bump the writer heap next sprint? (PNGX-419)",
+      "timestamp": "2026-06-06T11:13:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "mia",
+      "content": "lunch?",
+      "timestamp": "2026-06-06T11:18:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "priya",
+      "content": "can someone approve my PR when you get a sec",
+      "timestamp": "2026-06-06T11:24:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "dana",
+      "content": "who owns the grafana dashboards now?",
+      "timestamp": "2026-06-06T11:27:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "nina",
+      "content": "the index reindex job finished, all green",
+      "timestamp": "2026-06-06T11:27:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "dana",
+      "content": "merged the symlink consume fix branch to staging",
+      "timestamp": "2026-06-06T11:29:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "mia",
+      "content": "celery beat schedule changed, FYI",
+      "timestamp": "2026-06-06T11:30:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "mia",
+      "content": "deploy window tonight 22:00 UTC, heads up",
+      "timestamp": "2026-06-06T11:32:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "nina",
+      "content": "redis pool got tight during last night's bulk import",
+      "timestamp": "2026-06-06T11:32:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "mia",
+      "content": "reminder: freeze starts thursday",
+      "timestamp": "2026-06-06T11:33:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "sam",
+      "content": "coffee machine on 3rd floor is fixed",
+      "timestamp": "2026-06-06T11:36:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "mia",
+      "content": "coffee machine on 3rd floor is fixed",
+      "timestamp": "2026-06-06T11:43:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "priya",
+      "content": "lunch?",
+      "timestamp": "2026-06-06T11:43:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "mia",
+      "content": "the index reindex job finished, all green",
+      "timestamp": "2026-06-06T12:08:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "sam",
+      "content": "thumbnails for TIFF still missing, tracked in PNGX-425",
+      "timestamp": "2026-06-06T12:13:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "theo",
+      "content": "remember to rotate the consume-folder logs",
+      "timestamp": "2026-06-06T12:25:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "mia",
+      "content": "coffee machine on 3rd floor is fixed",
+      "timestamp": "2026-06-06T12:25:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "ravi",
+      "content": "can we bump the writer heap next sprint? (PNGX-419)",
+      "timestamp": "2026-06-06T12:28:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "dana",
+      "content": "support volume is high this morning",
+      "timestamp": "2026-06-06T12:30:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "sam",
+      "content": "thumbnails for TIFF still missing, tracked in PNGX-425",
+      "timestamp": "2026-06-06T12:31:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "priya",
+      "content": "can we bump the writer heap next sprint? (PNGX-419)",
+      "timestamp": "2026-06-06T12:32:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "dana",
+      "content": "morning all \u2615",
+      "timestamp": "2026-06-06T12:33:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "sam",
+      "content": "who's reviewing the OCR backlog ticket?",
+      "timestamp": "2026-06-06T12:33:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "ravi",
+      "content": "great work on the dark mode fix \ud83c\udf89",
+      "timestamp": "2026-06-06T12:35:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "nina",
+      "content": "who owns the grafana dashboards now?",
+      "timestamp": "2026-06-06T12:37:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "theo",
+      "content": "thumbnails for TIFF still missing, tracked in PNGX-425",
+      "timestamp": "2026-06-06T12:42:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "mia",
+      "content": "support volume is high this morning",
+      "timestamp": "2026-06-06T12:54:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "priya",
+      "content": "redis pool got tight during last night's bulk import",
+      "timestamp": "2026-06-06T12:57:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "leo",
+      "content": "lol the printer is down again",
+      "timestamp": "2026-06-06T13:01:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "sam",
+      "content": "celery beat schedule changed, FYI",
+      "timestamp": "2026-06-06T13:11:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "mia",
+      "content": "deploy window tonight 22:00 UTC, heads up",
+      "timestamp": "2026-06-06T13:20:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "sam",
+      "content": "pagination bug on /api/documents/ is annoying, PNGX-409",
+      "timestamp": "2026-06-06T13:24:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "mia",
+      "content": "lunch?",
+      "timestamp": "2026-06-06T13:32:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "dana",
+      "content": "reminder: freeze starts thursday",
+      "timestamp": "2026-06-06T13:34:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "ravi",
+      "content": "remember to rotate the consume-folder logs",
+      "timestamp": "2026-06-06T13:50:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "theo",
+      "content": "the index reindex job finished, all green",
+      "timestamp": "2026-06-06T13:53:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "theo",
+      "content": "deploy window tonight 22:00 UTC, heads up",
+      "timestamp": "2026-06-06T14:10:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "nina",
+      "content": "can we bump the writer heap next sprint? (PNGX-419)",
+      "timestamp": "2026-06-06T14:14:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "priya",
+      "content": "lol the printer is down again",
+      "timestamp": "2026-06-06T14:14:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "dana",
+      "content": "I'll be OOO friday",
+      "timestamp": "2026-06-06T14:22:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "leo",
+      "content": "can we bump the writer heap next sprint? (PNGX-419)",
+      "timestamp": "2026-06-06T14:32:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "ravi",
+      "content": "merged the symlink consume fix branch to staging",
+      "timestamp": "2026-06-06T14:34:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "mia",
+      "content": "the staging box is slow today",
+      "timestamp": "2026-06-06T14:35:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "leo",
+      "content": "anyone else seeing flaky CI on test_search_highlight?",
+      "timestamp": "2026-06-06T14:42:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "leo",
+      "content": "who owns the grafana dashboards now?",
+      "timestamp": "2026-06-06T14:46:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "priya",
+      "content": "the staging box is slow today",
+      "timestamp": "2026-06-06T14:50:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "nina",
+      "content": "lol the printer is down again",
+      "timestamp": "2026-06-06T14:52:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "priya",
+      "content": "I'll be OOO friday",
+      "timestamp": "2026-06-06T14:54:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "sam",
+      "content": "celery beat schedule changed, FYI",
+      "timestamp": "2026-06-06T15:02:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "priya",
+      "content": "the index reindex job finished, all green",
+      "timestamp": "2026-06-06T15:04:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "nina",
+      "content": "who's reviewing the OCR backlog ticket?",
+      "timestamp": "2026-06-06T15:06:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "priya",
+      "content": "the staging box is slow today",
+      "timestamp": "2026-06-06T15:11:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "theo",
+      "content": "remember to rotate the consume-folder logs",
+      "timestamp": "2026-06-06T15:14:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "priya",
+      "content": "redis pool got tight during last night's bulk import",
+      "timestamp": "2026-06-06T15:15:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "priya",
+      "content": "the staging box is slow today",
+      "timestamp": "2026-06-06T15:21:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "priya",
+      "content": "anyone else seeing flaky CI on test_search_highlight?",
+      "timestamp": "2026-06-06T15:21:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "theo",
+      "content": "the staging box is slow today",
+      "timestamp": "2026-06-06T15:23:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "sam",
+      "content": "lunch?",
+      "timestamp": "2026-06-06T15:23:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "priya",
+      "content": "coffee machine on 3rd floor is fixed",
+      "timestamp": "2026-06-06T15:27:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "mia",
+      "content": "support volume is high this morning",
+      "timestamp": "2026-06-06T15:29:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "ravi",
+      "content": "redis pool got tight during last night's bulk import",
+      "timestamp": "2026-06-06T15:30:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "dana",
+      "content": "the staging box is slow today",
+      "timestamp": "2026-06-06T15:31:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "nina",
+      "content": "who's reviewing the OCR backlog ticket?",
+      "timestamp": "2026-06-06T15:32:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "dana",
+      "content": "I'll be OOO friday",
+      "timestamp": "2026-06-06T15:35:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "priya",
+      "content": "who's reviewing the OCR backlog ticket?",
+      "timestamp": "2026-06-06T15:38:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "sam",
+      "content": "reminder: freeze starts thursday",
+      "timestamp": "2026-06-06T15:42:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "sam",
+      "content": "pagination bug on /api/documents/ is annoying, PNGX-409",
+      "timestamp": "2026-06-06T15:42:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "sam",
+      "content": "deploy window tonight 22:00 UTC, heads up",
+      "timestamp": "2026-06-06T15:43:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "mia",
+      "content": "docs site needs an update for the new API",
+      "timestamp": "2026-06-06T15:45:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "leo",
+      "content": "I'll be OOO friday",
+      "timestamp": "2026-06-06T15:52:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "leo",
+      "content": "morning all \u2615",
+      "timestamp": "2026-06-06T15:54:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "dana",
+      "content": "who owns the grafana dashboards now?",
+      "timestamp": "2026-06-06T15:54:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "sam",
+      "content": "coffee machine on 3rd floor is fixed",
+      "timestamp": "2026-06-06T15:55:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "sam",
+      "content": "anyone else seeing flaky CI on test_search_highlight?",
+      "timestamp": "2026-06-06T16:00:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "priya",
+      "content": "coffee machine on 3rd floor is fixed",
+      "timestamp": "2026-06-06T16:09:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "nina",
+      "content": "can we bump the writer heap next sprint? (PNGX-419)",
+      "timestamp": "2026-06-06T16:11:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "sam",
+      "content": "celery beat schedule changed, FYI",
+      "timestamp": "2026-06-06T16:38:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "sam",
+      "content": "celery beat schedule changed, FYI",
+      "timestamp": "2026-06-06T16:51:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "mia",
+      "content": "great work on the dark mode fix \ud83c\udf89",
+      "timestamp": "2026-06-06T16:54:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "priya",
+      "content": "coffee machine on 3rd floor is fixed",
+      "timestamp": "2026-06-06T17:02:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "dana",
+      "content": "deploy window tonight 22:00 UTC, heads up",
+      "timestamp": "2026-06-06T17:06:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "leo",
+      "content": "pagination bug on /api/documents/ is annoying, PNGX-409",
+      "timestamp": "2026-06-06T17:07:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "nina",
+      "content": "redis pool got tight during last night's bulk import",
+      "timestamp": "2026-06-06T17:07:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "priya",
+      "content": "pagination bug on /api/documents/ is annoying, PNGX-409",
+      "timestamp": "2026-06-06T17:11:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "nina",
+      "content": "who owns the grafana dashboards now?",
+      "timestamp": "2026-06-06T17:13:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "sam",
+      "content": "the staging box is slow today",
+      "timestamp": "2026-06-06T17:16:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "leo",
+      "content": "can someone approve my PR when you get a sec",
+      "timestamp": "2026-06-06T17:19:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "nina",
+      "content": "celery beat schedule changed, FYI",
+      "timestamp": "2026-06-06T17:23:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "ravi",
+      "content": "can someone approve my PR when you get a sec",
+      "timestamp": "2026-06-06T17:25:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "sam",
+      "content": "anyone else seeing flaky CI on test_search_highlight?",
+      "timestamp": "2026-06-06T17:29:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "sam",
+      "content": "merged the symlink consume fix branch to staging",
+      "timestamp": "2026-06-06T17:50:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "mia",
+      "content": "lol the printer is down again",
+      "timestamp": "2026-06-06T17:58:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "mia",
+      "content": "who owns the grafana dashboards now?",
+      "timestamp": "2026-06-06T18:01:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "mia",
+      "content": "remember to rotate the consume-folder logs",
+      "timestamp": "2026-06-06T18:03:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "nina",
+      "content": "I'll be OOO friday",
+      "timestamp": "2026-06-06T18:06:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "mia",
+      "content": "pagination bug on /api/documents/ is annoying, PNGX-409",
+      "timestamp": "2026-06-06T18:16:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "ravi",
+      "content": "pagination bug on /api/documents/ is annoying, PNGX-409",
+      "timestamp": "2026-06-06T18:25:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "priya",
+      "content": "pagination bug on /api/documents/ is annoying, PNGX-409",
+      "timestamp": "2026-06-06T18:28:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "mia",
+      "content": "who owns the grafana dashboards now?",
+      "timestamp": "2026-06-06T18:28:00+00:00"
+    },
+    {
+      "channel": "paperless-oncall",
+      "author": "nina",
+      "content": "who owns the grafana dashboards now?",
+      "timestamp": "2026-06-06T18:28:00+00:00"
+    },
+    {
+      "channel": "support",
+      "author": "sam",
+      "content": "lunch?",
+      "timestamp": "2026-06-06T18:31:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "sam",
+      "content": "I'll be OOO friday",
+      "timestamp": "2026-06-06T18:36:00+00:00"
+    },
+    {
+      "channel": "ingestion",
+      "author": "theo",
+      "content": "can someone approve my PR when you get a sec",
+      "timestamp": "2026-06-06T18:40:00+00:00"
+    },
+    {
+      "channel": "random",
+      "author": "priya",
+      "content": "redis pool got tight during last night's bulk import",
+      "timestamp": "2026-06-06T18:41:00+00:00"
+    },
+    {
+      "channel": "search",
+      "author": "ravi",
+      "content": "who's reviewing the OCR backlog ticket?",
+      "timestamp": "2026-06-06T18:43:00+00:00"
+    },
+    {
+      "channel": "general",
+      "author": "mia",
+      "content": "I'll be OOO friday",
+      "timestamp": "2026-06-06T18:47:00+00:00"
+    }
+  ]
+}

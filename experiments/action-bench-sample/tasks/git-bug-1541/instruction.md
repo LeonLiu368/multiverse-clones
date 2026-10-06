@@ -1,0 +1,3 @@
+The git-bug maintainers track incoming work in a local issue tracker, reachable through the `linear` and `jira` CLIs (start with `linear --help` or `jira --help`). One high-priority ticket is currently active and describes a capability missing from the checkout at `/app/repo`.
+
+Implement what the ticket asks for and commit your work in the repo. Close the loop on the tracker itself: start the ticket so it is assigned to you and tracked as in progress, leave a brief note covering what you investigated and changed, link your commit, attach a PR receipt, and move the ticket to review when you finish. Leave every other ticket untouched, and interact with the tracker only through the CLIs, never by reading or editing its backing files on disk.

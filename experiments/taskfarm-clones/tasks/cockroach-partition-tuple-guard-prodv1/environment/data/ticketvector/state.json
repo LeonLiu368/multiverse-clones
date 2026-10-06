@@ -1,0 +1,121 @@
+{
+  "attachments": {
+    "CRDB-63642": [],
+    "CRDB-63590": [],
+    "CRDB-63512": []
+  },
+  "base_url": "https://linear.local/acme",
+  "comments": {
+    "CRDB-63642": [
+      {
+        "author": {"handle": "maya", "id": "user-maya", "name": "Maya Chen"},
+        "body": "Sentry 7461557230 points through DecodePartitionTuple during ALTER PRIMARY KEY. Scope this from the rows; please do not skip partition validation globally.",
+        "created_at": "2026-05-21T15:02:00Z",
+        "id": "comment-crdb-63642-1"
+      },
+      {
+        "author": {"handle": "ori", "id": "user-ori", "name": "Ori Patel"},
+        "body": "Acceptance: regenerate /app/artifacts/cockroach_partition_tuple_guard_plan.json, repair tenant_31_orders_pk_swap and tenant_42_events_pk_swap, and explain why tenant_77_geo_archive_intentional_empty is not included.",
+        "created_at": "2026-05-21T15:07:00Z",
+        "id": "comment-crdb-63642-2"
+      }
+    ],
+    "CRDB-63590": [
+      {
+        "author": {"handle": "maya", "id": "user-maya", "name": "Maya Chen"},
+        "body": "Intentional empty partition list audit. This is adjacent evidence, not CRDB-63642.",
+        "created_at": "2026-05-21T14:40:00Z",
+        "id": "comment-crdb-63590-1"
+      }
+    ],
+    "CRDB-63512": []
+  },
+  "cycles": [],
+  "history": {},
+  "issues": [
+    {
+      "assignees": [{"handle": "agent", "id": "user-agent", "name": "Agent User"}],
+      "attachments_count": 0,
+      "comments_count": 2,
+      "created_at": "2026-05-21T15:02:00Z",
+      "description": "Public issue cockroachdb/cockroach#169769: Sentry panic while executing declarative schema change StatementPhase for ALTER TABLE.",
+      "id": "issue-crdb-63642",
+      "identifier": "CRDB-63642",
+      "labels": [{"id": "label-incident", "name": "incident"}, {"id": "label-schema-change", "name": "schema-change"}],
+      "links": [{"id": "link-artifact", "title": "Expected artifact", "url": "/app/artifacts/cockroach_partition_tuple_guard_plan.json"}],
+      "priority": "urgent",
+      "project": {"archived": false, "id": "proj-crdb", "key": "CRDB", "name": "Cockroach Reliability"},
+      "relations": [],
+      "state": {"category": "started", "id": "state-progress", "name": "In Progress"},
+      "title": "Sentry panic validating partition tuples during ALTER PRIMARY KEY",
+      "updated_at": "2026-05-21T15:08:00Z",
+      "url": "https://linear.local/acme/issue/CRDB-63642"
+    },
+    {
+      "assignees": [],
+      "attachments_count": 0,
+      "comments_count": 1,
+      "created_at": "2026-05-21T14:40:00Z",
+      "description": "Intentional zero-arity empty partition list review.",
+      "id": "issue-crdb-63590",
+      "identifier": "CRDB-63590",
+      "labels": [{"id": "label-noise", "name": "noise"}],
+      "links": [],
+      "priority": "medium",
+      "project": {"archived": false, "id": "proj-crdb", "key": "CRDB", "name": "Cockroach Reliability"},
+      "relations": [],
+      "state": {"category": "completed", "id": "state-done", "name": "Done"},
+      "title": "Intentional empty partition list audit",
+      "updated_at": "2026-05-21T14:45:00Z",
+      "url": "https://linear.local/acme/issue/CRDB-63590"
+    },
+    {
+      "assignees": [],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-05-21T13:22:00Z",
+      "description": "Closed hash-shard validation item from the same component.",
+      "id": "issue-crdb-63512",
+      "identifier": "CRDB-63512",
+      "labels": [{"id": "label-noise", "name": "noise"}],
+      "links": [],
+      "priority": "low",
+      "project": {"archived": false, "id": "proj-crdb", "key": "CRDB", "name": "Cockroach Reliability"},
+      "relations": [],
+      "state": {"category": "completed", "id": "state-done", "name": "Done"},
+      "title": "Inventory hash-shard validation warning",
+      "updated_at": "2026-05-21T13:45:00Z",
+      "url": "https://linear.local/acme/issue/CRDB-63512"
+    }
+  ],
+  "labels": [
+    {"id": "label-incident", "name": "incident"},
+    {"id": "label-schema-change", "name": "schema-change"},
+    {"id": "label-noise", "name": "noise"}
+  ],
+  "links": {
+    "CRDB-63642": [{"id": "link-artifact", "title": "Expected artifact", "url": "/app/artifacts/cockroach_partition_tuple_guard_plan.json"}],
+    "CRDB-63590": [],
+    "CRDB-63512": []
+  },
+  "modules": [],
+  "project": {"id": "proj-crdb", "key": "CRDB", "name": "Cockroach Reliability"},
+  "projects": [{"id": "proj-crdb", "key": "CRDB", "name": "Cockroach Reliability"}],
+  "relations": {
+    "CRDB-63642": [],
+    "CRDB-63590": [],
+    "CRDB-63512": []
+  },
+  "states": [
+    {"category": "backlog", "id": "state-todo", "name": "Todo"},
+    {"category": "started", "id": "state-progress", "name": "In Progress"},
+    {"category": "started", "id": "state-review", "name": "In Review"},
+    {"category": "completed", "id": "state-done", "name": "Done"}
+  ],
+  "users": [
+    {"handle": "agent", "id": "user-agent", "name": "Agent User"},
+    {"handle": "maya", "id": "user-maya", "name": "Maya Chen"},
+    {"handle": "ori", "id": "user-ori", "name": "Ori Patel"}
+  ],
+  "workspace": {"id": "workspace-acme", "name": "Acme"}
+}

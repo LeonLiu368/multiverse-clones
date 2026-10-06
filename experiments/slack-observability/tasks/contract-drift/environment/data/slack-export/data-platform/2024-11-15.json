@@ -1,0 +1,50 @@
+[
+  {
+    "user": "UFD1CF5E271",
+    "type": "message",
+    "ts": "1731669540.000000",
+    "client_msg_id": "c4da07dfbe56852aca",
+    "text": "Anyone going to the ML meetup tonight?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "grace",
+      "real_name": "Grace",
+      "display_name": "grace",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UA15F8B81A1",
+    "type": "message",
+    "ts": "1731674220.000000",
+    "client_msg_id": "464168f1ac9a17a2b5",
+    "text": "New hire onboarding doc is in Notion.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "ivan",
+      "real_name": "Ivan",
+      "display_name": "ivan",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UFD1CF5E271",
+    "type": "message",
+    "ts": "1731683280.000000",
+    "client_msg_id": "9a8a62b6ba672aee20",
+    "text": "New hire onboarding doc is in Notion.",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "grace",
+      "real_name": "Grace",
+      "display_name": "grace",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

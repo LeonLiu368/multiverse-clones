@@ -1,0 +1,8 @@
+{"id":"pay_001","status_code":429,"idempotent":true}
+{"id":"pay_002","status_code":425,"idempotent":true}
+{"id":"pay_003","status_code":425,"idempotent":false}
+{"id":"pay_004","status_code":409,"error_type":"lock_conflict","idempotent":true}
+{"id":"pay_005","status_code":409,"error_type":"validation_conflict","idempotent":true}
+{"id":"pay_006","status_code":402,"idempotent":true}
+{"id":"pay_007","status_code":500,"idempotent":true,"persistent_failure":true}
+{"id":"pay_008","status_code":503,"idempotent":true,"retry_after_ms":6000}

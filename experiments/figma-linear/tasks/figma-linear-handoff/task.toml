@@ -1,0 +1,31 @@
+schema_version = "1.2"
+name = "figma-linear/figma-linear-handoff"
+description = "Multi-tool observability + SWE task (Figma + Linear). Linear ticket DES-101 asks the agent to implement the PricingCard component to match the finalized Figma design. The exact spec (heading, price, padding, radius, CTA copy) lives only in the Figma file referenced by the ticket — most values are in the node tree, but the CTA label on the mock is stale and is overridden by a later design comment. The agent must read the ticket (linear), recover the spec from the design file (figma-cli/figma-mcp), update the component, then move DES-101 to In Review and comment it with what was implemented. A hidden grader pins the recovered spec; the ticket state and the agent's comment are read back through the Linear API. Tests cross-tool resourcefulness with no UI-taste judgment. nop=0, oracle=1."
+
+[metadata]
+category = "observability"
+source_repo = "acme/design-system"
+failure_mode = "stale-design-spec"
+tags = ["figma", "linear", "ticketvector", "multi-surface", "multi-tool", "observability", "design-spec"]
+
+[agent]
+timeout_sec = 2700
+
+[verifier]
+timeout_sec = 300
+
+[environment]
+cpus = 2
+memory_mb = 4096
+storage_mb = 20480
+gpus = 0
+allow_internet = true
+workdir = "/app"
+build_timeout_sec = 2400
+
+# Figma tools (CLI + MCP) ship in the figma-service base image; the Linear CLI (`linear`)
+# is layered in from the ticketvector image. Both reach their services via baked env.
+[[environment.mcp_servers]]
+name = "figma"
+transport = "stdio"
+command = "figma-mcp"

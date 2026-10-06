@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ceems
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: edge
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: probe-evidence-prom-ceems-primary
+  namespace: ceems
+  labels:
+    app.kubernetes.io/name: prometheus
+    ticket: PROMOP-8605
+data:
+  image: quay.io/prometheus/prometheus:v3.11.3-distroless
+  listenLocal: "true"
+  kubeletLog: 'exec failed: unable to start container process: exec: "sh": executable file not found in PATH'
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: probe-evidence-prom-edge-rules
+  namespace: edge
+  labels:
+    app.kubernetes.io/name: prometheus
+    ticket: PROMOP-8605
+data:
+  image: quay.io/prometheus/prometheus:v3.11.3-distroless
+  listenLocal: "true"
+  kubeletLog: 'startup probe repeats OCI runtime exec failure for sh'
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: probe-evidence-prom-legacy-shell
+  namespace: ceems
+  labels:
+    app.kubernetes.io/name: prometheus
+    ticket: PROMOP-8605
+data:
+  image: quay.io/prometheus/prometheus:v2.54.1
+  listenLocal: "true"
+  note: shell-capable image, not part of the distroless repair
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: probe-evidence-prom-public-metrics
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: prometheus
+    ticket: PROMOP-8612
+data:
+  image: quay.io/prometheus/prometheus:v3.11.3-distroless
+  listenLocal: "false"
+  note: public listener already uses httpGet

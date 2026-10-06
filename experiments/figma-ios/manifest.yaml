@@ -1,0 +1,19 @@
+# Oddish manifest — run via "/oddish" on the PR. Controls + gemini x2 across the batch.
+# Default service is :empty; set FIGMA_SERVICE_IMAGE=...:prod-v1 to run the hard variant.
+metadata:
+  name: figma-ios
+  enable_image_push: true
+  description: "Real iOS/iPadOS 26 corpus: list component-set variants. empty<->prod-v1 difficulty axis."
+  task_path: experiments/figma-ios/tasks
+  n_trials: 1
+  skip_trajectory_analysis: false
+tasks:
+  - figma-ios-app-icon-styles
+  - figma-ios-date-picker-styles
+  - figma-ios-header-prominence
+agents:
+  - name: nop
+  - name: oracle
+  - name: gemini-cli
+    model_name: google/gemini-3.1-pro-preview
+    n_trials: 2

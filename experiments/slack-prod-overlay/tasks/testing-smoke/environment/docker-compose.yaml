@@ -1,0 +1,24 @@
+# Smoke test: thin agent + the SHARED empty gateway, with this task's small custom export MOUNTED in
+# (the WorldsDataTest workspace + one planted "testing" message). slack-boot imports /data/slack-export
+# at standup. No per-task image. Requires custom_docker_compose = true. No `networks:` block.
+services:
+  main:
+    build: { context: ., dockerfile: Dockerfile }
+    image: ${APEX_TASK_DOCKER_CLIENT_IMAGE_NAME:-testing-smoke-main:local}
+    platform: linux/amd64
+    environment:
+      SLACK_API_URL: http://slack
+      SLACK_BOT_TOKEN: xoxp-acme-eval-0001
+    depends_on:
+      slack: { condition: service_healthy }
+  slack:
+    image: ${SLACK_GATEWAY_IMAGE:-ghcr.io/abundant-ai/slack-gateway:empty}
+    platform: linux/amd64
+    volumes:
+      - ./data/slack-export:/data/slack-export:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:80/api/auth.test >/dev/null || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 60
+      start_period: 20s

@@ -1,0 +1,50 @@
+[
+  {
+    "user": "U3E9AFE235A",
+    "type": "message",
+    "ts": "1748257620.000000",
+    "client_msg_id": "18f893f57c3fee0ce7",
+    "text": "QA env is fully upgraded to Python 3.12 now, let me know if anything breaks",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "iris",
+      "real_name": "Iris",
+      "display_name": "iris",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U3C5E7EAB99",
+    "type": "message",
+    "ts": "1748257800.000000",
+    "client_msg_id": "215ad887685f119e98",
+    "text": "awesome, we were waiting on that",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "liam",
+      "real_name": "Liam",
+      "display_name": "liam",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U44844B8AA9",
+    "type": "message",
+    "ts": "1748258400.000000",
+    "client_msg_id": "81d085c28a6a54e561",
+    "text": "merged! finally",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "kate",
+      "real_name": "Kate",
+      "display_name": "kate",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

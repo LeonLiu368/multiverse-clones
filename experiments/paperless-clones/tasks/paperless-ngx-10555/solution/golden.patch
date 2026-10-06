@@ -1,0 +1,180 @@
+diff --git a/docs/configuration.md b/docs/configuration.md
+index e77c65e04..fdc0097dd 100644
+--- a/docs/configuration.md
++++ b/docs/configuration.md
+@@ -1282,6 +1282,30 @@ within your documents.
+
+     Defaults to false.
+
++## Workflow webhooks
++
++#### [`PAPERLESS_WEBHOOKS_ALLOWED_SCHEMES=<str>`](#PAPERLESS_WEBHOOKS_ALLOWED_SCHEMES) {#PAPERLESS_WEBHOOKS_ALLOWED_SCHEMES}
++
++: A comma-separated list of allowed schemes for webhooks. This setting
++controls which URL schemes are permitted for webhook URLs.
++
++    Defaults to `http,https`.
++
++#### [`PAPERLESS_WEBHOOKS_ALLOWED_PORTS=<str>`](#PAPERLESS_WEBHOOKS_ALLOWED_PORTS) {#PAPERLESS_WEBHOOKS_ALLOWED_PORTS}
++
++: A comma-separated list of allowed ports for webhooks. This setting
++controls which ports are permitted for webhook URLs. For example, if you
++set this to `80,443`, webhooks will only be sent to URLs that use these
++ports.
++
++    Defaults to empty list, which allows all ports.
++
++#### [`PAPERLESS_WEBHOOKS_ALLOW_INTERNAL_REQUESTS=<bool>`](#PAPERLESS_WEBHOOKS_ALLOW_INTERNAL_REQUESTS) {#PAPERLESS_WEBHOOKS_ALLOW_INTERNAL_REQUESTS}
++
++: If set to false, webhooks cannot be sent to internal URLs (e.g., localhost).
++
++    Defaults to true, which allows internal requests.
++
+ ### Polling {#polling}
+
+ #### [`PAPERLESS_CONSUMER_POLLING=<num>`](#PAPERLESS_CONSUMER_POLLING) {#PAPERLESS_CONSUMER_POLLING}
+diff --git a/docs/usage.md b/docs/usage.md
+index 6f332396d..73d3336ce 100644
+--- a/docs/usage.md
++++ b/docs/usage.md
+@@ -499,6 +499,10 @@ The following workflow action types are available:
+ -   Encoding for the request body, either JSON or form data
+ -   The request headers as key-value pairs
+
++For security reasons, webhooks can be limited to specific ports and disallowed from connecting to local URLs. See the relevant
++[configuration settings](configuration.md#workflow-webhooks) to change this behavior. If you are allowing non-admins to create workflows,
++you may want to adjust these settings to prevent abuse.
++
+ #### Workflow placeholders
+
+ Some workflow text can include placeholders but the available options differ depending on the type of
+diff --git a/src/documents/signals/handlers.py b/src/documents/signals/handlers.py
+index 76df8d4e4..505bfeeea 100644
+--- a/src/documents/signals/handlers.py
++++ b/src/documents/signals/handlers.py
+@@ -1,9 +1,12 @@
+ from __future__ import annotations
+
++import ipaddress
+ import logging
+ import shutil
++import socket
+ from pathlib import Path
+ from typing import TYPE_CHECKING
++from urllib.parse import urlparse
+
+ import httpx
+ from celery import shared_task
+@@ -660,6 +663,28 @@ def run_workflows_updated(sender, document: Document, logging_group=None, **kwar
+     )
+
+
++def _is_public_ip(ip: str) -> bool:
++    try:
++        obj = ipaddress.ip_address(ip)
++        return not (
++            obj.is_private
++            or obj.is_loopback
++            or obj.is_link_local
++            or obj.is_multicast
++            or obj.is_unspecified
++        )
++    except ValueError:  # pragma: no cover
++        return False
++
++
++def _resolve_first_ip(host: str) -> str | None:
++    try:
++        info = socket.getaddrinfo(host, None)
++        return info[0][4][0] if info else None
++    except Exception:  # pragma: no cover
++        return None
++
++
+ @shared_task(
+     retry_backoff=True,
+     autoretry_for=(httpx.HTTPStatusError,),
+@@ -674,11 +699,35 @@ def send_webhook(
+     *,
+     as_json: bool = False,
+ ):
++    p = urlparse(url)
++    if p.scheme.lower() not in settings.WEBHOOKS_ALLOWED_SCHEMES or not p.hostname:
++        logger.warning("Webhook blocked: invalid scheme/hostname")
++        raise ValueError("Invalid URL scheme or hostname.")
++
++    port = p.port or (443 if p.scheme == "https" else 80)
++    if (
++        len(settings.WEBHOOKS_ALLOWED_PORTS) > 0
++        and port not in settings.WEBHOOKS_ALLOWED_PORTS
++    ):
++        logger.warning("Webhook blocked: port not permitted")
++        raise ValueError("Destination port not permitted.")
++
++    ip = _resolve_first_ip(p.hostname)
++    if not ip or (
++        not _is_public_ip(ip) and not settings.WEBHOOKS_ALLOW_INTERNAL_REQUESTS
++    ):
++        logger.warning("Webhook blocked: destination not allowed")
++        raise ValueError("Destination host is not allowed.")
++
+     try:
+         post_args = {
+             "url": url,
+-            "headers": headers,
+-            "files": files,
++            "headers": {
++                k: v for k, v in (headers or {}).items() if k.lower() != "host"
++            },
++            "files": files or None,
++            "timeout": 5.0,
++            "follow_redirects": False,
+         }
+         if as_json:
+             post_args["json"] = data
+@@ -699,15 +748,6 @@ def send_webhook(
+         )
+         raise e
+
+-        logger.info(
+-            f"Webhook sent to {url}",
+-        )
+-    except Exception as e:
+-        logger.error(
+-            f"Failed attempt sending webhook to {url}: {e}",
+-        )
+-        raise e
+-
+
+ def run_workflows(
+     trigger_type: WorkflowTrigger.WorkflowTriggerType,
+diff --git a/src/paperless/settings.py b/src/paperless/settings.py
+index 834376ec6..63b6add5c 100644
+--- a/src/paperless/settings.py
++++ b/src/paperless/settings.py
+@@ -1421,3 +1421,25 @@ OUTLOOK_OAUTH_ENABLED = bool(
+     and OUTLOOK_OAUTH_CLIENT_ID
+     and OUTLOOK_OAUTH_CLIENT_SECRET,
+ )
++
++###############################################################################
++# Webhooks
++###############################################################################
++WEBHOOKS_ALLOWED_SCHEMES = set(
++    s.lower()
++    for s in __get_list(
++        "PAPERLESS_WEBHOOKS_ALLOWED_SCHEMES",
++        ["http", "https"],
++    )
++)
++WEBHOOKS_ALLOWED_PORTS = set(
++    int(p)
++    for p in __get_list(
++        "PAPERLESS_WEBHOOKS_ALLOWED_PORTS",
++        [],
++    )
++)
++WEBHOOKS_ALLOW_INTERNAL_REQUESTS = __get_boolean(
++    "PAPERLESS_WEBHOOKS_ALLOW_INTERNAL_REQUESTS",
++    "true",
++)

@@ -1,0 +1,394 @@
+{
+  "attachments": {},
+  "base_url": "https://linear.app/acme",
+  "comments": {
+    "FEAT-298": [],
+    "FEAT-299": [],
+    "FEAT-300": [],
+    "FEAT-301": [
+      {
+        "author": {
+          "handle": "dana",
+          "id": "user-dana",
+          "name": "Dana Park"
+        },
+        "body": "Spec finalized in #eng-design. Ready to implement.",
+        "created_at": "2026-06-07T16:00:00Z",
+        "id": "cmt-feat-301-1",
+        "issue": "FEAT-301",
+        "updated_at": "2026-06-07T16:00:00Z"
+      },
+      {
+        "author": {
+          "handle": "alice",
+          "id": "user-alice",
+          "name": "Alice Chen"
+        },
+        "body": "Assigned to you. See #eng-design for the regex and error format we agreed on.",
+        "created_at": "2026-06-07T16:10:00Z",
+        "id": "cmt-feat-301-2",
+        "issue": "FEAT-301",
+        "updated_at": "2026-06-07T16:10:00Z"
+      }
+    ]
+  },
+  "cycles": [
+    {
+      "ends_at": "2026-06-14",
+      "id": "cycle-2026-06a",
+      "name": "Sprint 2026-06-A",
+      "starts_at": "2026-06-01"
+    }
+  ],
+  "history": {
+    "FEAT-301": [
+      {
+        "action": "issue.update",
+        "after": {
+          "assignees": [
+            {
+              "handle": "agent",
+              "id": "user-agent",
+              "name": "Agent User"
+            }
+          ],
+          "attachments_count": 0,
+          "comments_count": 2,
+          "created_at": "2026-06-07T15:00:00Z",
+          "cycle": {
+            "ends_at": "2026-06-14",
+            "id": "cycle-2026-06a",
+            "name": "Sprint 2026-06-A",
+            "starts_at": "2026-06-01"
+          },
+          "description": "Users can register with invalid email addresses (no @ sign, no domain, etc). Server-side validation needed. Implementation spec agreed in #eng-design \u2014 see that channel for the exact regex, error code, and which function to modify. Repo: acme/platform, file: register.py.",
+          "id": "issue-feat-301",
+          "identifier": "FEAT-301",
+          "labels": [
+            {
+              "id": "label-feature",
+              "name": "feature"
+            },
+            {
+              "id": "label-validation",
+              "name": "validation"
+            }
+          ],
+          "links": [],
+          "module": null,
+          "priority": 2,
+          "project": {
+            "archived": false,
+            "id": "proj-feat",
+            "key": "FEAT",
+            "name": "Features"
+          },
+          "relations": [],
+          "state": {
+            "category": "completed",
+            "id": "state-done",
+            "name": "Done"
+          },
+          "title": "Add email validation to /api/register",
+          "updated_at": "2026-06-04T12:00:00Z",
+          "url": "https://linear.app/acme/issue/FEAT-301"
+        },
+        "at": "2026-06-04T12:00:00Z",
+        "before": {
+          "assignees": [
+            {
+              "handle": "agent",
+              "id": "user-agent",
+              "name": "Agent User"
+            }
+          ],
+          "attachments_count": 0,
+          "comments_count": 2,
+          "created_at": "2026-06-07T15:00:00Z",
+          "cycle": {
+            "ends_at": "2026-06-14",
+            "id": "cycle-2026-06a",
+            "name": "Sprint 2026-06-A",
+            "starts_at": "2026-06-01"
+          },
+          "description": "Users can register with invalid email addresses (no @ sign, no domain, etc). Server-side validation needed. Implementation spec agreed in #eng-design \u2014 see that channel for the exact regex, error code, and which function to modify. Repo: acme/platform, file: register.py.",
+          "id": "issue-feat-301",
+          "identifier": "FEAT-301",
+          "labels": [
+            {
+              "id": "label-feature",
+              "name": "feature"
+            },
+            {
+              "id": "label-validation",
+              "name": "validation"
+            }
+          ],
+          "links": [],
+          "module": null,
+          "priority": 2,
+          "project": {
+            "archived": false,
+            "id": "proj-feat",
+            "key": "FEAT",
+            "name": "Features"
+          },
+          "relations": [],
+          "state": {
+            "category": "started",
+            "id": "state-progress",
+            "name": "In Progress"
+          },
+          "title": "Add email validation to /api/register",
+          "updated_at": "2026-06-07T15:00:00Z",
+          "url": "https://linear.app/acme/issue/FEAT-301"
+        }
+      }
+    ]
+  },
+  "issues": [
+    {
+      "assignees": [
+        {
+          "handle": "agent",
+          "id": "user-agent",
+          "name": "Agent User"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 2,
+      "created_at": "2026-06-07T15:00:00Z",
+      "cycle": {
+        "ends_at": "2026-06-14",
+        "id": "cycle-2026-06a",
+        "name": "Sprint 2026-06-A",
+        "starts_at": "2026-06-01"
+      },
+      "description": "Users can register with invalid email addresses (no @ sign, no domain, etc). Server-side validation needed. Implementation spec agreed in #eng-design \u2014 see that channel for the exact regex, error code, and which function to modify. Repo: acme/platform, file: register.py.",
+      "id": "issue-feat-301",
+      "identifier": "FEAT-301",
+      "labels": [
+        {
+          "id": "label-feature",
+          "name": "feature"
+        },
+        {
+          "id": "label-validation",
+          "name": "validation"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 2,
+      "project": {
+        "archived": false,
+        "id": "proj-feat",
+        "key": "FEAT",
+        "name": "Features"
+      },
+      "relations": [],
+      "state": {
+        "category": "completed",
+        "id": "state-done",
+        "name": "Done"
+      },
+      "title": "Add email validation to /api/register",
+      "updated_at": "2026-06-04T12:00:00Z",
+      "url": "https://linear.app/acme/issue/FEAT-301"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "bob",
+          "id": "user-bob",
+          "name": "Bob Kumar"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-04T09:00:00Z",
+      "cycle": null,
+      "description": "Add cursor-based pagination to /api/users endpoint.",
+      "id": "issue-feat-300",
+      "identifier": "FEAT-300",
+      "labels": [
+        {
+          "id": "label-feature",
+          "name": "feature"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 2,
+      "project": {
+        "archived": false,
+        "id": "proj-feat",
+        "key": "FEAT",
+        "name": "Features"
+      },
+      "relations": [],
+      "state": {
+        "category": "completed",
+        "id": "state-done",
+        "name": "Done"
+      },
+      "title": "Add pagination to /api/users list",
+      "updated_at": "2026-06-05T14:00:00Z",
+      "url": "https://linear.app/acme/issue/FEAT-300"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "bob",
+          "id": "user-bob",
+          "name": "Bob Kumar"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-03T10:00:00Z",
+      "cycle": null,
+      "description": "Dark mode theme for the admin dashboard.",
+      "id": "issue-feat-299",
+      "identifier": "FEAT-299",
+      "labels": [
+        {
+          "id": "label-feature",
+          "name": "feature"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 3,
+      "project": {
+        "archived": false,
+        "id": "proj-feat",
+        "key": "FEAT",
+        "name": "Features"
+      },
+      "relations": [],
+      "state": {
+        "category": "unstarted",
+        "id": "state-todo",
+        "name": "Todo"
+      },
+      "title": "Dark mode for admin dashboard",
+      "updated_at": "2026-06-03T10:00:00Z",
+      "url": "https://linear.app/acme/issue/FEAT-299"
+    },
+    {
+      "assignees": [
+        {
+          "handle": "dana",
+          "id": "user-dana",
+          "name": "Dana Park"
+        }
+      ],
+      "attachments_count": 0,
+      "comments_count": 0,
+      "created_at": "2026-06-01T11:00:00Z",
+      "cycle": null,
+      "description": "Allow admins to export user list to CSV.",
+      "id": "issue-feat-298",
+      "identifier": "FEAT-298",
+      "labels": [
+        {
+          "id": "label-feature",
+          "name": "feature"
+        }
+      ],
+      "links": [],
+      "module": null,
+      "priority": 3,
+      "project": {
+        "archived": false,
+        "id": "proj-feat",
+        "key": "FEAT",
+        "name": "Features"
+      },
+      "relations": [],
+      "state": {
+        "category": "started",
+        "id": "state-progress",
+        "name": "In Progress"
+      },
+      "title": "Export users to CSV",
+      "updated_at": "2026-06-01T11:00:00Z",
+      "url": "https://linear.app/acme/issue/FEAT-298"
+    }
+  ],
+  "labels": [
+    {
+      "id": "label-feature",
+      "name": "feature"
+    },
+    {
+      "id": "label-validation",
+      "name": "validation"
+    }
+  ],
+  "links": {},
+  "modules": [],
+  "project": {
+    "archived": false,
+    "id": "proj-feat",
+    "key": "FEAT",
+    "name": "Features"
+  },
+  "relations": {},
+  "states": [
+    {
+      "category": "backlog",
+      "id": "state-backlog",
+      "name": "Backlog"
+    },
+    {
+      "category": "unstarted",
+      "id": "state-todo",
+      "name": "Todo"
+    },
+    {
+      "category": "started",
+      "id": "state-progress",
+      "name": "In Progress"
+    },
+    {
+      "category": "started",
+      "id": "state-review",
+      "name": "In Review"
+    },
+    {
+      "category": "completed",
+      "id": "state-done",
+      "name": "Done"
+    }
+  ],
+  "users": [
+    {
+      "handle": "agent",
+      "id": "user-agent",
+      "name": "Agent User"
+    },
+    {
+      "handle": "alice",
+      "id": "user-alice",
+      "name": "Alice Chen"
+    },
+    {
+      "handle": "bob",
+      "id": "user-bob",
+      "name": "Bob Kumar"
+    },
+    {
+      "handle": "dana",
+      "id": "user-dana",
+      "name": "Dana Park"
+    },
+    {
+      "handle": "carol",
+      "id": "user-carol",
+      "name": "Carol Zhang"
+    }
+  ],
+  "workspace": "acme"
+}

@@ -1,0 +1,13 @@
+{
+  "task_id": "variant-git-bug-git-bug-1541-observability",
+  "source_repo": "",
+  "source_pr_url": "",
+  "hidden_test_command": "go test ./api/graphql -count=1 -v",
+  "changed_files": [
+    "api/graphql/graphql_test.go"
+  ],
+  "ticketvector": {
+    "primary_issue": "TV-1541",
+    "workflow": "linear/jira ticket state must be In Review with completion evidence"
+  }
+}

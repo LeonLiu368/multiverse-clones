@@ -1,0 +1,130 @@
+[
+  {
+    "user": "U88FA846E5F",
+    "type": "message",
+    "ts": "1730884320.000000",
+    "client_msg_id": "292186983aad537bb6",
+    "text": "does anyone have a snippet for the new publisher? still on v1 on our end",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "victor",
+      "real_name": "Victor",
+      "display_name": "victor",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UFD1CF5E271",
+    "type": "message",
+    "ts": "1730888100.000000",
+    "client_msg_id": "a0e8c5eef96ffa5b44",
+    "text": "our publisher still uses `name`/`user_id`/`data` \u2014 need to migrate after the deadline",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "grace",
+      "real_name": "Grace",
+      "display_name": "grace",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U86A8C2DA85",
+    "type": "message",
+    "ts": "1730888100.000001",
+    "client_msg_id": "cbb2363d251abe913a",
+    "text": "we're emitting: {\"name\": \"checkout\", \"user_id\": \"u99\", \"data\": {}, \"timestamp\": 1700000000.0, \"schema_version\": \"1\"} \u2014 is that still ok?",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "frank",
+      "real_name": "Frank",
+      "display_name": "frank",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UBFCDF3E6CA",
+    "type": "message",
+    "ts": "1730895000.000000",
+    "client_msg_id": "adffe1fa062f31a8ba",
+    "text": "pipeline keeps rejecting our events \u2014 probably still on v1 format",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "dave",
+      "real_name": "Dave",
+      "display_name": "dave",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U2A4B17B116",
+    "type": "message",
+    "ts": "1730897640.000000",
+    "client_msg_id": "b8712569238a4bc54e",
+    "text": "draft migration script is in the analytics-eng wiki",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "erin",
+      "real_name": "Erin",
+      "display_name": "erin",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "UFD1CF5E271",
+    "type": "message",
+    "ts": "1730915700.000000",
+    "client_msg_id": "1233b515b70d953f67",
+    "text": "our publisher still uses `name`/`user_id`/`data` \u2014 need to migrate after the deadline",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "grace",
+      "real_name": "Grace",
+      "display_name": "grace",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U48181ACD22",
+    "type": "message",
+    "ts": "1730922060.000000",
+    "client_msg_id": "f8abe2249dc9951ab3",
+    "text": "quick question \u2014 is it `author_id` or `actor_id`? I keep mixing these up",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "bob",
+      "real_name": "Bob",
+      "display_name": "bob",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U522B276A35",
+    "type": "message",
+    "ts": "1730936940.000000",
+    "client_msg_id": "8745d0a7b10ef18be1",
+    "text": "pretty sure it's actor_id, bob confirmed the correction in #data-platform",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "alice",
+      "real_name": "Alice",
+      "display_name": "alice",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

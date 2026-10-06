@@ -1,0 +1,30 @@
+metadata:
+  name: slack-observability
+  enable_image_push: true
+  description: |
+    APEX-SWE-style observability + software-engineering tasks. The agent is dropped into a real,
+    seeded Slack workspace alongside a codebase at /workspace whose pytest suite is failing. The
+    information needed to fix the code (an agreed config, a changed API contract, an incident root
+    cause) lives ONLY in heavy, noisy chat history and is buried among distractors and superseded
+    values, so recovering it requires real, non-trivial tool use. A HIDDEN grading test pins the
+    exact answer (never in the repo or visible tests), and one task additionally requires posting a
+    notification back to Slack (action beyond coding).
+
+    The Slack workspace is a lightweight single-container mock: a SQLite-backed Slack Web API gateway
+    seeded from a REAL Slack export, operated via our `slack` CLI and the off-the-shelf korotovsky
+    `slack-mcp` server. Built on ghcr.io/abundant-ai/slack-service:slack-mcp-oss (the seed export is
+    baked into each task image, so tasks are fully self-contained). Deterministic: nop=0, oracle=1.
+  task_path: experiments/slack-observability/tasks
+  n_trials: 1
+  skip_trajectory_analysis: false
+
+tasks:
+  - buried-spec
+  - contract-drift
+  - incident-fix-report
+
+agents:
+  - name: nop
+  - name: oracle
+  - name: gemini-cli
+    model_name: google/gemini-3.1-pro-preview

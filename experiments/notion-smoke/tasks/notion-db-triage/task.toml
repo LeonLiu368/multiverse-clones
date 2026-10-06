@@ -1,0 +1,27 @@
+schema_version = "1.2"
+name = "notion-smoke/notion-db-triage"
+description = "Smoke test for the notion clone's agent/gateway split (read + write). The agent uses the notion-cli / notion-mcp tools (notion-agent image; reaches the notion-gateway sidecar over HTTP) to query the Tasks database, find the 'Rotate prod database creds' page, mark it Done + checked, and post a confirming comment containing 'rotated'. The verifier reads state back THROUGH the Notion API (write->read round-trip). Notion data lives only in the notion sidecar (baked :prod-v1 corpus), never on the agent FS. Deterministic nop=0, oracle=1."
+
+[metadata]
+clone = "notion-clone"
+service = "Notion API"
+category = "tool-use"
+failure_mode = "stale-tracker-update"
+assessment_grade = ["databases.query", "pages.update", "comments.create"]
+tags = ["notion", "clones", "agent-gateway-split", "read-write", "smoke"]
+
+[agent]
+timeout_sec = 900
+
+[verifier]
+timeout_sec = 300
+
+[environment]
+allow_internet = true
+build_timeout_sec = 1800
+cpus = 2
+memory_mb = 4096
+storage_mb = 20480
+gpus = 0
+workdir = "/workspace"
+custom_docker_compose = true

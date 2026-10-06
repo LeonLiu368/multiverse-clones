@@ -1,0 +1,40 @@
+schema_version = "1.3"
+source = "task-specific synthetic incident context"
+
+[task]
+name = "three-surface-ops/spec-and-ship"
+description = "Feature delivery: ticket FEAT-301 requests email validation for the registration endpoint. The #eng-design Slack channel holds the team's agreed spec — the exact regex, the 422 error code, and which function in register.py to modify; an implementation has already been opened as a pull request. The agent must correlate all three surfaces, verify the PR implements exactly the agreed spec, approve and merge it, and move the ticket to Done. nop=0, oracle=1."
+custom_docker_compose = true
+
+[metadata]
+author_name = "Abundant AI"
+author_email = "tasks@abundant.ai"
+author_organization = "Abundant"
+category = "swe"
+source_repo = "acme/platform"
+difficulty_explanation = "Requires reconstructing the agreed implementation spec (regex, 422 status, target function) from a long Slack design thread with superseded proposals, then validating the open PR against that spec before merging and closing the ticket."
+tags = ["gh", "slack", "ticketvector", "multi-surface", "pr-review", "three-service"]
+expert_time_estimate_hours = 0.5
+relevant_experience = "On-call triage, Slack incident review, issue-tracker workflow, GitHub PR review and merge"
+
+[agent]
+timeout_sec = 1800
+user = "agent"
+
+[verifier]
+timeout_sec = 300
+user = "root"
+
+[environment]
+allow_internet = true
+build_timeout_sec = 2400
+cpus = 2
+memory_mb = 4096
+storage_mb = 20480
+gpus = 0
+workdir = "/app"
+
+[[environment.mcp_servers]]
+name = "slack"
+transport = "stdio"
+command = "slack-mcp"

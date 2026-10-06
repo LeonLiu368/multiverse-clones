@@ -1,0 +1,50 @@
+[
+  {
+    "user": "U38FC8CAEA6",
+    "type": "message",
+    "ts": "1731231240.000000",
+    "client_msg_id": "89ab0d2dbda8e7eeac",
+    "text": "our publisher still uses `name`/`user_id`/`data` \u2014 need to migrate after the deadline",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "judy",
+      "real_name": "Judy",
+      "display_name": "judy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U38FC8CAEA6",
+    "type": "message",
+    "ts": "1731231660.000000",
+    "client_msg_id": "aeca2c07e313f3bc18",
+    "text": "our publisher still uses `name`/`user_id`/`data` \u2014 need to migrate after the deadline",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "judy",
+      "real_name": "Judy",
+      "display_name": "judy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  },
+  {
+    "user": "U38FC8CAEA6",
+    "type": "message",
+    "ts": "1731237780.000000",
+    "client_msg_id": "1087a9a4c517841c6e",
+    "text": "migrating the login event first since it's highest volume",
+    "team": "T0EXACME01",
+    "user_profile": {
+      "name": "judy",
+      "real_name": "Judy",
+      "display_name": "judy",
+      "team": "T0EXACME01",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    }
+  }
+]

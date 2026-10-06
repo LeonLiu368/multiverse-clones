@@ -1,0 +1,29 @@
+schema_version = "1.2"
+name = "slack-read/rw-small-slack-read"
+description = "Real-world Slack read task (tiny export). The agent reads a small real Slack workspace through the `slack` CLI / MCP and reports how many messages contain the word 'testing'. Pure tool-use; no codebase. nop=0, oracle=1."
+
+[metadata]
+category = "tool-use"
+service = "slack"
+tools = ["slack-cli", "slack-mcp"]
+tags = ["slack", "read", "tool-use", "real-data", "simple"]
+
+[agent]
+timeout_sec = 1200
+
+[verifier]
+timeout_sec = 300
+
+[environment]
+custom_docker_compose = true
+cpus = 2
+memory_mb = 2048
+storage_mb = 4096
+allow_internet = true
+workdir = "/workspace"
+build_timeout_sec = 1800
+
+[[environment.mcp_servers]]
+name = "slack"
+transport = "stdio"
+command = "slack-mcp"

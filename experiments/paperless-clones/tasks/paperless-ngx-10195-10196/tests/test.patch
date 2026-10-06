@@ -1,0 +1,136 @@
+diff --git a/src/documents/tests/test_api_app_config.py b/src/documents/tests/test_api_app_config.py
+index 479229af2..5968b1670 100644
+--- a/src/documents/tests/test_api_app_config.py
++++ b/src/documents/tests/test_api_app_config.py
+@@ -167,3 +167,25 @@ class TestApiAppConfig(DirectoriesMixin, APITestCase):
+                 },
+             )
+         self.assertFalse(Path(old_logo.path).exists())
++
++    def test_create_not_allowed(self):
++        """
++        GIVEN:
++            - API request to create a new app config
++        WHEN:
++            - API is called
++        THEN:
++            - Correct HTTP response
++            - No new config is created
++        """
++        response = self.client.post(
++            self.ENDPOINT,
++            json.dumps(
++                {
++                    "output_type": "pdf",
++                },
++            ),
++            content_type="application/json",
++        )
++        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
++        self.assertEqual(ApplicationConfiguration.objects.count(), 1)
+diff --git a/src/documents/tests/test_api_uisettings.py b/src/documents/tests/test_api_uisettings.py
+index e3b9d4999..283729898 100644
+--- a/src/documents/tests/test_api_uisettings.py
++++ b/src/documents/tests/test_api_uisettings.py
+@@ -117,6 +117,30 @@ class TestApiUiSettings(DirectoriesMixin, APITestCase):
+
+         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
++    def test_settings_must_be_dict(self):
++        """
++        GIVEN:
++            - API request to update ui_settings with settings not being a dict
++        WHEN:
++            - API is called
++        THEN:
++            - Correct HTTP 400 response
++        """
++        response = self.client.post(
++            self.ENDPOINT,
++            json.dumps(
++                {
++                    "settings": "not a dict",
++                },
++            ),
++            content_type="application/json",
++        )
++        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
++        self.assertIn(
++            "Expected a dictionary",
++            str(response.data["settings"]),
++        )
++
+     @override_settings(
+         OAUTH_CALLBACK_BASE_URL="http://localhost:8000",
+         GMAIL_OAUTH_CLIENT_ID="abc123",
+diff --git a/src/paperless_mail/tests/test_mail.py b/src/paperless_mail/tests/test_mail.py
+index a73f9cf34..d7138fe41 100644
+--- a/src/paperless_mail/tests/test_mail.py
++++ b/src/paperless_mail/tests/test_mail.py
+@@ -1822,3 +1822,66 @@ class TestMailAccountProcess(APITestCase):
+         response = self.client.post(self.url)
+         self.assertEqual(response.status_code, status.HTTP_200_OK)
+         m.assert_called_once()
++
++
++class TestMailRuleAPI(APITestCase):
++    def setUp(self):
++        self.user = User.objects.create_superuser(
++            username="testuser",
++            password="testpassword",
++        )
++        self.client.force_authenticate(user=self.user)
++        self.account = MailAccount.objects.create(
++            imap_server="imap.example.com",
++            imap_port=993,
++            imap_security=MailAccount.ImapSecurity.SSL,
++            username="admin",
++            password="secret",
++            account_type=MailAccount.MailAccountType.IMAP,
++            owner=self.user,
++        )
++        self.url = "/api/mail_rules/"
++
++    def test_create_mail_rule(self):
++        """
++        GIVEN:
++            - Valid data for creating a mail rule
++        WHEN:
++            - A POST request is made to the mail rules endpoint
++        THEN:
++            - The rule should be created successfully
++            - The response should contain the created rule's details
++        """
++        data = {
++            "name": "Test Rule",
++            "account": self.account.pk,
++            "action": MailRule.MailAction.MOVE,
++            "action_parameter": "inbox",
++        }
++        response = self.client.post(self.url, data, format="json")
++        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
++        self.assertEqual(MailRule.objects.count(), 1)
++        rule = MailRule.objects.first()
++        self.assertEqual(rule.name, "Test Rule")
++
++    def test_mail_rule_action_parameter_required_for_tag_or_move(self):
++        """
++        GIVEN:
++            - Valid data for creating a mail rule without action_parameter
++        WHEN:
++            - A POST request is made to the mail rules endpoint
++        THEN:
++            - The request should fail with a 400 Bad Request status
++            - The response should indicate that action_parameter is required
++        """
++        data = {
++            "name": "Test Rule",
++            "account": self.account.pk,
++            "action": MailRule.MailAction.MOVE,
++        }
++        response = self.client.post(self.url, data, format="json")
++        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
++        self.assertIn(
++            "action parameter is required",
++            str(response.data["non_field_errors"]),
++        )
