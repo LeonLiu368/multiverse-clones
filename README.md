@@ -78,6 +78,7 @@ either in its own folder or in [`experiments/fleet-smoke/`](experiments/fleet-sm
 | [`skills/`](skills/) | Two Claude skills that build and check clones. `clone-creation` builds a new clone to the standard; `clone-audit` tests one and writes a pass/fail report with fixes. Running the two in a loop is how all the clones were brought up to the same bar. |
 | [`experiments/fleet-smoke/`](experiments/fleet-smoke/) | One small task per clone, nine in total. Each is run three ways: an agent that does nothing (must score 0), the reference solution (must score 1), and one real model. It's a cheap check that the whole fleet still works end to end. |
 | [`experiments/pull-smoke/`](experiments/pull-smoke/) | A Notion task whose environment contains no clone source at all, just two files that pull published images. Proof that tasks can stay small. |
+| [`experiments/`](experiments/) (everything else) | The tasks I built on the clones, 22 families and about 65 task folders, brought over from the shared `experiments` repo with their history. See [The tasks](#the-tasks) below. |
 | [`live/`](live/) | Early work on live-deployment tasks: a real open-source app running on Kubernetes, sending telemetry to the Logfire clone, graded by how the app behaves under load after the agent's fix. |
 | [`viz/`](viz/) | The parity dashboard. For each clone it shows the seeded data rendered like the real product, the command an agent would run, the real API it corresponds to, and a score for how closely the clone's response matches the real one. |
 | [`spoink/`](spoink/) | The snapshot engine. It captures data from real Slack, Linear, GitHub and Logfire accounts, rewinds it to the moment an incident happened, and packages it into a clone's gateway so a task can start from that exact point in time. |
@@ -104,6 +105,43 @@ use the Figma tools to get them.
 What makes tasks like these hard isn't the code. It's the earlier proposals that were later
 revised, the similar-looking channels that have nothing to do with the problem, and search
 results that are noisy on purpose. An agent that trusts the first thing it finds gets it wrong.
+
+## The tasks
+
+Everything in [`experiments/`](experiments/) other than the two smoke tests is a family of tasks
+built on the clones. Each folder holds a `tasks/` directory, usually with an Oddish manifest next
+to it. Six families (taskfarm-clones, figma-ios, figma-realsim, jira-smoke, notion-smoke and
+slack-prod-overlay) ship each task twice: once against an empty clone, which is fast and
+deterministic, and once against a full production-style corpus, which is where the real
+difficulty is.
+
+**Slack**
+- [`slack-observability`](experiments/slack-observability): fix code using facts buried in Slack, such as rate-limiter values revised after a load test (`buried-spec`).
+- [`slack-read`](experiments/slack-read): read-only lookups in a real-world Slack export.
+- [`slack-prod-overlay`](experiments/slack-prod-overlay): a shared production corpus with a small per-task overlay merged on top.
+- [`slack-recent-lookup`](experiments/slack-recent-lookup): one question whose answer needs both the old corpus and recent messages.
+
+**Figma**
+- [`figma-observability`](experiments/figma-observability), [`figma-realsim`](experiments/figma-realsim), [`figma-ios`](experiments/figma-ios): recover a design spec from a Figma file and ship it in code, including files imported from real Figma projects.
+- [`figma-linear`](experiments/figma-linear): a design handoff that spans the Figma and Linear clones.
+
+**Issue trackers and GitHub**
+- [`jira-smoke`](experiments/jira-smoke): read tasks on the Jira clone.
+- [`chat-tickets-observability`](experiments/chat-tickets-observability): incident triage across Slack and a ticket tracker.
+- [`gh-ops-scenarios`](experiments/gh-ops-scenarios): GitHub operations on the gh-cli clone: patching a security issue, sweeping stale PRs, and cutting a release hotfix.
+
+**Several clones at once**
+- [`three-surface-ops`](experiments/three-surface-ops): tasks that need Slack, the tracker and GitHub together.
+- [`oss-pr-fix`](experiments/oss-pr-fix): two real `psf/requests` bug fixes whose context is spread across those same three clones.
+- [`multi-clone-fetch`](experiments/multi-clone-fetch): one task that has to pull facts from Slack, Jira, GitHub, Grafana and Sentry.
+- [`gauge-smoke`](experiments/gauge-smoke), [`notion-smoke`](experiments/notion-smoke): single-clone checks for Grafana and Notion.
+
+**Real incidents ported onto the clones**
+- [`apex-swe-clones`](experiments/apex-swe-clones): APEX-SWE observability tasks rebuilt on our Slack, Jira and Grafana clones, plus the converter that does it.
+- [`paperless-clones`](experiments/paperless-clones) and [`paperless-clones-datefix-internetblock`](experiments/paperless-clones-datefix-internetblock): paperless-ngx incidents, the second with the date and internet-access fixes.
+- [`ethereum-clones`](experiments/ethereum-clones): an `op-geth` incident. It's the largest folder by far, because the task carries a full copy of the `op-geth` source it runs against.
+- [`taskfarm-clones`](experiments/taskfarm-clones): six end-to-end tasks from taskfarm, each in an empty and a production version.
+- [`action-bench-sample`](experiments/action-bench-sample): tool-use tasks from the ActionBench sample delivered to Cursor.
 
 ## Running things
 
@@ -167,6 +205,9 @@ files wouldn't remove it.
 
 ## History
 
-Every original commit is preserved with its original hash, and each original repository's
-branches are kept under `archive/`. See [`docs/COLLECTION.md`](docs/COLLECTION.md) for how the
-history is organized and a table of every original branch.
+Every commit from the original clone, spoink and dashboard repositories is preserved with its
+original hash, and their branches are kept under `archive/`. The task folders in `experiments/`
+came from a repository shared with other people, so only the commits that touched them were
+carried over. Those keep their original author, date and message, each with a line naming the
+commit it came from. See [`docs/COLLECTION.md`](docs/COLLECTION.md) for how the history is
+organized and where every folder came from.

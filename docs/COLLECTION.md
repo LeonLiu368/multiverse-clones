@@ -29,7 +29,8 @@ intact. `clones/` is the later, canonical version; `origins/` is where it came f
 
 ## History
 
-Every original commit is preserved **with its original hash**. Nothing was rewritten.
+Every commit from the repositories in the table below is preserved **with its original hash**; nothing
+from them was rewritten. (The task folders in `experiments/` are the exception; see the next section.)
 
 - `main` holds the root monorepo history plus each project, attached by a subtree merge.
 - `archive/<repo>/<branch>` holds every original branch exactly as it was, at its original tip.
@@ -66,9 +67,51 @@ git log --oneline archive/abundant-slack-clone/slack-mcp-oss
 Uncommitted edits found in the multiverse-clones and figma-clone checkouts are the two
 `Snapshot uncommitted local changes` commits on `main`.
 
+## Task folders from `abundant-ai/experiments`
+
+`experiments/` also holds 22 task families I built on the clones. They came from the shared
+`abundant-ai/experiments` repo, which also holds everyone else's work, so its history couldn't be
+copied whole. Instead, only the commits that touched these folders were carried over, from the
+branch holding each folder's newest version:
+
+- Each commit keeps its original author, date and message, and has a new hash.
+- Each one ends with an `Imported-from: abundant-ai/experiments@<hash> (<branch>)` line naming the
+  original commit, so it can be traced back.
+- Every folder was checked to be byte-identical to its source branch.
+
+| Folder | Source branch | Commits | Notes |
+|---|---|---|---|
+| `action-bench-sample` | `leon/action-bench` | 5 | includes its earlier life as `action-bench-sample-1` |
+| `apex-swe-clones` | `fix/loki-converter-multiline-fold` | 20 | + snapshot of uncommitted work (new task `paperless-ngx-10555-lb`, `tools/pr_to_task.py`) |
+| `chat-tickets-observability` | `leon/chat-tickets-observability` | 5 | |
+| `ethereum-clones` | `leon/ethereum-clones` | 1 | vendors the `op-geth` source (~88 MB) |
+| `figma-ios` | `leon/figma-ios` | 1 | |
+| `figma-linear` | `leon/figma-linear-handoff` | 3 | |
+| `figma-observability` | `leon/figma-observability` | 1 | |
+| `figma-realsim` | `origin/leon/figma-realsim` | 4 | the pushed branch was 3 commits ahead of the local one |
+| `gauge-smoke` | `leon/gauge-smoke` | 4 | |
+| `gh-ops-scenarios` | `leon/gh-ops-scenarios` | 4 | |
+| `jira-smoke` | `leon/jira-smoke` | 1 | |
+| `multi-clone-fetch` | `leon/multi-clone-fetch` | 5 | |
+| `notion-smoke` | `leon/notion-smoke` | 1 | |
+| `oss-pr-fix` | `leon/oss-pr-fix` | 13 | |
+| `paperless-clones` | `paperless-clones` | 6 | includes its earlier life as `apex-paperless-poc`; + snapshot of a stash saved for this branch |
+| `paperless-clones-datefix-internetblock` | `paperless-clones-datefix-internetblock` | 4 | |
+| `slack-observability` | `leon/slack-observability` | 1 | |
+| `slack-prod-overlay` | `leon/slack-prod-overlay` | 6 | |
+| `slack-read` | `leon/slack-read` | 6 | |
+| `slack-recent-lookup` | `leon/slack-recent-lookup` | 3 | |
+| `taskfarm-clones` | `leon/taskfarm-clones` | 6 | |
+| `three-surface-ops` | `leon/three-surface-ops` | 7 | |
+
 ## Not included
 
 - **`gauge`, `ticketvector`, `gh-cli-clone`**: mostly or entirely other people's work (Owen and
   others). The monorepo already carries a snapshot of each in `clones/`.
-- **Tasks from `abundant-ai/experiments`**: a shared repo holding everyone's work.
+- **From `abundant-ai/experiments`:**
+  - `oddish-incident`: its task ships Abundant's private `oddish` codebase, with full history, as a git bundle.
+  - `apex-swe-variants`: shared with Meji, and it runs on APEX's own Plane/Mattermost/Loki rather than the clones.
+  - `saleor-spine-v1`, `stage3-5`, `stage4`: not clone work (SRE World, a data-engineering set, and take-home tasks).
+  - `harbor-forge`: other people's work.
+  - Local leftovers: a vendor-docs skill (`taiga-wiki`), debug logs (`_capture/`), and stashes for an unrelated project and a CI tweak.
 - **`mockflow`**: a third-party repo (`benchflow-ai`).
