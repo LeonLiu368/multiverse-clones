@@ -117,7 +117,7 @@ difficulty is.
 
 **Slack**
 - [`slack-observability`](experiments/slack-observability): fix code using facts buried in Slack, such as rate-limiter values revised after a load test (`buried-spec`).
-- [`slack-read`](experiments/slack-read): read-only lookups in a real-world Slack export.
+- [`slack-read`](experiments/slack-read): read-only lookups in a Slack workspace. The large variant ran on a real export that isn't included here.
 - [`slack-prod-overlay`](experiments/slack-prod-overlay): a shared production corpus with a small per-task overlay merged on top.
 - [`slack-recent-lookup`](experiments/slack-recent-lookup): one question whose answer needs both the old corpus and recent messages.
 
@@ -180,18 +180,22 @@ are no longer publicly pullable; when I checked on 2026-09-30, only `logfire-ser
 `gworkspace-service` were. To run a task now, build the images from that clone's folder in
 `clones/` and point the task's `docker-compose.yaml` and `Dockerfile` at your local tags.
 
-## A note on data
+## About the data
 
-Some tasks here include **real data**:
+The clones and tasks were built against a mix of synthetic data and real exports. **The real
+exports are not in this repository**; they were removed from every commit before it was made
+public:
 
-- A company's Jira export: 8,040 issues and about 270 personal email addresses
-  (`clones/abundant-jira-clone/selfcontained/base/data/eng-prod-state.json`, also under `origins/`).
-- A Slack export with real names (`…/rw-large-slack-read/environment/data/slack-export/`).
-- My own Gmail, Calendar and Drive data from Google Takeout (the `gws-event-room` and
-  `gws-real-projects` tasks).
+- a company's Jira export (the Jira clone's production corpus),
+- a company's 2021 Slack export (a Slack seed and the large read task built from it),
+- production telemetry from Abundant's own services (the Logfire clone's production corpus),
+- my own Gmail, Calendar and Drive data. The two Google Workspace tasks built on it were
+  removed entirely.
 
-This repository should stay private. The data is also in the commit history, so deleting the
-files wouldn't remove it.
+Everything that remains is synthetic or small test data. A few things depended on the removed
+data and won't run as-is: the Jira and Logfire production images, the 2021 Slack seed, the
+`rw-large-slack-read` task and the `logfire-incident-rca` task. Each of those folders has a
+`DATA-REMOVED.md` note explaining what was there and what to use instead.
 
 ## What was left unfinished
 
@@ -205,9 +209,13 @@ files wouldn't remove it.
 
 ## History
 
-Every commit from the original clone, spoink and dashboard repositories is preserved with its
-original hash, and their branches are kept under `archive/`. The task folders in `experiments/`
-came from a repository shared with other people, so only the commits that touched them were
-carried over. Those keep their original author, date and message, each with a line naming the
-commit it came from. See [`docs/COLLECTION.md`](docs/COLLECTION.md) for how the history is
-organized and where every folder came from.
+The commit history goes back to the first commit of each original repository. Each commit keeps
+its author, date and message.
+
+Removing the real data meant rewriting history, so any commit made after one of those files was
+added has a new hash. The branches that never contained them (spoink, seed-dashboard, the
+figma clone, the identity registry and a few others) still have their original hashes. The task
+folders in `experiments/` came from a repository shared with other people, so only the commits
+that touched them were carried over; each names the commit it came from. See
+[`docs/COLLECTION.md`](docs/COLLECTION.md) for how the history is organized and where every
+folder came from.

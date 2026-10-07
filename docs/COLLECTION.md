@@ -7,6 +7,10 @@ The original repos lived under `github.com/abundant-ai/` and are no longer reach
 account. This collection was assembled on 2026-09-29 from my local clones, which turned out to
 be *more* complete than GitHub was: several branches had commits that were never pushed.
 
+**This is the public copy.** Real data that was used during development (a company's Jira and
+Slack exports, Abundant's production telemetry, and my own Google data) was removed from every
+commit before it was made public. See [Removed data](#removed-data) below.
+
 ## Layout
 
 | Path | What it is | Original repo |
@@ -29,11 +33,14 @@ intact. `clones/` is the later, canonical version; `origins/` is where it came f
 
 ## History
 
-Every commit from the repositories in the table below is preserved **with its original hash**; nothing
-from them was rewritten. (The task folders in `experiments/` are the exception; see the next section.)
+Every commit from the repositories in the table below is here, with its original author, date
+and message, except two that did nothing but add the removed Google Workspace tasks. Branches that never contained the removed data keep their **original hashes**; the
+rest were rewritten to strip it, so their commits from that point on have new hashes. The table
+shows both tips. (The task folders in `experiments/` were carried over differently; see the
+next section.)
 
 - `main` holds the root monorepo history plus each project, attached by a subtree merge.
-- `archive/<repo>/<branch>` holds every original branch exactly as it was, at its original tip.
+- `archive/<repo>/<branch>` holds every original branch, minus the removed data.
 - `wip/abundant-slack-clone/slack-focused-implementation` is that branch plus a snapshot of
   uncommitted work found in the local checkout.
 
@@ -45,24 +52,24 @@ git log --oneline archive/spoink/main
 git log --oneline archive/abundant-slack-clone/slack-mcp-oss
 ```
 
-| Original repo | Branch | Commits | Tip | Notes |
-|---|---|---|---|---|
-| multiverse-clones | `main` | 75 | `d5aec88d9` | root mainline |
-| multiverse-clones | `leon/fleet-smoke` | 16 | `a66dbd130` | 1 commit never pushed |
-| multiverse-clones | `leon/mv-image-naming` | 17 | `77d206c09` | merged into main |
-| spoink | `main` | 59 | `6edc9837b` | |
-| seed-dashboard | `main` | 33 | `a0f6caffa` | |
-| abundant-identity | `main` | 1 | `0ccad93df` | never had a remote |
-| abundant-slack-clone | `slack-mcp-oss` | 40 | `bae979766` | imported to `origins/`; 2 commits never pushed; contains `main` + `prebuilt-image-refactor` |
-| abundant-slack-clone | `main` | 19 | `c680b1f31` | behind GitHub's main, which had merged `slack-mcp-oss` |
-| abundant-slack-clone | `prebuilt-image-refactor` | 16 | `de98bb1ac` | never pushed |
-| abundant-slack-clone | `mattermost-focused-implementation` | 11 | `62c2b0bcf` | prototype; 4 commits never pushed |
-| abundant-slack-clone | `slack-focused-implementation` | 5 | `62a17e36e` | prototype; 1 commit never pushed |
-| abundant-jira-clone | `main` | 8 | `17cf91d45` | 5 commits never pushed |
-| abundant-jira-clone | `linear-graphql-surface` | 7 | `eabd19d81` | diverges from main |
-| abundant-logfire-clone | `main` | 3 | `043b980f8` | |
-| figma-clone | `main` | 6 | `3f54f708a` | |
-| google-workspace-clone | `main` | 9 | `8b3d3427d` | 7 commits never pushed |
+| Original repo | Branch | Commits | Original tip | Tip here | Notes |
+|---|---|---|---|---|---|
+| multiverse-clones | `main` | 75 | `d5aec88d9` | `f3c081cbb` | root mainline |
+| multiverse-clones | `leon/fleet-smoke` | 16 | `a66dbd130` | `ece759182` | 1 commit never pushed |
+| multiverse-clones | `leon/mv-image-naming` | 17 | `77d206c09` | `7cf44ab0c` | merged into main |
+| spoink | `main` | 59 | `6edc9837b` | same |  |
+| seed-dashboard | `main` | 33 | `a0f6caffa` | same |  |
+| abundant-identity | `main` | 1 | `0ccad93df` | same | never had a remote |
+| abundant-slack-clone | `slack-mcp-oss` | 40 | `bae979766` | `44ff87844` | imported to `origins/`; 2 commits never pushed; contains `main` + `prebuilt-image-refactor` |
+| abundant-slack-clone | `main` | 19 | `c680b1f31` | `0499bb653` | behind GitHub's main, which had merged `slack-mcp-oss` |
+| abundant-slack-clone | `prebuilt-image-refactor` | 16 | `de98bb1ac` | `4d7ea74a9` | never pushed |
+| abundant-slack-clone | `mattermost-focused-implementation` | 11 | `62c2b0bcf` | same | prototype; 4 commits never pushed |
+| abundant-slack-clone | `slack-focused-implementation` | 5 | `62a17e36e` | same | prototype; 1 commit never pushed |
+| abundant-jira-clone | `main` | 8 | `17cf91d45` | `6523b7046` | 5 commits never pushed |
+| abundant-jira-clone | `linear-graphql-surface` | 7 | `eabd19d81` | `06c1e96a9` | diverges from main |
+| abundant-logfire-clone | `main` | 3 | `043b980f8` | same |  |
+| figma-clone | `main` | 6 | `3f54f708a` | same |  |
+| google-workspace-clone | `main` | 9 (7 here) | `8b3d3427d` | `a71c53a2e` | 7 commits never pushed; 2 commits that only added the removed tasks are gone |
 
 Uncommitted edits found in the multiverse-clones and figma-clone checkouts are the two
 `Snapshot uncommitted local changes` commits on `main`.
@@ -104,13 +111,29 @@ branch holding each folder's newest version:
 | `taskfarm-clones` | `leon/taskfarm-clones` | 6 | |
 | `three-surface-ops` | `leon/three-surface-ops` | 7 | |
 
+## Removed data
+
+These were removed from every commit on every branch before this copy was made public. A
+`DATA-REMOVED.md` note sits wherever a folder lost its data.
+
+| What | Where it was | Why |
+|---|---|---|
+| Jira production corpus | `**/selfcontained/base/data/eng-prod-state.json` | a real company's issue tracker, with personal contact details |
+| 2021 Slack export | `**/seeds/eng-2021q1/`, `**/rw-large-slack-read/environment/data/` | a real company's internal conversations |
+| Logfire production corpus | `**/abundant-logfire-clone/corpus/`, `**/logfire-incident-rca/environment/corpus/` | Abundant's production telemetry and internal endpoints |
+| Google Workspace tasks `gws-event-room`, `gws-real-projects` | whole task folders and their sweep files | built on my own Gmail, Calendar and Drive; the tests also encode personal details |
+
+Verified afterwards: none of the 77 file versions involved remain in the repository, no commit
+touches those paths, and a scan of every data file in every commit finds no personal email
+addresses or phone numbers. What remains is synthetic or small test data.
+
 ## Not included
 
-- **`gauge`, `ticketvector`, `gh-cli-clone`**: mostly or entirely other people's work (Owen and
-  others). The monorepo already carries a snapshot of each in `clones/`.
+- **`gauge`, `ticketvector`, `gh-cli-clone`**: mostly or entirely other people's work (several
+  colleagues). The monorepo already carries a snapshot of each in `clones/`.
 - **From `abundant-ai/experiments`:**
   - `oddish-incident`: its task ships Abundant's private `oddish` codebase, with full history, as a git bundle.
-  - `apex-swe-variants`: shared with Meji, and it runs on APEX's own Plane/Mattermost/Loki rather than the clones.
+  - `apex-swe-variants`: shared with a colleague, and it runs on APEX's own Plane/Mattermost/Loki rather than the clones.
   - `saleor-spine-v1`, `stage3-5`, `stage4`: not clone work (SRE World, a data-engineering set, and take-home tasks).
   - `harbor-forge`: other people's work.
   - Local leftovers: a vendor-docs skill (`taiga-wiki`), debug logs (`_capture/`), and stashes for an unrelated project and a CI tweak.
