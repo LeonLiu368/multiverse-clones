@@ -5,12 +5,12 @@ jira-gateway / slack-gateway clones (two-image + mount + service-DNS isolation m
 Only the slack + ticketvector pieces change. github / sentry / grafana / postgres / app / tests
 logic stay intact. Idempotent-ish: operates on a fresh copy each run.
 """
-import json, re, shutil, sys
+import json, os, re, shutil, sys
 from pathlib import Path
 import yaml
 
-SRC = Path("/tmp/multiverse-tasks-owen/taskfarm-e2e-tasks")
-DST = Path("/Users/leonliu/projects/experiments-taskfarm/experiments/taskfarm-clones/tasks")
+SRC = Path(os.environ.get("TASKFARM_SRC", "/tmp/multiverse-tasks-owen/taskfarm-e2e-tasks"))
+DST = Path(__file__).resolve().parent / "tasks"
 
 JIRA_IMG = "${JIRA_GATEWAY_IMAGE:-ghcr.io/abundant-ai/jira-gateway:empty}"
 SLACK_IMG = "${SLACK_GATEWAY_IMAGE:-ghcr.io/abundant-ai/slack-gateway:empty}"

@@ -3,8 +3,8 @@
 
 Usage:
     python generate_registry.py \
-        --slack /Users/leonliu/Downloads/slack \
-        --jira  /Users/leonliu/Downloads/jira/entities.xml \
+        --slack ~/Downloads/slack \
+        --jira  ~/Downloads/jira/entities.xml \
         --out   registry.json
 """
 from __future__ import annotations
@@ -58,8 +58,8 @@ def scan_jira(entities_path: str) -> tuple[set[int], set[int]]:
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--slack", default="/Users/leonliu/Downloads/slack")
-    ap.add_argument("--jira", default="/Users/leonliu/Downloads/jira/entities.xml")
+    ap.add_argument("--slack", default=os.path.expanduser("~/Downloads/slack"))
+    ap.add_argument("--jira", default=os.path.expanduser("~/Downloads/jira/entities.xml"))
     ap.add_argument("--out", default=os.path.join(os.path.dirname(__file__), "registry.json"))
     args = ap.parse_args()
 

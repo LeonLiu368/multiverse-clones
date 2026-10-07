@@ -12,10 +12,9 @@ from app import app
 
 CLONE = slack_clone_base()
 TINY = os.path.join(CLONE, "..", "seeds", "tiny", "export")
-OVERLAY = (
-    "/Users/leonliu/projects/experiments-slack-mcp-oss/experiments/slack-prod-overlay/"
-    "tasks/arrival-time/environment/data/overlay"
-)
+# Overlay tests need the published prod gateway image; opt in by pointing this at an overlay dir,
+# e.g. experiments/slack-prod-overlay/tasks/arrival-time/environment/data/overlay
+OVERLAY = os.environ.get("SLACK_OVERLAY_DIR", "")
 PROD_IMG = "ghcr.io/abundant-ai/slack-gateway:prod-v1"
 SIDECAR_IMG = "ghcr.io/abundant-ai/slack-gateway:testing-smoke"
 

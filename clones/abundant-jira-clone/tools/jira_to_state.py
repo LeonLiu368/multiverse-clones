@@ -436,7 +436,7 @@ def convert(entities_path, project_key, max_issues=None, registry_path=None):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--entities", default="/Users/leonliu/Downloads/jira/entities.xml",
+    ap.add_argument("--entities", default=os.path.expanduser("~/Downloads/jira/entities.xml"),
                     help="path to the Jira entities.xml backup")
     ap.add_argument("--project", default="ENG", help="project key to export (default ENG)")
     ap.add_argument("--out", required=True, help="output state.json path")

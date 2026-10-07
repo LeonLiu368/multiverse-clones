@@ -11,8 +11,8 @@ import json, os, subprocess, sys, stat, textwrap
 
 KEY = "R1jno9FuCgYkNXayz8zglW"
 FULL = json.load(open("/tmp/ios_full.json"))
-FIGMA_CLI = "/Users/leonliu/projects/figma-clone/.venv/bin/figma-cli"
-OUT_ROOT = "/Users/leonliu/projects/experiments/experiments/figma-ios/tasks"
+FIGMA_CLI = os.environ.get("FIGMA_CLI", "figma-cli")
+OUT_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tasks")
 
 SPECS = [
     {"name": "figma-ios-app-icon-styles", "func": "app_icon_styles", "node": "2402:17543",

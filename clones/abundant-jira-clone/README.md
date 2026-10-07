@@ -54,7 +54,7 @@ finds nothing. The corpus DB was never in the package, so nothing is greppable *
 
 `selfcontained/base/data/eng-prod-state.json` is the "Jira prod corpus": project **ENG**, produced
 by `tools/jira_to_state.py` from the real native Jira XML export
-(`/Users/leonliu/Downloads/jira/entities.xml`). It is the runtime `state.json` shape the ticketvector
+(`~/Downloads/jira/entities.xml`). It is the runtime `state.json` shape the ticketvector
 service serves. Regenerate with:
 
 ```bash

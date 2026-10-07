@@ -119,8 +119,8 @@ Slack- or Jira-specific.
 
 ```bash
 python generate_registry.py \
-  --slack /Users/leonliu/Downloads/slack \
-  --jira  /Users/leonliu/Downloads/jira/entities.xml \
+  --slack ~/Downloads/slack \
+  --jira  ~/Downloads/jira/entities.xml \
   --out   registry.json
 python -m pytest test_registry.py -v      # must stay green
 ```
