@@ -1,12 +1,16 @@
-# Multiverse clones
+# Multiverses
 
 Working copies of the software tools engineers use every day (Slack, Jira, Figma, Grafana,
 GitHub and more), rebuilt so an AI agent can be tested against them. Alongside the clones are
 the tools for filling them with realistic data and for checking that they behave like the real
 thing.
 
-I built this at Abundant AI in June and July 2026 as part of the Multiverse project. This
-repository collects that work in one place, with its full commit history.
+I built this at Abundant AI in June and July 2026 as part of the Multiverses project. This
+repository collects that work, most of which is experimental.
+
+A continuation of this work can be found at in [Incident Arena](https://incident-arena.com/).
+I contributed the Saleor substrate as a software clone utilizing the same agent loop as Multiverses 
+to develop a benchmark suite for system reliability tasks. 
 
 ## The idea
 
